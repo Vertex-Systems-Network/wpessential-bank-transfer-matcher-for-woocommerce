@@ -1,0 +1,39 @@
+name: Foundation checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify generated documentation
+        run: node scripts/generate-readmes.ts --check
+      - name: Validate and build independent Composer packages
+        run: |
+          for plugin in plugins/*; do
+            composer --working-dir="$plugin" validate --strict
+            composer --working-dir="$plugin" install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+            composer --working-dir="$plugin" audit --no-interaction
+          done
+      - name: Check PHP syntax
+        run: find plugins playground/tests -name vendor -prune -o -name '*.php' -print0 | xargs -0 -n 1 php -l
+      - name: Exercise exact money edge cases
+        run: php tests/money.php
+      - name: Package and test in Playground
+        run: |
+          python3 scripts/build-plugin-zips.py
+          python3 scripts/build_playground_bundles.py
+          python3 scripts/test-playground-foundation.py

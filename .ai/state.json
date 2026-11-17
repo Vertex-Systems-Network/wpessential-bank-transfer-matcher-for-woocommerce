@@ -1,0 +1,48 @@
+{
+  "project": "WPEssential Bank Transfer Matcher for WooCommerce",
+  "schema_version": 1,
+  "current_branch": "development/phase-0-1",
+  "last_verified_base_commit": "2b9e86060cdc244748ba37fb7d655628a7f8ad27",
+  "last_checkpoint_utc": "2026-11-17",
+  "execution_status": "in_progress",
+  "tests": {
+    "php_unit": "not_run",
+    "php_static": "not_run",
+    "integration": "not_run",
+    "e2e": "not_run",
+    "package_install": "passed for Free-only and Free+Pro",
+    "php_lint": "passed",
+    "money": "passed",
+    "playground_bootstrap": "passed",
+    "mysql_mariadb": "not_run"
+  },
+  "release_artifacts": {
+    "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
+    "pro_zip": "dist/wpessential-bank-transfer-matcher-pro.zip",
+    "status": "local development builds"
+  },
+  "critical_invariants": [
+    "claims_are_unverified",
+    "imports_never_approve_payment",
+    "allocations_are_idempotent",
+    "free_is_independent"
+  ],
+  "phase": "P1",
+  "active_task_id": "WBM-P1-T003",
+  "next_action": "Add Woo missing and Pro missing Free Blueprint smoke cases to scripts/test-playground-foundation.py and verify activation guards.",
+  "completed_tasks": [
+    "WBM-P0-T001",
+    "WBM-P0-T002",
+    "WBM-P0-T003",
+    "WBM-P0-T004",
+    "WBM-P0-T005",
+    "WBM-P0-T006",
+    "WBM-P0-T007",
+    "WBM-P0-T008",
+    "WBM-P1-T002",
+    "WBM-P1-T010"
+  ],
+  "blocked_tasks": [
+    "WBM-P1-T001"
+  ]
+}

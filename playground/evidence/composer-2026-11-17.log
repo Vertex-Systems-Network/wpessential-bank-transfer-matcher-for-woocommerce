@@ -1,0 +1,6 @@
+Composer 2.9.5, PHP WASM 8.5.12
+Free and Pro ran independently in their own directories.
+update --no-dev --prefer-dist --no-interaction --optimize-autoloader: exit 0; separate lockfile written.
+validate --strict: exit 0; ./composer.json is valid.
+install --no-dev --prefer-dist --no-interaction --optimize-autoloader: exit 0; generated optimized autoload files.
+audit --no-interaction: exit 0; No packages - skipping audit.

@@ -1,0 +1,15 @@
+{
+  "product": "WPEssential Bank Transfer Matcher for WooCommerce",
+  "version": "0.1.0",
+  "requires_wp": "7.0",
+  "requires_php": "8.3",
+  "license": "GPL-2.0-or-later",
+  "free": {
+    "slug": "wpessential-bank-transfer-matcher",
+    "description": "Development preview with a WooCommerce admin entry point."
+  },
+  "pro": {
+    "slug": "wpessential-bank-transfer-matcher-pro",
+    "description": "Development preview of the separate add-on. Requires a compatible active Free edition."
+  }
+}

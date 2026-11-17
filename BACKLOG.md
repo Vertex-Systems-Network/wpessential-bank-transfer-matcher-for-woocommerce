@@ -1,0 +1,108 @@
+# Backlog
+
+The task graph lives in `.ai/tasks.json`. Run `python3 scripts/update-backlog.py` after recording evidence.
+
+| Task | Acceptance | Owner | Files | Prerequisites | Verification | Status | Evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| WBM-P0-T001 | inventory repository/environment/access; do not overwrite existing work. | Product and research | docs/ |  | VERIFY-P0-T001 | done | Git tree and issue search recorded in .ai/sessions/2026-11-17-0145.md |
+| WBM-P0-T002 | verify official WP/WC standards and BACS baseline; capture sources. | Product and research | docs/ | WBM-P0-T001 | VERIFY-P0-T002 | done | docs/research/sources.md |
+| WBM-P0-T003 | research competitor capabilities/prices with evidence labels. | Product and research | docs/ | WBM-P0-T002 | VERIFY-P0-T003 | done | docs/research/competitor-matrix.md |
+| WBM-P0-T004 | write PRD, personas, user journeys, scope/non-scope, risks. | Product and research | docs/ | WBM-P0-T003 | VERIFY-P0-T004 | done | docs/product/PRD.md |
+| WBM-P0-T005 | write Free/Pro complete feature inventory and screen traceability. | Product and research | docs/ | WBM-P0-T004 | VERIFY-P0-T005 | done | docs/product/feature-matrix.md and docs/ux/screen-inventory.md |
+| WBM-P0-T006 | write entity glossary and domain invariants. | Product and research | docs/ | WBM-P0-T005 | VERIFY-P0-T006 | done | docs/architecture/glossary.md |
+| WBM-P0-T007 | seed full backlog, memory contracts, ADR templates and next-task system. | Product and research | docs/ | WBM-P0-T006 | VERIFY-P0-T007 | done | .ai/tasks.json and scripts/update-backlog.py |
+| WBM-P0-T008 | list synthetic fixture matrix and financial threat model. | Product and research | docs/ | WBM-P0-T007 | VERIFY-P0-T008 | done | docs/testing/fixture-matrix.md and docs/security/threat-model.md |
+| WBM-P1-T001 | build disposable WP/WC local environment (Docker or equivalent), reproducible commands. | Platform | plugins/; playground/ | WBM-P0-T008 | VERIFY-P1-T001 | blocked | Playground verified. Native MySQL/MariaDB and Docker unavailable. See .ai/runbooks/mysql-test.md. |
+| WBM-P1-T002 | create separate Free and Pro plugin directory/bootstrap/**independent Composer 2 PSR-4 manifests + lockfiles + autoload runtime** (Section 16A). | Platform | plugins/; playground/ | WBM-P0-T008 | VERIFY-P1-T002 | done | Separate sources, manifests and lockfiles. playground/evidence/composer-2026-11-17.log and foundation-2026-11-17.log. |
+| WBM-P1-T003 | create activation/deactivation/dependency/version checks, clean error states. | Platform | plugins/; playground/ | WBM-P1-T002 | VERIFY-P1-T003 | in_progress |  |
+| WBM-P1-T004 | create Free-owned capabilities and role mapping; REST API auth foundation. | Platform | plugins/; playground/ | WBM-P1-T003 | VERIFY-P1-T004 | planned |  |
+| WBM-P1-T005 | create shared domain value objects (Money, Currency, References, IDs, statuses) and exact arithmetic tests. | Platform | plugins/; playground/ | WBM-P1-T004 | VERIFY-P1-T005 | planned | Exact Money slice passed tests/money.php. Remaining reference, ID, currency registry and status contracts are planned. |
+| WBM-P1-T006 | create DB migration scaffolding with schema version tracking and rollback strategy. | Platform | plugins/; playground/ | WBM-P1-T005 | VERIFY-P1-T006 | planned |  |
+| WBM-P1-T007 | create WP-native admin routing shell, common UI components and assets build. | Platform | plugins/; playground/ | WBM-P1-T006 | VERIFY-P1-T007 | planned | Free WooCommerce submenu and admin page render in Playground. Shared UI and assets remain planned. |
+| WBM-P1-T008 | create CI lint/static/unit/integration skeleton with no artificial green statuses. | Platform | plugins/; playground/ | WBM-P1-T007 | VERIFY-P1-T008 | planned | Foundation CI workflow written. Remote CI, static analysis and SQL integration pending. |
+| WBM-P1-T009 | verify fresh Free install alone, Pro missing Free handling, HPOS declaration only when testable. | Platform | plugins/; playground/ | WBM-P1-T008 | VERIFY-P1-T009 | planned |  |
+| WBM-P1-T010 | build `playground/blueprints/base/blueprint.json`, validate syntax/schema, run WP + WooCommerce smoke test and capture evidence (Section 16E). | Platform | plugins/; playground/ | WBM-P1-T002 | VERIFY-P1-T010 | done | Successful WP/WC base and package boot reports in playground/evidence/foundation-2026-11-17.log. Browser URL and screenshot evidence remain pending under P7. |
+| WBM-P1-T011 | implement canonical release metadata and docs generator scaffolding, verify `README.md`/`readme.txt` outputs and metadata drift checks (Section 16D). | Platform | plugins/; playground/ | WBM-P1-T010 | VERIFY-P1-T011 | planned | Initial generated plugin readmes and header drift checks pass. Canonical feature/change sources and listing generation pending. |
+| WBM-P1-T012 | implement independent production Composer package scripts and clean ZIP smoke-install tests for Free/Pro (Section 16A). | Platform | plugins/; playground/ | WBM-P1-T011 | VERIFY-P1-T012 | planned | Two ZIPs built and both installed in Playground. Negative dependency and clean upgrade checks pending. |
+| WBM-P2-T001 | generate unique immutable payment reference; test collisions and order-number plugins. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P1-T012 | VERIFY-P2-T001 | planned |  |
+| WBM-P2-T002 | BACS native settings integration and enabled method detection. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T001 | VERIFY-P2-T002 | planned |  |
+| WBM-P2-T003 | Thank You, My Account, order emails, classic checkout/Blocks support as actually verified. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T002 | VERIFY-P2-T003 | planned |  |
+| WBM-P2-T004 | secure customer claim form, guest access, rate limits and privacy copy. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T003 | VERIFY-P2-T004 | planned |  |
+| WBM-P2-T005 | private attachment storage and access, retention, file validation. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T004 | VERIFY-P2-T005 | planned |  |
+| WBM-P2-T006 | manual bank evidence record and duplicate warnings. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T005 | VERIFY-P2-T006 | planned |  |
+| WBM-P2-T007 | manual allocations and full/partial verified balance tracking with safe WC lifecycle. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T006 | VERIFY-P2-T007 | planned |  |
+| WBM-P2-T008 | payment claim review with states, comments, customer notifications. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T007 | VERIFY-P2-T008 | planned |  |
+| WBM-P2-T009 | order admin panel and consolidated eligible orders table. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T008 | VERIFY-P2-T009 | planned |  |
+| WBM-P2-T010 | Free overview KPIs and basic audit timeline. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T009 | VERIFY-P2-T010 | planned |  |
+| WBM-P2-T011 | Free settings tabs, roles/capabilities, privacy tools. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T010 | VERIFY-P2-T011 | planned |  |
+| WBM-P2-T012 | build all Free UI screen states and real API interactions. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T011 | VERIFY-P2-T012 | planned |  |
+| WBM-P2-T013 | Free end-to-end fixture and tests from checkout to customer claim to manual approval. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T012 | VERIFY-P2-T013 | planned |  |
+| WBM-P2-T014 | complete Free user docs, activation and clean ZIP packaging smoke test. | Free engineering | plugins/wpessential-bank-transfer-matcher/ | WBM-P2-T013 | VERIFY-P2-T014 | planned |  |
+| WBM-P3-T001 | Pro-owned bank account metadata schema + UI and permission rules. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P2-T014 | VERIFY-P3-T001 | planned |  |
+| WBM-P3-T002 | CSV parser and raw/canonical row representation. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T001 | VERIFY-P3-T002 | planned |  |
+| WBM-P3-T003 | configurable mapping profile editor, locale/date/amount/currency validation. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T002 | VERIFY-P3-T003 | planned |  |
+| WBM-P3-T004 | dry-run preview with row-level errors and collision warnings. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T003 | VERIFY-P3-T004 | planned |  |
+| WBM-P3-T005 | import batch schema/provenance/states and import history. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T004 | VERIFY-P3-T005 | planned |  |
+| WBM-P3-T006 | robust transaction fingerprint and unique-ID handling. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T005 | VERIFY-P3-T006 | planned |  |
+| WBM-P3-T007 | streaming/chunked Action Scheduler jobs, progress/retries. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T006 | VERIFY-P3-T007 | planned |  |
+| WBM-P3-T008 | CAMT.053 secure XML parser (only release when coverage confirmed). | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T007 | VERIFY-P3-T008 | planned |  |
+| WBM-P3-T009 | import wizard/transactions UI and all empty/error/progress states. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T008 | VERIFY-P3-T009 | planned |  |
+| WBM-P3-T010 | test re-imports, overlapping files, large fixtures and permission restrictions. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T009 | VERIFY-P3-T010 | planned |  |
+| WBM-P4-T001 | matching candidate model/explanation codes and eligibility policy. | Matching engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Matching/ | WBM-P3-T010 | VERIFY-P4-T001 | planned |  |
+| WBM-P4-T002 | unique reference/amount/account/currency matching with exact deterministic rules. | Matching engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Matching/ | WBM-P4-T001 | VERIFY-P4-T002 | planned |  |
+| WBM-P4-T003 | secondary hints with ambiguity prevention. | Matching engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Matching/ | WBM-P4-T002 | VERIFY-P4-T003 | planned |  |
+| WBM-P4-T004 | duplicate-suspect and reversal/conflict case generation. | Matching engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Matching/ | WBM-P4-T003 | VERIFY-P4-T004 | planned |  |
+| WBM-P4-T005 | review case state machine, priority/assignee/comments. | Matching engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Matching/ | WBM-P4-T004 | VERIFY-P4-T005 | planned |  |
+| WBM-P4-T006 | review queue table, case workspace and evidence comparison UI. | Matching engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Matching/ | WBM-P4-T005 | VERIFY-P4-T006 | planned |  |
+| WBM-P4-T007 | reviewer actions, reason codes and secure API. | Matching engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Matching/ | WBM-P4-T006 | VERIFY-P4-T007 | planned |  |
+| WBM-P4-T008 | test false matches, missing ref, cancelled/refunded/already-paid states. | Matching engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Matching/ | WBM-P4-T007 | VERIFY-P4-T008 | planned |  |
+| WBM-P5-T001 | allocations schema/invariant constraints and balance recomputation. | Reconciliation engineering | plugins/ | WBM-P4-T008 | VERIFY-P5-T001 | planned |  |
+| WBM-P5-T002 | one-to-one allocation. | Reconciliation engineering | plugins/ | WBM-P5-T001 | VERIFY-P5-T002 | planned |  |
+| WBM-P5-T003 | many credits to one order (partial payments). | Reconciliation engineering | plugins/ | WBM-P5-T002 | VERIFY-P5-T003 | planned |  |
+| WBM-P5-T004 | one credit to multiple orders (explicit split and limits). | Reconciliation engineering | plugins/ | WBM-P5-T003 | VERIFY-P5-T004 | planned |  |
+| WBM-P5-T005 | overpayments/unallocated remainder and exceptions. | Reconciliation engineering | plugins/ | WBM-P5-T004 | VERIFY-P5-T005 | planned |  |
+| WBM-P5-T006 | amount/currency/account mismatch handling. | Reconciliation engineering | plugins/ | WBM-P5-T005 | VERIFY-P5-T006 | planned |  |
+| WBM-P5-T007 | maker-checker approvals and review locks. | Reconciliation engineering | plugins/ | WBM-P5-T006 | VERIFY-P5-T007 | planned |  |
+| WBM-P5-T008 | WC payment_complete orchestration; idempotency, failure recovery. | Reconciliation engineering | plugins/ | WBM-P5-T007 | VERIFY-P5-T008 | planned |  |
+| WBM-P5-T009 | reversal/correction event model without silent ledger mutation. | Reconciliation engineering | plugins/ | WBM-P5-T008 | VERIFY-P5-T009 | planned |  |
+| WBM-P5-T010 | allocation UI, summaries, review/action modals and audit. | Reconciliation engineering | plugins/ | WBM-P5-T009 | VERIFY-P5-T010 | planned |  |
+| WBM-P5-T011 | simultaneous approval/race condition and complex fixture tests. | Reconciliation engineering | plugins/ | WBM-P5-T010 | VERIFY-P5-T011 | planned |  |
+| WBM-P6-T001 | report definitions with per-currency totals and reproducible filters. | Pro engineering | plugins/wpessential-bank-transfer-matcher-pro/ | WBM-P5-T011 | VERIFY-P6-T001 | planned |  |
+| WBM-P6-T002 | outstanding, unmatched, partial, exception-aging and import summaries. | Pro engineering | plugins/wpessential-bank-transfer-matcher-pro/ | WBM-P6-T001 | VERIFY-P6-T002 | planned |  |
+| WBM-P6-T003 | safe CSV export, async job limits, audit export permissions. | Pro engineering | plugins/wpessential-bank-transfer-matcher-pro/ | WBM-P6-T002 | VERIFY-P6-T003 | planned |  |
+| WBM-P6-T004 | notification templates, previews, rate limits and correct recipient controls. | Pro engineering | plugins/wpessential-bank-transfer-matcher-pro/ | WBM-P6-T003 | VERIFY-P6-T004 | planned |  |
+| WBM-P6-T005 | Pro dashboard KPIs, Saved Views if included, advanced filtering. | Pro engineering | plugins/wpessential-bank-transfer-matcher-pro/ | WBM-P6-T004 | VERIFY-P6-T005 | planned |  |
+| WBM-P6-T006 | tools diagnostics, failed-job recovery, redacted diagnostics export. | Pro engineering | plugins/wpessential-bank-transfer-matcher-pro/ | WBM-P6-T005 | VERIFY-P6-T006 | planned |  |
+| WBM-P6-T007 | policies for retention, privacy, backup migration and cleanup. | Pro engineering | plugins/wpessential-bank-transfer-matcher-pro/ | WBM-P6-T006 | VERIFY-P6-T007 | planned |  |
+| WBM-P6-T008 | full operational admin docs and examples. | Pro engineering | plugins/wpessential-bank-transfer-matcher-pro/ | WBM-P6-T007 | VERIFY-P6-T008 | planned |  |
+| WBM-P7-T001 | finalize all screen schemas UI-001–UI-014 and component states. | UX and QA | docs/ux/; plugins/ | WBM-P6-T008 | VERIFY-P7-T001 | planned |  |
+| WBM-P7-T002 | implement native WP spacing, typography, tables, filters, forms, detail drawers. | UX and QA | docs/ux/; plugins/ | WBM-P7-T001 | VERIFY-P7-T002 | planned |  |
+| WBM-P7-T003 | verify each field, action, permission and API route is real. | UX and QA | docs/ux/; plugins/ | WBM-P7-T002 | VERIFY-P7-T003 | planned |  |
+| WBM-P7-T004 | screenshot 1440/1024/375, high-contrast/RTL/keyboard tests. | UX and QA | docs/ux/; plugins/ | WBM-P7-T003 | VERIFY-P7-T004 | planned |  |
+| WBM-P7-T005 | fix misalignment, clipping, overflow, unreadable status/badges, broken search/pagination. | UX and QA | docs/ux/; plugins/ | WBM-P7-T004 | VERIFY-P7-T005 | planned |  |
+| WBM-P7-T006 | ensure Free/Pro integration works without duplicated/stale navigation. | UX and QA | docs/ux/; plugins/ | WBM-P7-T005 | VERIFY-P7-T006 | planned |  |
+| WBM-P7-T007 | run visual QA rubric, log before/after evidence. | UX and QA | docs/ux/; plugins/ | WBM-P7-T006 | VERIFY-P7-T007 | planned |  |
+| WBM-P7-T008 | usability walkthrough for store owner, finance operator and customer with synthetic tasks. | UX and QA | docs/ux/; plugins/ | WBM-P7-T007 | VERIFY-P7-T008 | planned |  |
+| WBM-P8-T001 | threat model verification and auth/capability matrix tests. | Security and QA | docs/security/; plugins/ | WBM-P7-T008 | VERIFY-P8-T001 | planned |  |
+| WBM-P8-T002 | private attachment and statement access audits. | Security and QA | docs/security/; plugins/ | WBM-P8-T001 | VERIFY-P8-T002 | planned |  |
+| WBM-P8-T003 | SQL/XSS/CSRF/XXE/CSV-injection adversarial tests. | Security and QA | docs/security/; plugins/ | WBM-P8-T002 | VERIFY-P8-T003 | planned |  |
+| WBM-P8-T004 | allocation concurrency/duplicates/stale order/invalidation tests. | Security and QA | docs/security/; plugins/ | WBM-P8-T003 | VERIFY-P8-T004 | planned |  |
+| WBM-P8-T005 | WC HPOS + classic storage support and honest compatibility declarations. | Security and QA | docs/security/; plugins/ | WBM-P8-T004 | VERIFY-P8-T005 | planned |  |
+| WBM-P8-T006 | checkout Blocks/classic behavior and supported WC/PHP versions matrix. | Security and QA | docs/security/; plugins/ | WBM-P8-T005 | VERIFY-P8-T006 | planned |  |
+| WBM-P8-T007 | 1k/10k/50k file performance/load test with measured memory/time. | Security and QA | docs/security/; plugins/ | WBM-P8-T006 | VERIFY-P8-T007 | planned |  |
+| WBM-P8-T008 | plugin coexistence, activation, upgrade, schema migration, Pro dependency tests. | Security and QA | docs/security/; plugins/ | WBM-P8-T007 | VERIFY-P8-T008 | planned |  |
+| WBM-P8-T009 | fix security, correctness, reliability and performance defects to gate. | Security and QA | docs/security/; plugins/ | WBM-P8-T008 | VERIFY-P8-T009 | planned |  |
+| WBM-P9-T001 | generate WordPress.org `readme.txt` + Free/Pro `README.md` from canonical metadata; run documentation drift and readme validator checks (Section 16D). | Release engineering | docs/release/; scripts/ | WBM-P8-T009 | VERIFY-P9-T001 | planned |  |
+| WBM-P9-T002 | complete WooCommerce Marketplace Pro submission evidence, QIT test matrix, reviewer instructions, business/UX compliance, install/license/API docs and fallback behavior (Section 16C). | Release engineering | docs/release/; scripts/ | WBM-P9-T001 | VERIFY-P9-T002 | planned |  |
+| WBM-P9-T003 | generate screenshots from verified production code, guides and examples. | Release engineering | docs/release/; scripts/ | WBM-P9-T002 | VERIFY-P9-T003 | planned |  |
+| WBM-P9-T004 | build deterministic Free ZIP and Pro ZIP with **Composer optimized production autoloaders** and scanned/vendor dependency licenses (Section 16A). | Release engineering | docs/release/; scripts/ | WBM-P9-T003 | VERIFY-P9-T004 | planned |  |
+| WBM-P9-T005 | build/execute actual Free and Pro WordPress Playground Blueprint bundles; also test clean install/deactivate/reactivate/upgrade in MySQL-backed disposable WP (Section 16E). | Release engineering | docs/release/; scripts/ | WBM-P9-T004 | VERIFY-P9-T005 | planned |  |
+| WBM-P9-T006 | generate SHA256SUMS, changelog, validation report, compatibility matrix. | Release engineering | docs/release/; scripts/ | WBM-P9-T005 | VERIFY-P9-T006 | planned |  |
+| WBM-P9-T007 | final acceptance audit vs every feature ID, screen ID and test ID. | Release engineering | docs/release/; scripts/ | WBM-P9-T006 | VERIFY-P9-T007 | planned |  |
+| WBM-P9-T008 | document exact permission/credential-only release blockers and safe publish steps. | Release engineering | docs/release/; scripts/ | WBM-P9-T007 | VERIFY-P9-T008 | planned |  |
+| WBM-P9-T009 | run WordPress Plugin Check and official readme validator with results, prepare WordPress.org SVN dry-run structure and Free submission checklist (Section 16B). | Release engineering | docs/release/; scripts/ | WBM-P9-T008 | VERIFY-P9-T009 | planned |  |
+| WBM-P9-T010 | run available Woo QIT suites and prepare Marketplace Pro evidence pack, screenshots, business case, two-submission freemium plan and reviewer walkthrough (Section 16C). | Release engineering | docs/release/; scripts/ | WBM-P9-T009 | VERIFY-P9-T010 | planned |  |
+| WBM-P9-T011 | validate Blueprint schemas, run Free/Pro Playground tests with screenshots and logs, then cross-check MySQL/MariaDB concurrency evidence (Section 16E). | Release engineering | docs/release/; scripts/ | WBM-P9-T010 | VERIFY-P9-T011 | planned |  |
+| WBM-P9-T012 | lock versions and regenerate readmes/changelogs/release manifests from canonical sources, enforce `docs:check` no-drift CI gate (Section 16D). | Release engineering | docs/release/; scripts/ | WBM-P9-T011 | VERIFY-P9-T012 | planned |  |
+| WBM-P9-T013 | audit actual archive contents: Free includes no Pro code; both include optimized Composer autoloaders, runtime deps, notices and licenses; all install cleanly without Composer on host (Section 16A). | Release engineering | docs/release/; scripts/ | WBM-P9-T012 | VERIFY-P9-T013 | planned |  |
+| WBM-P10-T001 | Triage post-release issues after release candidate gate | Product and QA | BACKLOG.md | WBM-P9-T013 | VERIFY-P10-T001 | planned |  |

@@ -1,0 +1,3 @@
+/plugins/*/vendor/
+/node_modules/
+/dist/

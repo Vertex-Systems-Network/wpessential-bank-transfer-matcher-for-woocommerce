@@ -1,0 +1,14 @@
+{
+  "id": "WBM-P1-T003",
+  "phase": "P1",
+  "title": "create activation/deactivation/dependency/version checks, clean error states.",
+  "owner": "Platform",
+  "paths": "plugins/; playground/",
+  "depends_on": [
+    "WBM-P1-T002"
+  ],
+  "verification": "VERIFY-P1-T003",
+  "status": "in_progress",
+  "evidence": "",
+  "next_action": "Add Woo missing and Pro missing Free Blueprint smoke cases to scripts/test-playground-foundation.py and verify activation guards."
+}
