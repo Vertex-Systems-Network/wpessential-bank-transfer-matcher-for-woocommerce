@@ -1,0 +1,20 @@
+./composer.json is valid
+Installing dependencies from lock file
+Verifying lock file contents can be installed on current platform.
+Nothing to install, update or remove
+Generating optimized autoload files
+wpessential-bank-transfer-matcher has no locked production dependencies to audit.
+PASS free ZIP verified against its manifest and Composer lockfile
+./composer.json is valid
+Installing dependencies from lock file
+Verifying lock file contents can be installed on current platform.
+Nothing to install, update or remove
+Generating optimized autoload files
+wpessential-bank-transfer-matcher-pro has no locked production dependencies to audit.
+PASS pro ZIP verified against its manifest and Composer lockfile
+PASS free ZIP verified against its manifest and Composer lockfile
+PASS pro ZIP verified against its manifest and Composer lockfile
+dist/wpessential-bank-transfer-matcher-pro.zip: OK
+dist/wpessential-bank-transfer-matcher.zip: OK
+PASS free ZIP verified against its manifest and Composer lockfile
+PASS archive excludes unlisted vendor files and logs, rejects dev install metadata

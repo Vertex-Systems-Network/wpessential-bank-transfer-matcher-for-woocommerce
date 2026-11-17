@@ -1,0 +1,4 @@
+WordPress 7.0.8
+11.8.6-MariaDB-0+deb13u1 from Debian
+PHP 8.4.24
+PASS live MariaDB advisory locking, schema creation, checkpoint retry and downgrade guard

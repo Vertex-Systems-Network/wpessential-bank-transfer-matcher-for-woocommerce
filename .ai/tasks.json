@@ -1,0 +1,1328 @@
+[
+  {
+    "id": "WBM-P0-T001",
+    "phase": "P0",
+    "title": "inventory repository/environment/access; do not overwrite existing work.",
+    "owner": "Product and research",
+    "paths": "docs/",
+    "depends_on": [],
+    "verification": "VERIFY-P0-T001",
+    "status": "done",
+    "evidence": "Git tree and issue search recorded in .ai/sessions/2026-11-17-0145.md"
+  },
+  {
+    "id": "WBM-P0-T002",
+    "phase": "P0",
+    "title": "verify official WP/WC standards and BACS baseline; capture sources.",
+    "owner": "Product and research",
+    "paths": "docs/",
+    "depends_on": [
+      "WBM-P0-T001"
+    ],
+    "verification": "VERIFY-P0-T002",
+    "status": "done",
+    "evidence": "docs/research/sources.md"
+  },
+  {
+    "id": "WBM-P0-T003",
+    "phase": "P0",
+    "title": "research competitor capabilities/prices with evidence labels.",
+    "owner": "Product and research",
+    "paths": "docs/",
+    "depends_on": [
+      "WBM-P0-T002"
+    ],
+    "verification": "VERIFY-P0-T003",
+    "status": "done",
+    "evidence": "docs/research/competitor-matrix.md"
+  },
+  {
+    "id": "WBM-P0-T004",
+    "phase": "P0",
+    "title": "write PRD, personas, user journeys, scope/non-scope, risks.",
+    "owner": "Product and research",
+    "paths": "docs/",
+    "depends_on": [
+      "WBM-P0-T003"
+    ],
+    "verification": "VERIFY-P0-T004",
+    "status": "done",
+    "evidence": "docs/product/PRD.md"
+  },
+  {
+    "id": "WBM-P0-T005",
+    "phase": "P0",
+    "title": "write Free/Pro complete feature inventory and screen traceability.",
+    "owner": "Product and research",
+    "paths": "docs/",
+    "depends_on": [
+      "WBM-P0-T004"
+    ],
+    "verification": "VERIFY-P0-T005",
+    "status": "done",
+    "evidence": "docs/product/feature-matrix.md and docs/ux/screen-inventory.md"
+  },
+  {
+    "id": "WBM-P0-T006",
+    "phase": "P0",
+    "title": "write entity glossary and domain invariants.",
+    "owner": "Product and research",
+    "paths": "docs/",
+    "depends_on": [
+      "WBM-P0-T005"
+    ],
+    "verification": "VERIFY-P0-T006",
+    "status": "done",
+    "evidence": "docs/architecture/glossary.md"
+  },
+  {
+    "id": "WBM-P0-T007",
+    "phase": "P0",
+    "title": "seed full backlog, memory contracts, ADR templates and next-task system.",
+    "owner": "Product and research",
+    "paths": "docs/",
+    "depends_on": [
+      "WBM-P0-T006"
+    ],
+    "verification": "VERIFY-P0-T007",
+    "status": "done",
+    "evidence": ".ai/tasks.json and scripts/update-backlog.py"
+  },
+  {
+    "id": "WBM-P0-T008",
+    "phase": "P0",
+    "title": "list synthetic fixture matrix and financial threat model.",
+    "owner": "Product and research",
+    "paths": "docs/",
+    "depends_on": [
+      "WBM-P0-T007"
+    ],
+    "verification": "VERIFY-P0-T008",
+    "status": "done",
+    "evidence": "docs/testing/fixture-matrix.md and docs/security/threat-model.md"
+  },
+  {
+    "id": "WBM-P1-T001",
+    "phase": "P1",
+    "title": "build disposable WP/WC local environment (Docker or equivalent), reproducible commands.",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P0-T008"
+    ],
+    "verification": "VERIFY-P1-T001",
+    "status": "done",
+    "evidence": "Disposable WordPress and WooCommerce verified on native MariaDB with WP-CLI. Reproduction commands in .ai/runbooks/mysql-test.md.",
+    "next_action": "Run the WordPress 7.0 base and packaged plugin smoke scenarios, and start a disposable MySQL/MariaDB environment."
+  },
+  {
+    "id": "WBM-P1-T002",
+    "phase": "P1",
+    "title": "create separate Free and Pro plugin directory/bootstrap/**independent Composer 2 PSR-4 manifests + lockfiles + autoload runtime** (Section 16A).",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P0-T008"
+    ],
+    "verification": "VERIFY-P1-T002",
+    "status": "done",
+    "evidence": "Separate sources, manifests and lockfiles. playground/evidence/composer-2026-11-17.log and foundation-2026-11-17.log."
+  },
+  {
+    "id": "WBM-P1-T003",
+    "phase": "P1",
+    "title": "create activation/deactivation/dependency/version checks, clean error states.",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P1-T002"
+    ],
+    "verification": "VERIFY-P1-T003",
+    "status": "done",
+    "evidence": "playground/evidence/dependency-2026-11-17.log and playground/evidence/version-lifecycle-2026-11-17.log"
+  },
+  {
+    "id": "WBM-P1-T004",
+    "phase": "P1",
+    "title": "create Free-owned capabilities and role mapping; REST API auth foundation.",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P1-T003"
+    ],
+    "verification": "VERIFY-P1-T004",
+    "status": "done",
+    "evidence": "playground/evidence/role-access-2026-11-17.log and access-2026-11-17.log"
+  },
+  {
+    "id": "WBM-P1-T005",
+    "phase": "P1",
+    "title": "create shared domain value objects (Money, Currency, References, IDs, statuses) and exact arithmetic tests.",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P1-T004"
+    ],
+    "verification": "VERIFY-P1-T005",
+    "status": "done",
+    "evidence": "playground/evidence/domain-2026-11-17.log"
+  },
+  {
+    "id": "WBM-P1-T006",
+    "phase": "P1",
+    "title": "create DB migration scaffolding with schema version tracking and rollback strategy.",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P1-T005"
+    ],
+    "verification": "VERIFY-P1-T006",
+    "status": "done",
+    "evidence": "Migration runner and recovery runbook. PHP control flow and live MariaDB locking, DDL, retry and downgrade rejection passed. Snapshot restore still pending."
+  },
+  {
+    "id": "WBM-P1-T007",
+    "phase": "P1",
+    "title": "create WP-native admin routing shell, common UI components and assets build.",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P1-T006"
+    ],
+    "verification": "VERIFY-P1-T007",
+    "status": "done",
+    "evidence": "Shared admin components and bundled CSS. Playground Free, Pro and access scenarios passed in playground/evidence/admin-shell-2026-11-17.log."
+  },
+  {
+    "id": "WBM-P1-T008",
+    "phase": "P1",
+    "title": "create CI lint/static/unit/integration skeleton with no artificial green statuses.",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P1-T007"
+    ],
+    "verification": "VERIFY-P1-T008",
+    "status": "done",
+    "evidence": "Local PHPStan, unit tests, lint, actionlint and MariaDB passed. GitHub Actions run 44017139421 passed both the foundation and MariaDB jobs."
+  },
+  {
+    "id": "WBM-P1-T009",
+    "phase": "P1",
+    "title": "verify fresh Free install alone, Pro missing Free handling, HPOS declaration only when testable.",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P1-T008"
+    ],
+    "verification": "VERIFY-P1-T009",
+    "status": "done",
+    "evidence": "Native Free install and reinstall, Pro missing Free rejection, HPOS and classic bootstrap and WooCommerce CRUD passed. Matcher workflow compatibility declaration remains under P8-T005. See playground/evidence/native-install-2026-11-17.log."
+  },
+  {
+    "id": "WBM-P1-T010",
+    "phase": "P1",
+    "title": "build `playground/blueprints/base/blueprint.json`, validate syntax/schema, run WP + WooCommerce smoke test and capture evidence (Section 16E).",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P1-T002"
+    ],
+    "verification": "VERIFY-P1-T010",
+    "status": "done",
+    "evidence": "Successful WP/WC base and package boot reports in playground/evidence/foundation-2026-11-17.log. Browser URL and screenshot evidence remain pending under P7."
+  },
+  {
+    "id": "WBM-P1-T011",
+    "phase": "P1",
+    "title": "implement canonical release metadata and docs generator scaffolding, verify `README.md`/`readme.txt` outputs and metadata drift checks (Section 16D).",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P1-T010"
+    ],
+    "verification": "VERIFY-P1-T011",
+    "status": "done",
+    "evidence": "Verified seven deterministic docs outputs and negative drift/feature checks. Marketplace drafts only; official readme validation and publication metadata remain P9 gates. See playground/evidence/docs-generation-2026-11-17.log."
+  },
+  {
+    "id": "WBM-P1-T012",
+    "phase": "P1",
+    "title": "implement independent production Composer package scripts and clean ZIP smoke-install tests for Free/Pro (Section 16A).",
+    "owner": "Platform",
+    "paths": "plugins/; playground/",
+    "depends_on": [
+      "WBM-P1-T011"
+    ],
+    "verification": "VERIFY-P1-T012",
+    "status": "done",
+    "evidence": "Independent production packaging, manifest/lock inspection, deterministic rebuild, native clean ZIP install, loader isolation and same-version replacement passed. Cross-version data upgrades and rollback remain release checks."
+  },
+  {
+    "id": "WBM-P2-T001",
+    "phase": "P2",
+    "title": "generate unique immutable payment reference; test collisions and order-number plugins.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P1-T012"
+    ],
+    "verification": "VERIFY-P2-T001",
+    "status": "done",
+    "evidence": "Native MariaDB passed collision retry, unchanged order references under custom order numbers and repeated hooks, legacy/non-BACS exclusions, and checkout hook dispatch in HPOS and classic. See playground/evidence/payment-references-2026-11-17.log."
+  },
+  {
+    "id": "WBM-P2-T002",
+    "phase": "P2",
+    "title": "BACS native settings integration and enabled method detection.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T001"
+    ],
+    "verification": "VERIFY-P2-T002",
+    "status": "done",
+    "evidence": "Native WooCommerce verified enabled and disabled BACS, enabled COD detection, native instructions read and unchanged settings, and HPOS/classic reference regression. See playground/evidence/bacs-settings-2026-11-17.log."
+  },
+  {
+    "id": "WBM-P2-T003",
+    "phase": "P2",
+    "title": "Thank You, My Account, order emails, classic checkout/Blocks support as actually verified.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T002"
+    ],
+    "verification": "VERIFY-P2-T003",
+    "status": "ready",
+    "evidence": "",
+    "next_action": "Expose stored references on Thank You, My Account and eligible order emails. Verify classic and Blocks checkout separately."
+  },
+  {
+    "id": "WBM-P2-T004",
+    "phase": "P2",
+    "title": "secure customer claim form, guest access, rate limits and privacy copy.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T003"
+    ],
+    "verification": "VERIFY-P2-T004",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P2-T005",
+    "phase": "P2",
+    "title": "private attachment storage and access, retention, file validation.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T004"
+    ],
+    "verification": "VERIFY-P2-T005",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P2-T006",
+    "phase": "P2",
+    "title": "manual bank evidence record and duplicate warnings.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T005"
+    ],
+    "verification": "VERIFY-P2-T006",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P2-T007",
+    "phase": "P2",
+    "title": "manual allocations and full/partial verified balance tracking with safe WC lifecycle.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T006"
+    ],
+    "verification": "VERIFY-P2-T007",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P2-T008",
+    "phase": "P2",
+    "title": "payment claim review with states, comments, customer notifications.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T007"
+    ],
+    "verification": "VERIFY-P2-T008",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P2-T009",
+    "phase": "P2",
+    "title": "order admin panel and consolidated eligible orders table.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T008"
+    ],
+    "verification": "VERIFY-P2-T009",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P2-T010",
+    "phase": "P2",
+    "title": "Free overview KPIs and basic audit timeline.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T009"
+    ],
+    "verification": "VERIFY-P2-T010",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P2-T011",
+    "phase": "P2",
+    "title": "Free settings tabs, roles/capabilities, privacy tools.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T010"
+    ],
+    "verification": "VERIFY-P2-T011",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P2-T012",
+    "phase": "P2",
+    "title": "build all Free UI screen states and real API interactions.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T011"
+    ],
+    "verification": "VERIFY-P2-T012",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P2-T013",
+    "phase": "P2",
+    "title": "Free end-to-end fixture and tests from checkout to customer claim to manual approval.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T012"
+    ],
+    "verification": "VERIFY-P2-T013",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P2-T014",
+    "phase": "P2",
+    "title": "complete Free user docs, activation and clean ZIP packaging smoke test.",
+    "owner": "Free engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher/",
+    "depends_on": [
+      "WBM-P2-T013"
+    ],
+    "verification": "VERIFY-P2-T014",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P3-T001",
+    "phase": "P3",
+    "title": "Pro-owned bank account metadata schema + UI and permission rules.",
+    "owner": "Import engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+    "depends_on": [
+      "WBM-P2-T014"
+    ],
+    "verification": "VERIFY-P3-T001",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P3-T002",
+    "phase": "P3",
+    "title": "CSV parser and raw/canonical row representation.",
+    "owner": "Import engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+    "depends_on": [
+      "WBM-P3-T001"
+    ],
+    "verification": "VERIFY-P3-T002",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P3-T003",
+    "phase": "P3",
+    "title": "configurable mapping profile editor, locale/date/amount/currency validation.",
+    "owner": "Import engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+    "depends_on": [
+      "WBM-P3-T002"
+    ],
+    "verification": "VERIFY-P3-T003",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P3-T004",
+    "phase": "P3",
+    "title": "dry-run preview with row-level errors and collision warnings.",
+    "owner": "Import engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+    "depends_on": [
+      "WBM-P3-T003"
+    ],
+    "verification": "VERIFY-P3-T004",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P3-T005",
+    "phase": "P3",
+    "title": "import batch schema/provenance/states and import history.",
+    "owner": "Import engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+    "depends_on": [
+      "WBM-P3-T004"
+    ],
+    "verification": "VERIFY-P3-T005",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P3-T006",
+    "phase": "P3",
+    "title": "robust transaction fingerprint and unique-ID handling.",
+    "owner": "Import engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+    "depends_on": [
+      "WBM-P3-T005"
+    ],
+    "verification": "VERIFY-P3-T006",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P3-T007",
+    "phase": "P3",
+    "title": "streaming/chunked Action Scheduler jobs, progress/retries.",
+    "owner": "Import engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+    "depends_on": [
+      "WBM-P3-T006"
+    ],
+    "verification": "VERIFY-P3-T007",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P3-T008",
+    "phase": "P3",
+    "title": "CAMT.053 secure XML parser (only release when coverage confirmed).",
+    "owner": "Import engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+    "depends_on": [
+      "WBM-P3-T007"
+    ],
+    "verification": "VERIFY-P3-T008",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P3-T009",
+    "phase": "P3",
+    "title": "import wizard/transactions UI and all empty/error/progress states.",
+    "owner": "Import engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+    "depends_on": [
+      "WBM-P3-T008"
+    ],
+    "verification": "VERIFY-P3-T009",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P3-T010",
+    "phase": "P3",
+    "title": "test re-imports, overlapping files, large fixtures and permission restrictions.",
+    "owner": "Import engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+    "depends_on": [
+      "WBM-P3-T009"
+    ],
+    "verification": "VERIFY-P3-T010",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P4-T001",
+    "phase": "P4",
+    "title": "matching candidate model/explanation codes and eligibility policy.",
+    "owner": "Matching engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
+    "depends_on": [
+      "WBM-P3-T010"
+    ],
+    "verification": "VERIFY-P4-T001",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P4-T002",
+    "phase": "P4",
+    "title": "unique reference/amount/account/currency matching with exact deterministic rules.",
+    "owner": "Matching engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
+    "depends_on": [
+      "WBM-P4-T001"
+    ],
+    "verification": "VERIFY-P4-T002",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P4-T003",
+    "phase": "P4",
+    "title": "secondary hints with ambiguity prevention.",
+    "owner": "Matching engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
+    "depends_on": [
+      "WBM-P4-T002"
+    ],
+    "verification": "VERIFY-P4-T003",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P4-T004",
+    "phase": "P4",
+    "title": "duplicate-suspect and reversal/conflict case generation.",
+    "owner": "Matching engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
+    "depends_on": [
+      "WBM-P4-T003"
+    ],
+    "verification": "VERIFY-P4-T004",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P4-T005",
+    "phase": "P4",
+    "title": "review case state machine, priority/assignee/comments.",
+    "owner": "Matching engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
+    "depends_on": [
+      "WBM-P4-T004"
+    ],
+    "verification": "VERIFY-P4-T005",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P4-T006",
+    "phase": "P4",
+    "title": "review queue table, case workspace and evidence comparison UI.",
+    "owner": "Matching engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
+    "depends_on": [
+      "WBM-P4-T005"
+    ],
+    "verification": "VERIFY-P4-T006",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P4-T007",
+    "phase": "P4",
+    "title": "reviewer actions, reason codes and secure API.",
+    "owner": "Matching engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
+    "depends_on": [
+      "WBM-P4-T006"
+    ],
+    "verification": "VERIFY-P4-T007",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P4-T008",
+    "phase": "P4",
+    "title": "test false matches, missing ref, cancelled/refunded/already-paid states.",
+    "owner": "Matching engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
+    "depends_on": [
+      "WBM-P4-T007"
+    ],
+    "verification": "VERIFY-P4-T008",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P5-T001",
+    "phase": "P5",
+    "title": "allocations schema/invariant constraints and balance recomputation.",
+    "owner": "Reconciliation engineering",
+    "paths": "plugins/",
+    "depends_on": [
+      "WBM-P4-T008"
+    ],
+    "verification": "VERIFY-P5-T001",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P5-T002",
+    "phase": "P5",
+    "title": "one-to-one allocation.",
+    "owner": "Reconciliation engineering",
+    "paths": "plugins/",
+    "depends_on": [
+      "WBM-P5-T001"
+    ],
+    "verification": "VERIFY-P5-T002",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P5-T003",
+    "phase": "P5",
+    "title": "many credits to one order (partial payments).",
+    "owner": "Reconciliation engineering",
+    "paths": "plugins/",
+    "depends_on": [
+      "WBM-P5-T002"
+    ],
+    "verification": "VERIFY-P5-T003",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P5-T004",
+    "phase": "P5",
+    "title": "one credit to multiple orders (explicit split and limits).",
+    "owner": "Reconciliation engineering",
+    "paths": "plugins/",
+    "depends_on": [
+      "WBM-P5-T003"
+    ],
+    "verification": "VERIFY-P5-T004",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P5-T005",
+    "phase": "P5",
+    "title": "overpayments/unallocated remainder and exceptions.",
+    "owner": "Reconciliation engineering",
+    "paths": "plugins/",
+    "depends_on": [
+      "WBM-P5-T004"
+    ],
+    "verification": "VERIFY-P5-T005",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P5-T006",
+    "phase": "P5",
+    "title": "amount/currency/account mismatch handling.",
+    "owner": "Reconciliation engineering",
+    "paths": "plugins/",
+    "depends_on": [
+      "WBM-P5-T005"
+    ],
+    "verification": "VERIFY-P5-T006",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P5-T007",
+    "phase": "P5",
+    "title": "maker-checker approvals and review locks.",
+    "owner": "Reconciliation engineering",
+    "paths": "plugins/",
+    "depends_on": [
+      "WBM-P5-T006"
+    ],
+    "verification": "VERIFY-P5-T007",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P5-T008",
+    "phase": "P5",
+    "title": "WC payment_complete orchestration; idempotency, failure recovery.",
+    "owner": "Reconciliation engineering",
+    "paths": "plugins/",
+    "depends_on": [
+      "WBM-P5-T007"
+    ],
+    "verification": "VERIFY-P5-T008",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P5-T009",
+    "phase": "P5",
+    "title": "reversal/correction event model without silent ledger mutation.",
+    "owner": "Reconciliation engineering",
+    "paths": "plugins/",
+    "depends_on": [
+      "WBM-P5-T008"
+    ],
+    "verification": "VERIFY-P5-T009",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P5-T010",
+    "phase": "P5",
+    "title": "allocation UI, summaries, review/action modals and audit.",
+    "owner": "Reconciliation engineering",
+    "paths": "plugins/",
+    "depends_on": [
+      "WBM-P5-T009"
+    ],
+    "verification": "VERIFY-P5-T010",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P5-T011",
+    "phase": "P5",
+    "title": "simultaneous approval/race condition and complex fixture tests.",
+    "owner": "Reconciliation engineering",
+    "paths": "plugins/",
+    "depends_on": [
+      "WBM-P5-T010"
+    ],
+    "verification": "VERIFY-P5-T011",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P6-T001",
+    "phase": "P6",
+    "title": "report definitions with per-currency totals and reproducible filters.",
+    "owner": "Pro engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
+    "depends_on": [
+      "WBM-P5-T011"
+    ],
+    "verification": "VERIFY-P6-T001",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P6-T002",
+    "phase": "P6",
+    "title": "outstanding, unmatched, partial, exception-aging and import summaries.",
+    "owner": "Pro engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
+    "depends_on": [
+      "WBM-P6-T001"
+    ],
+    "verification": "VERIFY-P6-T002",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P6-T003",
+    "phase": "P6",
+    "title": "safe CSV export, async job limits, audit export permissions.",
+    "owner": "Pro engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
+    "depends_on": [
+      "WBM-P6-T002"
+    ],
+    "verification": "VERIFY-P6-T003",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P6-T004",
+    "phase": "P6",
+    "title": "notification templates, previews, rate limits and correct recipient controls.",
+    "owner": "Pro engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
+    "depends_on": [
+      "WBM-P6-T003"
+    ],
+    "verification": "VERIFY-P6-T004",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P6-T005",
+    "phase": "P6",
+    "title": "Pro dashboard KPIs, Saved Views if included, advanced filtering.",
+    "owner": "Pro engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
+    "depends_on": [
+      "WBM-P6-T004"
+    ],
+    "verification": "VERIFY-P6-T005",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P6-T006",
+    "phase": "P6",
+    "title": "tools diagnostics, failed-job recovery, redacted diagnostics export.",
+    "owner": "Pro engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
+    "depends_on": [
+      "WBM-P6-T005"
+    ],
+    "verification": "VERIFY-P6-T006",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P6-T007",
+    "phase": "P6",
+    "title": "policies for retention, privacy, backup migration and cleanup.",
+    "owner": "Pro engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
+    "depends_on": [
+      "WBM-P6-T006"
+    ],
+    "verification": "VERIFY-P6-T007",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P6-T008",
+    "phase": "P6",
+    "title": "full operational admin docs and examples.",
+    "owner": "Pro engineering",
+    "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
+    "depends_on": [
+      "WBM-P6-T007"
+    ],
+    "verification": "VERIFY-P6-T008",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P7-T001",
+    "phase": "P7",
+    "title": "finalize all screen schemas UI-001\u2013UI-014 and component states.",
+    "owner": "UX and QA",
+    "paths": "docs/ux/; plugins/",
+    "depends_on": [
+      "WBM-P6-T008"
+    ],
+    "verification": "VERIFY-P7-T001",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P7-T002",
+    "phase": "P7",
+    "title": "implement native WP spacing, typography, tables, filters, forms, detail drawers.",
+    "owner": "UX and QA",
+    "paths": "docs/ux/; plugins/",
+    "depends_on": [
+      "WBM-P7-T001"
+    ],
+    "verification": "VERIFY-P7-T002",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P7-T003",
+    "phase": "P7",
+    "title": "verify each field, action, permission and API route is real.",
+    "owner": "UX and QA",
+    "paths": "docs/ux/; plugins/",
+    "depends_on": [
+      "WBM-P7-T002"
+    ],
+    "verification": "VERIFY-P7-T003",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P7-T004",
+    "phase": "P7",
+    "title": "screenshot 1440/1024/375, high-contrast/RTL/keyboard tests.",
+    "owner": "UX and QA",
+    "paths": "docs/ux/; plugins/",
+    "depends_on": [
+      "WBM-P7-T003"
+    ],
+    "verification": "VERIFY-P7-T004",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P7-T005",
+    "phase": "P7",
+    "title": "fix misalignment, clipping, overflow, unreadable status/badges, broken search/pagination.",
+    "owner": "UX and QA",
+    "paths": "docs/ux/; plugins/",
+    "depends_on": [
+      "WBM-P7-T004"
+    ],
+    "verification": "VERIFY-P7-T005",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P7-T006",
+    "phase": "P7",
+    "title": "ensure Free/Pro integration works without duplicated/stale navigation.",
+    "owner": "UX and QA",
+    "paths": "docs/ux/; plugins/",
+    "depends_on": [
+      "WBM-P7-T005"
+    ],
+    "verification": "VERIFY-P7-T006",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P7-T007",
+    "phase": "P7",
+    "title": "run visual QA rubric, log before/after evidence.",
+    "owner": "UX and QA",
+    "paths": "docs/ux/; plugins/",
+    "depends_on": [
+      "WBM-P7-T006"
+    ],
+    "verification": "VERIFY-P7-T007",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P7-T008",
+    "phase": "P7",
+    "title": "usability walkthrough for store owner, finance operator and customer with synthetic tasks.",
+    "owner": "UX and QA",
+    "paths": "docs/ux/; plugins/",
+    "depends_on": [
+      "WBM-P7-T007"
+    ],
+    "verification": "VERIFY-P7-T008",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P8-T001",
+    "phase": "P8",
+    "title": "threat model verification and auth/capability matrix tests.",
+    "owner": "Security and QA",
+    "paths": "docs/security/; plugins/",
+    "depends_on": [
+      "WBM-P7-T008"
+    ],
+    "verification": "VERIFY-P8-T001",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P8-T002",
+    "phase": "P8",
+    "title": "private attachment and statement access audits.",
+    "owner": "Security and QA",
+    "paths": "docs/security/; plugins/",
+    "depends_on": [
+      "WBM-P8-T001"
+    ],
+    "verification": "VERIFY-P8-T002",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P8-T003",
+    "phase": "P8",
+    "title": "SQL/XSS/CSRF/XXE/CSV-injection adversarial tests.",
+    "owner": "Security and QA",
+    "paths": "docs/security/; plugins/",
+    "depends_on": [
+      "WBM-P8-T002"
+    ],
+    "verification": "VERIFY-P8-T003",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P8-T004",
+    "phase": "P8",
+    "title": "allocation concurrency/duplicates/stale order/invalidation tests.",
+    "owner": "Security and QA",
+    "paths": "docs/security/; plugins/",
+    "depends_on": [
+      "WBM-P8-T003"
+    ],
+    "verification": "VERIFY-P8-T004",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P8-T005",
+    "phase": "P8",
+    "title": "WC HPOS + classic storage support and honest compatibility declarations.",
+    "owner": "Security and QA",
+    "paths": "docs/security/; plugins/",
+    "depends_on": [
+      "WBM-P8-T004"
+    ],
+    "verification": "VERIFY-P8-T005",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P8-T006",
+    "phase": "P8",
+    "title": "checkout Blocks/classic behavior and supported WC/PHP versions matrix.",
+    "owner": "Security and QA",
+    "paths": "docs/security/; plugins/",
+    "depends_on": [
+      "WBM-P8-T005"
+    ],
+    "verification": "VERIFY-P8-T006",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P8-T007",
+    "phase": "P8",
+    "title": "1k/10k/50k file performance/load test with measured memory/time.",
+    "owner": "Security and QA",
+    "paths": "docs/security/; plugins/",
+    "depends_on": [
+      "WBM-P8-T006"
+    ],
+    "verification": "VERIFY-P8-T007",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P8-T008",
+    "phase": "P8",
+    "title": "plugin coexistence, activation, upgrade, schema migration, Pro dependency tests.",
+    "owner": "Security and QA",
+    "paths": "docs/security/; plugins/",
+    "depends_on": [
+      "WBM-P8-T007"
+    ],
+    "verification": "VERIFY-P8-T008",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P8-T009",
+    "phase": "P8",
+    "title": "fix security, correctness, reliability and performance defects to gate.",
+    "owner": "Security and QA",
+    "paths": "docs/security/; plugins/",
+    "depends_on": [
+      "WBM-P8-T008"
+    ],
+    "verification": "VERIFY-P8-T009",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T001",
+    "phase": "P9",
+    "title": "generate WordPress.org `readme.txt` + Free/Pro `README.md` from canonical metadata; run documentation drift and readme validator checks (Section 16D).",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P8-T009"
+    ],
+    "verification": "VERIFY-P9-T001",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T002",
+    "phase": "P9",
+    "title": "complete WooCommerce Marketplace Pro submission evidence, QIT test matrix, reviewer instructions, business/UX compliance, install/license/API docs and fallback behavior (Section 16C).",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T001"
+    ],
+    "verification": "VERIFY-P9-T002",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T003",
+    "phase": "P9",
+    "title": "generate screenshots from verified production code, guides and examples.",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T002"
+    ],
+    "verification": "VERIFY-P9-T003",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T004",
+    "phase": "P9",
+    "title": "build deterministic Free ZIP and Pro ZIP with **Composer optimized production autoloaders** and scanned/vendor dependency licenses (Section 16A).",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T003"
+    ],
+    "verification": "VERIFY-P9-T004",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T005",
+    "phase": "P9",
+    "title": "build/execute actual Free and Pro WordPress Playground Blueprint bundles; also test clean install/deactivate/reactivate/upgrade in MySQL-backed disposable WP (Section 16E).",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T004"
+    ],
+    "verification": "VERIFY-P9-T005",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T006",
+    "phase": "P9",
+    "title": "generate SHA256SUMS, changelog, validation report, compatibility matrix.",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T005"
+    ],
+    "verification": "VERIFY-P9-T006",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T007",
+    "phase": "P9",
+    "title": "final acceptance audit vs every feature ID, screen ID and test ID.",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T006"
+    ],
+    "verification": "VERIFY-P9-T007",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T008",
+    "phase": "P9",
+    "title": "document exact permission/credential-only release blockers and safe publish steps.",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T007"
+    ],
+    "verification": "VERIFY-P9-T008",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T009",
+    "phase": "P9",
+    "title": "run WordPress Plugin Check and official readme validator with results, prepare WordPress.org SVN dry-run structure and Free submission checklist (Section 16B).",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T008"
+    ],
+    "verification": "VERIFY-P9-T009",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T010",
+    "phase": "P9",
+    "title": "run available Woo QIT suites and prepare Marketplace Pro evidence pack, screenshots, business case, two-submission freemium plan and reviewer walkthrough (Section 16C).",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T009"
+    ],
+    "verification": "VERIFY-P9-T010",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T011",
+    "phase": "P9",
+    "title": "validate Blueprint schemas, run Free/Pro Playground tests with screenshots and logs, then cross-check MySQL/MariaDB concurrency evidence (Section 16E).",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T010"
+    ],
+    "verification": "VERIFY-P9-T011",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T012",
+    "phase": "P9",
+    "title": "lock versions and regenerate readmes/changelogs/release manifests from canonical sources, enforce `docs:check` no-drift CI gate (Section 16D).",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T011"
+    ],
+    "verification": "VERIFY-P9-T012",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P9-T013",
+    "phase": "P9",
+    "title": "audit actual archive contents: Free includes no Pro code; both include optimized Composer autoloaders, runtime deps, notices and licenses; all install cleanly without Composer on host (Section 16A).",
+    "owner": "Release engineering",
+    "paths": "docs/release/; scripts/",
+    "depends_on": [
+      "WBM-P9-T012"
+    ],
+    "verification": "VERIFY-P9-T013",
+    "status": "planned",
+    "evidence": ""
+  },
+  {
+    "id": "WBM-P10-T001",
+    "phase": "P10",
+    "title": "Triage post-release issues after release candidate gate",
+    "owner": "Product and QA",
+    "paths": "BACKLOG.md",
+    "depends_on": [
+      "WBM-P9-T013"
+    ],
+    "verification": "VERIFY-P10-T001",
+    "status": "planned",
+    "evidence": ""
+  }
+]

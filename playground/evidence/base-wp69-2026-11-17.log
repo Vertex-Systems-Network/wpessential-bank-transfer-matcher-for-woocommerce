@@ -1,0 +1,15 @@
+Plugin /wordpress/wp-content/plugins/woocommerce activation printed the following bytes: <p><strong>Error:</strong> Current WordPress version (6.9.11) does not meet minimum requirements for WooCommerce. The plugin requires WordPress 7.0.</p>
+Error: Error when executing the blueprint step #2: Plugin /wordpress/wp-content/plugins/woocommerce could not be activated.
+
+WordPress said: <p><strong>Error:</strong> Current WordPress version (6.9.11) does not meet minimum requirements for WooCommerce. The plugin requires WordPress 7.0.</p>
+
+Response headers: {
+  "x-powered-by": [
+    "PHP/8.3.36"
+  ],
+  "content-type": [
+    "text/html; charset=UTF-8"
+  ]
+}
+
+If you need more context, check the Playground console (browser DevTools) or the CLI output where this Blueprint was run.

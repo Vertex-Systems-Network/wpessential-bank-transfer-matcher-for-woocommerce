@@ -1,0 +1,85 @@
+name: Foundation checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2, phpstan:2.1.32
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify task graph and requirement references
+        run: python3 scripts/check-project-state.py
+      - name: Verify generated documentation
+        run: |
+          node scripts/generate-readmes.ts --check
+          python3 tests/docs_generation.py
+      - name: Validate and build independent Composer packages
+        run: |
+          bash scripts/package-plugin.sh free
+          bash scripts/package-plugin.sh pro
+      - name: Check PHP syntax
+        run: find plugins playground/tests tests -name vendor -prune -o -name '*.php' -print0 | xargs -0 -n 1 php -l
+      - name: Analyze reconciliation domain types
+        run: phpstan analyse --no-progress
+      - name: Run PHP unit checks
+        run: |
+          php tests/money.php
+          php tests/domain.php
+          php tests/migrations.php
+      - name: Package and test in Playground
+        run: |
+          python3 scripts/build_playground_bundles.py
+          python3 scripts/test-playground-foundation.py
+
+  mariadb-migrations:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_DATABASE: wbm_ci
+          MARIADB_USER: wbm_ci
+          MARIADB_PASSWORD: wbm-ci-test-only
+          MARIADB_RANDOM_ROOT_PASSWORD: "1"
+        ports:
+          - 3306/tcp
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mysqli
+          tools: composer:v2, wp-cli
+      - name: Install Free runtime autoloader
+        run: composer --working-dir=plugins/wpessential-bank-transfer-matcher install --no-dev --no-interaction
+      - name: Exercise migrations against WordPress and MariaDB
+        env:
+          WBM_DB_PORT: ${{ job.services.mariadb.ports['3306'] }}
+        run: |
+          wp_path="$RUNNER_TEMP/wbm-wordpress"
+          wp core download --path="$wp_path" --version=7.0.8
+          wp config create --path="$wp_path" --dbname=wbm_ci --dbuser=wbm_ci --dbpass=wbm-ci-test-only --dbhost="127.0.0.1:$WBM_DB_PORT"
+          wp core install --path="$wp_path" --url=http://wbm.test --title="Matcher CI" --admin_user=wbm_ci --admin_email=ci@example.test --skip-email
+          wp eval-file "$GITHUB_WORKSPACE/tests/integration/migrations.php" --path="$wp_path"
+      - name: Verify native plugin installs and WooCommerce order storage
+        run: |
+          bash scripts/package-plugin.sh free
+          bash scripts/package-plugin.sh pro
+          bash scripts/test-native-install.sh "$RUNNER_TEMP/wbm-wordpress"

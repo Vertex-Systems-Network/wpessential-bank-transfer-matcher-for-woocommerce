@@ -1,0 +1,3 @@
+PASS verified 7 documentation outputs for 0.1.0
+PASS planned copy excluded and Free/Pro copy isolated
+PASS generated-file drift, plugin header drift, and unverified feature promotion rejected
