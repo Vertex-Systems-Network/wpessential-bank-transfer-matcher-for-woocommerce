@@ -10,6 +10,7 @@ namespace WPEssential\BankTransferMatcher\Bootstrap;
 use WPEssential\BankTransferMatcher\Access\Capabilities;
 use WPEssential\BankTransferMatcher\Claims\CustomerClaims;
 use WPEssential\BankTransferMatcher\Claims\AttachmentDownloads;
+use WPEssential\BankTransferMatcher\Evidence\BankEvidence;
 use WPEssential\BankTransferMatcher\Admin\Assets;
 use WPEssential\BankTransferMatcher\Admin\Components;
 use WPEssential\BankTransferMatcher\Orders\ReferenceIssuer;
@@ -28,6 +29,7 @@ final class Plugin {
 		ReferencePresentation::register();
 		CustomerClaims::register();
 		AttachmentDownloads::register();
+		BankEvidence::register();
 		add_action( 'rest_api_init', array( AccessController::class, 'register_routes' ) );
 		add_action( 'admin_menu', array( self::class, 'register_menu' ) );
 		do_action( 'wpessential_bank_transfer_matcher_ready', self::API_VERSION );
