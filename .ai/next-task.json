@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P2-T004",
+  "id": "WBM-P2-T005",
   "phase": "P2",
-  "title": "secure customer claim form, guest access, rate limits and privacy copy.",
+  "title": "private attachment storage and access, retention, file validation.",
   "owner": "Free engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher/",
   "depends_on": [
-    "WBM-P2-T003"
+    "WBM-P2-T004"
   ],
-  "verification": "VERIFY-P2-T004",
+  "verification": "VERIFY-P2-T005",
   "status": "ready",
   "evidence": "",
-  "next_action": "Implement the customer claim form and verified guest access with rate limits and privacy copy."
+  "next_action": "Implement private attachment storage, file validation, protected access and retention for claims."
 }

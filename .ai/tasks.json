@@ -307,9 +307,8 @@
       "WBM-P2-T003"
     ],
     "verification": "VERIFY-P2-T004",
-    "status": "ready",
-    "evidence": "",
-    "next_action": "Implement the customer claim form and verified guest access with rate limits and privacy copy."
+    "status": "done",
+    "evidence": "Native MariaDB claims tests passed owner and guest access, validation, nonce, throttling, duplicate safety, and unchanged WooCommerce payment status. Browser POST/redirect pending."
   },
   {
     "id": "WBM-P2-T005",
@@ -321,8 +320,9 @@
       "WBM-P2-T004"
     ],
     "verification": "VERIFY-P2-T005",
-    "status": "planned",
-    "evidence": ""
+    "status": "ready",
+    "evidence": "",
+    "next_action": "Implement private attachment storage, file validation, protected access and retention for claims."
   },
   {
     "id": "WBM-P2-T006",

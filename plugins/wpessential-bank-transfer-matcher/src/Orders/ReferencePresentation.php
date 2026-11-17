@@ -5,6 +5,7 @@ namespace WPEssential\BankTransferMatcher\Orders;
 use RuntimeException;
 use WC_Email;
 use WC_Order;
+use WPEssential\BankTransferMatcher\Claims\CustomerClaims;
 use WPEssential\BankTransferMatcher\Domain\EntityId;
 
 final class ReferencePresentation {
@@ -23,6 +24,7 @@ final class ReferencePresentation {
 			return;
 		}
 		self::render( $order );
+		CustomerClaims::render( $order );
 	}
 
 	public static function my_account( int $order_id ): void {
@@ -32,6 +34,7 @@ final class ReferencePresentation {
 			return;
 		}
 		self::render( $order, false, true );
+		CustomerClaims::render( $order );
 	}
 
 	public static function email( mixed $order, bool $sent_to_admin, bool $plain_text, ?WC_Email $email = null ): void {

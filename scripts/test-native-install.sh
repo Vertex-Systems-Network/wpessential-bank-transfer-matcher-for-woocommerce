@@ -51,3 +51,4 @@ wp_test eval-file "$root/tests/integration/payment-references.php"
 wp_test option update woocommerce_custom_orders_table_enabled yes
 wp_test eval-file "$root/tests/integration/payment-references.php"
 wp_test eval-file "$root/tests/integration/reference-presentation.php"
+wp_test eval-file "$root/tests/integration/customer-claims.php"
