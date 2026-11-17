@@ -38,6 +38,9 @@ try {
 	if ( 200 !== $partial->get_status() || 750 !== $partial->get_data()['allocated_minor'] || 1250 !== $partial->get_data()['outstanding_minor'] || $partial->get_data()['fully_allocated'] ) {
 		throw new RuntimeException( 'Incorrect exact partial balance: ' . wp_json_encode( $partial->get_data() ) );
 	}
+	if ( 409 !== $post( '/finalize-payment', [ 'acknowledged' => true ] )->get_status() ) {
+		throw new RuntimeException( 'Partial balance was finalized.' );
+	}
 	if ( 409 !== $post( '/allocations', array_replace( $data, [ 'amount' => '13.00' ] ) )->get_status() ) {
 		throw new RuntimeException( 'Over-allocation was accepted.' );
 	}
@@ -48,8 +51,19 @@ try {
 	if ( 409 !== $post( '/allocations', $data )->get_status() ) {
 		throw new RuntimeException( 'Replay allocation was accepted.' );
 	}
-	echo "PASS approval permissions, cleared-credit acknowledgement, partial/full exact balances, over-allocation rejection and unchanged WooCommerce status\n";
+	if ( 422 !== $post( '/finalize-payment', [ 'acknowledged' => false ] )->get_status() ) {
+		throw new RuntimeException( 'Finalization without acknowledgement was accepted.' );
+	}
+	$completed = $post( '/finalize-payment', [ 'acknowledged' => true ] );
+	$retry = $post( '/finalize-payment', [ 'acknowledged' => true ] );
+	if ( 200 !== $completed->get_status() || 'completed' !== $completed->get_data()['status'] ||
+		200 !== $retry->get_status() || 'already_completed' !== $retry->get_data()['status'] ||
+		! wc_get_order( $order->get_id() )->is_paid() ) {
+		throw new RuntimeException( 'Payment completion or idempotent retry failed: ' . wp_json_encode( [ $completed->get_data(), $retry->get_data() ] ) );
+	}
+	echo "PASS permissions, exact balances, over-allocation, guarded full payment completion and idempotent retry\n";
 } finally {
+	$wpdb->delete( $wpdb->prefix . 'wbm_payment_finalizations', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_manual_allocations', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$order->delete( true );

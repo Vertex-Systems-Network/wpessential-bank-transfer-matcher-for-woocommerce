@@ -31,6 +31,17 @@ final class ManualAllocations {
 					'reason' => [ 'required' => true, 'type' => 'string', 'minLength' => 3, 'maxLength' => 1000 ],
 				],
 			] );
+			register_rest_route( 'wpessential-wbm/v1', '/orders/(?P<order_id>\d+)/finalize-payment', [
+				'methods' => WP_REST_Server::CREATABLE,
+				'permission_callback' => static function (): bool|WP_Error {
+					return current_user_can( Capabilities::APPROVE ) ? true : new WP_Error( 'wbm_forbidden', __( 'Payment approval permission is required.', 'wpessential-bank-transfer-matcher' ), [ 'status' => rest_authorization_required_code() ] );
+				},
+				'callback' => [ self::class, 'finalize' ],
+				'args' => [
+					'order_id' => [ 'required' => true, 'type' => 'integer', 'minimum' => 1 ],
+					'acknowledged' => [ 'required' => true, 'type' => 'boolean' ],
+				],
+			] );
 		} );
 	}
 
@@ -47,7 +58,7 @@ final class ManualAllocations {
 			$total = Money::from_decimal( (string) $order->get_total( 'edit' ), $order->get_currency(), wc_get_price_decimals() );
 			if ( $amount->minor_units <= 0 || $total->minor_units <= 0 ) {
 				throw new InvalidArgumentException( 'A positive amount is required.' );
-			} 
+			}
 		} catch ( InvalidArgumentException|\OverflowException $error ) {
 			return new WP_Error( 'wbm_invalid_amount', __( 'Enter an amount within the order currency precision.', 'wpessential-bank-transfer-matcher' ), [ 'status' => 422 ] );
 		}
@@ -58,6 +69,20 @@ final class ManualAllocations {
 			return new WP_Error( 'wbm_allocation_conflict', $error->getMessage(), [ 'status' => 409 ] );
 		} catch ( RuntimeException $error ) {
 			return new WP_Error( 'wbm_allocation_unavailable', __( 'Allocation could not be saved. Please retry.', 'wpessential-bank-transfer-matcher' ), [ 'status' => 503 ] );
+		}
+	}
+
+	public static function finalize( WP_REST_Request $request ): array|WP_Error {
+		if ( true !== $request['acknowledged'] ) {
+			return new WP_Error( 'wbm_acknowledgement_required', __( 'Confirm the cleared credits and full order balance before completing payment.', 'wpessential-bank-transfer-matcher' ), [ 'status' => 422 ] );
+		}
+		global $wpdb;
+		try {
+			return ( new PaymentFinalizer( $wpdb ) )->complete( (int) $request['order_id'], get_current_user_id() );
+		} catch ( InvalidArgumentException $error ) {
+			return new WP_Error( 'wbm_finalization_conflict', $error->getMessage(), [ 'status' => 409 ] );
+		} catch ( RuntimeException $error ) {
+			return new WP_Error( 'wbm_finalization_unavailable', __( 'Payment completion needs review or retry; the allocation remains recorded.', 'wpessential-bank-transfer-matcher' ), [ 'status' => 503 ] );
 		}
 	}
 }
