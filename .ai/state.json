@@ -14,7 +14,11 @@
     "php_lint": "passed",
     "money": "passed",
     "playground_bootstrap": "passed",
-    "mysql_mariadb": "not_run"
+    "mysql_mariadb": "not_run",
+    "dependency_missing": "pass for WooCommerce absent and Free absent",
+    "browser_smoke": "blocked: Chromium socket operation denied",
+    "mysql_harness_config": "parsed; runtime unavailable",
+    "task_graph": "pass: 102 tasks, 168 requirement references"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -29,7 +33,7 @@
   ],
   "phase": "P1",
   "active_task_id": "WBM-P1-T003",
-  "next_action": "Add Woo missing and Pro missing Free Blueprint smoke cases to scripts/test-playground-foundation.py and verify activation guards.",
+  "next_action": "Extend playground/tests/dependencies.php and scripts/test-playground-foundation.py with incompatible versions and clean deactivate/reactivate checks; run the targeted scenarios.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -44,5 +48,6 @@
   ],
   "blocked_tasks": [
     "WBM-P1-T001"
-  ]
+  ],
+  "last_verified_remote_milestone": "be004d8f090139f990a148da4d255bdc334235a0"
 }

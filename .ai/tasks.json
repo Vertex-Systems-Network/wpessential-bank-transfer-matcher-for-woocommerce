@@ -112,7 +112,7 @@
     ],
     "verification": "VERIFY-P1-T001",
     "status": "blocked",
-    "evidence": "Playground verified. Native MySQL/MariaDB and Docker unavailable. See .ai/runbooks/mysql-test.md.",
+    "evidence": "Playground passed. Disposable MariaDB Compose YAML parses; container runtime unavailable. Run .ai/runbooks/mysql-test.md.",
     "next_action": "Run the WordPress 7.0 base and packaged plugin smoke scenarios, and start a disposable MySQL/MariaDB environment."
   },
   {
@@ -139,8 +139,8 @@
     ],
     "verification": "VERIFY-P1-T003",
     "status": "in_progress",
-    "evidence": "",
-    "next_action": "Add Woo missing and Pro missing Free Blueprint smoke cases to scripts/test-playground-foundation.py and verify activation guards."
+    "evidence": "Missing WooCommerce and Free scenarios passed in playground/evidence/dependency-2026-11-17.log. Version mismatch and lifecycle cases pending.",
+    "next_action": "Extend playground/tests/dependencies.php and scripts/test-playground-foundation.py with incompatible versions and clean deactivate/reactivate checks; run the targeted scenarios."
   },
   {
     "id": "WBM-P1-T004",
@@ -218,7 +218,7 @@
     ],
     "verification": "VERIFY-P1-T009",
     "status": "planned",
-    "evidence": ""
+    "evidence": "Free-only and Free+Pro ZIPs passed; required dependency failures passed. Reinstall and lifecycle matrix remains open."
   },
   {
     "id": "WBM-P1-T010",

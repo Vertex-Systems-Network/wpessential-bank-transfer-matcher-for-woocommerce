@@ -9,6 +9,6 @@
   ],
   "verification": "VERIFY-P1-T003",
   "status": "in_progress",
-  "evidence": "",
-  "next_action": "Add Woo missing and Pro missing Free Blueprint smoke cases to scripts/test-playground-foundation.py and verify activation guards."
+  "evidence": "Missing WooCommerce and Free scenarios passed in playground/evidence/dependency-2026-11-17.log. Version mismatch and lifecycle cases pending.",
+  "next_action": "Extend playground/tests/dependencies.php and scripts/test-playground-foundation.py with incompatible versions and clean deactivate/reactivate checks; run the targeted scenarios."
 }

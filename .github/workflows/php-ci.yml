@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Verify task graph and requirement references
+        run: python3 scripts/check-project-state.py
       - name: Verify generated documentation
         run: node scripts/generate-readmes.ts --check
       - name: Validate and build independent Composer packages
@@ -29,7 +31,7 @@ jobs:
             composer --working-dir="$plugin" audit --no-interaction
           done
       - name: Check PHP syntax
-        run: find plugins playground/tests -name vendor -prune -o -name '*.php' -print0 | xargs -0 -n 1 php -l
+        run: find plugins playground/tests tests -name vendor -prune -o -name '*.php' -print0 | xargs -0 -n 1 php -l
       - name: Exercise exact money edge cases
         run: php tests/money.php
       - name: Package and test in Playground
