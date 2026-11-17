@@ -27,7 +27,8 @@
     "admin_shell": "passed: packaged Free and Pro markup and scoped stylesheet; access regression",
     "ci_foundation": "passed locally and in GitHub Actions run 44017139421; both jobs green",
     "order_storage_smoke": "passed: Free bootstrap and WooCommerce order CRUD in HPOS and classic; Matcher workflows pending",
-    "documentation": "passed: seven generated outputs; header drift, output drift, unverified feature promotion and edition isolation checks"
+    "documentation": "passed: seven generated outputs; header drift, output drift, unverified feature promotion and edition isolation checks",
+    "production_zips": "passed: independent deterministic archives, manifest and lock checks, native loader isolation and paired same-version replacement"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -40,9 +41,9 @@
     "allocations_are_idempotent",
     "free_is_independent"
   ],
-  "phase": "P1",
-  "active_task_id": "WBM-P1-T012",
-  "next_action": "Complete independent production Composer packaging and verify clean ZIP installation and upgrade gates.",
+  "phase": "P2",
+  "active_task_id": "WBM-P2-T001",
+  "next_action": "Persist unique immutable WooCommerce payment references and test collisions and custom order numbers.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -62,8 +63,9 @@
     "WBM-P1-T008",
     "WBM-P1-T009",
     "WBM-P1-T010",
-    "WBM-P1-T011"
+    "WBM-P1-T011",
+    "WBM-P1-T012"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "875938a3d229722d48d372e1a9984d1caa313469"
+  "last_verified_remote_milestone": "1d1a36aadb1c1a80f5ee2d995f3dc7fc99ffa717"
 }

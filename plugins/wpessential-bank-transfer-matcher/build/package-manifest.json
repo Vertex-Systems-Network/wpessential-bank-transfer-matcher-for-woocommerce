@@ -1,0 +1,30 @@
+{
+  "slug": "wpessential-bank-transfer-matcher",
+  "required": [
+    "wpessential-bank-transfer-matcher.php",
+    "README.md",
+    "composer.json",
+    "composer.lock",
+    "vendor/autoload.php",
+    "vendor/composer/autoload_psr4.php",
+    "vendor/composer/installed.json",
+    "readme.txt",
+    "assets/admin.css",
+    "src/Bootstrap/Plugin.php"
+  ],
+  "source_roots": [
+    "src",
+    "assets"
+  ],
+  "forbidden_path_parts": [
+    ".git",
+    "tests",
+    "node_modules",
+    "__pycache__"
+  ],
+  "forbidden_suffixes": [
+    ".log",
+    ".zip",
+    ".pyc"
+  ]
+}

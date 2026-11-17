@@ -18,6 +18,27 @@ if ( 'pro-missing-free' === $mode ) {
 	return;
 }
 
+if ( 'paired' === $mode ) {
+	$free = 'wpessential-bank-transfer-matcher';
+	$pro  = $free . '-pro';
+	$loaders = \Composer\Autoload\ClassLoader::getRegisteredLoaders();
+	$free_prefix = 'WPEssential\\BankTransferMatcher\\';
+	$pro_prefix  = 'WPEssential\\BankTransferMatcherPro\\';
+	$free_loader = $loaders[ WP_PLUGIN_DIR . "/$free/vendor" ] ?? null;
+	$pro_loader  = $loaders[ WP_PLUGIN_DIR . "/$pro/vendor" ] ?? null;
+	if ( 1 !== did_action( 'wpessential_bank_transfer_matcher_ready' ) ||
+		1 !== did_action( 'wpessential_bank_transfer_matcher_pro_ready' ) ||
+		! $free_loader || ! $pro_loader ||
+		! $free_loader->findFile( $free_prefix . 'Bootstrap\\Plugin' ) ||
+		! $pro_loader->findFile( $pro_prefix . 'Bootstrap\\Plugin' ) ||
+		$free_loader->findFile( $pro_prefix . 'Bootstrap\\Plugin' ) ||
+		$pro_loader->findFile( $free_prefix . 'Bootstrap\\Plugin' ) ) {
+		throw new RuntimeException( 'The packaged editions did not load independently.' );
+	}
+	echo "PASS paired ZIP installation and isolated Composer loaders\n";
+	return;
+}
+
 if ( ! in_array( $mode, array( 'hpos', 'classic' ), true ) ||
 	1 !== did_action( 'wpessential_bank_transfer_matcher_ready' ) ||
 	did_action( 'wpessential_bank_transfer_matcher_pro_ready' ) ) {

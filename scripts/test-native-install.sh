@@ -31,3 +31,11 @@ wp_test plugin delete "$free"
 wp_test plugin install "$root/dist/$free.zip" --activate
 wp_test option update woocommerce_custom_orders_table_enabled no
 wp_test eval-file "$root/tests/integration/order-storage.php" classic
+
+wp_test plugin install "$root/dist/$pro.zip" --force --activate
+wp_test eval-file "$root/tests/integration/order-storage.php" paired
+
+wp_test plugin install "$root/dist/$free.zip" --force --activate
+wp_test plugin install "$root/dist/$pro.zip" --force --activate
+wp_test eval-file "$root/tests/integration/order-storage.php" paired
+printf 'PASS paired ZIP replacement and bootstrap\n'

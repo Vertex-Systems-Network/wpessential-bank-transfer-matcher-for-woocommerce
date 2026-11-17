@@ -25,3 +25,9 @@ python3 scripts/test-playground-foundation.py
 Use [.ai/next-task.json](.ai/next-task.json) for the current command and acceptance evidence. See [Playground evidence](playground/evidence/) for recorded runs.
 
 All fixtures must be synthetic. Any WooCommerce payment completion depends on explicit authorization from the merchant, cleared bank evidence and exact allocation checks. Keep Free deployable independently of Pro. Verify financial integrity on transactional MySQL or MariaDB.
+
+## Package an edition
+
+Run `bash scripts/package-plugin.sh free` or `bash scripts/package-plugin.sh pro` from the repository root. Each command validates its Composer metadata, installs optimized production dependencies from its own lockfile, and writes one ZIP to `dist/`. The ZIP inspector checks required files, production dependencies, and excluded paths using that edition's `build/package-manifest.json`.
+
+The native install test loads both packages into a disposable WordPress site and checks their independent Composer loaders. It also checks that both editions boot after same-version ZIP replacement. Cross-version production data upgrades and rollback remain release tests.

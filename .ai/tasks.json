@@ -255,9 +255,8 @@
       "WBM-P1-T011"
     ],
     "verification": "VERIFY-P1-T012",
-    "status": "ready",
-    "evidence": "Two ZIPs built and both installed in Playground. Negative dependency and clean upgrade checks pending.",
-    "next_action": "Complete independent production Composer packaging and verify clean ZIP installation and upgrade gates."
+    "status": "done",
+    "evidence": "Independent production packaging, manifest/lock inspection, deterministic rebuild, native clean ZIP install, loader isolation and same-version replacement passed. Cross-version data upgrades and rollback remain release checks."
   },
   {
     "id": "WBM-P2-T001",
@@ -269,8 +268,9 @@
       "WBM-P1-T012"
     ],
     "verification": "VERIFY-P2-T001",
-    "status": "planned",
-    "evidence": ""
+    "status": "ready",
+    "evidence": "",
+    "next_action": "Persist unique immutable WooCommerce payment references and test collisions and custom order numbers."
   },
   {
     "id": "WBM-P2-T002",

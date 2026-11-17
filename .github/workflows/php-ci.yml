@@ -27,15 +27,8 @@ jobs:
           python3 tests/docs_generation.py
       - name: Validate and build independent Composer packages
         run: |
-          for plugin in plugins/*; do
-            composer --working-dir="$plugin" validate --strict
-            composer --working-dir="$plugin" install --no-dev --prefer-dist --no-interaction --optimize-autoloader
-            if php -r 'exit(json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR)["packages"] === [] ? 0 : 1);' "$plugin/composer.lock"; then
-              printf '%s has no locked production dependencies to audit.\n' "$plugin"
-            else
-              composer --working-dir="$plugin" audit --locked --no-dev --no-interaction
-            fi
-          done
+          bash scripts/package-plugin.sh free
+          bash scripts/package-plugin.sh pro
       - name: Check PHP syntax
         run: find plugins playground/tests tests -name vendor -prune -o -name '*.php' -print0 | xargs -0 -n 1 php -l
       - name: Analyze reconciliation domain types
@@ -47,7 +40,6 @@ jobs:
           php tests/migrations.php
       - name: Package and test in Playground
         run: |
-          python3 scripts/build-plugin-zips.py
           python3 scripts/build_playground_bundles.py
           python3 scripts/test-playground-foundation.py
 
@@ -88,6 +80,6 @@ jobs:
           wp eval-file "$GITHUB_WORKSPACE/tests/integration/migrations.php" --path="$wp_path"
       - name: Verify native plugin installs and WooCommerce order storage
         run: |
-          composer --working-dir=plugins/wpessential-bank-transfer-matcher-pro install --no-dev --no-interaction
-          python3 scripts/build-plugin-zips.py
+          bash scripts/package-plugin.sh free
+          bash scripts/package-plugin.sh pro
           bash scripts/test-native-install.sh "$RUNNER_TEMP/wbm-wordpress"

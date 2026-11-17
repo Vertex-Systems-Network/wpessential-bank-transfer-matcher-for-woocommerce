@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P1-T012",
-  "phase": "P1",
-  "title": "implement independent production Composer package scripts and clean ZIP smoke-install tests for Free/Pro (Section 16A).",
-  "owner": "Platform",
-  "paths": "plugins/; playground/",
+  "id": "WBM-P2-T001",
+  "phase": "P2",
+  "title": "generate unique immutable payment reference; test collisions and order-number plugins.",
+  "owner": "Free engineering",
+  "paths": "plugins/wpessential-bank-transfer-matcher/",
   "depends_on": [
-    "WBM-P1-T011"
+    "WBM-P1-T012"
   ],
-  "verification": "VERIFY-P1-T012",
+  "verification": "VERIFY-P2-T001",
   "status": "ready",
-  "evidence": "Two ZIPs built and both installed in Playground. Negative dependency and clean upgrade checks pending.",
-  "next_action": "Complete independent production Composer packaging and verify clean ZIP installation and upgrade gates."
+  "evidence": "",
+  "next_action": "Persist unique immutable WooCommerce payment references and test collisions and custom order numbers."
 }
