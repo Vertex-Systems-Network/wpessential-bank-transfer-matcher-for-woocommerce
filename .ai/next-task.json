@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P1-T006",
+  "id": "WBM-P1-T007",
   "phase": "P1",
-  "title": "create DB migration scaffolding with schema version tracking and rollback strategy.",
+  "title": "create WP-native admin routing shell, common UI components and assets build.",
   "owner": "Platform",
   "paths": "plugins/; playground/",
   "depends_on": [
-    "WBM-P1-T005"
+    "WBM-P1-T006"
   ],
-  "verification": "VERIFY-P1-T006",
+  "verification": "VERIFY-P1-T007",
   "status": "ready",
-  "evidence": "",
-  "next_action": "Implement tracked database migration scaffolding and verify rollback behavior."
+  "evidence": "Free WooCommerce submenu and admin page render in Playground. Shared UI and assets remain planned.",
+  "next_action": "Add shared WordPress admin components and page-scoped asset loading to the existing submenu."
 }

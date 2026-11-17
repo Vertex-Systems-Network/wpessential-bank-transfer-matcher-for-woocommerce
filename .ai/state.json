@@ -22,7 +22,8 @@
     "dependency_versions": "passed: WooCommerce 10.7 fixture and Free API 0.9.0/2.0.0 fixtures",
     "lifecycle": "passed: Free and Pro deactivate/reactivate with fresh requests",
     "capabilities": "passed: role matrix, admin renderer, REST dispatcher, removed grants preserved",
-    "domain": "passed: exact money, currency, reference, ID boundaries and status contracts"
+    "domain": "passed: exact money, currency, reference, ID boundaries and status contracts",
+    "migration_control_flow": "passed with database doubles; native database locking, DDL and restore unverified"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -36,8 +37,8 @@
     "free_is_independent"
   ],
   "phase": "P1",
-  "active_task_id": "WBM-P1-T006",
-  "next_action": "Implement tracked database migration scaffolding and verify rollback behavior.",
+  "active_task_id": "WBM-P1-T007",
+  "next_action": "Add shared WordPress admin components and page-scoped asset loading to the existing submenu.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -51,10 +52,11 @@
     "WBM-P1-T003",
     "WBM-P1-T004",
     "WBM-P1-T005",
+    "WBM-P1-T006",
     "WBM-P1-T010"
   ],
   "blocked_tasks": [
     "WBM-P1-T001"
   ],
-  "last_verified_remote_milestone": "b2a0f8539a0a6aea989e00f82b5b9c8289ec575b"
+  "last_verified_remote_milestone": "3c0b264e353b11886590368716ae6349486b6435"
 }

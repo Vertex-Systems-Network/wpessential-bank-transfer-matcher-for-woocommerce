@@ -177,9 +177,8 @@
       "WBM-P1-T005"
     ],
     "verification": "VERIFY-P1-T006",
-    "status": "ready",
-    "evidence": "",
-    "next_action": "Implement tracked database migration scaffolding and verify rollback behavior."
+    "status": "done",
+    "evidence": "Migration runner and recovery runbook. PHP control flow passed in playground/evidence/migrations-2026-11-17.log. Real database and restore tests pending."
   },
   {
     "id": "WBM-P1-T007",
@@ -191,8 +190,9 @@
       "WBM-P1-T006"
     ],
     "verification": "VERIFY-P1-T007",
-    "status": "planned",
-    "evidence": "Free WooCommerce submenu and admin page render in Playground. Shared UI and assets remain planned."
+    "status": "ready",
+    "evidence": "Free WooCommerce submenu and admin page render in Playground. Shared UI and assets remain planned.",
+    "next_action": "Add shared WordPress admin components and page-scoped asset loading to the existing submenu."
   },
   {
     "id": "WBM-P1-T008",

@@ -36,6 +36,7 @@ jobs:
         run: |
           php tests/money.php
           php tests/domain.php
+          php tests/migrations.php
       - name: Package and test in Playground
         run: |
           python3 scripts/build-plugin-zips.py
