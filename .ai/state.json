@@ -35,7 +35,8 @@
     "customer_claims": "passed native WooCommerce/MariaDB controller tests; full browser POST and redirect pending",
     "claim_attachments": "passed native WooCommerce/MariaDB validation, storage, authorized access checks and purge; browser multipart and HTTP download pending",
     "manual_bank_evidence": "passed: GitHub Actions run 44193754937, native MariaDB and foundation",
-    "manual_allocations": "pending: hosted native MariaDB run"
+    "manual_allocations": "passed: GitHub Actions run 44196352710 native WooCommerce/MariaDB including failure retry and single payment hook",
+    "payment_finalization": "passed: explicit paid transition and idempotent retry; cross-request concurrency and pending-paid crash exception deferred to P8"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -49,8 +50,8 @@
     "free_is_independent"
   ],
   "phase": "P2",
-  "active_task_id": "WBM-P2-T007",
-  "next_action": "manual allocations and full/partial verified balance tracking with safe WC lifecycle.",
+  "active_task_id": "WBM-P2-T008",
+  "next_action": "payment claim review with states, comments, customer notifications.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -77,7 +78,8 @@
     "WBM-P2-T003",
     "WBM-P2-T004",
     "WBM-P2-T005",
-    "WBM-P2-T006"
+    "WBM-P2-T006",
+    "WBM-P2-T007"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "bffd99615c16731aeefb07816632ac9a66bd51bd"

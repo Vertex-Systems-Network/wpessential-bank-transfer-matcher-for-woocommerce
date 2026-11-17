@@ -1,13 +1,13 @@
 {
-  "id": "WBM-P2-T007",
+  "id": "WBM-P2-T008",
   "phase": "P2",
-  "title": "manual allocations and full/partial verified balance tracking with safe WC lifecycle.",
+  "title": "payment claim review with states, comments, customer notifications.",
   "owner": "Free engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher/",
   "depends_on": [
-    "WBM-P2-T006"
+    "WBM-P2-T007"
   ],
-  "verification": "VERIFY-P2-T007",
-  "status": "in_progress",
-  "evidence": "Exact transactional allocation slice with approval acknowledgement and guarded WooCommerce status; hosted native test pending. Payment completion and recovery remain open."
+  "verification": "VERIFY-P2-T008",
+  "status": "ready",
+  "evidence": ""
 }
