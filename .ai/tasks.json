@@ -190,9 +190,8 @@
       "WBM-P1-T006"
     ],
     "verification": "VERIFY-P1-T007",
-    "status": "ready",
-    "evidence": "Free WooCommerce submenu and admin page render in Playground. Shared UI and assets remain planned.",
-    "next_action": "Add shared WordPress admin components and page-scoped asset loading to the existing submenu."
+    "status": "done",
+    "evidence": "Shared admin components and bundled CSS. Playground Free, Pro and access scenarios passed in playground/evidence/admin-shell-2026-11-17.log."
   },
   {
     "id": "WBM-P1-T008",
@@ -204,8 +203,9 @@
       "WBM-P1-T007"
     ],
     "verification": "VERIFY-P1-T008",
-    "status": "planned",
-    "evidence": "Foundation CI workflow written. Remote CI, static analysis and SQL integration pending."
+    "status": "ready",
+    "evidence": "Foundation CI workflow written. Remote CI, static analysis and SQL integration pending.",
+    "next_action": "Complete static analysis and SQL integration checks, then verify the foundation workflow."
   },
   {
     "id": "WBM-P1-T009",

@@ -23,7 +23,8 @@
     "lifecycle": "passed: Free and Pro deactivate/reactivate with fresh requests",
     "capabilities": "passed: role matrix, admin renderer, REST dispatcher, removed grants preserved",
     "domain": "passed: exact money, currency, reference, ID boundaries and status contracts",
-    "migration_control_flow": "passed with database doubles; native database locking, DDL and restore unverified"
+    "migration_control_flow": "passed with database doubles; native database locking, DDL and restore unverified",
+    "admin_shell": "passed: packaged Free and Pro markup and scoped stylesheet; access regression"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -37,8 +38,8 @@
     "free_is_independent"
   ],
   "phase": "P1",
-  "active_task_id": "WBM-P1-T007",
-  "next_action": "Add shared WordPress admin components and page-scoped asset loading to the existing submenu.",
+  "active_task_id": "WBM-P1-T008",
+  "next_action": "Complete static analysis and SQL integration checks, then verify the foundation workflow.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -53,10 +54,11 @@
     "WBM-P1-T004",
     "WBM-P1-T005",
     "WBM-P1-T006",
+    "WBM-P1-T007",
     "WBM-P1-T010"
   ],
   "blocked_tasks": [
     "WBM-P1-T001"
   ],
-  "last_verified_remote_milestone": "3c0b264e353b11886590368716ae6349486b6435"
+  "last_verified_remote_milestone": "23c4fafaeaf8ae3d05cd53a7adc3767977aa5e51"
 }

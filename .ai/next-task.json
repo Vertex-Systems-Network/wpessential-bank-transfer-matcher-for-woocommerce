@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P1-T007",
+  "id": "WBM-P1-T008",
   "phase": "P1",
-  "title": "create WP-native admin routing shell, common UI components and assets build.",
+  "title": "create CI lint/static/unit/integration skeleton with no artificial green statuses.",
   "owner": "Platform",
   "paths": "plugins/; playground/",
   "depends_on": [
-    "WBM-P1-T006"
+    "WBM-P1-T007"
   ],
-  "verification": "VERIFY-P1-T007",
+  "verification": "VERIFY-P1-T008",
   "status": "ready",
-  "evidence": "Free WooCommerce submenu and admin page render in Playground. Shared UI and assets remain planned.",
-  "next_action": "Add shared WordPress admin components and page-scoped asset loading to the existing submenu."
+  "evidence": "Foundation CI workflow written. Remote CI, static analysis and SQL integration pending.",
+  "next_action": "Complete static analysis and SQL integration checks, then verify the foundation workflow."
 }

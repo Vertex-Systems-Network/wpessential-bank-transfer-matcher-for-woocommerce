@@ -27,3 +27,5 @@ python3 scripts/test-playground-foundation.py \
 The version checks isolate the bootstrap guards. One fixture reports WooCommerce 10.7.0. Two transient copies of the Free archive report API 0.9.0 and 2.0.0. The normal packages are untouched. The lifecycle check uses the normal Free and Pro packages and WooCommerce, with a fresh WordPress request after each deactivation or reactivation.
 
 Run `python3 scripts/test-playground-foundation.py --scenario access` to verify the capability map and admin page access for administrators, shop managers, customers, anonymous users and a custom read-only role. This scenario uses WordPress's in-process REST dispatcher. HTTP authentication and cookie nonce handling remain WordPress core responsibilities.
+
+The `free` and `pro` scenarios also check the registered Matcher admin page markup and stylesheet scoping. They exercise WordPress's admin hooks and inspect the installed stylesheet path. The source stylesheet is bundled directly in Free's ZIP and requires no Node build.
