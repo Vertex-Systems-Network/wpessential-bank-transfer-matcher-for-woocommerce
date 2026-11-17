@@ -281,9 +281,8 @@
       "WBM-P2-T001"
     ],
     "verification": "VERIFY-P2-T002",
-    "status": "ready",
-    "evidence": "",
-    "next_action": "Integrate native BACS settings and detect enabled WooCommerce payment methods."
+    "status": "done",
+    "evidence": "Native WooCommerce verified enabled and disabled BACS, enabled COD detection, native instructions read and unchanged settings, and HPOS/classic reference regression. See playground/evidence/bacs-settings-2026-11-17.log."
   },
   {
     "id": "WBM-P2-T003",
@@ -295,8 +294,9 @@
       "WBM-P2-T002"
     ],
     "verification": "VERIFY-P2-T003",
-    "status": "planned",
-    "evidence": ""
+    "status": "ready",
+    "evidence": "",
+    "next_action": "Expose stored references on Thank You, My Account and eligible order emails. Verify classic and Blocks checkout separately."
   },
   {
     "id": "WBM-P2-T004",

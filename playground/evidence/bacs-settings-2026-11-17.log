@@ -1,0 +1,18 @@
+Unpacking the package...
+Installing the plugin...
+Removing the old version of the plugin...
+Plugin updated successfully.
+Activating 'wpessential-bank-transfer-matcher'...
+Warning: Plugin 'wpessential-bank-transfer-matcher' is already active.
+Success: Installed 1 of 1 plugins.
+Success: Updated 'woocommerce_cod_settings' option.
+Success: Updated 'woocommerce_bacs_accounts' option.
+Success: Updated 'woocommerce_bacs_settings' option.
+PASS native BACS disabled, enabled COD detection, instructions and unchanged bank settings
+sh: 1: /usr/sbin/sendmail: not found
+Success: Updated 'woocommerce_bacs_settings' option.
+PASS native BACS enabled, enabled COD detection, instructions and unchanged bank settings
+Success: Updated 'woocommerce_custom_orders_table_enabled' option.
+PASS classic reference collision retry, order-number independence, eligibility and checkout hook dispatch
+Success: Updated 'woocommerce_custom_orders_table_enabled' option.
+PASS hpos reference collision retry, order-number independence, eligibility and checkout hook dispatch

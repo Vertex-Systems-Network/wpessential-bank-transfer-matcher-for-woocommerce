@@ -28,7 +28,9 @@ final class ReferenceIssuer {
 	}
 
 	public static function issue_at_checkout( WC_Order $order ): void {
-		if ( 'bacs' !== $order->get_payment_method() || ! $order->get_id() ) {
+		if ( PaymentMethods::BACS !== $order->get_payment_method() ||
+			! $order->get_id() ||
+			! in_array( PaymentMethods::BACS, PaymentMethods::enabled_ids(), true ) ) {
 			return;
 		}
 
