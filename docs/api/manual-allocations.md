@@ -1,0 +1,10 @@
+# Manual bank evidence and allocation (Phase 2 development)
+
+Both routes require an authenticated WordPress REST request with a valid REST nonce for cookie authentication. The caller needs the respective Free capability. All amounts are canonical decimal strings interpreted at the store currency precision; persisted values use integer minor units.
+
+- `POST /wpessential-wbm/v1/orders/{order_id}/bank-evidence`: requires `wbm_review_claim`; accepts `date`, positive `amount`, `reference` and optional `note`. The target must be an unpaid BACS order. Returns an evidence ID and `duplicate_warning`. The warning compares date, exact amount, currency and a whitespace-insensitive, case-insensitive reference; it is deliberately conservative and does not assert a bank payment.
+- `POST /wpessential-wbm/v1/orders/{order_id}/allocations`: requires `wbm_approve`; accepts `evidence_id`, positive `amount`, `acknowledged: true`, and `reason`. The acknowledgement means the reviewer has checked a cleared incoming credit on the merchant's bank account. The evidence must belong to the order and currency. Exact duplicate evidence blocks allocation. The response returns `allocated_minor`, `outstanding_minor`, and `fully_allocated`.
+
+Allocation inserts are serialized per order with a database advisory lock and a transaction. They cannot exceed the evidence credit or the snapshotted order total. A later order total/currency change is rejected for manual review. Every row retains reviewer, source, reason, amount, expected balance and time. New allocations are append-only. Evidence is a manual assertion; the application cannot independently verify bank clearance.
+
+**Current development boundary:** even when `fully_allocated` is true, WooCommerce stays on hold. The endpoint returns `order_payment_changed: false`. The idempotent payment completion, failure recovery and reversal workflow must be implemented and tested before T007 is complete or the PR is ready for merge. No UI control should promise automatic payment completion yet. MySQL/MariaDB transactional behavior is required for this path; the Playground smoke fixture is not concurrency evidence.
