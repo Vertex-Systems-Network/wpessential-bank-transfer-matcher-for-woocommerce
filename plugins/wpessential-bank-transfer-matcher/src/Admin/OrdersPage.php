@@ -29,6 +29,15 @@ final class OrdersPage {
 		echo '<div class="wrap wbm-admin">';
 		Components::heading( __( 'Bank Transfer Matcher', 'wpessential-bank-transfer-matcher' ) );
 		printf( '<p>%s</p>', esc_html__( 'Unpaid native bank transfer orders. A customer claim or manual record does not by itself confirm payment.', 'wpessential-bank-transfer-matcher' ) );
+		global $wpdb;
+		$eligible_count = (int) ( 'eligible' === $status ? $results->total : wc_get_orders( [
+			'payment_method' => 'bacs', 'status' => [ 'on-hold', 'pending' ], 'limit' => 1, 'paginate' => true, 'return' => 'ids',
+		] )->total );
+		try {
+			( new Overview( $wpdb ) )->render( $eligible_count, $results->orders );
+		} catch ( RuntimeException $error ) {
+			echo '<p role="alert">' . esc_html__( 'Overview data is unavailable; the order list remains available.', 'wpessential-bank-transfer-matcher' ) . '</p>';
+		}
 		echo '<form method="get" class="wbm-orders-filter"><input type="hidden" name="page" value="wpessential-bank-transfer-matcher">';
 		echo '<label for="wbm-status">' . esc_html__( 'Order status', 'wpessential-bank-transfer-matcher' ) . '</label> ';
 		echo '<select id="wbm-status" name="wbm_status">';
@@ -44,7 +53,6 @@ final class OrdersPage {
 				printf( '<th scope="col">%s</th>', esc_html( $heading ) );
 			}
 			echo '</tr></thead><tbody>';
-			global $wpdb;
 			$summary = new OrderSummary( $wpdb );
 			foreach ( $results->orders as $order ) {
 				self::row( $order, $summary );

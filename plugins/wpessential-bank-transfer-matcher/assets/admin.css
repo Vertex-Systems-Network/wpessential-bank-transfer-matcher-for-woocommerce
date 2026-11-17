@@ -47,3 +47,40 @@
 	border: 1px solid #c3c4c7;
 	background: #fff;
 }
+
+.wbm-admin .wbm-kpis {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+	gap: 0.75rem;
+}
+
+.wbm-admin .wbm-kpi {
+	padding: 0.9rem 1rem;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+}
+
+.wbm-admin .wbm-kpi h3 {
+	margin: 0 0 0.45rem;
+	font-size: 0.85rem;
+	font-weight: 500;
+}
+
+.wbm-admin .wbm-kpi p {
+	margin: 0;
+	font-size: 1.25rem;
+	font-weight: 600;
+	overflow-wrap: anywhere;
+}
+
+.wbm-order-panel {
+	clear: both;
+	margin-block: 1rem;
+	padding: 0.75rem 1rem;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+}
+
+.wbm-order-panel .wbm-audit li {
+	margin-block: 0.35rem;
+}

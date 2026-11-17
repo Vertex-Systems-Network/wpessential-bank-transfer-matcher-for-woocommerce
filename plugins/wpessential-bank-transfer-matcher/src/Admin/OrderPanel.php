@@ -39,6 +39,11 @@ final class OrderPanel {
 		if ( $data['mismatch'] ) {
 			printf( '<p role="alert"><strong>%s</strong></p>', esc_html__( 'WooCommerce payment state and verified allocations disagree. Review before taking further action.', 'wpessential-bank-transfer-matcher' ) );
 		}
+		try {
+			( new AuditTimeline( $wpdb ) )->render( $order->get_id() );
+		} catch ( RuntimeException $error ) {
+			echo '<p role="alert">' . esc_html__( 'Recent activity is unavailable.', 'wpessential-bank-transfer-matcher' ) . '</p>';
+		}
 		$url = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher' ], admin_url( 'admin.php' ) );
 		printf( '<p><a class="button" href="%s">%s</a></p>', esc_url( $url ), esc_html__( 'View bank transfer orders', 'wpessential-bank-transfer-matcher' ) );
 		echo '</div>';

@@ -8,6 +8,6 @@
     "WBM-P2-T009"
   ],
   "verification": "VERIFY-P2-T010",
-  "status": "ready",
-  "evidence": ""
+  "status": "in_progress",
+  "evidence": "Free overview and private-safe per-order audit timeline implemented; native HPOS/classic and foundation CI pending."
 }
