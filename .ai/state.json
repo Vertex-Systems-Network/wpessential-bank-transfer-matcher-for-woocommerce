@@ -10,14 +10,14 @@
     "php_static": "not_run",
     "integration": "not_run",
     "e2e": "not_run",
-    "package_install": "passed for Free-only and Free+Pro",
+    "package_install": "passed: Playground Free and Pro and native Free install/reinstall; native Pro rejected without Free",
     "php_lint": "passed",
     "money": "passed",
     "playground_bootstrap": "passed",
-    "mysql_mariadb": "not_run",
+    "mysql_mariadb": "passed: disposable WordPress/WooCommerce startup and migration integration",
     "dependency_missing": "pass for WooCommerce absent and Free absent",
     "browser_smoke": "blocked: Chromium socket operation denied",
-    "mysql_harness_config": "parsed; runtime unavailable",
+    "mysql_harness_config": "Docker Compose parsed; equivalent native MariaDB harness verified",
     "task_graph": "pass: 102 tasks, 168 requirement references",
     "dependency_versions": "passed: WooCommerce 10.7 fixture and Free API 0.9.0/2.0.0 fixtures",
     "lifecycle": "passed: Free and Pro deactivate/reactivate with fresh requests",
@@ -25,7 +25,8 @@
     "domain": "passed: exact money, currency, reference, ID boundaries and status contracts",
     "migration_control_flow": "passed: PHP doubles and native WordPress/MariaDB integration; snapshot restore pending",
     "admin_shell": "passed: packaged Free and Pro markup and scoped stylesheet; access regression",
-    "ci_foundation": "passed locally and in GitHub Actions run 44017139421; both jobs green"
+    "ci_foundation": "passed locally and in GitHub Actions run 44017139421; both jobs green",
+    "order_storage_smoke": "passed: Free bootstrap and WooCommerce order CRUD in HPOS and classic; Matcher workflows pending"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -39,8 +40,8 @@
     "free_is_independent"
   ],
   "phase": "P1",
-  "active_task_id": "WBM-P1-T009",
-  "next_action": "Verify clean Free installation, Pro dependency behavior, and HPOS/classic storage scenarios. Declare only verified compatibility.",
+  "active_task_id": "WBM-P1-T011",
+  "next_action": "Complete canonical release metadata and generate edition readmes, feature and change records with drift checks.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -50,6 +51,7 @@
     "WBM-P0-T006",
     "WBM-P0-T007",
     "WBM-P0-T008",
+    "WBM-P1-T001",
     "WBM-P1-T002",
     "WBM-P1-T003",
     "WBM-P1-T004",
@@ -57,10 +59,9 @@
     "WBM-P1-T006",
     "WBM-P1-T007",
     "WBM-P1-T008",
+    "WBM-P1-T009",
     "WBM-P1-T010"
   ],
-  "blocked_tasks": [
-    "WBM-P1-T001"
-  ],
-  "last_verified_remote_milestone": "2e47916f99984805e2e831d62f2aba09c2b19b8a"
+  "blocked_tasks": [],
+  "last_verified_remote_milestone": "5127f49493397bad9c320048b2784fee89754a2b"
 }

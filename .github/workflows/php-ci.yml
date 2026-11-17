@@ -84,3 +84,8 @@ jobs:
           wp config create --path="$wp_path" --dbname=wbm_ci --dbuser=wbm_ci --dbpass=wbm-ci-test-only --dbhost="127.0.0.1:$WBM_DB_PORT"
           wp core install --path="$wp_path" --url=http://wbm.test --title="Matcher CI" --admin_user=wbm_ci --admin_email=ci@example.test --skip-email
           wp eval-file "$GITHUB_WORKSPACE/tests/integration/migrations.php" --path="$wp_path"
+      - name: Verify native plugin installs and WooCommerce order storage
+        run: |
+          composer --working-dir=plugins/wpessential-bank-transfer-matcher-pro install --no-dev --no-interaction
+          python3 scripts/build-plugin-zips.py
+          bash scripts/test-native-install.sh "$RUNNER_TEMP/wbm-wordpress"

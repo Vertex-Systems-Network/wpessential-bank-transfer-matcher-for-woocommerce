@@ -111,8 +111,8 @@
       "WBM-P0-T008"
     ],
     "verification": "VERIFY-P1-T001",
-    "status": "blocked",
-    "evidence": "Live WordPress/MariaDB migration fixture and separate Playground WC environment verified. Full native WordPress+WooCommerce harness with reproducible startup remains pending.",
+    "status": "done",
+    "evidence": "Disposable WordPress and WooCommerce verified on native MariaDB with WP-CLI. Reproduction commands in .ai/runbooks/mysql-test.md.",
     "next_action": "Run the WordPress 7.0 base and packaged plugin smoke scenarios, and start a disposable MySQL/MariaDB environment."
   },
   {
@@ -216,9 +216,8 @@
       "WBM-P1-T008"
     ],
     "verification": "VERIFY-P1-T009",
-    "status": "ready",
-    "evidence": "Free-only and Free+Pro installation, missing dependencies and deactivate/reactivate passed. Reinstall and HPOS/compatibility checks remain pending.",
-    "next_action": "Verify clean Free installation, Pro dependency behavior, and HPOS/classic storage scenarios. Declare only verified compatibility."
+    "status": "done",
+    "evidence": "Native Free install and reinstall, Pro missing Free rejection, HPOS and classic bootstrap and WooCommerce CRUD passed. Matcher workflow compatibility declaration remains under P8-T005. See playground/evidence/native-install-2026-11-17.log."
   },
   {
     "id": "WBM-P1-T010",
@@ -243,8 +242,9 @@
       "WBM-P1-T010"
     ],
     "verification": "VERIFY-P1-T011",
-    "status": "planned",
-    "evidence": "Initial generated plugin readmes and header drift checks pass. Canonical feature/change sources and listing generation pending."
+    "status": "ready",
+    "evidence": "Initial generated plugin readmes and header drift checks pass. Canonical feature/change sources and listing generation pending.",
+    "next_action": "Complete canonical release metadata and generate edition readmes, feature and change records with drift checks."
   },
   {
     "id": "WBM-P1-T012",
