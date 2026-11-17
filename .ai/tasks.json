@@ -373,8 +373,8 @@
       "WBM-P2-T008"
     ],
     "verification": "VERIFY-P2-T009",
-    "status": "in_progress",
-    "evidence": "HPOS/classic order table and native order panel implemented; hosted integration and Playground verification pending."
+    "status": "done",
+    "evidence": "GitHub Actions runs 44199540256 and 44199850238 native WooCommerce/MariaDB passed classic and HPOS BACS query, status filters, exact order panel, non-BACS isolation, page-size and live pagination links. Foundation pending at checkpoint."
   },
   {
     "id": "WBM-P2-T010",
@@ -386,7 +386,7 @@
       "WBM-P2-T009"
     ],
     "verification": "VERIFY-P2-T010",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {

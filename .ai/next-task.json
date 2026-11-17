@@ -1,13 +1,13 @@
 {
-  "id": "WBM-P2-T009",
+  "id": "WBM-P2-T010",
   "phase": "P2",
-  "title": "order admin panel and consolidated eligible orders table.",
+  "title": "Free overview KPIs and basic audit timeline.",
   "owner": "Free engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher/",
   "depends_on": [
-    "WBM-P2-T008"
+    "WBM-P2-T009"
   ],
-  "verification": "VERIFY-P2-T009",
-  "status": "in_progress",
-  "evidence": "HPOS/classic order table and native order panel implemented; hosted integration and Playground verification pending."
+  "verification": "VERIFY-P2-T010",
+  "status": "ready",
+  "evidence": ""
 }
