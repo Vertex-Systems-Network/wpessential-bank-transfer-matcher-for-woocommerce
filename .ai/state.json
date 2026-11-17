@@ -21,7 +21,8 @@
     "task_graph": "pass: 102 tasks, 168 requirement references",
     "dependency_versions": "passed: WooCommerce 10.7 fixture and Free API 0.9.0/2.0.0 fixtures",
     "lifecycle": "passed: Free and Pro deactivate/reactivate with fresh requests",
-    "capabilities": "passed: role matrix, admin renderer, REST dispatcher, removed grants preserved"
+    "capabilities": "passed: role matrix, admin renderer, REST dispatcher, removed grants preserved",
+    "domain": "passed: exact money, currency, reference, ID boundaries and status contracts"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -35,8 +36,8 @@
     "free_is_independent"
   ],
   "phase": "P1",
-  "active_task_id": "WBM-P1-T005",
-  "next_action": "Complete currency, payment-reference, entity-ID and reconciliation-status domain types with boundary tests.",
+  "active_task_id": "WBM-P1-T006",
+  "next_action": "Implement tracked database migration scaffolding and verify rollback behavior.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -49,10 +50,11 @@
     "WBM-P1-T002",
     "WBM-P1-T003",
     "WBM-P1-T004",
+    "WBM-P1-T005",
     "WBM-P1-T010"
   ],
   "blocked_tasks": [
     "WBM-P1-T001"
   ],
-  "last_verified_remote_milestone": "92f7a4d04b6e38a4e3b9ca9f0aff84bc9770d815"
+  "last_verified_remote_milestone": "b2a0f8539a0a6aea989e00f82b5b9c8289ec575b"
 }

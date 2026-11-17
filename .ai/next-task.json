@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P1-T005",
+  "id": "WBM-P1-T006",
   "phase": "P1",
-  "title": "create shared domain value objects (Money, Currency, References, IDs, statuses) and exact arithmetic tests.",
+  "title": "create DB migration scaffolding with schema version tracking and rollback strategy.",
   "owner": "Platform",
   "paths": "plugins/; playground/",
   "depends_on": [
-    "WBM-P1-T004"
+    "WBM-P1-T005"
   ],
-  "verification": "VERIFY-P1-T005",
+  "verification": "VERIFY-P1-T006",
   "status": "ready",
-  "evidence": "Exact Money slice passed tests/money.php. Remaining reference, ID, currency registry and status contracts are planned.",
-  "next_action": "Complete currency, payment-reference, entity-ID and reconciliation-status domain types with boundary tests."
+  "evidence": "",
+  "next_action": "Implement tracked database migration scaffolding and verify rollback behavior."
 }

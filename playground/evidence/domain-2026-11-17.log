@@ -1,0 +1,2 @@
+PASS exact money and invalid/overflow cases
+PASS domain value boundaries and status contracts

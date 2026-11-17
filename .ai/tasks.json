@@ -164,9 +164,8 @@
       "WBM-P1-T004"
     ],
     "verification": "VERIFY-P1-T005",
-    "status": "ready",
-    "evidence": "Exact Money slice passed tests/money.php. Remaining reference, ID, currency registry and status contracts are planned.",
-    "next_action": "Complete currency, payment-reference, entity-ID and reconciliation-status domain types with boundary tests."
+    "status": "done",
+    "evidence": "playground/evidence/domain-2026-11-17.log"
   },
   {
     "id": "WBM-P1-T006",
@@ -178,8 +177,9 @@
       "WBM-P1-T005"
     ],
     "verification": "VERIFY-P1-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "ready",
+    "evidence": "",
+    "next_action": "Implement tracked database migration scaffolding and verify rollback behavior."
   },
   {
     "id": "WBM-P1-T007",

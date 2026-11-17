@@ -16,18 +16,17 @@ final class Money {
 		public readonly string $currency,
 		public readonly int $exponent
 	) {
-		if ( 1 !== preg_match( '/\A[A-Z]{3}\z/', $currency ) || 0 > $exponent || 4 < $exponent ) {
-			throw new InvalidArgumentException( 'Invalid currency code or currency precision.' );
-		}
+		new Currency( $currency, $exponent );
 	}
 
 	public static function from_decimal( string $amount, string $currency, int $exponent ): self {
+		new Currency( $currency, $exponent );
 		if ( 1 !== preg_match( '/\A(-?)([0-9]+)(?:\.([0-9]+))?\z/', $amount, $parts ) ) {
 			throw new InvalidArgumentException( 'Amount must be a canonical decimal.' );
 		}
 
 		$fraction = $parts[3] ?? '';
-		if ( $exponent < strlen( $fraction ) || 4 < $exponent ) {
+		if ( $exponent < strlen( $fraction ) ) {
 			throw new InvalidArgumentException( 'Amount exceeds the configured currency precision.' );
 		}
 
