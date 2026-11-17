@@ -9,6 +9,7 @@ namespace WPEssential\BankTransferMatcher\Bootstrap;
 
 use WPEssential\BankTransferMatcher\Access\Capabilities;
 use WPEssential\BankTransferMatcher\Claims\CustomerClaims;
+use WPEssential\BankTransferMatcher\Claims\ClaimReviews;
 use WPEssential\BankTransferMatcher\Claims\AttachmentDownloads;
 use WPEssential\BankTransferMatcher\Evidence\BankEvidence;
 use WPEssential\BankTransferMatcher\Evidence\ManualAllocations;
@@ -29,6 +30,7 @@ final class Plugin {
 		add_action( 'woocommerce_store_api_checkout_order_processed', array( ReferenceIssuer::class, 'issue_at_checkout' ) );
 		ReferencePresentation::register();
 		CustomerClaims::register();
+		ClaimReviews::register();
 		AttachmentDownloads::register();
 		BankEvidence::register();
 		ManualAllocations::register();

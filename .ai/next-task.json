@@ -8,6 +8,6 @@
     "WBM-P2-T007"
   ],
   "verification": "VERIFY-P2-T008",
-  "status": "ready",
-  "evidence": ""
+  "status": "in_progress",
+  "evidence": "Review state machine, append-only decision events and customer notification retry implemented; native WooCommerce/MariaDB test pending."
 }

@@ -1,0 +1,7 @@
+# Customer claim review (Phase 2)
+
+`POST /wpessential-wbm/v1/orders/{order_id}/claim/review` requires `wbm_review_claim`. Accepts `status` (`under_review`, `verified`, `rejected`) and a private reviewer `comment` of 3–1000 characters. `verified` additionally requires `wbm_approve` and `acknowledged: true`; the claimed amount must be covered by existing manual bank allocations in the same order/currency. A customer receipt or claim alone never verifies a transfer.
+
+Allowed transitions are `submitted → under_review | verified | rejected` and `under_review → verified | rejected`. The order-linked claim row and append-only event are written together under an order lock and database transaction. Each event records actor, previous/new status, comment and time. Replaying the same status returns a conflict. A verified customer claim does not call WooCommerce `payment_complete()`; that remains a separate explicit finance action.
+
+After commit, the plugin sends a short status email to the order billing address. Reviewer comments and receipt bytes are never sent. Failed mail leaves the event `pending`; `POST /wpessential-wbm/v1/orders/{order_id}/claim/notifications/{event_id}/retry` requires `wbm_review_claim` and attempts delivery for that order's event. A sent event is not sent again through this route. A process crash after mail delivery but before marking `sent` can leave a pending event; an operator must inspect mail logs before retrying. Customer notification delivery is not a bank settlement signal.
