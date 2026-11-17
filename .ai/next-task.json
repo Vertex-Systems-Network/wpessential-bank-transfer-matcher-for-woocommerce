@@ -1,13 +1,13 @@
 {
-  "id": "WBM-P2-T008",
+  "id": "WBM-P2-T009",
   "phase": "P2",
-  "title": "payment claim review with states, comments, customer notifications.",
+  "title": "order admin panel and consolidated eligible orders table.",
   "owner": "Free engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher/",
   "depends_on": [
-    "WBM-P2-T007"
+    "WBM-P2-T008"
   ],
-  "verification": "VERIFY-P2-T008",
-  "status": "in_progress",
-  "evidence": "Review state machine, append-only decision events and customer notification retry implemented; native WooCommerce/MariaDB test pending."
+  "verification": "VERIFY-P2-T009",
+  "status": "ready",
+  "evidence": ""
 }

@@ -360,8 +360,8 @@
       "WBM-P2-T007"
     ],
     "verification": "VERIFY-P2-T008",
-    "status": "in_progress",
-    "evidence": "Review state machine, append-only decision events and customer notification retry implemented; native WooCommerce/MariaDB test pending."
+    "status": "done",
+    "evidence": "GitHub Actions run 44198294949 native WooCommerce/MariaDB passed state transitions, append-only event, allocation-backed verification, notification retry/no repeat, private comments and unchanged order payment state."
   },
   {
     "id": "WBM-P2-T009",
@@ -373,7 +373,7 @@
       "WBM-P2-T008"
     ],
     "verification": "VERIFY-P2-T009",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {
