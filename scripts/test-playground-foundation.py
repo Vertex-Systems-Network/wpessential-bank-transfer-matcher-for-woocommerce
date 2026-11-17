@@ -40,7 +40,7 @@ def outdated_woo_fixture():
 
 def build_smoke_bundle(scenario):
     base = scenario if scenario in ('base', 'free', 'pro') else 'base'
-    if scenario == 'woo-outdated':
+    if scenario in ('woo-outdated', 'access'):
         base = 'free'
     elif scenario in (*VERSION_SCENARIOS[1:], 'lifecycle'):
         base = 'pro'
@@ -52,6 +52,8 @@ def build_smoke_bundle(scenario):
     if scenario in ('base', 'free', 'pro'):
         php = (ROOT / 'playground/tests/foundation.php').read_text()
         php = php.replace('WBM_SCENARIO', repr(scenario))
+    elif scenario == 'access':
+        php = (ROOT / 'playground/tests/access.php').read_text()
     elif scenario in VERSION_SCENARIOS:
         if scenario == 'woo-outdated':
             resources['woocommerce-fixture.zip'] = outdated_woo_fixture()
@@ -92,7 +94,7 @@ def build_smoke_bundle(scenario):
 
 
 def main():
-    scenarios = ('base', 'free', 'pro', 'woo-missing', 'free-missing', *VERSION_SCENARIOS, 'lifecycle')
+    scenarios = ('base', 'free', 'pro', 'woo-missing', 'free-missing', *VERSION_SCENARIOS, 'lifecycle', 'access')
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--cli', help='Local Playground CLI path')
     parser.add_argument('--scenario', action='append', choices=scenarios)

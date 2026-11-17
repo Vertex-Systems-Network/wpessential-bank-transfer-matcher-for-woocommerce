@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P1-T004",
+  "id": "WBM-P1-T005",
   "phase": "P1",
-  "title": "create Free-owned capabilities and role mapping; REST API auth foundation.",
+  "title": "create shared domain value objects (Money, Currency, References, IDs, statuses) and exact arithmetic tests.",
   "owner": "Platform",
   "paths": "plugins/; playground/",
   "depends_on": [
-    "WBM-P1-T003"
+    "WBM-P1-T004"
   ],
-  "verification": "VERIFY-P1-T004",
+  "verification": "VERIFY-P1-T005",
   "status": "ready",
-  "evidence": "",
-  "next_action": "Implement Free-owned WordPress role capabilities and REST permission checks, then verify allowed and denied roles in Playground."
+  "evidence": "Exact Money slice passed tests/money.php. Remaining reference, ID, currency registry and status contracts are planned.",
+  "next_action": "Complete currency, payment-reference, entity-ID and reconciliation-status domain types with boundary tests."
 }
