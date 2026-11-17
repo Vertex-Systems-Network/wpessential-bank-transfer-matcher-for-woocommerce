@@ -1,0 +1,32 @@
+[
+  {
+    "id": "F-FOUNDATION-ADMIN",
+    "edition": "free",
+    "status": "verified",
+    "summary": "WooCommerce admin entry point with role-based access.",
+    "test_id": "VERIFY-P1-T007",
+    "evidence": "playground/evidence/admin-shell-2026-11-17.log"
+  },
+  {
+    "id": "F-FOUNDATION-DEPENDENCY",
+    "edition": "pro",
+    "status": "verified",
+    "summary": "Separate add-on activation and Free dependency checks.",
+    "test_id": "VERIFY-P1-T003",
+    "evidence": "playground/evidence/version-lifecycle-2026-11-17.log"
+  },
+  {
+    "id": "F-ORDER-REFERENCE",
+    "edition": "free",
+    "status": "planned",
+    "summary": "Issue immutable payment references for WooCommerce orders.",
+    "test_id": "VERIFY-P2-T001"
+  },
+  {
+    "id": "F-STATEMENT-IMPORT",
+    "edition": "pro",
+    "status": "planned",
+    "summary": "Import and validate bank statement rows.",
+    "test_id": "VERIFY-P3-T002"
+  }
+]

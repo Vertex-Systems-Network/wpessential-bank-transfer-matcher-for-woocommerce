@@ -26,7 +26,8 @@
     "migration_control_flow": "passed: PHP doubles and native WordPress/MariaDB integration; snapshot restore pending",
     "admin_shell": "passed: packaged Free and Pro markup and scoped stylesheet; access regression",
     "ci_foundation": "passed locally and in GitHub Actions run 44017139421; both jobs green",
-    "order_storage_smoke": "passed: Free bootstrap and WooCommerce order CRUD in HPOS and classic; Matcher workflows pending"
+    "order_storage_smoke": "passed: Free bootstrap and WooCommerce order CRUD in HPOS and classic; Matcher workflows pending",
+    "documentation": "passed: seven generated outputs; header drift, output drift, unverified feature promotion and edition isolation checks"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -40,8 +41,8 @@
     "free_is_independent"
   ],
   "phase": "P1",
-  "active_task_id": "WBM-P1-T011",
-  "next_action": "Complete canonical release metadata and generate edition readmes, feature and change records with drift checks.",
+  "active_task_id": "WBM-P1-T012",
+  "next_action": "Complete independent production Composer packaging and verify clean ZIP installation and upgrade gates.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -60,8 +61,9 @@
     "WBM-P1-T007",
     "WBM-P1-T008",
     "WBM-P1-T009",
-    "WBM-P1-T010"
+    "WBM-P1-T010",
+    "WBM-P1-T011"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "5127f49493397bad9c320048b2784fee89754a2b"
+  "last_verified_remote_milestone": "875938a3d229722d48d372e1a9984d1caa313469"
 }

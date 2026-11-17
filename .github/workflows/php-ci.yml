@@ -22,7 +22,9 @@ jobs:
       - name: Verify task graph and requirement references
         run: python3 scripts/check-project-state.py
       - name: Verify generated documentation
-        run: node scripts/generate-readmes.ts --check
+        run: |
+          node scripts/generate-readmes.ts --check
+          python3 tests/docs_generation.py
       - name: Validate and build independent Composer packages
         run: |
           for plugin in plugins/*; do

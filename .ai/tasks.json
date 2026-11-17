@@ -242,9 +242,8 @@
       "WBM-P1-T010"
     ],
     "verification": "VERIFY-P1-T011",
-    "status": "ready",
-    "evidence": "Initial generated plugin readmes and header drift checks pass. Canonical feature/change sources and listing generation pending.",
-    "next_action": "Complete canonical release metadata and generate edition readmes, feature and change records with drift checks."
+    "status": "done",
+    "evidence": "Verified seven deterministic docs outputs and negative drift/feature checks. Marketplace drafts only; official readme validation and publication metadata remain P9 gates. See playground/evidence/docs-generation-2026-11-17.log."
   },
   {
     "id": "WBM-P1-T012",
@@ -256,8 +255,9 @@
       "WBM-P1-T011"
     ],
     "verification": "VERIFY-P1-T012",
-    "status": "planned",
-    "evidence": "Two ZIPs built and both installed in Playground. Negative dependency and clean upgrade checks pending."
+    "status": "ready",
+    "evidence": "Two ZIPs built and both installed in Playground. Negative dependency and clean upgrade checks pending.",
+    "next_action": "Complete independent production Composer packaging and verify clean ZIP installation and upgrade gates."
   },
   {
     "id": "WBM-P2-T001",

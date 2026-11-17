@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P1-T011",
+  "id": "WBM-P1-T012",
   "phase": "P1",
-  "title": "implement canonical release metadata and docs generator scaffolding, verify `README.md`/`readme.txt` outputs and metadata drift checks (Section 16D).",
+  "title": "implement independent production Composer package scripts and clean ZIP smoke-install tests for Free/Pro (Section 16A).",
   "owner": "Platform",
   "paths": "plugins/; playground/",
   "depends_on": [
-    "WBM-P1-T010"
+    "WBM-P1-T011"
   ],
-  "verification": "VERIFY-P1-T011",
+  "verification": "VERIFY-P1-T012",
   "status": "ready",
-  "evidence": "Initial generated plugin readmes and header drift checks pass. Canonical feature/change sources and listing generation pending.",
-  "next_action": "Complete canonical release metadata and generate edition readmes, feature and change records with drift checks."
+  "evidence": "Two ZIPs built and both installed in Playground. Negative dependency and clean upgrade checks pending.",
+  "next_action": "Complete independent production Composer packaging and verify clean ZIP installation and upgrade gates."
 }

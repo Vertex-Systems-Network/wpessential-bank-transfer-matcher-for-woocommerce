@@ -6,10 +6,25 @@
   "license": "GPL-2.0-or-later",
   "free": {
     "slug": "wpessential-bank-transfer-matcher",
-    "description": "Development preview with a WooCommerce admin entry point."
+    "description": "Development preview with a WooCommerce admin entry point.",
+    "title": "WPEssential Bank Transfer Matcher for WooCommerce",
+    "dependencies": [
+      "woocommerce"
+    ]
   },
   "pro": {
     "slug": "wpessential-bank-transfer-matcher-pro",
-    "description": "Development preview of the separate add-on. Requires a compatible active Free edition."
-  }
+    "description": "Development preview of the separate add-on. Requires a compatible active Free edition.",
+    "title": "WPEssential Bank Transfer Matcher Pro for WooCommerce",
+    "dependencies": [
+      "woocommerce",
+      "wpessential-bank-transfer-matcher"
+    ],
+    "free_api": ">=1.0.0 <2.0.0"
+  },
+  "status": "verified",
+  "requires_wc": "10.8",
+  "repository": "https://github.com/wpessential/wpessential-bank-transfer-matcher-for-woocommerce",
+  "author": "WPEssential",
+  "wordpress_org_contributors": []
 }
