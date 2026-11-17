@@ -294,9 +294,8 @@
       "WBM-P2-T002"
     ],
     "verification": "VERIFY-P2-T003",
-    "status": "ready",
-    "evidence": "",
-    "next_action": "Expose stored references on Thank You, My Account and eligible order emails. Verify classic and Blocks checkout separately."
+    "status": "done",
+    "evidence": "Native WooCommerce rendered classic Thank You, Blocks confirmation, My Account and HTML/plain customer email. Ownership, key and admin-mail exclusions passed. Full browser checkout remains a separate gate."
   },
   {
     "id": "WBM-P2-T004",
@@ -308,8 +307,9 @@
       "WBM-P2-T003"
     ],
     "verification": "VERIFY-P2-T004",
-    "status": "planned",
-    "evidence": ""
+    "status": "ready",
+    "evidence": "",
+    "next_action": "Implement the customer claim form and verified guest access with rate limits and privacy copy."
   },
   {
     "id": "WBM-P2-T005",

@@ -41,7 +41,7 @@ wp_test eval-file "$root/tests/integration/order-storage.php" paired
 printf 'PASS paired ZIP replacement and bootstrap\n'
 
 wp_test option update woocommerce_cod_settings '{"enabled":"yes"}' --format=json
-wp_test option update woocommerce_bacs_accounts '[{"account_name":"Fixture account"}]' --format=json
+wp_test option update woocommerce_bacs_accounts '[{"account_name":"Fixture account","bank_name":"Fixture bank","account_number":"","sort_code":"","iban":"","bic":""}]' --format=json
 wp_test option update woocommerce_bacs_settings '{"enabled":"no","instructions":"Fixture transfer instructions"}' --format=json
 wp_test eval-file "$root/tests/integration/bacs-settings.php" disabled
 wp_test option update woocommerce_bacs_settings '{"enabled":"yes","instructions":"Fixture transfer instructions"}' --format=json
@@ -50,3 +50,4 @@ wp_test eval-file "$root/tests/integration/bacs-settings.php" enabled
 wp_test eval-file "$root/tests/integration/payment-references.php"
 wp_test option update woocommerce_custom_orders_table_enabled yes
 wp_test eval-file "$root/tests/integration/payment-references.php"
+wp_test eval-file "$root/tests/integration/reference-presentation.php"

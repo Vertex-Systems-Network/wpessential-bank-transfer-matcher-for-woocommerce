@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P2-T003",
+  "id": "WBM-P2-T004",
   "phase": "P2",
-  "title": "Thank You, My Account, order emails, classic checkout/Blocks support as actually verified.",
+  "title": "secure customer claim form, guest access, rate limits and privacy copy.",
   "owner": "Free engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher/",
   "depends_on": [
-    "WBM-P2-T002"
+    "WBM-P2-T003"
   ],
-  "verification": "VERIFY-P2-T003",
+  "verification": "VERIFY-P2-T004",
   "status": "ready",
   "evidence": "",
-  "next_action": "Expose stored references on Thank You, My Account and eligible order emails. Verify classic and Blocks checkout separately."
+  "next_action": "Implement the customer claim form and verified guest access with rate limits and privacy copy."
 }
