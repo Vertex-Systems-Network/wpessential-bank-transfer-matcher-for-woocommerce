@@ -54,14 +54,28 @@ try {
 	if ( 422 !== $post( '/finalize-payment', [ 'acknowledged' => false ] )->get_status() ) {
 		throw new RuntimeException( 'Finalization without acknowledgement was accepted.' );
 	}
+	$payment_events = 0;
+	$event_listener = static function () use ( &$payment_events ): void { ++$payment_events; };
+	add_action( 'woocommerce_payment_complete', $event_listener );
+	$reject_completion = static function (): array { return []; };
+	add_filter( 'woocommerce_valid_order_statuses_for_payment_complete', $reject_completion );
+	$failed = $post( '/finalize-payment', [ 'acknowledged' => true ] );
+	remove_filter( 'woocommerce_valid_order_statuses_for_payment_complete', $reject_completion );
+	$intent_state = $wpdb->get_var( $wpdb->prepare(
+		"SELECT state FROM `{$wpdb->prefix}wbm_payment_finalizations` WHERE order_id = %d", $order->get_id()
+	) );
+	if ( 503 !== $failed->get_status() || 'pending' !== $intent_state || wc_get_order( $order->get_id() )->is_paid() ) {
+		throw new RuntimeException( 'Failed WooCommerce completion was not retained as a pending intent.' );
+	}
 	$completed = $post( '/finalize-payment', [ 'acknowledged' => true ] );
 	$retry = $post( '/finalize-payment', [ 'acknowledged' => true ] );
 	if ( 200 !== $completed->get_status() || 'completed' !== $completed->get_data()['status'] ||
 		200 !== $retry->get_status() || 'already_completed' !== $retry->get_data()['status'] ||
-		! wc_get_order( $order->get_id() )->is_paid() ) {
+		! wc_get_order( $order->get_id() )->is_paid() || 1 !== $payment_events ) {
 		throw new RuntimeException( 'Payment completion or idempotent retry failed: ' . wp_json_encode( [ $completed->get_data(), $retry->get_data() ] ) );
 	}
-	echo "PASS permissions, exact balances, over-allocation, guarded full payment completion and idempotent retry\n";
+	remove_action( 'woocommerce_payment_complete', $event_listener );
+	echo "PASS permissions, exact balances, over-allocation, pending failure recovery, full payment completion and one payment hook\n";
 } finally {
 	$wpdb->delete( $wpdb->prefix . 'wbm_payment_finalizations', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_manual_allocations', [ 'order_id' => $order->get_id() ], [ '%d' ] );
