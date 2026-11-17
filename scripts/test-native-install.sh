@@ -39,3 +39,7 @@ wp_test plugin install "$root/dist/$free.zip" --force --activate
 wp_test plugin install "$root/dist/$pro.zip" --force --activate
 wp_test eval-file "$root/tests/integration/order-storage.php" paired
 printf 'PASS paired ZIP replacement and bootstrap\n'
+
+wp_test eval-file "$root/tests/integration/payment-references.php"
+wp_test option update woocommerce_custom_orders_table_enabled yes
+wp_test eval-file "$root/tests/integration/payment-references.php"

@@ -28,7 +28,8 @@
     "ci_foundation": "passed locally and in GitHub Actions run 44017139421; both jobs green",
     "order_storage_smoke": "passed: Free bootstrap and WooCommerce order CRUD in HPOS and classic; Matcher workflows pending",
     "documentation": "passed: seven generated outputs; header drift, output drift, unverified feature promotion and edition isolation checks",
-    "production_zips": "passed: independent deterministic archives, manifest and lock checks, native loader isolation and paired same-version replacement"
+    "production_zips": "passed: independent deterministic archives, manifest and lock checks, native loader isolation and paired same-version replacement",
+    "payment_references": "passed native MariaDB: collision retry, immutable assignment, order-number independence, eligibility and classic/Blocks hook dispatch in HPOS and classic"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -42,8 +43,8 @@
     "free_is_independent"
   ],
   "phase": "P2",
-  "active_task_id": "WBM-P2-T001",
-  "next_action": "Persist unique immutable WooCommerce payment references and test collisions and custom order numbers.",
+  "active_task_id": "WBM-P2-T002",
+  "next_action": "Integrate native BACS settings and detect enabled WooCommerce payment methods.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -64,8 +65,9 @@
     "WBM-P1-T009",
     "WBM-P1-T010",
     "WBM-P1-T011",
-    "WBM-P1-T012"
+    "WBM-P1-T012",
+    "WBM-P2-T001"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "1d1a36aadb1c1a80f5ee2d995f3dc7fc99ffa717"
+  "last_verified_remote_milestone": "4f4bc7af43d1dac1460a30a2074f511b8e065c08"
 }

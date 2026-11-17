@@ -268,9 +268,8 @@
       "WBM-P1-T012"
     ],
     "verification": "VERIFY-P2-T001",
-    "status": "ready",
-    "evidence": "",
-    "next_action": "Persist unique immutable WooCommerce payment references and test collisions and custom order numbers."
+    "status": "done",
+    "evidence": "Native MariaDB passed collision retry, unchanged order references under custom order numbers and repeated hooks, legacy/non-BACS exclusions, and checkout hook dispatch in HPOS and classic. See playground/evidence/payment-references-2026-11-17.log."
   },
   {
     "id": "WBM-P2-T002",
@@ -282,8 +281,9 @@
       "WBM-P2-T001"
     ],
     "verification": "VERIFY-P2-T002",
-    "status": "planned",
-    "evidence": ""
+    "status": "ready",
+    "evidence": "",
+    "next_action": "Integrate native BACS settings and detect enabled WooCommerce payment methods."
   },
   {
     "id": "WBM-P2-T003",

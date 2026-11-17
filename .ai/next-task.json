@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P2-T001",
+  "id": "WBM-P2-T002",
   "phase": "P2",
-  "title": "generate unique immutable payment reference; test collisions and order-number plugins.",
+  "title": "BACS native settings integration and enabled method detection.",
   "owner": "Free engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher/",
   "depends_on": [
-    "WBM-P1-T012"
+    "WBM-P2-T001"
   ],
-  "verification": "VERIFY-P2-T001",
+  "verification": "VERIFY-P2-T002",
   "status": "ready",
   "evidence": "",
-  "next_action": "Persist unique immutable WooCommerce payment references and test collisions and custom order numbers."
+  "next_action": "Integrate native BACS settings and detect enabled WooCommerce payment methods."
 }
