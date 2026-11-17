@@ -53,7 +53,8 @@ try {
 		! str_contains( $html, 'Claims verified in 30 days</h3><p>1</p>' ) ||
 		! str_contains( $html, '15.00 USD' ) || ! str_contains( $html, '0.00 EUR' ) ||
 		! str_contains( $html, 'Outstanding on this page' ) ) {
-		throw new RuntimeException( 'Overview counts or currency-specific balance are incorrect.' );
+		preg_match( '/<section class="wbm-overview".*?<\/section>/s', $html, $overview_markup );
+		throw new RuntimeException( 'Overview counts or currency-specific balance are incorrect: ' . wp_strip_all_tags( $overview_markup[0] ?? substr( $html, 0, 1000 ) ) );
 	}
 	ob_start();
 	OrderPanel::render( $usd );
