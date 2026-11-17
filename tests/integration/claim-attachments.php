@@ -82,5 +82,6 @@ try {
 	}
 	echo "PASS attachment validation, private bytes, duplicate safety, reviewer access and retention\n";
 } finally {
+	$wpdb->delete( $wpdb->prefix . 'wbm_payment_claims', [ 'order_id' => $id ], [ '%d' ] );
 	$order->delete( true );
 }
