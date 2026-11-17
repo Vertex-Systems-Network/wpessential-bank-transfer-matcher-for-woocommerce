@@ -7,6 +7,6 @@ Playground is the first environment for package installation and bootstrap check
 3. Verify separate packages, dependency behavior and activation. Record evidence for both WooCommerce storage modes when the product implements order persistence.
 4. Run allocation, rollback and recovery tests on the same database after ledger migrations and approval orchestration exist. Open independent DB sessions for simultaneous approval cases and assert ledger totals and a single WooCommerce transition.
 
-This workspace had no native MySQL/MariaDB executable or Docker. Local Playground checks are recorded separately from the SQL test gate.
+The migration integration job runs independently of Playground. It uses a fresh WordPress database named `wbm_ci` and two MariaDB connections. To rerun against an equivalent disposable WP-CLI environment, install the Free Composer autoloader, provision a fresh database, and run `wp eval-file /absolute/path/to/tests/integration/migrations.php --path=/absolute/path/to/wordpress`. The fixture writes schema and checkpoint data. Use a fresh database for each run.
 
 The development harness is defined in `tools/mysql/compose.yml`. From the repository root, run `docker compose -p wbm-test -f tools/mysql/compose.yml up -d --wait`. Open `http://127.0.0.1:8891`, complete the disposable setup, then install WooCommerce and the required ZIPs. The image tags and full startup still need a live Docker verification.

@@ -1,0 +1,9 @@
+Note: Using configuration file phpstan.neon.
+
+ [OK] No errors
+
+PASS exact money and invalid/overflow cases
+PASS domain value boundaries and status contracts
+PASS migration ordering, failure, retry, downgrade and lock contention control flow
+PASS PHP syntax for 28 files
+PASS GitHub Actions workflow syntax (actionlint 1.7.7)
