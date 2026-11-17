@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P2-T003",
+  "id": "WBM-P2-T006",
   "phase": "P2",
-  "title": "Thank You, My Account, order emails, classic checkout/Blocks support as actually verified.",
+  "title": "manual bank evidence record and duplicate warnings.",
   "owner": "Free engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher/",
   "depends_on": [
-    "WBM-P2-T002"
+    "WBM-P2-T005"
   ],
-  "verification": "VERIFY-P2-T003",
+  "verification": "VERIFY-P2-T006",
   "status": "ready",
   "evidence": "",
-  "next_action": "Expose stored references on Thank You, My Account and eligible order emails. Verify classic and Blocks checkout separately."
+  "next_action": "Record manual bank evidence and flag potentially duplicate evidence without changing order payment state."
 }

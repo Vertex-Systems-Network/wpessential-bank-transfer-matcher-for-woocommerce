@@ -16,6 +16,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+register_deactivation_hook( __FILE__, static function (): void {
+	wp_clear_scheduled_hook( 'wpessential_wbm_purge_claim_receipts' );
+} );
+
 add_action(
 	'plugins_loaded',
 	static function () {

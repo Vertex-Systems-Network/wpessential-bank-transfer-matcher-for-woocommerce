@@ -294,9 +294,8 @@
       "WBM-P2-T002"
     ],
     "verification": "VERIFY-P2-T003",
-    "status": "ready",
-    "evidence": "",
-    "next_action": "Expose stored references on Thank You, My Account and eligible order emails. Verify classic and Blocks checkout separately."
+    "status": "done",
+    "evidence": "Native WooCommerce rendered classic Thank You, Blocks confirmation, My Account and HTML/plain customer email. Ownership, key and admin-mail exclusions passed. Full browser checkout remains a separate gate."
   },
   {
     "id": "WBM-P2-T004",
@@ -308,8 +307,8 @@
       "WBM-P2-T003"
     ],
     "verification": "VERIFY-P2-T004",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Native MariaDB claims tests passed owner and guest access, validation, nonce, throttling, duplicate safety, and unchanged WooCommerce payment status. Browser POST/redirect pending."
   },
   {
     "id": "WBM-P2-T005",
@@ -321,8 +320,8 @@
       "WBM-P2-T004"
     ],
     "verification": "VERIFY-P2-T005",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Live MariaDB tested attachment validation, private bytes, duplicate safety, reviewer nonce and permission, and expired byte cleanup. Browser multipart and actual HTTP downloads unverified."
   },
   {
     "id": "WBM-P2-T006",
@@ -334,8 +333,9 @@
       "WBM-P2-T005"
     ],
     "verification": "VERIFY-P2-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "ready",
+    "evidence": "",
+    "next_action": "Record manual bank evidence and flag potentially duplicate evidence without changing order payment state."
   },
   {
     "id": "WBM-P2-T007",

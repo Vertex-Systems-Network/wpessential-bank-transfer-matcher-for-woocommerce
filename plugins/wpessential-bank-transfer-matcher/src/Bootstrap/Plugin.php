@@ -8,9 +8,12 @@
 namespace WPEssential\BankTransferMatcher\Bootstrap;
 
 use WPEssential\BankTransferMatcher\Access\Capabilities;
+use WPEssential\BankTransferMatcher\Claims\CustomerClaims;
+use WPEssential\BankTransferMatcher\Claims\AttachmentDownloads;
 use WPEssential\BankTransferMatcher\Admin\Assets;
 use WPEssential\BankTransferMatcher\Admin\Components;
 use WPEssential\BankTransferMatcher\Orders\ReferenceIssuer;
+use WPEssential\BankTransferMatcher\Orders\ReferencePresentation;
 use WPEssential\BankTransferMatcher\Rest\AccessController;
 
 defined( 'ABSPATH' ) || exit;
@@ -22,6 +25,9 @@ final class Plugin {
 		add_action( 'init', array( Capabilities::class, 'install_defaults' ), 20 );
 		add_action( 'woocommerce_checkout_order_created', array( ReferenceIssuer::class, 'issue_at_checkout' ) );
 		add_action( 'woocommerce_store_api_checkout_order_processed', array( ReferenceIssuer::class, 'issue_at_checkout' ) );
+		ReferencePresentation::register();
+		CustomerClaims::register();
+		AttachmentDownloads::register();
 		add_action( 'rest_api_init', array( AccessController::class, 'register_routes' ) );
 		add_action( 'admin_menu', array( self::class, 'register_menu' ) );
 		do_action( 'wpessential_bank_transfer_matcher_ready', self::API_VERSION );

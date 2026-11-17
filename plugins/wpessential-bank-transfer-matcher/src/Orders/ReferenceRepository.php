@@ -37,7 +37,16 @@ final class ReferenceRepository {
 	}
 
 	public function find( EntityId $order_id ): ?PaymentReference {
-		$this->ensure_schema();
+		if ( ! $this->ready ) {
+			$version = $this->schema_version();
+			if ( null === $version ) {
+				return null;
+			}
+			if ( '1' !== $version ) {
+				throw new RuntimeException( 'Unsupported payment reference schema version.' );
+			}
+			$this->ready = true;
+		}
 		$table = $this->db->prefix . 'wbm_payment_references';
 		$value = $this->db->get_var( $this->db->prepare( "SELECT reference FROM `$table` WHERE order_id = %d", $order_id->value ) );
 		if ( '' !== $this->db->last_error ) {
@@ -52,13 +61,20 @@ final class ReferenceRepository {
 			return;
 		}
 
-		$version = $this->db->get_var(
-			$this->db->prepare( "SELECT option_value FROM {$this->db->options} WHERE option_name = %s", self::VERSION_OPTION )
-		);
-		if ( '1' !== (string) $version || '' !== $this->db->last_error ) {
+		if ( '1' !== $this->schema_version() ) {
 			( new MigrationRunner( $this->db, self::VERSION_OPTION ) )->upgrade( [ self::create_table(...) ] );
 		}
 		$this->ready = true;
+	}
+
+	private function schema_version(): ?string {
+		$version = $this->db->get_var(
+			$this->db->prepare( "SELECT option_value FROM {$this->db->options} WHERE option_name = %s", self::VERSION_OPTION )
+		);
+		if ( '' !== $this->db->last_error ) {
+			throw new RuntimeException( 'Could not read the payment reference schema version.' );
+		}
+		return null === $version ? null : (string) $version;
 	}
 
 	private static function create_table( wpdb $db ): bool {
