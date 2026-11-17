@@ -14,10 +14,13 @@ final class ClaimRepository {
 	public function __construct( private readonly wpdb $db ) {}
 
 	public function exists( int $order_id ): bool {
-		if ( ! $this->ready && null === $this->version() ) {
+		$version = $this->ready ? '2' : $this->version();
+		if ( null === $version ) {
 			return false;
 		}
-		$this->ensure_schema();
+		if ( ! in_array( $version, [ '1', '2' ], true ) ) {
+			throw new RuntimeException( 'Unsupported payment claim schema version.' );
+		}
 		$table = $this->db->prefix . 'wbm_payment_claims';
 		$found = $this->db->get_var( $this->db->prepare( "SELECT order_id FROM `$table` WHERE order_id = %d", $order_id ) );
 		$this->check_error();
@@ -40,16 +43,61 @@ final class ClaimRepository {
 		return 0 < $result;
 	}
 
-	public function save( int $order_id, array $claim ): void {
+	public function save( int $order_id, array $claim, ?ClaimAttachment $attachment = null ): void {
 		$this->ensure_schema();
 		$table = $this->db->prefix . 'wbm_payment_claims';
-		$this->db->query( $this->db->prepare(
-			"INSERT INTO `$table` (order_id, status, transfer_date, amount_minor, currency, exponent, transfer_reference, sender_name, customer_note, created_at)
-			VALUES (%d, %s, %s, %d, %s, %d, %s, %s, %s, UTC_TIMESTAMP())
-			ON DUPLICATE KEY UPDATE order_id = order_id",
-			$order_id, ClaimStatus::SUBMITTED->value, $claim['date'], $claim['amount']->minor_units,
-			$claim['amount']->currency, $claim['amount']->exponent, $claim['reference'], $claim['sender'], $claim['note']
+		$previous = $this->db->suppress_errors( true );
+		try {
+			$this->db->query( $this->db->prepare(
+				"INSERT INTO `$table` (order_id, status, transfer_date, amount_minor, currency, exponent, transfer_reference, sender_name, customer_note, created_at, attachment_mime, attachment_bytes, attachment_expires)
+				VALUES (%d, %s, %s, %d, %s, %d, %s, %s, %s, UTC_TIMESTAMP(), NULLIF(%s, ''), UNHEX(NULLIF(%s, '')), NULLIF(%s, ''))
+				ON DUPLICATE KEY UPDATE order_id = order_id",
+				$order_id, ClaimStatus::SUBMITTED->value, $claim['date'], $claim['amount']->minor_units,
+				$claim['amount']->currency, $claim['amount']->exponent, $claim['reference'], $claim['sender'], $claim['note'],
+				$attachment?->mime ?? '', bin2hex( $attachment?->bytes ?? '' ),
+				$attachment ? gmdate( 'Y-m-d H:i:s', time() + 30 * DAY_IN_SECONDS ) : ''
+			) );
+		} finally {
+			$this->db->suppress_errors( $previous );
+		}
+		$this->check_error();
+	}
+
+	/** @return array{attachment_mime: string, attachment_bytes: string}|null */
+	public function attachment( int $order_id ): ?array {
+		if ( '2' !== $this->version() ) {
+			return null;
+		}
+		$table = $this->db->prefix . 'wbm_payment_claims';
+		$result = $this->db->get_row( $this->db->prepare(
+			"SELECT attachment_mime, attachment_bytes FROM `$table`
+			WHERE order_id = %d AND attachment_expires > UTC_TIMESTAMP()",
+			$order_id
+		), ARRAY_A );
+		$this->check_error();
+		return is_array( $result ) ? $result : null;
+	}
+
+	public function has_attachment( int $order_id ): bool {
+		if ( '2' !== $this->version() ) {
+			return false;
+		}
+		$table = $this->db->prefix . 'wbm_payment_claims';
+		$found = $this->db->get_var( $this->db->prepare(
+			"SELECT order_id FROM `$table` WHERE order_id = %d AND attachment_expires > UTC_TIMESTAMP()",
+			$order_id
 		) );
+		$this->check_error();
+		return null !== $found;
+	}
+
+	public function purge_expired_attachments(): void {
+		if ( '2' !== $this->version() ) {
+			return;
+		}
+		$table = $this->db->prefix . 'wbm_payment_claims';
+		$this->db->query( "UPDATE `$table` SET attachment_mime = NULL, attachment_bytes = NULL, attachment_expires = NULL
+			WHERE attachment_expires <= UTC_TIMESTAMP() LIMIT 100" );
 		$this->check_error();
 	}
 
@@ -66,8 +114,8 @@ final class ClaimRepository {
 		if ( $this->ready ) {
 			return;
 		}
-		if ( '1' !== $this->version() ) {
-			( new MigrationRunner( $this->db, self::VERSION ) )->upgrade( [ self::create_tables(...) ] );
+		if ( '2' !== $this->version() ) {
+			( new MigrationRunner( $this->db, self::VERSION ) )->upgrade( [ self::create_tables(...), self::add_attachment_columns(...) ] );
 		}
 		$this->ready = true;
 	}
@@ -86,6 +134,27 @@ final class ClaimRepository {
 			order_id BIGINT UNSIGNED NOT NULL, window_id BIGINT UNSIGNED NOT NULL,
 			attempts TINYINT UNSIGNED NOT NULL, PRIMARY KEY (order_id, window_id), KEY window_id (window_id)
 		) ENGINE=InnoDB $collation" );
+	}
+
+	private static function add_attachment_columns( wpdb $db ): bool {
+		$table = $db->prefix . 'wbm_payment_claims';
+		$columns = $db->get_col( "SHOW COLUMNS FROM `$table`" );
+		if ( '' !== $db->last_error ) {
+			return false;
+		}
+		foreach ( [
+			'attachment_mime' => 'VARCHAR(30) NULL',
+			'attachment_bytes' => 'MEDIUMBLOB NULL',
+			'attachment_expires' => 'DATETIME NULL',
+		] as $column => $type ) {
+			if ( ! in_array( $column, $columns, true ) &&
+				false === $db->query( "ALTER TABLE `$table` ADD COLUMN `$column` $type" ) ) {
+				return false;
+			}
+		}
+		$indexes = $db->get_col( "SHOW INDEX FROM `$table` WHERE Key_name = 'attachment_expires'", 2 );
+		return '' === $db->last_error && ( [] !== $indexes ||
+			false !== $db->query( "ALTER TABLE `$table` ADD INDEX attachment_expires (attachment_expires)" ) );
 	}
 
 	private function check_error(): void {

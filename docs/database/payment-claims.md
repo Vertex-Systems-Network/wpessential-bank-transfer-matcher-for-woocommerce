@@ -6,4 +6,12 @@ MariaDB enforces one claim per order. The first accepted claim is preserved when
 
 Claims capture the date, amount in order currency, optional bank reference, optional sender name and optional customer note. The amount accepts plain decimal notation and uses the WooCommerce price precision. Confirmation reflects a submitted claim. The workflow does not mark or verify payment.
 
-The current form accepts text only. Private attachments, retention and reviewer transitions are covered by later tasks. Native tests call the submission controller in WordPress with a live MariaDB database. Full browser form and redirect tests remain open.
+Native tests call the submission controller in WordPress with a live MariaDB database. Full browser form and redirect tests remain open.
+
+## Private receipts
+
+Uploads are off by default. Set `wpessential_wbm_claim_uploads` to `yes` on a configured site to enable the optional receipt field. The settings screen will expose this control in P2-T011. The server accepts PDF, JPEG or PNG up to 2 MB after checking upload provenance and inspecting content. Receipts are stored as bytes with the claim in the database, outside the Media Library.
+
+A reviewer can download an unexpired receipt from the WooCommerce order screen. The handler requires the review capability and an order-scoped nonce and returns the file as an attachment. After 30 days the file is no longer downloadable. A daily WordPress scheduled event clears expired bytes in batches of 100, retaining the claim record. The event needs a working WordPress cron runner. Database backups may retain copies according to the store's backup policy.
+
+Native coverage includes validation, private byte persistence, nonce and capability checks, and expiry cleanup. Browser multipart upload and HTTP download headers remain unverified.

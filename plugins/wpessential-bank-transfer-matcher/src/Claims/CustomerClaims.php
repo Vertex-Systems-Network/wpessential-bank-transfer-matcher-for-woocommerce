@@ -23,7 +23,7 @@ final class CustomerClaims {
 		if ( 'POST' !== ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) {
 			wp_die( esc_html__( 'This form accepts POST requests only.', 'wpessential-bank-transfer-matcher' ), '', [ 'response' => 405 ] );
 		}
-		$result = self::process( wp_unslash( $_POST ) );
+		$result = self::process( wp_unslash( $_POST ), $_FILES['receipt'] ?? [] );
 		if ( is_wp_error( $result ) ) {
 			wp_die( esc_html( $result->get_error_message() ), '', [ 'response' => $result->get_error_data() ] );
 		}
@@ -34,7 +34,7 @@ final class CustomerClaims {
 	}
 
 	/** @return array{WC_Order, string}|WP_Error */
-	public static function process( array $input ): array|WP_Error {
+	public static function process( array $input, array $file = [] ): array|WP_Error {
 		$forbidden = new WP_Error( 'wbm_claim_forbidden', __( 'Unable to verify access to this order.', 'wpessential-bank-transfer-matcher' ), 403 );
 		$order_id = filter_var( self::field( $input, 'order_id' ), FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 1 ] ] );
 		if ( ! $order_id || ! wp_verify_nonce( self::field( $input, '_wbm_claim_nonce' ), self::ACTION . ':' . $order_id ) ) {
@@ -72,7 +72,7 @@ final class CustomerClaims {
 			if ( $repository->exists( $order_id ) ) {
 				return [ $order, 'submitted' ];
 			}
-			$repository->save( $order_id, self::validate( $input, $order ) );
+			$repository->save( $order_id, self::validate( $input, $order ), ClaimAttachment::from_upload( $file ) );
 			return [ $order, 'submitted' ];
 		} catch ( InvalidArgumentException | \OverflowException ) {
 			return [ $order, 'invalid' ];
@@ -102,12 +102,12 @@ final class CustomerClaims {
 		$status = isset( $_GET['wbm_claim'] ) && is_string( $_GET['wbm_claim'] ) ? wp_unslash( $_GET['wbm_claim'] ) : '';
 		if ( 'invalid' === $status || 'unavailable' === $status ) {
 			printf( '<p role="alert">%s</p>', esc_html( 'invalid' === $status
-				? __( 'Check the transfer date, amount and acknowledgment, then try again.', 'wpessential-bank-transfer-matcher' )
+				? __( 'Check the transfer date, amount, attachment and acknowledgment, then try again.', 'wpessential-bank-transfer-matcher' )
 				: __( 'Payment claims are temporarily unavailable.', 'wpessential-bank-transfer-matcher' ) ) );
 		}
 
 		?>
-		<form class="wbm-payment-claim" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<form class="wbm-payment-claim" method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<h2><?php esc_html_e( 'I have sent the payment', 'wpessential-bank-transfer-matcher' ); ?></h2>
 			<p><?php esc_html_e( 'The store uses these details to review your claim. Submitting a claim does not verify payment. Do not include bank credentials or card details.', 'wpessential-bank-transfer-matcher' ); ?></p>
 			<input type="hidden" name="action" value="<?php echo esc_attr( self::ACTION ); ?>">
@@ -122,6 +122,9 @@ final class CustomerClaims {
 			<p><label><?php esc_html_e( 'Bank transfer reference (optional)', 'wpessential-bank-transfer-matcher' ); ?> <input type="text" name="transfer_reference" maxlength="100"></label></p>
 			<p><label><?php esc_html_e( 'Sender name (optional)', 'wpessential-bank-transfer-matcher' ); ?> <input type="text" name="sender_name" maxlength="100"></label></p>
 			<p><label><?php esc_html_e( 'Note for the store (optional)', 'wpessential-bank-transfer-matcher' ); ?> <textarea name="customer_note" maxlength="1000"></textarea></label></p>
+			<?php if ( ClaimAttachment::enabled() ) : ?>
+				<p><label><?php esc_html_e( 'Receipt file (optional, PDF, JPG or PNG, up to 2 MB)', 'wpessential-bank-transfer-matcher' ); ?> <input type="file" name="receipt" accept=".pdf,.jpg,.jpeg,.png"></label></p>
+			<?php endif; ?>
 			<p><label><input type="checkbox" name="acknowledged" value="yes" required> <?php esc_html_e( 'I understand that a claim does not verify payment.', 'wpessential-bank-transfer-matcher' ); ?></label></p>
 			<p><button type="submit" class="button"><?php esc_html_e( 'Submit payment claim', 'wpessential-bank-transfer-matcher' ); ?></button></p>
 		</form>

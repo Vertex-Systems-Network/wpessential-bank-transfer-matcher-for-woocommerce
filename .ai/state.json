@@ -32,7 +32,8 @@
     "payment_references": "passed native MariaDB: collision retry, immutable assignment, order-number independence, eligibility and classic/Blocks hook dispatch in HPOS and classic",
     "bacs_settings": "passed native WooCommerce: enabled gateway detection, native instructions, no option writes and reference regression in both storage modes",
     "reference_presentation": "passed native WooCommerce rendering: classic, Blocks, My Account, HTML/plain email; owner, valid guest, wrong key and admin email cases",
-    "customer_claims": "passed native WooCommerce/MariaDB controller tests; full browser POST and redirect pending"
+    "customer_claims": "passed native WooCommerce/MariaDB controller tests; full browser POST and redirect pending",
+    "claim_attachments": "passed native WooCommerce/MariaDB validation, storage, authorized access checks and purge; browser multipart and HTTP download pending"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -46,8 +47,8 @@
     "free_is_independent"
   ],
   "phase": "P2",
-  "active_task_id": "WBM-P2-T005",
-  "next_action": "Implement private attachment storage, file validation, protected access and retention for claims.",
+  "active_task_id": "WBM-P2-T006",
+  "next_action": "Record manual bank evidence and flag potentially duplicate evidence without changing order payment state.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -72,8 +73,9 @@
     "WBM-P2-T001",
     "WBM-P2-T002",
     "WBM-P2-T003",
-    "WBM-P2-T004"
+    "WBM-P2-T004",
+    "WBM-P2-T005"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "07d1c0618a9fd2662aa38ec35086c7a3bdb979f9"
+  "last_verified_remote_milestone": "bffd99615c16731aeefb07816632ac9a66bd51bd"
 }

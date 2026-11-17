@@ -320,9 +320,8 @@
       "WBM-P2-T004"
     ],
     "verification": "VERIFY-P2-T005",
-    "status": "ready",
-    "evidence": "",
-    "next_action": "Implement private attachment storage, file validation, protected access and retention for claims."
+    "status": "done",
+    "evidence": "Live MariaDB tested attachment validation, private bytes, duplicate safety, reviewer nonce and permission, and expired byte cleanup. Browser multipart and actual HTTP downloads unverified."
   },
   {
     "id": "WBM-P2-T006",
@@ -334,8 +333,9 @@
       "WBM-P2-T005"
     ],
     "verification": "VERIFY-P2-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "ready",
+    "evidence": "",
+    "next_action": "Record manual bank evidence and flag potentially duplicate evidence without changing order payment state."
   },
   {
     "id": "WBM-P2-T007",
