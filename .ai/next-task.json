@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P1-T003",
+  "id": "WBM-P1-T004",
   "phase": "P1",
-  "title": "create activation/deactivation/dependency/version checks, clean error states.",
+  "title": "create Free-owned capabilities and role mapping; REST API auth foundation.",
   "owner": "Platform",
   "paths": "plugins/; playground/",
   "depends_on": [
-    "WBM-P1-T002"
+    "WBM-P1-T003"
   ],
-  "verification": "VERIFY-P1-T003",
-  "status": "in_progress",
-  "evidence": "Missing WooCommerce and Free scenarios passed in playground/evidence/dependency-2026-11-17.log. Version mismatch and lifecycle cases pending.",
-  "next_action": "Extend playground/tests/dependencies.php and scripts/test-playground-foundation.py with incompatible versions and clean deactivate/reactivate checks; run the targeted scenarios."
+  "verification": "VERIFY-P1-T004",
+  "status": "ready",
+  "evidence": "",
+  "next_action": "Implement Free-owned WordPress role capabilities and REST permission checks, then verify allowed and denied roles in Playground."
 }

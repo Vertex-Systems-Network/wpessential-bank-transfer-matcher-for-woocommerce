@@ -1,0 +1,4 @@
+PASS woo-outdated Blueprint and PHP bootstrap assertions
+PASS free-outdated Blueprint and PHP bootstrap assertions
+PASS free-new-major Blueprint and PHP bootstrap assertions
+PASS lifecycle Blueprint and PHP bootstrap assertions

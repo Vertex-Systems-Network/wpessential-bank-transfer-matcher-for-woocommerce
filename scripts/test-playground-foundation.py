@@ -1,6 +1,7 @@
 """Assert normal and missing-dependency plugin activation from development ZIPs."""
 
 import argparse
+from io import BytesIO
 import json
 import subprocess
 from pathlib import Path
@@ -10,10 +11,39 @@ ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / 'dist'
 FREE = 'wpessential-bank-transfer-matcher'
 PRO = f'{FREE}-pro'
+VERSION_SCENARIOS = ('woo-outdated', 'free-outdated', 'free-new-major')
+LIFECYCLE = ('deactivate-pro', 'deactivate-free', 'reactivate-free', 'reactivate-pro', 'restored')
+
+
+def with_free_api_version(archive, version):
+    changed = BytesIO()
+    bootstrap = f'{FREE}/src/Bootstrap/Plugin.php'
+    with ZipFile(BytesIO(archive)) as source, ZipFile(changed, 'w') as target:
+        for name in source.namelist():
+            content = source.read(name)
+            if name == bootstrap:
+                expected = b"const API_VERSION = '1.0.0';"
+                if content.count(expected) != 1:
+                    raise ValueError('Update the Free API compatibility fixture to match the source.')
+                content = content.replace(expected, f"const API_VERSION = '{version}';".encode())
+            target.writestr(name, content)
+    return changed.getvalue()
+
+
+def outdated_woo_fixture():
+    archive = BytesIO()
+    with ZipFile(archive, 'w') as plugin:
+        plugin.writestr('woocommerce/woocommerce.php', "<?php\n/* Plugin Name: WooCommerce test fixture */\n"
+                       "define('WC_VERSION', '10.7.0');\n")
+    return archive.getvalue()
 
 
 def build_smoke_bundle(scenario):
     base = scenario if scenario in ('base', 'free', 'pro') else 'base'
+    if scenario == 'woo-outdated':
+        base = 'free'
+    elif scenario in (*VERSION_SCENARIOS[1:], 'lifecycle'):
+        base = 'pro'
     with ZipFile(DIST / f'playground-{base}.zip') as bundle:
         blueprint = json.loads(bundle.read('blueprint.json'))
         resources = {name: bundle.read(name) for name in bundle.namelist()
@@ -22,6 +52,22 @@ def build_smoke_bundle(scenario):
     if scenario in ('base', 'free', 'pro'):
         php = (ROOT / 'playground/tests/foundation.php').read_text()
         php = php.replace('WBM_SCENARIO', repr(scenario))
+    elif scenario in VERSION_SCENARIOS:
+        if scenario == 'woo-outdated':
+            resources['woocommerce-fixture.zip'] = outdated_woo_fixture()
+            woo_install = next(step for step in blueprint['steps'] if step['step'] == 'installPlugin')
+            woo_install['pluginData'] = {'resource': 'bundled', 'path': '/woocommerce-fixture.zip'}
+        else:
+            archive = f'{FREE}.zip'
+            version = '0.9.0' if scenario == 'free-outdated' else '2.0.0'
+            resources[archive] = with_free_api_version(resources[archive], version)
+        php = (ROOT / 'playground/tests/incompatible.php').read_text()
+        php = php.replace('WBM_VERSION_SCENARIO', repr(scenario))
+    elif scenario == 'lifecycle':
+        php = (ROOT / 'playground/tests/lifecycle.php').read_text()
+        for state in LIFECYCLE[:-1]:
+            blueprint['steps'].append({'step': 'runPHP', 'code': php.replace('WBM_LIFECYCLE_STATE', repr(state))})
+        php = php.replace('WBM_LIFECYCLE_STATE', repr(LIFECYCLE[-1]))
     else:
         slug = FREE if scenario == 'woo-missing' else PRO
         if scenario == 'woo-missing':
@@ -46,7 +92,7 @@ def build_smoke_bundle(scenario):
 
 
 def main():
-    scenarios = ('base', 'free', 'pro', 'woo-missing', 'free-missing')
+    scenarios = ('base', 'free', 'pro', 'woo-missing', 'free-missing', *VERSION_SCENARIOS, 'lifecycle')
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--cli', help='Local Playground CLI path')
     parser.add_argument('--scenario', action='append', choices=scenarios)

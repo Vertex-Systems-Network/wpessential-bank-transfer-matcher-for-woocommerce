@@ -18,7 +18,9 @@
     "dependency_missing": "pass for WooCommerce absent and Free absent",
     "browser_smoke": "blocked: Chromium socket operation denied",
     "mysql_harness_config": "parsed; runtime unavailable",
-    "task_graph": "pass: 102 tasks, 168 requirement references"
+    "task_graph": "pass: 102 tasks, 168 requirement references",
+    "dependency_versions": "passed: WooCommerce 10.7 fixture and Free API 0.9.0/2.0.0 fixtures",
+    "lifecycle": "passed: Free and Pro deactivate/reactivate with fresh requests"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -32,8 +34,8 @@
     "free_is_independent"
   ],
   "phase": "P1",
-  "active_task_id": "WBM-P1-T003",
-  "next_action": "Extend playground/tests/dependencies.php and scripts/test-playground-foundation.py with incompatible versions and clean deactivate/reactivate checks; run the targeted scenarios.",
+  "active_task_id": "WBM-P1-T004",
+  "next_action": "Implement Free-owned WordPress role capabilities and REST permission checks, then verify allowed and denied roles in Playground.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -44,10 +46,11 @@
     "WBM-P0-T007",
     "WBM-P0-T008",
     "WBM-P1-T002",
+    "WBM-P1-T003",
     "WBM-P1-T010"
   ],
   "blocked_tasks": [
     "WBM-P1-T001"
   ],
-  "last_verified_remote_milestone": "be004d8f090139f990a148da4d255bdc334235a0"
+  "last_verified_remote_milestone": "b277fee29fc7f8f614c0c35e30f33b9c5ea748fc"
 }

@@ -15,3 +15,13 @@ python3 scripts/test-playground-foundation.py
 ```
 
 Use `--scenario woo-missing --scenario free-missing` to exercise only the missing dependency scenarios.
+
+The version and lifecycle checks can also run on their own.
+
+```sh
+python3 scripts/test-playground-foundation.py \
+  --scenario woo-outdated --scenario free-outdated \
+  --scenario free-new-major --scenario lifecycle
+```
+
+The version checks isolate the bootstrap guards. One fixture reports WooCommerce 10.7.0. Two transient copies of the Free archive report API 0.9.0 and 2.0.0. The normal packages are untouched. The lifecycle check uses the normal Free and Pro packages and WooCommerce, with a fresh WordPress request after each deactivation or reactivation.

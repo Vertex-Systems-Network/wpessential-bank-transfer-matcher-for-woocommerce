@@ -138,9 +138,8 @@
       "WBM-P1-T002"
     ],
     "verification": "VERIFY-P1-T003",
-    "status": "in_progress",
-    "evidence": "Missing WooCommerce and Free scenarios passed in playground/evidence/dependency-2026-11-17.log. Version mismatch and lifecycle cases pending.",
-    "next_action": "Extend playground/tests/dependencies.php and scripts/test-playground-foundation.py with incompatible versions and clean deactivate/reactivate checks; run the targeted scenarios."
+    "status": "done",
+    "evidence": "playground/evidence/dependency-2026-11-17.log and playground/evidence/version-lifecycle-2026-11-17.log"
   },
   {
     "id": "WBM-P1-T004",
@@ -152,8 +151,9 @@
       "WBM-P1-T003"
     ],
     "verification": "VERIFY-P1-T004",
-    "status": "planned",
-    "evidence": ""
+    "status": "ready",
+    "evidence": "",
+    "next_action": "Implement Free-owned WordPress role capabilities and REST permission checks, then verify allowed and denied roles in Playground."
   },
   {
     "id": "WBM-P1-T005",
@@ -218,7 +218,7 @@
     ],
     "verification": "VERIFY-P1-T009",
     "status": "planned",
-    "evidence": "Free-only and Free+Pro ZIPs passed; required dependency failures passed. Reinstall and lifecycle matrix remains open."
+    "evidence": "Free-only and Free+Pro installation, missing dependencies and deactivate/reactivate passed. Reinstall and HPOS/compatibility checks remain pending."
   },
   {
     "id": "WBM-P1-T010",
