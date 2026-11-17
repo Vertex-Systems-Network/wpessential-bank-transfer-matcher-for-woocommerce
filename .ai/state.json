@@ -37,7 +37,8 @@
     "manual_bank_evidence": "passed: GitHub Actions run 44193754937, native MariaDB and foundation",
     "manual_allocations": "passed: GitHub Actions run 44196352710 native WooCommerce/MariaDB including failure retry and single payment hook",
     "payment_finalization": "passed: explicit paid transition and idempotent retry; cross-request concurrency and pending-paid crash exception deferred to P8",
-    "claim_reviews": "passed: GitHub Actions run 44198294949 native WooCommerce/MariaDB; foundation job pending at checkpoint"
+    "claim_reviews": "passed: GitHub Actions run 44198294949 native WooCommerce/MariaDB; foundation job pending at checkpoint",
+    "order_admin": "pending: hosted HPOS/classic WooCommerce and Playground"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",

@@ -14,7 +14,8 @@ use WPEssential\BankTransferMatcher\Claims\AttachmentDownloads;
 use WPEssential\BankTransferMatcher\Evidence\BankEvidence;
 use WPEssential\BankTransferMatcher\Evidence\ManualAllocations;
 use WPEssential\BankTransferMatcher\Admin\Assets;
-use WPEssential\BankTransferMatcher\Admin\Components;
+use WPEssential\BankTransferMatcher\Admin\OrdersPage;
+use WPEssential\BankTransferMatcher\Admin\OrderPanel;
 use WPEssential\BankTransferMatcher\Orders\ReferenceIssuer;
 use WPEssential\BankTransferMatcher\Orders\ReferencePresentation;
 use WPEssential\BankTransferMatcher\Rest\AccessController;
@@ -34,6 +35,7 @@ final class Plugin {
 		AttachmentDownloads::register();
 		BankEvidence::register();
 		ManualAllocations::register();
+		OrderPanel::register();
 		add_action( 'rest_api_init', array( AccessController::class, 'register_routes' ) );
 		add_action( 'admin_menu', array( self::class, 'register_menu' ) );
 		do_action( 'wpessential_bank_transfer_matcher_ready', self::API_VERSION );
@@ -59,13 +61,6 @@ final class Plugin {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'wpessential-bank-transfer-matcher' ), '', array( 'response' => 403 ) );
 		}
 
-		echo '<div class="wrap wbm-admin">';
-		Components::heading( __( 'Bank Transfer Matcher', 'wpessential-bank-transfer-matcher' ) );
-		Components::panel(
-			'wbm-reconciliation-title',
-			__( 'Reconciliation', 'wpessential-bank-transfer-matcher' ),
-			__( 'Reconciliation workflows are under development.', 'wpessential-bank-transfer-matcher' )
-		);
-		echo '</div>';
+		OrdersPage::render();
 	}
 }

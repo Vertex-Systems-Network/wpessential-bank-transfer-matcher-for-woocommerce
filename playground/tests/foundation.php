@@ -46,8 +46,8 @@ if ( $free_loaded ) {
 	$html = ob_get_clean();
 
 	if ( ! str_contains( $html, '<h1>Bank Transfer Matcher</h1>' ) ||
-		! str_contains( $html, 'aria-labelledby="wbm-reconciliation-title"' ) ||
-		! str_contains( $html, '<h2 id="wbm-reconciliation-title">Reconciliation</h2>' ) ) {
+		! str_contains( $html, 'name="wbm_status"' ) ||
+		! ( str_contains( $html, 'No bank transfer orders match this status.' ) || str_contains( $html, 'wbm-table-scroll' ) ) ) {
 		throw new RuntimeException( 'Admin entry point did not render.' );
 	}
 }

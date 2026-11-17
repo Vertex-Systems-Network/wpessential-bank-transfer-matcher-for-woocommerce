@@ -8,6 +8,6 @@
     "WBM-P2-T008"
   ],
   "verification": "VERIFY-P2-T009",
-  "status": "ready",
-  "evidence": ""
+  "status": "in_progress",
+  "evidence": "HPOS/classic order table and native order panel implemented; hosted integration and Playground verification pending."
 }

@@ -56,3 +56,7 @@ wp_test eval-file "$root/tests/integration/claim-attachments.php"
 wp_test eval-file "$root/tests/integration/bank-evidence.php"
 wp_test eval-file "$root/tests/integration/manual-allocations.php"
 wp_test eval-file "$root/tests/integration/claim-reviews.php"
+wp_test option update woocommerce_custom_orders_table_enabled no
+wp_test eval-file "$root/tests/integration/order-admin.php" classic
+wp_test option update woocommerce_custom_orders_table_enabled yes
+wp_test eval-file "$root/tests/integration/order-admin.php" hpos

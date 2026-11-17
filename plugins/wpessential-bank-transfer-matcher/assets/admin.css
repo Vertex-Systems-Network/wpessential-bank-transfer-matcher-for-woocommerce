@@ -14,3 +14,36 @@
 .wbm-admin .wbm-panel p:last-child {
 	margin-block-end: 0;
 }
+
+.wbm-admin .wbm-orders-filter {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-block: 1rem;
+}
+
+.wbm-admin .wbm-table-scroll {
+	max-inline-size: 100%;
+	overflow-x: auto;
+}
+
+.wbm-admin .wp-list-table {
+	min-inline-size: 920px;
+}
+
+.wbm-admin .wp-list-table th,
+.wbm-admin .wp-list-table td {
+	overflow-wrap: anywhere;
+}
+
+.wbm-admin .wbm-pagination {
+	margin-block: 1rem;
+}
+
+.wbm-admin .wbm-pagination .page-numbers {
+	display: inline-block;
+	margin-inline-end: 0.25rem;
+	padding: 0.35rem 0.6rem;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+}
