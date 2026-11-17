@@ -204,7 +204,7 @@
     ],
     "verification": "VERIFY-P1-T008",
     "status": "done",
-    "evidence": "Local lint, PHPStan domain analysis, unit suites, actionlint and live WordPress/MariaDB migration integration passed. Hosted execution pending. See playground/evidence/ci-foundation-2026-11-17.log and mariadb-migrations-2026-11-17.log."
+    "evidence": "Local PHPStan, unit tests, lint, actionlint and MariaDB passed. GitHub Actions run 44017139421 passed both the foundation and MariaDB jobs."
   },
   {
     "id": "WBM-P1-T009",

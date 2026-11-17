@@ -25,7 +25,7 @@
     "domain": "passed: exact money, currency, reference, ID boundaries and status contracts",
     "migration_control_flow": "passed: PHP doubles and native WordPress/MariaDB integration; snapshot restore pending",
     "admin_shell": "passed: packaged Free and Pro markup and scoped stylesheet; access regression",
-    "ci_foundation": "passed locally: lint, PHPStan domain analysis, unit suites, actionlint and native SQL integration; hosted CI pending"
+    "ci_foundation": "passed locally and in GitHub Actions run 44017139421; both jobs green"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -62,5 +62,5 @@
   "blocked_tasks": [
     "WBM-P1-T001"
   ],
-  "last_verified_remote_milestone": "317b26b46d9bf7bc205e1969447e356ea125405f"
+  "last_verified_remote_milestone": "2e47916f99984805e2e831d62f2aba09c2b19b8a"
 }
