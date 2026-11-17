@@ -73,7 +73,7 @@ try {
 	if ( 20 !== preg_match_all( '/<tr><td><a href=/', $page_one ) ) {
 		throw new RuntimeException( 'First page did not contain 20 order rows.' );
 	}
-	if ( 2 !== preg_match_all( '/<tr><td><a href=/', $page_two ) || ! str_contains( $page_one, 'wbm-pagination' ) ) {
+	if ( 2 !== preg_match_all( '/<tr><td><a href=/', $page_two ) || ! str_contains( $page_one, 'wbm-pagination' ) || ! str_contains( $page_one, 'paged=2' ) ) {
 		throw new RuntimeException( 'Second page or pagination links were incorrect.' );
 	}
 	echo "PASS $mode eligible BACS query, status filter, exact order panel, non-BACS isolation and pagination\n";
