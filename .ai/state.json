@@ -39,7 +39,7 @@
     "payment_finalization": "passed: explicit paid transition and idempotent retry; cross-request concurrency and pending-paid crash exception deferred to P8",
     "claim_reviews": "passed: GitHub Actions run 44198294949 native WooCommerce/MariaDB; foundation job pending at checkpoint",
     "order_admin": "passed: native classic and HPOS in runs 44199540256 and 44199850238; Playground foundation pending",
-    "free_overview_audit": "pending: native HPOS/classic and foundation CI"
+    "free_overview_audit": "passed: native classic and HPOS run 44201485521; foundation run 44200810123 passed before fixture cleanup"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -53,8 +53,8 @@
     "free_is_independent"
   ],
   "phase": "P2",
-  "active_task_id": "WBM-P2-T010",
-  "next_action": "Free overview KPIs and basic audit timeline.",
+  "active_task_id": "WBM-P2-T011",
+  "next_action": "Free settings tabs, roles/capabilities, privacy tools.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -84,7 +84,8 @@
     "WBM-P2-T006",
     "WBM-P2-T007",
     "WBM-P2-T008",
-    "WBM-P2-T009"
+    "WBM-P2-T009",
+    "WBM-P2-T010"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "bffd99615c16731aeefb07816632ac9a66bd51bd"

@@ -1,13 +1,13 @@
 {
-  "id": "WBM-P2-T010",
+  "id": "WBM-P2-T011",
   "phase": "P2",
-  "title": "Free overview KPIs and basic audit timeline.",
+  "title": "Free settings tabs, roles/capabilities, privacy tools.",
   "owner": "Free engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher/",
   "depends_on": [
-    "WBM-P2-T009"
+    "WBM-P2-T010"
   ],
-  "verification": "VERIFY-P2-T010",
-  "status": "in_progress",
-  "evidence": "Free overview and private-safe per-order audit timeline implemented; native HPOS/classic and foundation CI pending."
+  "verification": "VERIFY-P2-T011",
+  "status": "ready",
+  "evidence": ""
 }

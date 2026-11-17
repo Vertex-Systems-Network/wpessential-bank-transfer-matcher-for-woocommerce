@@ -386,8 +386,8 @@
       "WBM-P2-T009"
     ],
     "verification": "VERIFY-P2-T010",
-    "status": "in_progress",
-    "evidence": "Free overview and private-safe per-order audit timeline implemented; native HPOS/classic and foundation CI pending."
+    "status": "done",
+    "evidence": "GitHub Actions run 44201485521 native WooCommerce/MariaDB passed classic and HPOS exact per-currency visible balances, claim KPIs, private-safe activity and synthetic fixture isolation; foundation previously passed in run 44200810123."
   },
   {
     "id": "WBM-P2-T011",
@@ -399,7 +399,7 @@
       "WBM-P2-T010"
     ],
     "verification": "VERIFY-P2-T011",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {
