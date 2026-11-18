@@ -1,7 +1,7 @@
 {
   "project": "WPEssential Bank Transfer Matcher for WooCommerce",
   "schema_version": 1,
-  "current_branch": "development/phase-2-free-manual-reconciliation",
+  "current_branch": "development/phase-3-pro-statement-import",
   "last_verified_base_commit": "2b9e86060cdc244748ba37fb7d655628a7f8ad27",
   "last_checkpoint_utc": "2026-11-18",
   "execution_status": "in_progress",
