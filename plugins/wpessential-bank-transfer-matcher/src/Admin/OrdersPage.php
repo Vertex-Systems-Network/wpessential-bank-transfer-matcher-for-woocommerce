@@ -50,7 +50,7 @@ final class OrdersPage {
 			printf( '<p role="status">%s</p>', esc_html__( 'No bank transfer orders match this status.', 'wpessential-bank-transfer-matcher' ) );
 		} else {
 			echo '<div class="wbm-table-scroll"><table class="wp-list-table widefat fixed striped"><thead><tr>';
-			foreach ( [ __( 'Order', 'wpessential-bank-transfer-matcher' ), __( 'Date', 'wpessential-bank-transfer-matcher' ), __( 'Customer', 'wpessential-bank-transfer-matcher' ), __( 'Payment reference', 'wpessential-bank-transfer-matcher' ), __( 'Total', 'wpessential-bank-transfer-matcher' ), __( 'Allocated', 'wpessential-bank-transfer-matcher' ), __( 'Outstanding', 'wpessential-bank-transfer-matcher' ), __( 'Claim', 'wpessential-bank-transfer-matcher' ), __( 'Reconciliation', 'wpessential-bank-transfer-matcher' ) ] as $heading ) {
+			foreach ( [ __( 'Order', 'wpessential-bank-transfer-matcher' ), __( 'Date', 'wpessential-bank-transfer-matcher' ), __( 'Customer', 'wpessential-bank-transfer-matcher' ), __( 'Payment reference', 'wpessential-bank-transfer-matcher' ), __( 'Total', 'wpessential-bank-transfer-matcher' ), __( 'Allocated', 'wpessential-bank-transfer-matcher' ), __( 'Outstanding', 'wpessential-bank-transfer-matcher' ), __( 'Claim', 'wpessential-bank-transfer-matcher' ), __( 'Reconciliation', 'wpessential-bank-transfer-matcher' ), __( 'Actions', 'wpessential-bank-transfer-matcher' ) ] as $heading ) {
 				printf( '<th scope="col">%s</th>', esc_html( $heading ) );
 			}
 			echo '</tr></thead><tbody>';
@@ -74,20 +74,21 @@ final class OrdersPage {
 		try {
 			$data = $summary->get( $order );
 		} catch ( \InvalidArgumentException|\OverflowException|RuntimeException $error ) {
-			printf( '<tr><td><a href="%s">#%s</a></td><td colspan="8">%s</td></tr>', esc_url( $order->get_edit_order_url() ), esc_html( $order->get_order_number() ), esc_html__( 'Reconciliation summary unavailable; review this order.', 'wpessential-bank-transfer-matcher' ) );
+			printf( '<tr><td><a href="%s">#%s</a></td><td colspan="9">%s</td></tr>', esc_url( $order->get_edit_order_url() ), esc_html( $order->get_order_number() ), esc_html__( 'Reconciliation summary unavailable; review this order.', 'wpessential-bank-transfer-matcher' ) );
 			return;
 		}
 		$money = $data['total'];
 		$customer = trim( $order->get_formatted_billing_full_name() );
 		$customer = '' !== $customer ? $customer : __( 'Guest', 'wpessential-bank-transfer-matcher' );
 		$state = $data['mismatch'] ? __( 'Balance exception', 'wpessential-bank-transfer-matcher' ) : ( 0 === $data['outstanding'] ? __( 'Fully allocated', 'wpessential-bank-transfer-matcher' ) : ( $data['allocated'] > 0 ? __( 'Partial', 'wpessential-bank-transfer-matcher' ) : __( 'Unallocated', 'wpessential-bank-transfer-matcher' ) ) );
-		printf( '<tr><td><a href="%s">#%s</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+		$reconcile_url = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_view' => 'order', 'order_id' => $order->get_id() ], admin_url( 'admin.php' ) );
+		printf( '<tr><td><a href="%s">#%s</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td><a class="button button-small" href="%s">%s</a></td></tr>',
 			esc_url( $order->get_edit_order_url() ), esc_html( $order->get_order_number() ),
 			esc_html( $order->get_date_created()?->date_i18n( get_option( 'date_format' ) ) ?? '—' ), esc_html( $customer ),
 			esc_html( $data['reference'] ?? '—' ), esc_html( self::money( $money->minor_units, $money->currency, $money->exponent ) ),
 			esc_html( self::money( $data['allocated'], $money->currency, $money->exponent ) ),
 			esc_html( self::money( $data['outstanding'], $money->currency, $money->exponent ) ),
-			esc_html( $data['claim_status'] ?? '—' ), esc_html( $state )
+			esc_html( $data['claim_status'] ?? '—' ), esc_html( $state ), esc_url( $reconcile_url ), esc_html__( 'Review', 'wpessential-bank-transfer-matcher' )
 		);
 	}
 

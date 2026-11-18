@@ -16,6 +16,7 @@ use WPEssential\BankTransferMatcher\Evidence\ManualAllocations;
 use WPEssential\BankTransferMatcher\Admin\Assets;
 use WPEssential\BankTransferMatcher\Admin\OrdersPage;
 use WPEssential\BankTransferMatcher\Admin\SettingsPage;
+use WPEssential\BankTransferMatcher\Admin\ReconciliationPage;
 use WPEssential\BankTransferMatcher\Admin\OrderPanel;
 use WPEssential\BankTransferMatcher\Orders\ReferenceIssuer;
 use WPEssential\BankTransferMatcher\Orders\ReferencePresentation;
@@ -68,6 +69,8 @@ final class Plugin {
 		$view = isset( $_GET['wbm_view'] ) && is_string( $_GET['wbm_view'] ) ? sanitize_key( wp_unslash( $_GET['wbm_view'] ) ) : '';
 		if ( 'settings' === $view ) {
 			SettingsPage::render();
+		} elseif ( 'order' === $view ) {
+			ReconciliationPage::render();
 		} else {
 			OrdersPage::render();
 		}

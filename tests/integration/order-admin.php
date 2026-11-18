@@ -4,6 +4,7 @@ use Automattic\WooCommerce\Utilities\OrderUtil;
 use WPEssential\BankTransferMatcher\Admin\OrderPanel;
 use WPEssential\BankTransferMatcher\Bootstrap\Plugin;
 use WPEssential\BankTransferMatcher\Domain\Money;
+use WPEssential\BankTransferMatcher\Claims\ClaimRepository;
 use WPEssential\BankTransferMatcher\Evidence\AllocationRepository;
 use WPEssential\BankTransferMatcher\Evidence\EvidenceRepository;
 
@@ -54,11 +55,18 @@ try {
 	}
 	$evidence = ( new EvidenceRepository( $wpdb ) )->record( $hold->get_id(), get_current_user_id(), gmdate( 'Y-m-d' ), Money::from_decimal( '8.00', $hold->get_currency(), wc_get_price_decimals() ), 'ORDER-PANEL-' . $hold->get_id(), 'Synthetic bank credit' );
 	( new AllocationRepository( $wpdb ) )->allocate( $hold->get_id(), $evidence['id'], get_current_user_id(), Money::from_decimal( '20.00', $hold->get_currency(), wc_get_price_decimals() ), Money::from_decimal( '8.00', $hold->get_currency(), wc_get_price_decimals() ), 'Synthetic approved allocation' );
+	( new ClaimRepository( $wpdb ) )->save( $hold->get_id(), [ 'date' => gmdate( 'Y-m-d' ), 'amount' => Money::from_decimal( '20.00', $hold->get_currency(), wc_get_price_decimals() ), 'reference' => 'CUSTOMER-' . $hold->get_id(), 'sender' => 'Fixture customer', 'note' => 'Fixture claim' ] );
 	ob_start();
 	OrderPanel::render( $hold );
 	$panel = ob_get_clean();
 	if ( ! str_contains( $panel, '8.00 ' . $hold->get_currency() ) || ! str_contains( $panel, '12.00 ' . $hold->get_currency() ) || ! str_contains( $panel, 'Manual evidence records:' ) ) {
 		throw new RuntimeException( 'Order panel did not show the exact allocation summary.' );
+	}
+	$reconciliation = $render( [ 'wbm_view' => 'order', 'order_id' => (string) $hold->get_id() ] );
+	foreach ( [ '/claim/review', '/bank-evidence', '/allocations', 'CUSTOMER-' . $hold->get_id(), 'ORDER-PANEL-' . $hold->get_id(), 'wbm-api-form' ] as $expected ) {
+		if ( ! str_contains( $reconciliation, $expected ) ) {
+			throw new RuntimeException( 'Reconciliation screen is missing a real action or current state: ' . $expected );
+		}
 	}
 	ob_start();
 	OrderPanel::render( $other );
@@ -82,6 +90,7 @@ try {
 	foreach ( $orders as $order ) {
 		$wpdb->delete( $wpdb->prefix . 'wbm_manual_allocations', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 		$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence', [ 'order_id' => $order->get_id() ], [ '%d' ] );
+		$wpdb->delete( $wpdb->prefix . 'wbm_payment_claims', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 		$order->delete( true );
 	}
 }

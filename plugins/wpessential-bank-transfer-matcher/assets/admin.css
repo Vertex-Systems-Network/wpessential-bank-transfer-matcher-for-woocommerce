@@ -84,3 +84,44 @@
 .wbm-order-panel .wbm-audit li {
 	margin-block: 0.35rem;
 }
+
+.wbm-admin .wbm-api-form {
+	display: grid;
+	gap: 0.85rem;
+	max-inline-size: 38rem;
+	margin-block-start: 1rem;
+	padding-block-start: 1rem;
+	border-block-start: 1px solid #dcdcde;
+}
+
+.wbm-admin .wbm-api-form label {
+	display: grid;
+	gap: 0.35rem;
+	font-weight: 600;
+}
+
+.wbm-admin .wbm-api-form label:has(input[type="checkbox"]) {
+	display: flex;
+	align-items: flex-start;
+	font-weight: 400;
+}
+
+.wbm-admin .wbm-api-form input:not([type="checkbox"]),
+.wbm-admin .wbm-api-form select,
+.wbm-admin .wbm-api-form textarea {
+	inline-size: 100%;
+	max-inline-size: 38rem;
+}
+
+.wbm-admin .wbm-details {
+	display: grid;
+	grid-template-columns: minmax(8rem, 12rem) 1fr;
+	gap: 0.4rem 1rem;
+}
+
+.wbm-admin .wbm-details dt { font-weight: 600; }
+.wbm-admin .wbm-details dd { margin: 0; }
+.wbm-admin .wbm-empty { color: #50575e; }
+.wbm-admin .wbm-form-message { margin: 0; }
+.wbm-admin .wbm-form-message.is-success { color: #008a20; }
+.wbm-admin .wbm-form-message.is-error { color: #b32d2e; }
