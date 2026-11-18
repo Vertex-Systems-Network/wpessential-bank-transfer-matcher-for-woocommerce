@@ -20,6 +20,7 @@ use WPEssential\BankTransferMatcher\Admin\OrderPanel;
 use WPEssential\BankTransferMatcher\Orders\ReferenceIssuer;
 use WPEssential\BankTransferMatcher\Orders\ReferencePresentation;
 use WPEssential\BankTransferMatcher\Rest\AccessController;
+use WPEssential\BankTransferMatcher\Privacy\PersonalData;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -38,6 +39,7 @@ final class Plugin {
 		ManualAllocations::register();
 		OrderPanel::register();
 		SettingsPage::register();
+		PersonalData::register();
 		add_action( 'rest_api_init', array( AccessController::class, 'register_routes' ) );
 		add_action( 'admin_menu', array( self::class, 'register_menu' ) );
 		do_action( 'wpessential_bank_transfer_matcher_ready', self::API_VERSION );

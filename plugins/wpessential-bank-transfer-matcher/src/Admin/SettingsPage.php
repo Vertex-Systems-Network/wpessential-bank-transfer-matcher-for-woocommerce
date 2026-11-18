@@ -19,12 +19,13 @@ final class SettingsPage {
 			wp_die( esc_html__( 'You do not have permission to change these settings.', 'wpessential-bank-transfer-matcher' ), '', array( 'response' => 403 ) );
 		}
 		check_admin_referer( 'wbm_save_free_settings' );
-		$uploads = isset( $_POST['wbm_claim_uploads'] ) && 'yes' === sanitize_text_field( wp_unslash( $_POST['wbm_claim_uploads'] ) );
+		$uploads = isset( $_POST['wbm_claim_uploads'] ) && is_string( $_POST['wbm_claim_uploads'] ) && 'yes' === sanitize_text_field( wp_unslash( $_POST['wbm_claim_uploads'] ) );
 		update_option( 'wpessential_wbm_claim_uploads', $uploads ? 'yes' : 'no' );
 		$role = get_role( 'shop_manager' );
 		if ( $role ) {
+			$requested = isset( $_POST['wbm_shop_caps'] ) && is_array( $_POST['wbm_shop_caps'] ) ? array_map( 'sanitize_key', array_filter( wp_unslash( $_POST['wbm_shop_caps'] ), 'is_string' ) ) : array();
 			foreach ( array( Capabilities::VIEW, Capabilities::REVIEW_CLAIM, Capabilities::APPROVE ) as $cap ) {
-				if ( isset( $_POST['wbm_shop_caps'] ) && is_array( $_POST['wbm_shop_caps'] ) && in_array( $cap, array_map( 'sanitize_key', wp_unslash( $_POST['wbm_shop_caps'] ) ), true ) ) {
+				if ( in_array( $cap, $requested, true ) ) {
 					$role->add_cap( $cap );
 				} else {
 					$role->remove_cap( $cap );
@@ -59,7 +60,10 @@ final class SettingsPage {
 		}
 		echo '<p>' . esc_html__( 'Only administrators can change these grants. Administrator access is retained.', 'wpessential-bank-transfer-matcher' ) . '</p>';
 		echo '<h2>' . esc_html__( 'Data and privacy', 'wpessential-bank-transfer-matcher' ) . '</h2>';
-		echo '<p>' . esc_html__( 'Customer claim data, bank evidence, allocations and review history are stored with the order for reconciliation. Receipt bytes expire after 30 days. Follow your store retention policy for financial records and handle customer data requests alongside the WooCommerce order.', 'wpessential-bank-transfer-matcher' ) . '</p>';
+		echo '<p>' . esc_html__( 'WordPress personal data export includes customer claim fields but excludes receipt bytes. Erasure removes claim sender, note and receipt; transfer amount, date, reference, status and financial audit records remain for reconciliation. Receipt bytes expire after 30 days. Review the store retention policy for financial records.', 'wpessential-bank-transfer-matcher' ) . '</p>';
+		if ( $editable ) {
+			printf( '<p><a href="%s">%s</a> · <a href="%s">%s</a></p>', esc_url( admin_url( 'export-personal-data.php' ) ), esc_html__( 'Export personal data', 'wpessential-bank-transfer-matcher' ), esc_url( admin_url( 'erase-personal-data.php' ) ), esc_html__( 'Erase personal data', 'wpessential-bank-transfer-matcher' ) );
+		}
 		if ( $editable ) {
 			submit_button( __( 'Save settings', 'wpessential-bank-transfer-matcher' ) );
 			echo '</form>';
