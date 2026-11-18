@@ -1,7 +1,7 @@
 {
   "project": "WPEssential Bank Transfer Matcher for WooCommerce",
   "schema_version": 1,
-  "current_branch": "development/phase-2-free-manual-reconciliation",
+  "current_branch": "development/phase-3-pro-statement-import",
   "last_verified_base_commit": "2b9e86060cdc244748ba37fb7d655628a7f8ad27",
   "last_checkpoint_utc": "2026-11-18",
   "execution_status": "in_progress",
@@ -53,8 +53,8 @@
     "free_is_independent"
   ],
   "phase": "P3",
-  "active_task_id": "WBM-P3-T001",
-  "next_action": "Pro-owned bank account metadata schema + UI and permission rules.",
+  "active_task_id": "WBM-P3-T005",
+  "next_action": "import batch schema/provenance/states and import history.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -89,7 +89,11 @@
     "WBM-P2-T011",
     "WBM-P2-T012",
     "WBM-P2-T013",
-    "WBM-P2-T014"
+    "WBM-P2-T014",
+    "WBM-P3-T001",
+    "WBM-P3-T002",
+    "WBM-P3-T003",
+    "WBM-P3-T004"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "bffd99615c16731aeefb07816632ac9a66bd51bd"
