@@ -53,8 +53,8 @@
     "free_is_independent"
   ],
   "phase": "P3",
-  "active_task_id": "WBM-P3-T004",
-  "next_action": "dry-run preview with row-level errors and collision warnings.",
+  "active_task_id": "WBM-P3-T005",
+  "next_action": "import batch schema/provenance/states and import history.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -92,7 +92,8 @@
     "WBM-P2-T014",
     "WBM-P3-T001",
     "WBM-P3-T002",
-    "WBM-P3-T003"
+    "WBM-P3-T003",
+    "WBM-P3-T004"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "bffd99615c16731aeefb07816632ac9a66bd51bd"

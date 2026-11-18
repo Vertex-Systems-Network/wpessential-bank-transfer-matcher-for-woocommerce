@@ -1,13 +1,13 @@
 {
-  "id": "WBM-P3-T004",
+  "id": "WBM-P3-T005",
   "phase": "P3",
-  "title": "dry-run preview with row-level errors and collision warnings.",
+  "title": "import batch schema/provenance/states and import history.",
   "owner": "Import engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
   "depends_on": [
-    "WBM-P3-T003"
+    "WBM-P3-T004"
   ],
-  "verification": "VERIFY-P3-T004",
+  "verification": "VERIFY-P3-T005",
   "status": "ready",
   "evidence": ""
 }

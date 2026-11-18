@@ -490,8 +490,8 @@
       "WBM-P3-T003"
     ],
     "verification": "VERIFY-P3-T004",
-    "status": "ready",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Side-effect-free dry-run preview passed native fixtures with mixed valid/invalid rows, structural CSV failure, exact duplicate warnings, reused-reference warnings, signed reversals and zero database queries in run 44240587316."
   },
   {
     "id": "WBM-P3-T005",
@@ -503,7 +503,7 @@
       "WBM-P3-T004"
     ],
     "verification": "VERIFY-P3-T005",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {
