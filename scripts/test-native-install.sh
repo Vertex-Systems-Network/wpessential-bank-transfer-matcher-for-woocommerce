@@ -59,7 +59,9 @@ wp_test eval-file "$root/tests/integration/claim-reviews.php"
 wp_test option update woocommerce_custom_orders_table_enabled no
 wp_test eval-file "$root/tests/integration/order-admin.php" classic
 wp_test eval-file "$root/tests/integration/order-overview.php" classic
+wp_test eval-file "$root/tests/integration/free-e2e.php" classic
 wp_test option update woocommerce_custom_orders_table_enabled yes
 wp_test eval-file "$root/tests/integration/order-admin.php" hpos
 wp_test eval-file "$root/tests/integration/order-overview.php" hpos
+wp_test eval-file "$root/tests/integration/free-e2e.php" hpos
 wp_test eval-file "$root/tests/integration/free-settings-privacy.php"
