@@ -17,6 +17,36 @@
       "edition": "pro",
       "test_id": "VERIFY-P1-T003",
       "evidence": "playground/evidence/version-lifecycle-2026-11-17.log"
+    },
+    {
+      "id": "F-ORDER-REFERENCE",
+      "edition": "free",
+      "test_id": "VERIFY-P2-T001",
+      "evidence": "playground/evidence/free-phase2-2026-11-18.log"
+    },
+    {
+      "id": "F-CUSTOMER-CLAIM",
+      "edition": "free",
+      "test_id": "VERIFY-P2-T004",
+      "evidence": "playground/evidence/free-phase2-2026-11-18.log"
+    },
+    {
+      "id": "F-MANUAL-RECONCILIATION",
+      "edition": "free",
+      "test_id": "VERIFY-P2-T007",
+      "evidence": "playground/evidence/free-phase2-2026-11-18.log"
+    },
+    {
+      "id": "F-CLAIM-REVIEW",
+      "edition": "free",
+      "test_id": "VERIFY-P2-T008",
+      "evidence": "playground/evidence/free-phase2-2026-11-18.log"
+    },
+    {
+      "id": "F-FREE-ADMIN-WORKFLOW",
+      "edition": "free",
+      "test_id": "VERIFY-P2-T012",
+      "evidence": "playground/evidence/free-phase2-2026-11-18.log"
     }
   ],
   "generated_files": [

@@ -6,7 +6,7 @@
   "license": "GPL-2.0-or-later",
   "free": {
     "slug": "wpessential-bank-transfer-matcher",
-    "description": "Development preview with a WooCommerce admin entry point.",
+    "description": "Development preview for customer bank-transfer claims and deliberate manual reconciliation in WooCommerce.",
     "title": "WPEssential Bank Transfer Matcher for WooCommerce",
     "dependencies": [
       "woocommerce"
