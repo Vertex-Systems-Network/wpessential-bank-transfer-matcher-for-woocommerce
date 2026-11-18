@@ -503,8 +503,8 @@
       "WBM-P3-T004"
     ],
     "verification": "VERIFY-P3-T005",
-    "status": "ready",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44396934079 passed native MariaDB batch provenance/state/history fixture and foundation packaging."
   },
   {
     "id": "WBM-P3-T006",
@@ -516,8 +516,8 @@
       "WBM-P3-T005"
     ],
     "verification": "VERIFY-P3-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44400332941 passed identity unit, PHP lint/static, native MariaDB and Playground foundation. Fallback fingerprints remain advisory; row-level persisted dedup belongs to P3-T007/T010."
   },
   {
     "id": "WBM-P3-T007",
@@ -529,7 +529,7 @@
       "WBM-P3-T006"
     ],
     "verification": "VERIFY-P3-T007",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {
