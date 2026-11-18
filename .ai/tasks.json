@@ -529,8 +529,8 @@
       "WBM-P3-T006"
     ],
     "verification": "VERIFY-P3-T007",
-    "status": "ready",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44404491703 passed foundation and native MariaDB; run 44404920013 passed native 205-row three-chunk checkpoint, replay, tamper rejection and retry fixture. Background source cleanup and cross-batch dedup remain later tasks."
   },
   {
     "id": "WBM-P3-T008",
@@ -542,7 +542,7 @@
       "WBM-P3-T007"
     ],
     "verification": "VERIFY-P3-T008",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {
