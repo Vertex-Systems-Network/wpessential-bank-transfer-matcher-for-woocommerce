@@ -425,8 +425,8 @@
       "WBM-P2-T012"
     ],
     "verification": "VERIFY-P2-T013",
-    "status": "ready",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Native end-to-end fixture passed checkout reference issuance, authenticated customer claim, merchant review, bank evidence, exact allocation, claim verification and explicit WooCommerce payment completion in classic and HPOS storage in run 44235113691. Claim and allocation steps remained unpaid until final acknowledgement."
   },
   {
     "id": "WBM-P2-T014",
@@ -438,7 +438,7 @@
       "WBM-P2-T013"
     ],
     "verification": "VERIFY-P2-T014",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {

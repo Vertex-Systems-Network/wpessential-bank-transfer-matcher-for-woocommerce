@@ -1,13 +1,13 @@
 {
-  "id": "WBM-P2-T013",
+  "id": "WBM-P2-T014",
   "phase": "P2",
-  "title": "Free end-to-end fixture and tests from checkout to customer claim to manual approval.",
+  "title": "complete Free user docs, activation and clean ZIP packaging smoke test.",
   "owner": "Free engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher/",
   "depends_on": [
-    "WBM-P2-T012"
+    "WBM-P2-T013"
   ],
-  "verification": "VERIFY-P2-T013",
+  "verification": "VERIFY-P2-T014",
   "status": "ready",
   "evidence": ""
 }
