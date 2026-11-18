@@ -35,7 +35,11 @@ try {
 	try { $job->process( $second ); throw new RuntimeException( 'Changed source was accepted.' ); }
 	catch ( RuntimeException $error ) { if ( 'Changed source was accepted.' === $error->getMessage() ) throw $error; }
 	if ( 'failed' !== $wpdb->get_var( $wpdb->prepare( "SELECT status FROM `$batches` WHERE id = %d", $second ) ) ) throw new RuntimeException( 'Failed job was not recorded.' );
-	echo "PASS 100-row transactional chunks, progress, replay, source integrity and private staging\n";
+	copy( $source, $second_path );
+	$job->retry( $second );
+	$job->process( $second ); $job->process( $second ); $job->process( $second );
+	if ( 'completed' !== $wpdb->get_var( $wpdb->prepare( "SELECT status FROM `$batches` WHERE id = %d", $second ) ) || 205 !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $second ) ) ) throw new RuntimeException( 'Explicit retry did not resume safely.' );
+	echo "PASS 100-row transactional chunks, progress, replay, source integrity, retry and private staging\n";
 } finally {
 	foreach ( [ $batch, $second ?? 0 ] as $id ) if ( $id ) {
 		$staged = $wpdb->get_var( $wpdb->prepare( "SELECT source_path FROM `{$wpdb->prefix}wbm_pro_import_jobs` WHERE batch_id = %d", $id ) );
