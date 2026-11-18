@@ -399,8 +399,8 @@
       "WBM-P2-T010"
     ],
     "verification": "VERIFY-P2-T011",
-    "status": "ready",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Native MariaDB personal data export/erasure, settings render and prior HPOS/classic regression passed in run 44206332915; administrator-only nonce-protected settings, shop manager grants, private receipt toggle, retained financial records."
   },
   {
     "id": "WBM-P2-T012",
@@ -412,7 +412,7 @@
       "WBM-P2-T011"
     ],
     "verification": "VERIFY-P2-T012",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {
