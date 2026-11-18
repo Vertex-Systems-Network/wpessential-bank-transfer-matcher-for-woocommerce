@@ -15,6 +15,7 @@ use WPEssential\BankTransferMatcher\Evidence\BankEvidence;
 use WPEssential\BankTransferMatcher\Evidence\ManualAllocations;
 use WPEssential\BankTransferMatcher\Admin\Assets;
 use WPEssential\BankTransferMatcher\Admin\OrdersPage;
+use WPEssential\BankTransferMatcher\Admin\SettingsPage;
 use WPEssential\BankTransferMatcher\Admin\OrderPanel;
 use WPEssential\BankTransferMatcher\Orders\ReferenceIssuer;
 use WPEssential\BankTransferMatcher\Orders\ReferencePresentation;
@@ -36,6 +37,7 @@ final class Plugin {
 		BankEvidence::register();
 		ManualAllocations::register();
 		OrderPanel::register();
+		SettingsPage::register();
 		add_action( 'rest_api_init', array( AccessController::class, 'register_routes' ) );
 		add_action( 'admin_menu', array( self::class, 'register_menu' ) );
 		do_action( 'wpessential_bank_transfer_matcher_ready', self::API_VERSION );
@@ -61,6 +63,11 @@ final class Plugin {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'wpessential-bank-transfer-matcher' ), '', array( 'response' => 403 ) );
 		}
 
-		OrdersPage::render();
+		$view = isset( $_GET['wbm_view'] ) && is_string( $_GET['wbm_view'] ) ? sanitize_key( wp_unslash( $_GET['wbm_view'] ) ) : '';
+		if ( 'settings' === $view ) {
+			SettingsPage::render();
+		} else {
+			OrdersPage::render();
+		}
 	}
 }

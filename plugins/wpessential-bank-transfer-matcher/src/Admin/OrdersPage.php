@@ -28,6 +28,7 @@ final class OrdersPage {
 		}
 		echo '<div class="wrap wbm-admin">';
 		Components::heading( __( 'Bank Transfer Matcher', 'wpessential-bank-transfer-matcher' ) );
+		printf( '<p><a href="%s">%s</a></p>', esc_url( add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_view' => 'settings' ], admin_url( 'admin.php' ) ) ), esc_html__( 'Settings', 'wpessential-bank-transfer-matcher' ) );
 		printf( '<p>%s</p>', esc_html__( 'Unpaid native bank transfer orders. A customer claim or manual record does not by itself confirm payment.', 'wpessential-bank-transfer-matcher' ) );
 		global $wpdb;
 		$eligible_count = (int) ( 'eligible' === $status ? $results->total : wc_get_orders( [
