@@ -477,8 +477,8 @@
       "WBM-P3-T002"
     ],
     "verification": "VERIFY-P3-T003",
-    "status": "ready",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Configurable mapping profile editor and persistence passed strict date, signed amount, locale separator, thousands grouping, precision, fixed/column currency and permission fixtures in native WordPress/MariaDB run 44239784166. Values are rejected rather than guessed."
   },
   {
     "id": "WBM-P3-T004",
@@ -490,7 +490,7 @@
       "WBM-P3-T003"
     ],
     "verification": "VERIFY-P3-T004",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {

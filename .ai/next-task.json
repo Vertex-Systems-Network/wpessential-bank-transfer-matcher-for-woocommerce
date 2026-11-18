@@ -1,13 +1,13 @@
 {
-  "id": "WBM-P3-T003",
+  "id": "WBM-P3-T004",
   "phase": "P3",
-  "title": "configurable mapping profile editor, locale/date/amount/currency validation.",
+  "title": "dry-run preview with row-level errors and collision warnings.",
   "owner": "Import engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
   "depends_on": [
-    "WBM-P3-T002"
+    "WBM-P3-T003"
   ],
-  "verification": "VERIFY-P3-T003",
+  "verification": "VERIFY-P3-T004",
   "status": "ready",
   "evidence": ""
 }
