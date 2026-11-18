@@ -40,7 +40,7 @@ try {
 	ob_start();
 	SettingsPage::render();
 	$html = ob_get_clean();
-	if ( ! str_contains( $html, 'name="wbm_claim_uploads"' ) || ! str_contains( $html, 'wbm_shop_caps[]' ) || ! str_contains( $html, 'wp_nonce' ) || ! str_contains( $html, 'Export personal data' ) ) {
+	if ( ! str_contains( $html, 'name="wbm_claim_uploads"' ) || ! str_contains( $html, 'wbm_shop_caps[]' ) || ! str_contains( $html, '_wpnonce' ) || ! str_contains( $html, 'Export personal data' ) ) {
 		throw new RuntimeException( 'Settings controls or privacy links are absent.' );
 	}
 	echo "PASS settings controls and targeted personal data export/erasure\n";
