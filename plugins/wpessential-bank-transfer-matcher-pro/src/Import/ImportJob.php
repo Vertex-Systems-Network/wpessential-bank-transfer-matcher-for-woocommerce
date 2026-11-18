@@ -38,7 +38,7 @@ final class ImportJob {
 		try {
 			if ( $size !== filesize( $destination ) || ! hash_equals( $hash, hash_file( 'sha256', $destination ) ?: '' ) ) throw new RuntimeException( 'Staged file changed during copy.' );
 			$batch = ( new ImportBatchRepository( $this->db ) )->create( $account_id, $profile, $hash, $size, $actor_id );
-			$result = $this->db->query( $this->db->prepare( "INSERT INTO `{$this->jobs_table()}` (batch_id, source_path, byte_offset, row_number, updated_at) VALUES (%d, %s, 0, 1, UTC_TIMESTAMP())", $batch, $destination ) );
+			$result = $this->db->query( $this->db->prepare( "INSERT INTO `{$this->jobs_table()}` (batch_id, source_path, byte_offset, next_row, updated_at) VALUES (%d, %s, 0, 1, UTC_TIMESTAMP())", $batch, $destination ) );
 			if ( 1 !== $result ) throw new RuntimeException( 'Could not create import checkpoint.' );
 			as_enqueue_async_action( self::HOOK, array( $batch ), 'wpessential-wbm-import', true );
 			return $batch;
@@ -74,7 +74,7 @@ final class ImportJob {
 				$headers[0] = preg_replace( '/^\xEF\xBB\xBF/', '', $headers[0] );
 				if ( in_array( '', $headers, true ) || count( array_unique( $headers ) ) !== count( $headers ) ) throw new InvalidArgumentException( 'CSV headers must be unique.' );
 				if ( (int) $job['byte_offset'] > 0 && -1 === fseek( $stream, (int) $job['byte_offset'] ) ) throw new RuntimeException( 'Could not resume statement.' );
-				$valid = (int) $job['valid_count']; $errors = (int) $job['error_count']; $row_number = (int) $job['row_number']; $read = 0;
+				$valid = (int) $job['valid_count']; $errors = (int) $job['error_count']; $row_number = (int) $job['next_row']; $read = 0;
 				while ( $read < self::CHUNK && false !== ( $values = fgetcsv( $stream, null, $profile->delimiter, '"', '' ) ) ) {
 					++$row_number;
 					if ( array( null ) === $values || ( 1 === count( $values ) && '' === $values[0] ) ) continue;
@@ -93,7 +93,7 @@ final class ImportJob {
 				$offset = ftell( $stream ); $finished = feof( $stream );
 			} finally { fclose( $stream ); }
 			$status = $finished ? 'completed' : 'processing';
-			if ( false === $this->db->query( $this->db->prepare( "UPDATE `{$this->jobs_table()}` SET byte_offset = %d, row_number = %d, valid_count = %d, error_count = %d, updated_at = UTC_TIMESTAMP() WHERE batch_id = %d", $offset, $row_number, $valid, $errors, $batch_id ) ) ||
+			if ( false === $this->db->query( $this->db->prepare( "UPDATE `{$this->jobs_table()}` SET byte_offset = %d, next_row = %d, valid_count = %d, error_count = %d, updated_at = UTC_TIMESTAMP() WHERE batch_id = %d", $offset, $row_number, $valid, $errors, $batch_id ) ) ||
 				1 !== $this->db->query( $this->db->prepare( "UPDATE `{$this->db->prefix}wbm_pro_import_batches` SET status = %s, valid_count = %d, error_count = %d, updated_at = UTC_TIMESTAMP() WHERE id = %d AND status IN ('pending', 'processing')", $status, $valid, $errors, $batch_id ) ) ) throw new RuntimeException( 'Could not checkpoint import progress.' );
 			if ( false === $this->db->query( 'COMMIT' ) ) throw new RuntimeException( 'Could not commit import chunk.' );
 			$committed = true;
@@ -132,8 +132,8 @@ final class ImportJob {
 			if ( '0' !== $version && '1' !== $version ) throw new RuntimeException( 'Unsupported import job schema.' );
 			if ( '0' === $version ) {
 				$collation = $this->db->get_charset_collate(); $jobs = $this->jobs_table(); $rows = $this->rows_table();
-				if ( false === $this->db->query( "CREATE TABLE IF NOT EXISTS `$jobs` (batch_id BIGINT UNSIGNED NOT NULL PRIMARY KEY, source_path VARCHAR(255) NOT NULL, byte_offset BIGINT UNSIGNED NOT NULL DEFAULT 0, row_number BIGINT UNSIGNED NOT NULL DEFAULT 1, valid_count BIGINT UNSIGNED NOT NULL DEFAULT 0, error_count BIGINT UNSIGNED NOT NULL DEFAULT 0, updated_at DATETIME NOT NULL) ENGINE=InnoDB $collation" ) ||
-				false === $this->db->query( "CREATE TABLE IF NOT EXISTS `$rows` (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, batch_id BIGINT UNSIGNED NOT NULL, source_row BIGINT UNSIGNED NOT NULL, canonical_json TEXT NULL, error_code VARCHAR(255) NOT NULL, UNIQUE KEY batch_row (batch_id, source_row), KEY batch_id (batch_id)) ENGINE=InnoDB $collation" ) ) throw new RuntimeException( 'Could not create import job tables.' );
+				if ( false === $this->db->query( "CREATE TABLE IF NOT EXISTS `$jobs` (batch_id BIGINT UNSIGNED NOT NULL PRIMARY KEY, source_path VARCHAR(255) NOT NULL, byte_offset BIGINT UNSIGNED NOT NULL DEFAULT 0, next_row BIGINT UNSIGNED NOT NULL DEFAULT 1, valid_count BIGINT UNSIGNED NOT NULL DEFAULT 0, error_count BIGINT UNSIGNED NOT NULL DEFAULT 0, updated_at DATETIME NOT NULL) ENGINE=InnoDB $collation" ) ||
+				false === $this->db->query( "CREATE TABLE IF NOT EXISTS `$rows` (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, batch_id BIGINT UNSIGNED NOT NULL, source_row BIGINT UNSIGNED NOT NULL, canonical_json TEXT NULL, error_code VARCHAR(255) NOT NULL, UNIQUE KEY batch_row (batch_id, source_row), KEY batch_id (batch_id)) ENGINE=InnoDB $collation" ) ) throw new RuntimeException( 'Could not create import job tables: ' . $this->db->last_error );
 			update_option( self::VERSION, '1', false );
 			}
 		} finally { $this->db->get_var( $this->db->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) ); }
