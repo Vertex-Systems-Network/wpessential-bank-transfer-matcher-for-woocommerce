@@ -451,8 +451,8 @@
       "WBM-P2-T014"
     ],
     "verification": "VERIFY-P3-T001",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Pro safe bank-account metadata schema, masked native UI, archive lifecycle, administrator management and shop-manager read-only/import permission boundary passed native WordPress/MariaDB in run 44237672382. PHP lint, PHPStan, package and unit gates also passed."
   },
   {
     "id": "WBM-P3-T002",
@@ -464,7 +464,7 @@
       "WBM-P3-T001"
     ],
     "verification": "VERIFY-P3-T002",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {

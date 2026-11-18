@@ -1,13 +1,13 @@
 {
-  "id": "WBM-P3-T001",
+  "id": "WBM-P3-T002",
   "phase": "P3",
-  "title": "Pro-owned bank account metadata schema + UI and permission rules.",
+  "title": "CSV parser and raw/canonical row representation.",
   "owner": "Import engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
   "depends_on": [
-    "WBM-P2-T014"
+    "WBM-P3-T001"
   ],
-  "verification": "VERIFY-P3-T001",
-  "status": "in_progress",
+  "verification": "VERIFY-P3-T002",
+  "status": "ready",
   "evidence": ""
 }

@@ -53,8 +53,8 @@
     "free_is_independent"
   ],
   "phase": "P3",
-  "active_task_id": "WBM-P3-T001",
-  "next_action": "Pro-owned bank account metadata schema + UI and permission rules.",
+  "active_task_id": "WBM-P3-T002",
+  "next_action": "CSV parser and raw/canonical row representation.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -89,7 +89,8 @@
     "WBM-P2-T011",
     "WBM-P2-T012",
     "WBM-P2-T013",
-    "WBM-P2-T014"
+    "WBM-P2-T014",
+    "WBM-P3-T001"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "bffd99615c16731aeefb07816632ac9a66bd51bd"
