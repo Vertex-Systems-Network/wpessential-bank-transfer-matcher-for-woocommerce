@@ -1,13 +1,13 @@
 {
-  "id": "WBM-P3-T008",
+  "id": "WBM-P3-T009",
   "phase": "P3",
-  "title": "CAMT.053 secure XML parser (only release when coverage confirmed).",
+  "title": "import wizard/transactions UI and all empty/error/progress states.",
   "owner": "Import engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
   "depends_on": [
-    "WBM-P3-T007"
+    "WBM-P3-T008"
   ],
-  "verification": "VERIFY-P3-T008",
+  "verification": "VERIFY-P3-T009",
   "status": "ready",
   "evidence": ""
 }

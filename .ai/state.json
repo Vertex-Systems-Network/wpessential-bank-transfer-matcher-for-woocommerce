@@ -42,7 +42,8 @@
     "free_overview_audit": "passed: native classic and HPOS run 44201485521; foundation run 44200810123 passed before fixture cleanup",
     "import_batches": "passed: GitHub Actions run 44396934079 native MariaDB and foundation",
     "transaction_identity": "passed: GitHub Actions run 44400332941 foundation and native MariaDB",
-    "import_jobs": "passed: native MariaDB run 44404920013; foundation run 44404491703"
+    "import_jobs": "passed: native MariaDB run 44404920013; foundation run 44404491703",
+    "camt053": "internal parser unit/static passed in run 44411596017; native MariaDB passed; release support gated"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -56,8 +57,8 @@
     "free_is_independent"
   ],
   "phase": "P3",
-  "active_task_id": "WBM-P3-T008",
-  "next_action": "CAMT.053 secure XML parser (only release when coverage confirmed).",
+  "active_task_id": "WBM-P3-T009",
+  "next_action": "import wizard/transactions UI and all empty/error/progress states.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -99,8 +100,9 @@
     "WBM-P3-T004",
     "WBM-P3-T005",
     "WBM-P3-T006",
-    "WBM-P3-T007"
+    "WBM-P3-T007",
+    "WBM-P3-T008"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "bc4bc0a2d3a125b9cfdf01147e913390cfdcb3d2"
+  "last_verified_remote_milestone": "72aa38934276fdcc744a3d7ae29e9db34130a1f2"
 }
