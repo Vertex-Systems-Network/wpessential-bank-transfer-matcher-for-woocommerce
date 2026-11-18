@@ -1,13 +1,13 @@
 {
-  "id": "WBM-P2-T014",
-  "phase": "P2",
-  "title": "complete Free user docs, activation and clean ZIP packaging smoke test.",
-  "owner": "Free engineering",
-  "paths": "plugins/wpessential-bank-transfer-matcher/",
+  "id": "WBM-P3-T001",
+  "phase": "P3",
+  "title": "Pro-owned bank account metadata schema + UI and permission rules.",
+  "owner": "Import engineering",
+  "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
   "depends_on": [
-    "WBM-P2-T013"
+    "WBM-P2-T014"
   ],
-  "verification": "VERIFY-P2-T014",
+  "verification": "VERIFY-P3-T001",
   "status": "ready",
   "evidence": ""
 }

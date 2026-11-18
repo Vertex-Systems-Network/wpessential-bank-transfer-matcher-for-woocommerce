@@ -438,8 +438,8 @@
       "WBM-P2-T013"
     ],
     "verification": "VERIFY-P2-T014",
-    "status": "ready",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Generated Free installation, workflow, role, receipt and privacy documentation passed deterministic drift tests. Production ZIP build, manifest/Composer validation, clean activation, reinstall, HPOS/classic workflow and native WooCommerce smoke tests passed in run 44235603668."
   },
   {
     "id": "WBM-P3-T001",
@@ -451,7 +451,7 @@
       "WBM-P2-T014"
     ],
     "verification": "VERIFY-P3-T001",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {

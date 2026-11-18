@@ -52,9 +52,9 @@
     "allocations_are_idempotent",
     "free_is_independent"
   ],
-  "phase": "P2",
-  "active_task_id": "WBM-P2-T014",
-  "next_action": "complete Free user docs, activation and clean ZIP packaging smoke test.",
+  "phase": "P3",
+  "active_task_id": "WBM-P3-T001",
+  "next_action": "Pro-owned bank account metadata schema + UI and permission rules.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -88,7 +88,8 @@
     "WBM-P2-T010",
     "WBM-P2-T011",
     "WBM-P2-T012",
-    "WBM-P2-T013"
+    "WBM-P2-T013",
+    "WBM-P2-T014"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "bffd99615c16731aeefb07816632ac9a66bd51bd"
