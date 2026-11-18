@@ -1,9 +1,9 @@
 {
   "project": "WPEssential Bank Transfer Matcher for WooCommerce",
   "schema_version": 1,
-  "current_branch": "development/phase-0-1",
+  "current_branch": "development/phase-2-free-manual-reconciliation",
   "last_verified_base_commit": "2b9e86060cdc244748ba37fb7d655628a7f8ad27",
-  "last_checkpoint_utc": "2026-11-17",
+  "last_checkpoint_utc": "2026-11-18",
   "execution_status": "in_progress",
   "tests": {
     "php_unit": "not_run",
@@ -33,7 +33,13 @@
     "bacs_settings": "passed native WooCommerce: enabled gateway detection, native instructions, no option writes and reference regression in both storage modes",
     "reference_presentation": "passed native WooCommerce rendering: classic, Blocks, My Account, HTML/plain email; owner, valid guest, wrong key and admin email cases",
     "customer_claims": "passed native WooCommerce/MariaDB controller tests; full browser POST and redirect pending",
-    "claim_attachments": "passed native WooCommerce/MariaDB validation, storage, authorized access checks and purge; browser multipart and HTTP download pending"
+    "claim_attachments": "passed native WooCommerce/MariaDB validation, storage, authorized access checks and purge; browser multipart and HTTP download pending",
+    "manual_bank_evidence": "passed: GitHub Actions run 44193754937, native MariaDB and foundation",
+    "manual_allocations": "passed: GitHub Actions run 44196352710 native WooCommerce/MariaDB including failure retry and single payment hook",
+    "payment_finalization": "passed: explicit paid transition and idempotent retry; cross-request concurrency and pending-paid crash exception deferred to P8",
+    "claim_reviews": "passed: GitHub Actions run 44198294949 native WooCommerce/MariaDB; foundation job pending at checkpoint",
+    "order_admin": "passed: native classic and HPOS in runs 44199540256 and 44199850238; Playground foundation pending",
+    "free_overview_audit": "passed: native classic and HPOS run 44201485521; foundation run 44200810123 passed before fixture cleanup"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -46,9 +52,9 @@
     "allocations_are_idempotent",
     "free_is_independent"
   ],
-  "phase": "P2",
-  "active_task_id": "WBM-P2-T006",
-  "next_action": "Record manual bank evidence and flag potentially duplicate evidence without changing order payment state.",
+  "phase": "P3",
+  "active_task_id": "WBM-P3-T001",
+  "next_action": "Pro-owned bank account metadata schema + UI and permission rules.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -74,7 +80,16 @@
     "WBM-P2-T002",
     "WBM-P2-T003",
     "WBM-P2-T004",
-    "WBM-P2-T005"
+    "WBM-P2-T005",
+    "WBM-P2-T006",
+    "WBM-P2-T007",
+    "WBM-P2-T008",
+    "WBM-P2-T009",
+    "WBM-P2-T010",
+    "WBM-P2-T011",
+    "WBM-P2-T012",
+    "WBM-P2-T013",
+    "WBM-P2-T014"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "bffd99615c16731aeefb07816632ac9a66bd51bd"

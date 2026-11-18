@@ -18,9 +18,42 @@
   {
     "id": "F-ORDER-REFERENCE",
     "edition": "free",
-    "status": "planned",
+    "status": "verified",
     "summary": "Issue immutable payment references for WooCommerce orders.",
-    "test_id": "VERIFY-P2-T001"
+    "test_id": "VERIFY-P2-T001",
+    "evidence": "playground/evidence/free-phase2-2026-11-18.log"
+  },
+  {
+    "id": "F-CUSTOMER-CLAIM",
+    "edition": "free",
+    "status": "verified",
+    "summary": "Accept secure customer payment claims without treating them as confirmed payment.",
+    "test_id": "VERIFY-P2-T004",
+    "evidence": "playground/evidence/free-phase2-2026-11-18.log"
+  },
+  {
+    "id": "F-MANUAL-RECONCILIATION",
+    "edition": "free",
+    "status": "verified",
+    "summary": "Record merchant bank evidence, exact allocations, and a separate acknowledged payment completion.",
+    "test_id": "VERIFY-P2-T007",
+    "evidence": "playground/evidence/free-phase2-2026-11-18.log"
+  },
+  {
+    "id": "F-CLAIM-REVIEW",
+    "edition": "free",
+    "status": "verified",
+    "summary": "Review customer claims with private comments and customer-safe status notifications.",
+    "test_id": "VERIFY-P2-T008",
+    "evidence": "playground/evidence/free-phase2-2026-11-18.log"
+  },
+  {
+    "id": "F-FREE-ADMIN-WORKFLOW",
+    "edition": "free",
+    "status": "verified",
+    "summary": "Use native WooCommerce administration for balances, claims, evidence, allocations, settings, and privacy controls.",
+    "test_id": "VERIFY-P2-T012",
+    "evidence": "playground/evidence/free-phase2-2026-11-18.log"
   },
   {
     "id": "F-STATEMENT-IMPORT",

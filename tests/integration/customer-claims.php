@@ -88,7 +88,12 @@ try {
 
 	echo "PASS owner and guest claims, nonce and identity checks, bounded inputs, atomic throttling, duplicate safety and unchanged payment status\n";
 } finally {
+	global $wpdb;
 	foreach ( $orders as $order ) {
+		$wpdb->delete( $wpdb->prefix . 'wbm_payment_claims', [ 'order_id' => $order->get_id() ], [ '%d' ] );
+		$wpdb->delete( $wpdb->prefix . 'wbm_claim_attempts', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 		$order->delete( true );
 	}
+	require_once ABSPATH . 'wp-admin/includes/user.php';
+	wp_delete_user( $owner );
 }

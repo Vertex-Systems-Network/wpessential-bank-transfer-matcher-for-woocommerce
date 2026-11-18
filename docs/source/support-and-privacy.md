@@ -1,1 +1,3 @@
-Use the project repository's issue tracker for development feedback. Keep bank statements, customer information, and credentials out of public reports. Use synthetic data when reporting a problem.
+Use the project repository's issue tracker for development feedback. Keep bank statements, customer information, receipt files, reviewer comments, and credentials out of public reports. Use synthetic data when reporting a problem.
+
+Customer claims, merchant evidence, allocations, review history, and payment-completion records support financial reconciliation. WordPress privacy tools export customer claim fields and redact the claim sender, customer note, and receipt during erasure. Amounts, dates, references, statuses, and audit records remain; the merchant must set a suitable retention policy for its legal and accounting obligations. Backups may retain older copies according to the store's backup policy.

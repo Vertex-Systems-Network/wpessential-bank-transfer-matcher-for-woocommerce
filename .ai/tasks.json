@@ -333,8 +333,8 @@
       "WBM-P2-T005"
     ],
     "verification": "VERIFY-P2-T006",
-    "status": "ready",
-    "evidence": "",
+    "status": "done",
+    "evidence": "GitHub Actions run 44193754937 passed foundation and native MariaDB jobs, including tests/integration/bank-evidence.php.",
     "next_action": "Record manual bank evidence and flag potentially duplicate evidence without changing order payment state."
   },
   {
@@ -347,8 +347,8 @@
       "WBM-P2-T006"
     ],
     "verification": "VERIFY-P2-T007",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44196352710 native WooCommerce/MariaDB passed exact partial/full balances, approval checks, over-allocation and replay rejection, pending failure recovery, one payment hook and idempotent retry. Cross-request concurrency remains P8 gate."
   },
   {
     "id": "WBM-P2-T008",
@@ -360,8 +360,8 @@
       "WBM-P2-T007"
     ],
     "verification": "VERIFY-P2-T008",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44198294949 native WooCommerce/MariaDB passed state transitions, append-only event, allocation-backed verification, notification retry/no repeat, private comments and unchanged order payment state."
   },
   {
     "id": "WBM-P2-T009",
@@ -373,8 +373,8 @@
       "WBM-P2-T008"
     ],
     "verification": "VERIFY-P2-T009",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions runs 44199540256 and 44199850238 native WooCommerce/MariaDB passed classic and HPOS BACS query, status filters, exact order panel, non-BACS isolation, page-size and live pagination links. Foundation pending at checkpoint."
   },
   {
     "id": "WBM-P2-T010",
@@ -386,8 +386,8 @@
       "WBM-P2-T009"
     ],
     "verification": "VERIFY-P2-T010",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44201485521 native WooCommerce/MariaDB passed classic and HPOS exact per-currency visible balances, claim KPIs, private-safe activity and synthetic fixture isolation; foundation previously passed in run 44200810123."
   },
   {
     "id": "WBM-P2-T011",
@@ -399,8 +399,8 @@
       "WBM-P2-T010"
     ],
     "verification": "VERIFY-P2-T011",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Native MariaDB personal data export/erasure, settings render and prior HPOS/classic regression passed in run 44206332915; administrator-only nonce-protected settings, shop manager grants, private receipt toggle, retained financial records."
   },
   {
     "id": "WBM-P2-T012",
@@ -412,8 +412,8 @@
       "WBM-P2-T011"
     ],
     "verification": "VERIFY-P2-T012",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Functional order reconciliation screen links current claims, evidence, allocations and finalization to protected REST actions with processing, success, validation/error, empty, permission and retry states. Native HPOS/classic WooCommerce and MariaDB passed in run 44234488100; PHP lint, PHPStan, packaging and unit checks passed."
   },
   {
     "id": "WBM-P2-T013",
@@ -425,8 +425,8 @@
       "WBM-P2-T012"
     ],
     "verification": "VERIFY-P2-T013",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Native end-to-end fixture passed checkout reference issuance, authenticated customer claim, merchant review, bank evidence, exact allocation, claim verification and explicit WooCommerce payment completion in classic and HPOS storage in run 44235113691. Claim and allocation steps remained unpaid until final acknowledgement."
   },
   {
     "id": "WBM-P2-T014",
@@ -438,8 +438,8 @@
       "WBM-P2-T013"
     ],
     "verification": "VERIFY-P2-T014",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Generated Free installation, workflow, role, receipt and privacy documentation passed deterministic drift tests. Production ZIP build, manifest/Composer validation, clean activation, reinstall, HPOS/classic workflow and native WooCommerce smoke tests passed in run 44235603668."
   },
   {
     "id": "WBM-P3-T001",
@@ -451,7 +451,7 @@
       "WBM-P2-T014"
     ],
     "verification": "VERIFY-P3-T001",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {

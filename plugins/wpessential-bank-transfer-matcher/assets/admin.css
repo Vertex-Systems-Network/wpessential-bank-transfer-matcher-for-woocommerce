@@ -14,3 +14,114 @@
 .wbm-admin .wbm-panel p:last-child {
 	margin-block-end: 0;
 }
+
+.wbm-admin .wbm-orders-filter {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-block: 1rem;
+}
+
+.wbm-admin .wbm-table-scroll {
+	max-inline-size: 100%;
+	overflow-x: auto;
+}
+
+.wbm-admin .wp-list-table {
+	min-inline-size: 920px;
+}
+
+.wbm-admin .wp-list-table th,
+.wbm-admin .wp-list-table td {
+	overflow-wrap: anywhere;
+}
+
+.wbm-admin .wbm-pagination {
+	margin-block: 1rem;
+}
+
+.wbm-admin .wbm-pagination .page-numbers {
+	display: inline-block;
+	margin-inline-end: 0.25rem;
+	padding: 0.35rem 0.6rem;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+}
+
+.wbm-admin .wbm-kpis {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+	gap: 0.75rem;
+}
+
+.wbm-admin .wbm-kpi {
+	padding: 0.9rem 1rem;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+}
+
+.wbm-admin .wbm-kpi h3 {
+	margin: 0 0 0.45rem;
+	font-size: 0.85rem;
+	font-weight: 500;
+}
+
+.wbm-admin .wbm-kpi p {
+	margin: 0;
+	font-size: 1.25rem;
+	font-weight: 600;
+	overflow-wrap: anywhere;
+}
+
+.wbm-order-panel {
+	clear: both;
+	margin-block: 1rem;
+	padding: 0.75rem 1rem;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+}
+
+.wbm-order-panel .wbm-audit li {
+	margin-block: 0.35rem;
+}
+
+.wbm-admin .wbm-api-form {
+	display: grid;
+	gap: 0.85rem;
+	max-inline-size: 38rem;
+	margin-block-start: 1rem;
+	padding-block-start: 1rem;
+	border-block-start: 1px solid #dcdcde;
+}
+
+.wbm-admin .wbm-api-form label {
+	display: grid;
+	gap: 0.35rem;
+	font-weight: 600;
+}
+
+.wbm-admin .wbm-api-form label:has(input[type="checkbox"]) {
+	display: flex;
+	align-items: flex-start;
+	font-weight: 400;
+}
+
+.wbm-admin .wbm-api-form input:not([type="checkbox"]),
+.wbm-admin .wbm-api-form select,
+.wbm-admin .wbm-api-form textarea {
+	inline-size: 100%;
+	max-inline-size: 38rem;
+}
+
+.wbm-admin .wbm-details {
+	display: grid;
+	grid-template-columns: minmax(8rem, 12rem) 1fr;
+	gap: 0.4rem 1rem;
+}
+
+.wbm-admin .wbm-details dt { font-weight: 600; }
+.wbm-admin .wbm-details dd { margin: 0; }
+.wbm-admin .wbm-empty { color: #50575e; }
+.wbm-admin .wbm-form-message { margin: 0; }
+.wbm-admin .wbm-form-message.is-success { color: #008a20; }
+.wbm-admin .wbm-form-message.is-error { color: #b32d2e; }

@@ -1,0 +1,17 @@
+Phase 2 Free workflow verification — 2026-11-18
+
+Repository branch: development/phase-2-free-manual-reconciliation
+Pull request: #3
+
+GitHub Actions evidence:
+- 44193754937: native manual bank evidence and foundation checks.
+- 44196352710: exact allocations, guarded finalization, retry, and idempotence.
+- 44198294949: claim review transitions and customer-safe notifications.
+- 44201485521: Free overview, private-safe timeline, HPOS/classic order administration.
+- 44206332915: settings, capability controls, privacy export and erasure.
+- 44234488100: functional reconciliation UI states and protected action wiring.
+- 44235113691: checkout reference → customer claim → review → merchant evidence → exact allocation → explicit payment completion, in classic and HPOS.
+
+Invariant observed: customer claims and full allocations did not mark WooCommerce paid. Payment changed only through the separately acknowledged finalization action.
+
+Package scope remains a development preview. Browser visual/accessibility review and later release gates remain pending.
