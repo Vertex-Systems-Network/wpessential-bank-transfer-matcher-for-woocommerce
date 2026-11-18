@@ -15,9 +15,10 @@ final readonly class CanonicalStatementRow {
 		public int $exponent,
 		public string $reference,
 		public string $description,
+		public string $transaction_id = '',
 	) {
 		if ( $source_row < 2 || 1 !== preg_match( '/\A\d{4}-\d{2}-\d{2}\z/', $posted_date ) || $amount_minor === 0 ||
-			1 !== preg_match( '/\A[A-Z]{3}\z/', $currency ) || $exponent < 0 || $exponent > 6 || strlen( $reference ) > 255 || strlen( $description ) > 2000 ) {
+			1 !== preg_match( '/\A[A-Z]{3}\z/', $currency ) || $exponent < 0 || $exponent > 6 || strlen( $reference ) > 255 || strlen( $description ) > 2000 || strlen( $transaction_id ) > 255 ) {
 			throw new InvalidArgumentException( 'Canonical statement row values are invalid.' );
 		}
 		$this->fingerprint = hash( 'sha256', implode( "\x1f", array( $posted_date, (string) $amount_minor, $currency, (string) $exponent, self::normalize( $reference ), self::normalize( $description ) ) ) );

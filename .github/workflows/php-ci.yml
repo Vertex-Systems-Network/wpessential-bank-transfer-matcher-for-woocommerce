@@ -37,6 +37,7 @@ jobs:
         run: |
           php tests/money.php
           php tests/domain.php
+          php tests/transaction-identity.php
           php tests/migrations.php
       - name: Package and test in Playground
         run: |
