@@ -464,8 +464,8 @@
       "WBM-P3-T001"
     ],
     "verification": "VERIFY-P3-T002",
-    "status": "ready",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Bounded UTF-8 CSV parser and raw/canonical statement row representations passed native fixtures for BOM, quoting, multiline cells, delimiters, duplicate/empty headers, uneven rows, binary rejection and exact integer minor-unit fingerprints in run 44238596901."
   },
   {
     "id": "WBM-P3-T003",
@@ -477,7 +477,7 @@
       "WBM-P3-T002"
     ],
     "verification": "VERIFY-P3-T003",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {

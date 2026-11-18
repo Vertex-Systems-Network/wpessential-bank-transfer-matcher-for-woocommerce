@@ -53,8 +53,8 @@
     "free_is_independent"
   ],
   "phase": "P3",
-  "active_task_id": "WBM-P3-T002",
-  "next_action": "CSV parser and raw/canonical row representation.",
+  "active_task_id": "WBM-P3-T003",
+  "next_action": "configurable mapping profile editor, locale/date/amount/currency validation.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -90,7 +90,8 @@
     "WBM-P2-T012",
     "WBM-P2-T013",
     "WBM-P2-T014",
-    "WBM-P3-T001"
+    "WBM-P3-T001",
+    "WBM-P3-T002"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "bffd99615c16731aeefb07816632ac9a66bd51bd"
