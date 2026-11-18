@@ -39,6 +39,10 @@ wp_test plugin install "$root/dist/$free.zip" --force --activate
 wp_test plugin install "$root/dist/$pro.zip" --force --activate
 wp_test eval-file "$root/tests/integration/order-storage.php" paired
 printf 'PASS paired ZIP replacement and bootstrap\n'
+wp_test eval-file "$root/tests/integration/pro-bank-accounts.php"
+wp_test eval-file "$root/tests/integration/pro-csv-parser.php"
+wp_test eval-file "$root/tests/integration/pro-mapping-profiles.php"
+wp_test eval-file "$root/tests/integration/pro-dry-run.php"
 
 wp_test option update woocommerce_cod_settings '{"enabled":"yes"}' --format=json
 wp_test option update woocommerce_bacs_accounts '[{"account_name":"Fixture account","bank_name":"Fixture bank","account_number":"","sort_code":"","iban":"","bic":""}]' --format=json
