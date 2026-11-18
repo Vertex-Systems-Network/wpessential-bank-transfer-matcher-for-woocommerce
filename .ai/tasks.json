@@ -412,8 +412,8 @@
       "WBM-P2-T011"
     ],
     "verification": "VERIFY-P2-T012",
-    "status": "ready",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Functional order reconciliation screen links current claims, evidence, allocations and finalization to protected REST actions with processing, success, validation/error, empty, permission and retry states. Native HPOS/classic WooCommerce and MariaDB passed in run 44234488100; PHP lint, PHPStan, packaging and unit checks passed."
   },
   {
     "id": "WBM-P2-T013",
@@ -425,7 +425,7 @@
       "WBM-P2-T012"
     ],
     "verification": "VERIFY-P2-T013",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {

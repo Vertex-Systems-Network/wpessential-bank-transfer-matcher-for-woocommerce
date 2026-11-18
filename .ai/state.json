@@ -53,8 +53,8 @@
     "free_is_independent"
   ],
   "phase": "P2",
-  "active_task_id": "WBM-P2-T012",
-  "next_action": "build all Free UI screen states and real API interactions.",
+  "active_task_id": "WBM-P2-T013",
+  "next_action": "Free end-to-end fixture and tests from checkout to customer claim to manual approval.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -86,7 +86,8 @@
     "WBM-P2-T008",
     "WBM-P2-T009",
     "WBM-P2-T010",
-    "WBM-P2-T011"
+    "WBM-P2-T011",
+    "WBM-P2-T012"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "bffd99615c16731aeefb07816632ac9a66bd51bd"
