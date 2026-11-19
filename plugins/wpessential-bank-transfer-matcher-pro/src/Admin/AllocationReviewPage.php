@@ -20,6 +20,20 @@ final class AllocationReviewPage {
 
 	public static function register(): void {
 		add_action( 'admin_menu', [ self::class, 'menu' ], 35 );
+		add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue' ] );
+	}
+
+	/** Enqueue only in this finance workspace, never the customer storefront. */
+	public static function enqueue(): void {
+		$slug = isset( $_GET['page'] ) && is_string( $_GET['page'] )
+			? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+		if ( self::SLUG !== $slug ||
+			! current_user_can( ProCaps::IMPORT ) ||
+			! current_user_can( FreeCaps::APPROVE ) ) return;
+		$plugin_file = dirname( __DIR__, 2 ) . '/wpessential-bank-transfer-matcher-pro.php';
+		wp_enqueue_script( 'wbm-pro-finance-dialogs',
+			plugins_url( 'assets/js/finance-dialogs.js', $plugin_file ), [],
+			'0.1.0', true );
 	}
 
 	public static function menu(): void {
@@ -90,7 +104,7 @@ final class AllocationReviewPage {
 		echo '</select> ';
 		submit_button( __( 'Filter allocations', self::DOMAIN ), 'secondary', '', false );
 		echo '</form>';
-		echo '<details style="background:#fff;border:1px solid #c3c4c7;padding:12px 16px;margin:16px 0"><summary><strong>' .
+		echo '<details data-wbm-finance-dialog style="background:#fff;border:1px solid #c3c4c7;padding:12px 16px;margin:16px 0"><summary><strong>' .
 			esc_html__( 'Propose a bank credit for independent review', self::DOMAIN ) .
 			'</strong></summary><p>' .
 			esc_html__( 'A proposal does not allocate or mark an order paid. The source, bank account, exact reference and outstanding order balance are checked again during independent approval.', self::DOMAIN ) .
@@ -183,7 +197,7 @@ final class AllocationReviewPage {
 		echo '<h2>' . sprintf( esc_html__( 'Allocation #%d — finance evidence', self::DOMAIN ), $id ) . '</h2>';
 		echo '<p><strong>' . esc_html( $row['state'] ) . '</strong> · ' .
 			esc_html__( 'Read-only; independent approval and explicit finalization are separate operations.', self::DOMAIN ) . '</p>';
-		echo '<style>.wbm-finance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:16px 0}.wbm-finance-card{background:#fff;border:1px solid #c3c4c7;padding:16px}.wbm-finance-card dt{font-weight:600;margin-top:9px}.wbm-finance-card dd{margin:2px 0 8px;overflow-wrap:anywhere}@media(max-width:900px){.wbm-finance-grid{grid-template-columns:1fr}}</style>';
+		echo '<style>.wbm-finance-dialog{width:min(680px,calc(100% - 40px));max-height:85vh;overflow:auto;border:1px solid #c3c4c7;border-radius:6px;padding:20px;background:#fff;box-shadow:0 14px 45px rgba(0,0,0,.22)}.wbm-finance-dialog::backdrop{background:rgba(0,0,0,.48)}.wbm-finance-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #dcdcde;margin-bottom:14px}.wbm-finance-dialog-launch{margin:10px 12px 10px 0}.wbm-finance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:16px 0}.wbm-finance-card{background:#fff;border:1px solid #c3c4c7;padding:16px}.wbm-finance-card dt{font-weight:600;margin-top:9px}.wbm-finance-card dd{margin:2px 0 8px;overflow-wrap:anywhere}@media(max-width:900px){.wbm-finance-grid{grid-template-columns:1fr}}</style>';
 		echo '<div class="wbm-finance-grid"><section class="wbm-finance-card"><h3>' .
 			esc_html__( 'Allocation and provenance', self::DOMAIN ) . '</h3>';
 		self::definition( 'Amount allocated', $allocated . ' ' . $currency );
@@ -289,7 +303,7 @@ final class AllocationReviewPage {
 			return;
 		}
 		if ( 'proposed' === $state && (int) $row['created_by'] !== get_current_user_id() ) {
-			echo '<details class="wbm-finance-card"><summary><strong>' .
+			echo '<details class="wbm-finance-card" data-wbm-finance-dialog><summary><strong>' .
 				esc_html__( 'Independent finance allocation approval', self::DOMAIN ) .
 				'</strong></summary><p>' .
 				esc_html__( 'Confirm cleared bank funds only after verifying the original bank statement and all target orders. This approval records the allocation but does not mark WooCommerce paid.', self::DOMAIN ) .
@@ -310,7 +324,7 @@ final class AllocationReviewPage {
 			echo '<p>' . esc_html__( 'Awaiting a separate finance reviewer. The proposer cannot approve their own source.', self::DOMAIN ) . '</p>';
 		}
 		if ( in_array( $state, [ 'approved', 'committed' ], true ) ) {
-			echo '<details class="wbm-finance-card"><summary><strong>' .
+			echo '<details class="wbm-finance-card" data-wbm-finance-dialog><summary><strong>' .
 				esc_html__( 'Open a correction or reversal investigation (financial hold)', self::DOMAIN ) .
 				'</strong></summary><p>' .
 				esc_html__( 'Recording a suspected bank reversal or wrong attribution does not refund money or change the ledger; it places all related recipients on hold.', self::DOMAIN ) .
@@ -337,7 +351,7 @@ final class AllocationReviewPage {
 		foreach ( $rows as $case ) {
 			if ( 'open' !== $case['status'] ||
 				(int) $case['created_by'] === get_current_user_id() ) continue;
-			echo '<details class="wbm-finance-card"><summary><strong>' .
+			echo '<details class="wbm-finance-card" data-wbm-finance-dialog><summary><strong>' .
 				sprintf( esc_html__( 'Independent correction case #%d review', self::DOMAIN ), (int) $case['id'] ) .
 				'</strong></summary><p>' .
 				esc_html__( 'Review notes are audit-only. Even a rejected or reviewed case still holds the bank source pending an authorized resolution.', self::DOMAIN ) .
