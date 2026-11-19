@@ -685,8 +685,8 @@
       "WBM-P4-T007"
     ],
     "verification": "VERIFY-P4-T008",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "GitHub Actions run 44594688149 passed foundation, Playground, and native WordPress/WooCommerce/MariaDB. Native installer runs pro-matching-safety.php: wrong/missing reference, wrong amount, cancelled/refunded/paid/non-BACS order, and duplicate-suspect false-match cases remain unsuggested; no payment mutation.",
     "next_action": "Add false-positive regression matrix for missing references, ambiguous evidence, cancelled/refunded/paid orders, non-BACS orders and duplicate suspects using real WooCommerce orders where applicable."
   },
   {
@@ -699,7 +699,7 @@
       "WBM-P4-T008"
     ],
     "verification": "VERIFY-P5-T001",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {

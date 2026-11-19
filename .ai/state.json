@@ -52,7 +52,9 @@
     "conflict_cases": "passed: GitHub Actions run 44586921335 all jobs",
     "review_case_lifecycle": "passed: GitHub Actions run 44588872295 native MariaDB and foundation",
     "review_queue_ui": "passed: GitHub Actions run 44591051949 native UI and foundation",
-    "review_actions_api": "passed: GitHub Actions run 44593008847 native REST and foundation"
+    "review_actions_api": "passed: GitHub Actions run 44593008847 native REST and foundation",
+    "matching_false_positive": "passed: GitHub Actions run 44594688149 foundation and native MariaDB matching safety",
+    "pro_allocation_schema": "pending: code and tests committed; CI not yet checked"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -65,9 +67,9 @@
     "allocations_are_idempotent",
     "free_is_independent"
   ],
-  "phase": "P4",
-  "active_task_id": "WBM-P4-T008",
-  "next_action": "Verify false-match prevention for missing references and ineligible WooCommerce order states.",
+  "phase": "P5",
+  "active_task_id": "WBM-P5-T001",
+  "next_action": "Verify new P5 ledger schema, Free/Pro exact balance coexistence and CI; do not enable approval writes yet.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -120,7 +122,8 @@
     "WBM-P4-T004",
     "WBM-P4-T005",
     "WBM-P4-T006",
-    "WBM-P4-T007"
+    "WBM-P4-T007",
+    "WBM-P4-T008"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"

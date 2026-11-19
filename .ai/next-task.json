@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P4-T008",
-  "phase": "P4",
-  "title": "test false matches, missing ref, cancelled/refunded/already-paid states.",
-  "owner": "Matching engineering",
-  "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
+  "id": "WBM-P5-T001",
+  "phase": "P5",
+  "title": "allocations schema/invariant constraints and balance recomputation.",
+  "owner": "Reconciliation engineering",
+  "paths": "plugins/",
   "depends_on": [
-    "WBM-P4-T007"
+    "WBM-P4-T008"
   ],
-  "verification": "VERIFY-P4-T008",
+  "verification": "VERIFY-P5-T001",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Add false-positive regression matrix for missing references, ambiguous evidence, cancelled/refunded/paid orders, non-BACS orders and duplicate suspects using real WooCommerce orders where applicable."
+  "next_action": "Verify new P5 ledger schema, Free/Pro exact balance coexistence and CI; do not enable approval writes yet."
 }
