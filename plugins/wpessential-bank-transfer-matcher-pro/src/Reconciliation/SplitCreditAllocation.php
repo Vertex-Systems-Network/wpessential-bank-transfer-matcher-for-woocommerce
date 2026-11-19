@@ -156,7 +156,7 @@ final class SplitCreditAllocation {
 			$source = $this->source( $source_id );
 			$table = $this->table();
 			$other = (int) $this->db->get_var( $this->db->prepare(
-				"SELECT COUNT(*) FROM $table WHERE transaction_row_id = %d AND split_group_key <> %s
+				"SELECT COUNT(*) FROM $table WHERE transaction_row_id = %d AND (split_group_key IS NULL OR split_group_key <> %s)
 				 AND state <> 'reversed' FOR UPDATE", $source_id, $group_key
 			) );
 			$this->check_db();

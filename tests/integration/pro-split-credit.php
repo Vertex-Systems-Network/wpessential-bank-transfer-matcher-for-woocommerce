@@ -1,0 +1,177 @@
+<?php
+use WPEssential\BankTransferMatcher\Domain\EntityId;
+use WPEssential\BankTransferMatcher\Domain\PaymentReference;
+use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
+use WPEssential\BankTransferMatcherPro\Import\BankAccountRepository;
+use WPEssential\BankTransferMatcherPro\Import\ImportBatchRepository;
+use WPEssential\BankTransferMatcherPro\Import\MappingProfile;
+use WPEssential\BankTransferMatcherPro\Reconciliation\AllocationLedgerRepository;
+use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneApproval;
+use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneProposal;
+use WPEssential\BankTransferMatcherPro\Reconciliation\SplitCreditAllocation;
+
+if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
+	throw new RuntimeException( 'Run this fixture only in the disposable wbm_ci database.' );
+}
+global $wpdb;
+$admin = get_user_by( 'login', 'wbm_ci' );
+wp_set_current_user( $admin->ID );
+$orders = [];
+$references = [];
+foreach ( [ '60.00', '40.00', '30.00' ] as $total ) {
+	$order = wc_create_order();
+	$order->set_payment_method( 'bacs' );
+	$order->set_currency( 'USD' );
+	$order->set_total( $total );
+	$order->set_status( 'on-hold' );
+	$order->save();
+	$orders[] = $order;
+	$ref = PaymentReference::issue();
+	( new ReferenceRepository( $wpdb ) )->reserve( new EntityId( $order->get_id() ), $ref );
+	$references[] = $ref->value;
+}
+$profile = MappingProfile::from_array( [
+	'id' => 'split-credit-fixture', 'name' => 'Split credit fixture', 'delimiter' => ',',
+	'date_header' => 'Date', 'date_format' => 'Y-m-d', 'amount_header' => 'Amount',
+	'decimal_separator' => '.', 'thousands_separator' => '', 'exponent' => 2,
+	'currency_header' => '', 'fixed_currency' => 'USD',
+	'reference_header' => 'Reference', 'description_header' => '', 'transaction_id_header' => 'Bank ID',
+] );
+$account = ( new BankAccountRepository( $wpdb ) )->create(
+	'Split credit test', 'Synthetic bank', 'USD', '9876', $admin->ID
+);
+$batch_repo = new ImportBatchRepository( $wpdb );
+$batch = $batch_repo->create( $account, $profile, hash( 'sha256', 'split-credit-batch/' . $orders[0]->get_id() ), 100, $admin->ID );
+$batch_repo->transition( $batch, 'pending', 'processing' );
+$batch_repo->transition( $batch, 'processing', 'completed', 1 );
+$imports = $wpdb->prefix . 'wbm_pro_import_rows';
+$canonical = [
+	'source_row' => 2, 'posted_date' => gmdate( 'Y-m-d' ), 'amount_minor' => 10000,
+	'currency' => 'USD', 'exponent' => 2, 'reference' => $references[0],
+	'description' => 'Synthetic transferred amount for two distinct orders',
+	'transaction_id' => 'SPLIT-CREDIT-SYNTH-' . $orders[0]->get_id(),
+];
+if ( 1 !== $wpdb->insert( $imports, [
+	'batch_id' => $batch, 'source_row' => 2, 'canonical_json' => wp_json_encode( $canonical ),
+	'error_code' => '', 'warning_code' => '',
+	'identity_fingerprint' => hash( 'sha256', 'split-source/' . $batch ),
+] ) ) throw new RuntimeException( 'Could not create a synthetic unique imported credit.' );
+$source_id = (int) $wpdb->insert_id;
+$reviewer_id = wp_create_user( 'wbm-split-checker-' . wp_generate_password( 8, false ),
+	wp_generate_password( 16 ), 'split-checker-' . wp_generate_password( 8, false ) . '@example.test' );
+if ( is_wp_error( $reviewer_id ) ) throw new RuntimeException( $reviewer_id->get_error_message() );
+( new WP_User( $reviewer_id ) )->set_role( 'shop_manager' );
+$writer = new SplitCreditAllocation( $wpdb );
+$ledger = new AllocationLedgerRepository( $wpdb );
+$key = hash( 'sha256', 'split-group/' . $source_id );
+$reason = 'The merchant assigned a single cleared bank transfer to two separately reviewed BACS orders.';
+$approval_reason = 'I independently reviewed the cleared deposit and both allocation recipients.';
+$lines = [
+	[ 'order_id' => $orders[0]->get_id(), 'amount_minor' => 6000 ],
+	[ 'order_id' => $orders[1]->get_id(), 'amount_minor' => 4000 ],
+];
+$reject = static function ( callable $action, string $description ): void {
+	try {
+		$action();
+		throw new RuntimeException( 'Unsafe split accepted: ' . $description );
+	} catch ( InvalidArgumentException $expected ) {}
+};
+try {
+	wp_set_current_user( 0 );
+	try {
+		$writer->propose( $source_id, $lines, $admin->ID, $key, $reason );
+		throw new RuntimeException( 'Unauthenticated split proposal was allowed.' );
+	} catch ( RuntimeException $expected ) {
+		if ( 'Unauthenticated split proposal was allowed.' === $expected->getMessage() ) throw $expected;
+	}
+	wp_set_current_user( $admin->ID );
+	$reject( static fn (): array => $writer->propose( $source_id, [
+		[ 'order_id' => $orders[0]->get_id(), 'amount_minor' => 9000 ],
+		[ 'order_id' => $orders[1]->get_id(), 'amount_minor' => 4000 ],
+	], $admin->ID, hash( 'sha256', 'split-overdraw' ), $reason ), 'credit total overrun' );
+	$reject( static fn (): array => $writer->propose( $source_id, [
+		$lines[0], $lines[0],
+	], $admin->ID, hash( 'sha256', 'split-repeat-order' ), $reason ), 'same order counted twice' );
+	$reject( static fn (): array => $writer->propose( $source_id, [
+		[ 'order_id' => $orders[0]->get_id(), 'amount_minor' => 6000 ],
+		[ 'order_id' => $orders[2]->get_id(), 'amount_minor' => 4000 ],
+	], $admin->ID, hash( 'sha256', 'split-over-order' ), $reason ), 'order balance overrun' );
+	$proposed = $writer->propose( $source_id, $lines, $admin->ID, $key, $reason );
+	$again = $writer->propose( $source_id, array_reverse( $lines ), $admin->ID, $key, $reason );
+	if ( 'proposed' !== $proposed['status'] || 'already_proposed' !== $again['status'] ||
+		$proposed['allocation_ids'] !== $again['allocation_ids'] ||
+		count( $proposed['allocation_ids'] ) !== 2 || $proposed['order_payment_changed'] ) {
+		throw new RuntimeException( 'Idempotent two-order split proposal did not persist.' );
+	}
+	$reject( static fn (): array => $writer->propose( $source_id, [
+		[ 'order_id' => $orders[0]->get_id(), 'amount_minor' => 5000 ],
+		[ 'order_id' => $orders[1]->get_id(), 'amount_minor' => 5000 ],
+	], $admin->ID, $key, $reason ), 'request key changed distribution' );
+	$reject( static fn (): array => $writer->propose( $source_id, $lines, $admin->ID,
+		hash( 'sha256', 'competing-split-request' ), $reason ), 'source allocated twice' );
+	$reject( static fn (): array => ( new OneToOneProposal( $wpdb ) )->propose(
+		$orders[0]->get_id(), $source_id, $admin->ID, hash( 'sha256', 'wrong-source-ownership' ), $reason
+	), 'one-to-one proposal bypassed split group' );
+	$reject( static fn (): array => ( new OneToOneApproval( $wpdb ) )->approve(
+		$proposed['allocation_ids'][0], $admin->ID, true, $approval_reason
+	), 'single-item approval bypassed the group' );
+	$events = $wpdb->prefix . 'wbm_pro_allocation_events';
+	$event_count = (int) $wpdb->get_var( $wpdb->prepare(
+		"SELECT COUNT(*) FROM $events WHERE allocation_id IN (%d, %d)",
+		$proposed['allocation_ids'][0], $proposed['allocation_ids'][1]
+	) );
+	if ( 2 !== $event_count ) throw new RuntimeException( 'Split proposal audit event missing or duplicated.' );
+	// The proposer cannot approve their own group.
+	$reject( static fn (): array => $writer->approve( $key, $admin->ID, true, $approval_reason ),
+		'same-person approval' );
+	wp_set_current_user( $reviewer_id );
+	$reject( static fn (): array => $writer->approve( $key, $reviewer_id, false, $approval_reason ),
+		'approval without confirmed cleared credit' );
+	// Source identity changing after proposal invalidates the entire group.
+	$wpdb->update( $imports, [ 'warning_code' => 'possible_duplicate' ], [ 'id' => $source_id ] );
+	$reject( static fn (): array => $writer->approve( $key, $reviewer_id, true, $approval_reason ),
+		'credit flagged as duplicate' );
+	$wpdb->update( $imports, [ 'warning_code' => '' ], [ 'id' => $source_id ] );
+	$orders[1]->set_total( '41.00' );
+	$orders[1]->save();
+	$reject( static fn (): array => $writer->approve( $key, $reviewer_id, true, $approval_reason ),
+		'changed WooCommerce order total' );
+	$orders[1]->set_total( '40.00' );
+	$orders[1]->save();
+	$approved = $writer->approve( $key, $reviewer_id, true, $approval_reason );
+	$replay = $writer->approve( $key, $reviewer_id, true, $approval_reason );
+	if ( 'approved' !== $approved['status'] || 'already_approved' !== $replay['status'] ||
+		$approved['order_payment_changed'] || $approved['allocation_ids'] !== $proposed['allocation_ids'] ) {
+		throw new RuntimeException( 'Two-person split approval and idempotent replay failed.' );
+	}
+	foreach ( [ 6000, 4000 ] as $idx => $amount ) {
+		$balance = $ledger->snapshot( $orders[$idx]->get_id(), $source_id, $amount, 10000, 'USD', 2, $account );
+		if ( 0 !== $balance['order_outstanding_minor'] ||
+			10000 !== $balance['credit_allocated_minor'] ||
+			0 !== $balance['credit_unallocated_minor'] ||
+			wc_get_order( $orders[$idx]->get_id() )->is_paid() ) {
+			throw new RuntimeException( 'Split balance incorrect or order was incorrectly marked paid.' );
+		}
+	}
+	$events_count = (int) $wpdb->get_var( $wpdb->prepare(
+		"SELECT COUNT(*) FROM $events WHERE allocation_id IN (%d, %d)",
+		$proposed['allocation_ids'][0], $proposed['allocation_ids'][1]
+	) );
+	if ( 4 !== $events_count ) throw new RuntimeException( 'Group approval audit events were not atomic.' );
+	echo "PASS atomic two-order split, maker-checker, idempotency, duplicate/drift guards and unchanged payment status\n";
+} finally {
+	wp_set_current_user( $admin->ID );
+	$allocations = $wpdb->prefix . 'wbm_pro_allocations';
+	$ids = $wpdb->get_col( $wpdb->prepare(
+		"SELECT id FROM $allocations WHERE transaction_row_id = %d", $source_id
+	) );
+	foreach ( $ids as $id ) $wpdb->delete( $wpdb->prefix . 'wbm_pro_allocation_events',
+		[ 'allocation_id' => (int) $id ], [ '%d' ] );
+	$wpdb->delete( $allocations, [ 'transaction_row_id' => $source_id ], [ '%d' ] );
+	$wpdb->delete( $imports, [ 'batch_id' => $batch ], [ '%d' ] );
+	$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_batches', [ 'id' => $batch ], [ '%d' ] );
+	$wpdb->delete( $wpdb->prefix . 'wbm_pro_bank_accounts', [ 'id' => $account ], [ '%d' ] );
+	require_once ABSPATH . 'wp-admin/includes/user.php';
+	wp_delete_user( $reviewer_id );
+	foreach ( $orders as $order ) $order->delete( true );
+}

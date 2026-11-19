@@ -61,7 +61,8 @@
     "multi_credit_integration": "passed: GitHub Actions 44612420651 full foundation/Playground and native MariaDB",
     "cross_edition_allocation": "native passed in 44611779257 and 44611764798; extended cross-edition provenance collision tests pending new CI",
     "cross_edition_provenance": "passed: GitHub Actions 44612420651 native Free↔Pro duplicate-provenance guard",
-    "split_credit_preview": "pending: new P5-T004 pure split preview CI verification"
+    "split_credit_preview": "passed: GitHub Actions runs 44613122530 and 44613105946 foundation, Playground and native",
+    "split_group_allocation": "pending: P5-T004 schema v3 plus atomic split maker-checker native integration"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -76,7 +77,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T004",
-  "next_action": "Verify source-to-many-orders read-only split preview in CI; then implement explicitly authorized split proposals under all target-order and source locks with fresh revalidation and maker-checker audit.",
+  "next_action": "Verify native P5 split-group migration, two-order maker-checker approvals, conflict/rollback/replay and no paid WooCommerce transitions; do not close task until CI green.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

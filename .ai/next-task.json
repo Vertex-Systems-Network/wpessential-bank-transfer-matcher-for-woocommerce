@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T004",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify source-to-many-orders read-only split preview in CI; then implement explicitly authorized split proposals under all target-order and source locks with fresh revalidation and maker-checker audit."
+  "next_action": "Verify native P5 split-group migration, two-order maker-checker approvals, conflict/rollback/replay and no paid WooCommerce transitions; do not close task until CI green."
 }
