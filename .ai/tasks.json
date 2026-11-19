@@ -816,8 +816,8 @@
       "WBM-P5-T009"
     ],
     "verification": "VERIFY-P5-T010",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions 44639405880 and 44639399125 both fully green (Foundation PHP syntax, static/PHPStan, JS syntax, Playground, native WordPress/WooCommerce/MariaDB). Verified native WooCommerce finance allocation admin queue, exact per-currency/state page totals, loaded split-source allocation workspace, masked bank provenance, append-only allocation/correction audit, persistent holds, scoped progressive dialog script in Pro package, nonce- and capability-gated finance proposal, independent approval including split group, correction raise/review; no automatic payment/refund action."
   },
   {
     "id": "WBM-P5-T011",
@@ -829,7 +829,7 @@
       "WBM-P5-T010"
     ],
     "verification": "VERIFY-P5-T011",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {

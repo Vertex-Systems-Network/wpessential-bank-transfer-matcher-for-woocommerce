@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P5-T010",
+  "id": "WBM-P5-T011",
   "phase": "P5",
-  "title": "allocation UI, summaries, review/action modals and audit.",
+  "title": "simultaneous approval/race condition and complex fixture tests.",
   "owner": "Reconciliation engineering",
   "paths": "plugins/",
   "depends_on": [
-    "WBM-P5-T009"
+    "WBM-P5-T010"
   ],
-  "verification": "VERIFY-P5-T010",
+  "verification": "VERIFY-P5-T011",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify complete P5-T010 finance action forms, nonce rejection, split review, correction audit and progressive dialogs in CI; keep Woo payment/refund finalization unexposed."
+  "next_action": "Build and verify simultaneous cross-process proposal/reviewer/finalization race tests, shared source/order contention, exact per-source conservation and idempotent paid intent; include complex split and mixed edition fixtures."
 }
