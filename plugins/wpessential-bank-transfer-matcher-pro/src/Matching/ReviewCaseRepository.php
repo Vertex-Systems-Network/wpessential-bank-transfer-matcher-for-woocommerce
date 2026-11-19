@@ -94,6 +94,32 @@ final class ReviewCaseRepository {
 		} catch ( \Throwable $error ) { $this->rollback(); throw $error; }
 	}
 
+	/** @return list<array<string, mixed>> */
+	public function queue( string $status = '', string $priority = '', int $assignee_id = 0, int $page = 1, int $limit = 25 ): array {
+		$statuses = [ '', 'open', 'assigned', 'investigating', 'awaiting_approval', 'resolved', 'dismissed', 'reopened' ];
+		$priorities = [ '', 'normal', 'high', 'critical' ];
+		if ( ! in_array( $status, $statuses, true ) || ! in_array( $priority, $priorities, true ) || $assignee_id < 0 || $page < 1 || ! in_array( $limit, [ 20, 50, 100 ], true ) ) throw new InvalidArgumentException( 'Invalid review queue filters.' );
+		$this->ensure_schema(); $table = $this->cases_table();
+		$where = [ '1=1' ]; $args = [];
+		if ( '' !== $status ) { $where[] = 'status = %s'; $args[] = $status; }
+		if ( '' !== $priority ) { $where[] = 'priority = %s'; $args[] = $priority; }
+		if ( $assignee_id > 0 ) { $where[] = 'assignee_id = %d'; $args[] = $assignee_id; }
+		$args[] = $limit; $args[] = ( $page - 1 ) * $limit;
+		$sql = "SELECT id, case_type, transaction_id, order_id, status, priority, assignee_id, reasons_json, version, created_at, updated_at FROM $table WHERE " . implode( ' AND ', $where ) . " ORDER BY FIELD(priority, 'critical', 'high', 'normal'), id ASC LIMIT %d OFFSET %d";
+		$rows = $this->db->get_results( $this->db->prepare( $sql, ...$args ), ARRAY_A );
+		if ( ! is_array( $rows ) || '' !== $this->db->last_error ) throw new RuntimeException( 'Could not load review queue.' );
+		return $rows;
+	}
+
+	/** @return list<array<string, mixed>> */
+	public function comments( int $id ): array {
+		if ( $id < 1 ) throw new InvalidArgumentException( 'Invalid review case.' );
+		$this->ensure_schema(); $table = $this->comments_table();
+		$rows = $this->db->get_results( $this->db->prepare( "SELECT id, actor_id, comment_text, created_at FROM $table WHERE case_id = %d ORDER BY id ASC", $id ), ARRAY_A );
+		if ( ! is_array( $rows ) ) throw new RuntimeException( 'Could not load review comments.' );
+		return $rows;
+	}
+
 	/** @return array<string, mixed> */
 	public function snapshot( int $id ): array {
 		if ( $id < 1 ) throw new InvalidArgumentException( 'Invalid review case.' );
