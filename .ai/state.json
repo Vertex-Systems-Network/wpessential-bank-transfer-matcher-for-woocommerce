@@ -48,7 +48,8 @@
     "import_reimports": "passed: run 44582174758 exact re-import rejection, overlap warnings, tamper/retry, cancellation, permissions and 1,005-row fixture",
     "matching_eligibility": "passed: GitHub Actions run 44583200121 foundation, Playground and native WordPress/WooCommerce/MariaDB",
     "deterministic_matching": "passed: GitHub Actions run 44584431775 all jobs",
-    "secondary_hints": "passed: GitHub Actions run 44586058010 all jobs"
+    "secondary_hints": "passed: GitHub Actions run 44586058010 all jobs",
+    "conflict_cases": "passed: GitHub Actions run 44586921335 all jobs"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -62,8 +63,8 @@
     "free_is_independent"
   ],
   "phase": "P4",
-  "active_task_id": "WBM-P4-T004",
-  "next_action": "Implement deterministic duplicate-suspect, reversal and mismatch conflict case generation.",
+  "active_task_id": "WBM-P4-T005",
+  "next_action": "Implement review case state machine with persisted priority, assignee and append-only comments/history.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -112,8 +113,9 @@
     "WBM-P3-T010",
     "WBM-P4-T001",
     "WBM-P4-T002",
-    "WBM-P4-T003"
+    "WBM-P4-T003",
+    "WBM-P4-T004"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "147274d5afb0a4619c963e3b6de980548208ec68"
+  "last_verified_remote_milestone": "c918d110c268d7673521cc495bb50125a74021bf"
 }
