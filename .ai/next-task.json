@@ -1,13 +1,14 @@
 {
-  "id": "WBM-P3-T009",
-  "phase": "P3",
-  "title": "import wizard/transactions UI and all empty/error/progress states.",
-  "owner": "Import engineering",
-  "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+  "id": "WBM-P4-T001",
+  "phase": "P4",
+  "title": "matching candidate model/explanation codes and eligibility policy.",
+  "owner": "Matching engineering",
+  "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
   "depends_on": [
-    "WBM-P3-T008"
+    "WBM-P3-T010"
   ],
-  "verification": "VERIFY-P3-T009",
+  "verification": "VERIFY-P4-T001",
   "status": "in_progress",
-  "evidence": ""
+  "evidence": "",
+  "next_action": "Define a persisted matching candidate model, deterministic explanation codes and an eligibility policy that cannot alter payment state."
 }
