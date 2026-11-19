@@ -54,6 +54,8 @@ wp_test eval-file "$root/tests/integration/pro-allocation-schema.php"
 wp_test eval-file "$root/tests/integration/pro-receiving-bank-binding.php"
 wp_test eval-file "$root/tests/integration/pro-mismatch-cases.php"
 wp_test eval-file "$root/tests/integration/pro-approval-locks.php"
+# Real simultaneous independent WP-CLI requests against the same MariaDB database.
+bash "$root/scripts/test-pro-cross-process-races.sh" "$site" "$wp_cli"
 wp_test eval-file "$root/tests/integration/pro-one-to-one.php"
 wp_test eval-file "$root/tests/integration/pro-many-credits.php"
 wp_test eval-file "$root/tests/integration/pro-split-credit.php"

@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T011",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Build and verify simultaneous cross-process proposal/reviewer/finalization race tests, shared source/order contention, exact per-source conservation and idempotent paid intent; include complex split and mixed edition fixtures."
+  "next_action": "Verify genuine overlapping WordPress CLI maker, independent checker and paid-intent collisions under deterministic named-lock barriers; then extend complex multi-order and split source races."
 }

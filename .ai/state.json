@@ -79,7 +79,7 @@
     "allocation_review_ui": "passed: GitHub Actions 44639405880 and 44639399125 native loaded queue/split/correction audit, exact-money summary and filtered workspace",
     "finance_admin_actions": "passed: GitHub Actions 44639405880 and 44639399125 nonce-gated admin POST adapters, capability checks and manual maker/checker/correction review",
     "finance_dialogs": "passed: GitHub Actions 44639405880 and 44639399125 Node syntax, Pro asset manifest inclusion and WordPress scoped enqueue",
-    "pro_cross_process_races": "pending: P5-T011 concurrent separate WP-CLI process finance action race fixture"
+    "pro_cross_process_races": "pending native: three true overlapping WP-CLI requests using live source/order advisory locks, unique source allocation and exactly one payment hook"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -94,7 +94,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T011",
-  "next_action": "Build and verify simultaneous cross-process proposal/reviewer/finalization race tests, shared source/order contention, exact per-source conservation and idempotent paid intent; include complex split and mixed edition fixtures.",
+  "next_action": "Verify genuine overlapping WordPress CLI maker, independent checker and paid-intent collisions under deterministic named-lock barriers; then extend complex multi-order and split source races.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
