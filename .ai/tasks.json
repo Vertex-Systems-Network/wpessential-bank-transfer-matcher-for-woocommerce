@@ -607,9 +607,8 @@
       "WBM-P4-T001"
     ],
     "verification": "VERIFY-P4-T002",
-    "status": "in_progress",
-    "evidence": "",
-    "next_action": "Implement exact deterministic reference, amount, account and currency matching rules over eligible records, returning review-only candidates."
+    "status": "done",
+    "evidence": "GitHub Actions run 44584431775 passed task graph, docs, packaging, PHP syntax, PHPStan, deterministic matcher unit checks, Playground and native WordPress/WooCommerce/MariaDB. Only a unique normalized reference plus exact outstanding minor units, currency and bank account emits a review-only suggestion; ambiguity or mismatch is not promoted."
   },
   {
     "id": "WBM-P4-T003",
@@ -621,8 +620,9 @@
       "WBM-P4-T002"
     ],
     "verification": "VERIFY-P4-T003",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Implement secondary date/description/customer hints that can explain or rank review candidates but can never override ambiguity or missing exact primary evidence."
   },
   {
     "id": "WBM-P4-T004",
