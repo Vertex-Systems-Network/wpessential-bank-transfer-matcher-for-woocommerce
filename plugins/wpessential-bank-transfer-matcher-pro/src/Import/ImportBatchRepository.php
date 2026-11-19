@@ -11,7 +11,7 @@ final class ImportBatchRepository {
 	private const VERSION = 'wpessential_wbm_pro_import_batch_schema';
 	private const TRANSITIONS = array(
 		'pending' => array( 'processing', 'cancelled', 'failed' ),
-		'processing' => array( 'completed', 'failed' ),
+		'processing' => array( 'completed', 'failed', 'cancelled' ),
 		'failed' => array( 'processing', 'cancelled' ),
 		'completed' => array(),
 		'cancelled' => array(),
