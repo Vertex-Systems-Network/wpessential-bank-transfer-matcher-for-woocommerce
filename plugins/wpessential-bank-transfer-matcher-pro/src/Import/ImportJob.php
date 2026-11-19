@@ -108,8 +108,31 @@ final class ImportJob {
 	/** Failed Action Scheduler attempts may be retried after checking the source and checkpoint. */
 	public function retry( int $batch_id ): void {
 		if ( ! current_user_can( Capabilities::IMPORT ) || ! function_exists( 'as_enqueue_async_action' ) ) throw new RuntimeException( 'Import retry is unavailable.' );
+		$this->ensure_schema();
+		$job = $this->db->get_row( $this->db->prepare( "SELECT j.source_path, b.file_sha256 FROM `{$this->jobs_table()}` j JOIN `{$this->db->prefix}wbm_pro_import_batches` b ON b.id = j.batch_id WHERE j.batch_id = %d AND b.status = 'failed'", $batch_id ), ARRAY_A );
+		if ( ! is_array( $job ) || ! is_file( $job['source_path'] ) || ! hash_equals( $job['file_sha256'], hash_file( 'sha256', $job['source_path'] ) ?: '' ) ) throw new RuntimeException( 'The failed import source is missing or changed.' );
 		( new ImportBatchRepository( $this->db ) )->transition( $batch_id, 'failed', 'processing' );
 		as_enqueue_async_action( self::HOOK, array( $batch_id ), 'wpessential-wbm-import', true );
+	}
+
+	/** Cancel a batch that has not completed and remove its private source file. */
+	public function cancel( int $batch_id ): void {
+		if ( ! current_user_can( Capabilities::IMPORT ) ) throw new RuntimeException( 'Import permission is required.' );
+		$this->ensure_schema();
+		$row = $this->db->get_row( $this->db->prepare( "SELECT j.source_path, b.status FROM `{$this->jobs_table()}` j JOIN `{$this->db->prefix}wbm_pro_import_batches` b ON b.id = j.batch_id WHERE j.batch_id = %d", $batch_id ), ARRAY_A );
+		if ( ! is_array( $row ) || ! in_array( $row['status'], array( 'pending', 'processing', 'failed' ), true ) ) throw new RuntimeException( 'This import can no longer be cancelled.' );
+		( new ImportBatchRepository( $this->db ) )->transition( $batch_id, $row['status'], 'cancelled' );
+		if ( is_file( $row['source_path'] ) ) @unlink( $row['source_path'] );
+	}
+
+	/** @return list<array<string, mixed>> */
+	public function staged_rows( int $batch_id, int $page = 1, int $limit = 50 ): array {
+		if ( $batch_id < 1 || $page < 1 || ! in_array( $limit, array( 20, 50, 100 ), true ) ) throw new InvalidArgumentException( 'Invalid staged-row query.' );
+		$this->ensure_schema();
+		$offset = ( $page - 1 ) * $limit;
+		$rows = $this->db->get_results( $this->db->prepare( "SELECT source_row, canonical_json, error_code FROM `{$this->rows_table()}` WHERE batch_id = %d ORDER BY source_row ASC LIMIT %d OFFSET %d", $batch_id, $limit, $offset ), ARRAY_A );
+		if ( ! is_array( $rows ) || '' !== $this->db->last_error ) throw new RuntimeException( 'Could not load imported rows.' );
+		return $rows;
 	}
 
 	private function jobs_table(): string { return $this->db->prefix . 'wbm_pro_import_jobs'; }
