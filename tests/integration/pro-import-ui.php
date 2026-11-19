@@ -21,6 +21,10 @@ $source = tempnam( sys_get_temp_dir(), 'wbm-ui-' );
 file_put_contents( $source, "Date,Amount,Reference,Description,Bank ID\n2026-11-19,25.00,PRIVATE-REFERENCE,Fixture payment,TX-100\n" );
 $batch = 0;
 try {
+	wp_set_current_user( 0 );
+	$forbidden = ImportStatementsPage::process_commit( array() );
+	if ( ! is_wp_error( $forbidden ) || 403 !== $forbidden->get_error_data() ) throw new RuntimeException( 'Anonymous import commit was not denied.' );
+	wp_set_current_user( $actor->ID );
 	ob_start(); ImportStatementsPage::render(); $initial = ob_get_clean();
 	if ( ! str_contains( $initial, 'Validate and preview' ) || ! str_contains( $initial, 'Imported rows remain unverified' ) ) throw new RuntimeException( 'Import first-run form or safety copy is missing.' );
 	$job = new ImportJob( $wpdb );
