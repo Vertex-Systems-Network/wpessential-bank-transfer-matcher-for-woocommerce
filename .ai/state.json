@@ -68,7 +68,8 @@
     "mismatch_review": "passed: GitHub Actions 44625635473 and 44625621260 both full foundation/Playground and native",
     "receiving_bank_binding": "passed: GitHub Actions 44624804673, 44624789987 and 44625635473",
     "mismatch_cases": "passed: GitHub Actions 44625635473 and 44625621260 native source-backed mismatch case fixture",
-    "approval_lock_contention": "pending: P5-T007 independent second connection lock fixture CI"
+    "approval_lock_contention": "pending: P5-T007 independent second connection lock fixture CI",
+    "playground_download_retry": "pending: transient upstream WooCommerce ZIP retry simulation in foundation CI"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -83,7 +84,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T007",
-  "next_action": "Verify separate MariaDB connection source/order named-lock contention and maker-checker review guard in CI; extend split-group lock contention and independent review permissions.",
+  "next_action": "Verify explicit maker-checker and multi-recipient lock contention in native CI, plus narrow Playground retry policy; then close P5-T007 if all safety tests pass.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

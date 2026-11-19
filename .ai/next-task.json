@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T007",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify separate MariaDB connection source/order named-lock contention and maker-checker review guard in CI; extend split-group lock contention and independent review permissions."
+  "next_action": "Verify explicit maker-checker and multi-recipient lock contention in native CI, plus narrow Playground retry policy; then close P5-T007 if all safety tests pass."
 }

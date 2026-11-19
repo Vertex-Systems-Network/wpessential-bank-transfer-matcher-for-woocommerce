@@ -51,6 +51,7 @@ jobs:
           php tests/migrations.php
       - name: Package and test in Playground
         run: |
+          python3 tests/playground_download_retry.py
           python3 scripts/build_playground_bundles.py
           python3 scripts/test-playground-foundation.py
 
