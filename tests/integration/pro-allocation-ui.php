@@ -18,6 +18,16 @@ try {
 		'No allocations match these filters', 'Ledger and audit views are read-only' ] as $phrase ) {
 		if ( ! str_contains( $html, $phrase ) ) throw new RuntimeException( 'Allocation list missing: ' . $phrase );
 	}
+	if ( ! str_contains( $html, 'data-wbm-finance-dialog' ) ) {
+		throw new RuntimeException( 'Finance proposal must support progressive dialog enhancement.' );
+	}
+	AllocationReviewPage::enqueue();
+	$handle = 'wbm-pro-finance-dialogs';
+	if ( ! wp_script_is( $handle, 'enqueued' ) ||
+		! str_contains( (string) ( wp_scripts()->registered[$handle]->src ?? '' ),
+			'assets/js/finance-dialogs.js' ) ) {
+		throw new RuntimeException( 'Finance dialog script was not enqueued or has the wrong plugin asset path.' );
+	}
 	if ( ! str_contains( $html, 'wbm_pro_allocation_propose' ) ||
 		! str_contains( $html, 'name="_wpnonce"' ) ) {
 		throw new RuntimeException( 'Finance proposal form must be explicit and nonce protected.' );

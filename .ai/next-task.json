@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T010",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify P5-T010 native WordPress finance queue and manual nonce-gated proposal/approval/correction panels, including forged split recipient rejection and unchanged Woo paid state; then add accessible review modal behavior and permission matrix."
+  "next_action": "Verify complete P5-T010 finance action forms, nonce rejection, split review, correction audit and progressive dialogs in CI; keep Woo payment/refund finalization unexposed."
 }

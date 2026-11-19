@@ -77,7 +77,8 @@
     "correction_cases": "passed: GitHub Actions runs 44636169810 and 44636161200 full foundation/Playground/native correction reviews",
     "correction_cross_edition_holds": "passed: both runs 44636169810 and 44636161200 Free/Pro writer hold, split recipient lock and no payment/refund",
     "allocation_review_ui": "pending: read-only WP Pro allocation queue, exact-money visible-page totals, split source, correction event timeline and native WooCommerce fixture",
-    "finance_admin_actions": "pending: nonce-gated manual proposal/checker/split/correction action adapters with permission and replay native CI"
+    "finance_admin_actions": "pending: nonce-gated manual proposal/checker/split/correction action adapters with permission and replay native CI",
+    "finance_dialogs": "pending: progressive native HTML dialog script, Pro package inclusion, Node syntax and WordPress conditional enqueue"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -92,7 +93,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T010",
-  "next_action": "Verify P5-T010 native WordPress finance queue and manual nonce-gated proposal/approval/correction panels, including forged split recipient rejection and unchanged Woo paid state; then add accessible review modal behavior and permission matrix.",
+  "next_action": "Verify complete P5-T010 finance action forms, nonce rejection, split review, correction audit and progressive dialogs in CI; keep Woo payment/refund finalization unexposed.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
