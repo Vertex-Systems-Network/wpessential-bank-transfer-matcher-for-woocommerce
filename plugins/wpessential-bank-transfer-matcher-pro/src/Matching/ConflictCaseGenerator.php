@@ -27,11 +27,11 @@ final class ConflictCaseGenerator {
 		}
 		$conflicts = [];
 		foreach ( [
-			$facts->reference_conflict => ExplanationCode::REFERENCE_CONFLICT,
-			$facts->amount_conflict => ExplanationCode::AMOUNT_CONFLICT,
-			$facts->currency_conflict => ExplanationCode::CURRENCY_CONFLICT,
-			$facts->account_conflict => ExplanationCode::ACCOUNT_CONFLICT,
-		] as $present => $code ) {
+			[ $facts->reference_conflict, ExplanationCode::REFERENCE_CONFLICT ],
+			[ $facts->amount_conflict, ExplanationCode::AMOUNT_CONFLICT ],
+			[ $facts->currency_conflict, ExplanationCode::CURRENCY_CONFLICT ],
+			[ $facts->account_conflict, ExplanationCode::ACCOUNT_CONFLICT ],
+		] as [ $present, $code ] ) {
 			if ( $present ) {
 				$conflicts[] = $code;
 			}
