@@ -19,11 +19,12 @@ final class ReviewCaseRepository {
 		$reasons = wp_json_encode( array_map( static fn ( ExplanationCode $code ): string => $code->value, $generated->explanations ) );
 		if ( ! is_string( $reasons ) ) throw new RuntimeException( 'Could not encode review reasons.' );
 		$table = $this->cases_table();
+		$order_id = null === $generated->order_id ? 'NULL' : (string) $generated->order_id;
 		$this->begin();
 		try {
 			$result = $this->db->query( $this->db->prepare(
-				"INSERT INTO $table (case_type, transaction_id, order_id, status, priority, assignee_id, reasons_json, version, created_by, created_at, updated_at) VALUES (%s, %d, %s, 'open', %s, NULL, %s, 1, %d, UTC_TIMESTAMP(), UTC_TIMESTAMP())",
-				$generated->type, $generated->transaction_id, $generated->order_id, $generated->priority, $reasons, $actor_id
+				"INSERT INTO $table (case_type, transaction_id, order_id, status, priority, assignee_id, reasons_json, version, created_by, created_at, updated_at) VALUES (%s, %d, $order_id, 'open', %s, NULL, %s, 1, %d, UTC_TIMESTAMP(), UTC_TIMESTAMP())",
+				$generated->type, $generated->transaction_id, $generated->priority, $reasons, $actor_id
 			) );
 			if ( 1 !== $result ) throw new RuntimeException( 'Could not create review case.' );
 			$id = (int) $this->db->insert_id;
@@ -68,9 +69,13 @@ final class ReviewCaseRepository {
 		ReviewCaseStateMachine::assert_priority( $priority );
 		$this->ensure_schema();
 		$table = $this->cases_table();
-		$result = $this->db->query( $this->db->prepare( "UPDATE $table SET priority = %s, version = version + 1, updated_at = UTC_TIMESTAMP() WHERE id = %d AND status NOT IN ('resolved', 'dismissed')", $priority, $id ) );
-		if ( 1 !== $result ) throw new RuntimeException( 'Review priority changed or case is closed.' );
-		$this->event( $id, 'priority_changed', $actor_id, [ 'priority' => $priority ] );
+		$this->begin();
+		try {
+			$result = $this->db->query( $this->db->prepare( "UPDATE $table SET priority = %s, version = version + 1, updated_at = UTC_TIMESTAMP() WHERE id = %d AND status NOT IN ('resolved', 'dismissed')", $priority, $id ) );
+			if ( 1 !== $result ) throw new RuntimeException( 'Review priority changed or case is closed.' );
+			$this->event( $id, 'priority_changed', $actor_id, [ 'priority' => $priority ] );
+			$this->commit();
+		} catch ( \Throwable $error ) { $this->rollback(); throw $error; }
 	}
 
 	public function add_comment( int $id, int $actor_id, string $comment ): int {
@@ -78,11 +83,15 @@ final class ReviewCaseRepository {
 		if ( $id < 1 || $actor_id < 1 || '' === $comment || strlen( $comment ) > 2000 || str_contains( $comment, "\0" ) || 1 !== preg_match( '//u', $comment ) ) throw new InvalidArgumentException( 'Invalid review comment.' );
 		$this->ensure_schema();
 		$comments = $this->comments_table(); $cases = $this->cases_table();
-		$result = $this->db->query( $this->db->prepare( "INSERT INTO $comments (case_id, actor_id, comment_text, created_at) SELECT id, %d, %s, UTC_TIMESTAMP() FROM $cases WHERE id = %d", $actor_id, $comment, $id ) );
-		if ( 1 !== $result ) throw new RuntimeException( 'Could not append review comment.' );
-		$comment_id = (int) $this->db->insert_id;
-		$this->event( $id, 'comment_added', $actor_id, [ 'comment_id' => $comment_id ] );
-		return $comment_id;
+		$this->begin();
+		try {
+			$result = $this->db->query( $this->db->prepare( "INSERT INTO $comments (case_id, actor_id, comment_text, created_at) SELECT id, %d, %s, UTC_TIMESTAMP() FROM $cases WHERE id = %d", $actor_id, $comment, $id ) );
+			if ( 1 !== $result ) throw new RuntimeException( 'Could not append review comment.' );
+			$comment_id = (int) $this->db->insert_id;
+			$this->event( $id, 'comment_added', $actor_id, [ 'comment_id' => $comment_id ] );
+			$this->commit();
+			return $comment_id;
+		} catch ( \Throwable $error ) { $this->rollback(); throw $error; }
 	}
 
 	/** @return array<string, mixed> */
