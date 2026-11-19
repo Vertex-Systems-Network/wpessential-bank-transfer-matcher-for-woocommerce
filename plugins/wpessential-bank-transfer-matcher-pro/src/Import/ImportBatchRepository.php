@@ -32,6 +32,8 @@ final class ImportBatchRepository {
 		$account = $this->db->get_row( $this->db->prepare( "SELECT id, currency, status FROM `$accounts` WHERE id = %d", $account_id ), ARRAY_A );
 		if ( ! is_array( $account ) || 'active' !== $account['status'] ) throw new InvalidArgumentException( 'An active bank account is required.' );
 		$table = $this->table();
+		$existing = $this->db->get_var( $this->db->prepare( "SELECT id FROM `$table` WHERE account_id = %d AND file_sha256 = %s AND status <> 'cancelled' LIMIT 1", $account_id, $file_sha256 ) );
+		if ( null !== $existing ) throw new InvalidArgumentException( 'This exact statement file was already imported for the selected account.' );
 		$result = $this->db->query( $this->db->prepare(
 			"INSERT INTO `$table` (account_id, currency, profile_id, profile_snapshot, file_sha256, file_size, status, created_by, created_at, updated_at) VALUES (%d, %s, %s, %s, %s, %d, 'pending', %d, UTC_TIMESTAMP(), UTC_TIMESTAMP())",
 			$account_id, $account['currency'], $profile->id, $snapshot, $file_sha256, $file_size, $actor_id
