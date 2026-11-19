@@ -27,6 +27,7 @@ final class ImportStatementsPage {
 		add_action( 'admin_post_wbm_pro_preview_statement', array( self::class, 'preview' ) );
 		add_action( 'admin_post_wbm_pro_commit_statement', array( self::class, 'commit' ) );
 		add_action( 'admin_post_wbm_pro_retry_import', array( self::class, 'retry' ) );
+		add_action( 'admin_post_wbm_pro_cancel_import', array( self::class, 'cancel' ) );
 	}
 
 	public static function menu(): void {
@@ -112,6 +113,15 @@ final class ImportStatementsPage {
 		wp_safe_redirect( add_query_arg( array( 'page' => self::SLUG, 'batch' => $batch_id, 'retried' => '1' ), admin_url( 'admin.php' ) ) ); exit;
 	}
 
+	public static function cancel(): void {
+		check_admin_referer( 'wbm_pro_cancel_import' );
+		if ( ! current_user_can( Capabilities::IMPORT ) ) wp_die( esc_html__( 'Statement import permission is required.', 'wpessential-bank-transfer-matcher-pro' ), '', array( 'response' => 403 ) );
+		$batch_id = isset( $_POST['batch_id'] ) ? absint( $_POST['batch_id'] ) : 0;
+		try { ( new ImportJob( $GLOBALS['wpdb'] ) )->cancel( $batch_id ); }
+		catch ( \Throwable $error ) { self::$request_error = new WP_Error( 'wbm_pro_cancel_failed', $error->getMessage(), 409 ); self::render_admin_response(); }
+		wp_safe_redirect( add_query_arg( array( 'page' => self::SLUG, 'batch' => $batch_id, 'cancelled' => '1' ), admin_url( 'admin.php' ) ) ); exit;
+	}
+
 	public static function render(): void {
 		if ( ! current_user_can( Capabilities::IMPORT ) ) wp_die( esc_html__( 'Statement import permission is required.', 'wpessential-bank-transfer-matcher-pro' ), '', array( 'response' => 403 ) );
 		try {
@@ -173,8 +183,9 @@ final class ImportStatementsPage {
 		echo '<table class="wp-list-table widefat fixed striped"><thead><tr><th>' . esc_html__( 'Batch', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Status', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Account / currency', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Processed', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Updated', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Action', 'wpessential-bank-transfer-matcher-pro' ) . '</th></tr></thead><tbody>';
 		foreach ( $history as $batch ) {
 			printf( '<tr><td>#%d</td><td>%s%s</td><td>#%d / %s</td><td>%d valid, %d errors, %d warnings</td><td>%s</td><td>', (int) $batch['id'], esc_html( ucfirst( $batch['status'] ) ), in_array( $batch['status'], array( 'pending', 'processing' ), true ) ? ' <progress aria-label="' . esc_attr__( 'Import in progress', 'wpessential-bank-transfer-matcher-pro' ) . '"></progress>' : '', (int) $batch['account_id'], esc_html( $batch['currency'] ), (int) $batch['valid_count'], (int) $batch['error_count'], (int) $batch['warning_count'], esc_html( $batch['updated_at'] ) );
-			if ( 'failed' === $batch['status'] ) { echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="wbm_pro_retry_import"><input type="hidden" name="batch_id" value="' . (int) $batch['id'] . '">'; wp_nonce_field( 'wbm_pro_retry_import' ); submit_button( __( 'Retry', 'wpessential-bank-transfer-matcher-pro' ), 'small', 'submit', false ); echo '</form>'; }
-			else echo '—';
+			if ( 'failed' === $batch['status'] ) { echo '<form style="display:inline" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="wbm_pro_retry_import"><input type="hidden" name="batch_id" value="' . (int) $batch['id'] . '">'; wp_nonce_field( 'wbm_pro_retry_import' ); submit_button( __( 'Retry', 'wpessential-bank-transfer-matcher-pro' ), 'small', 'submit', false ); echo '</form> '; }
+			if ( in_array( $batch['status'], array( 'pending', 'processing', 'failed' ), true ) ) { echo '<form style="display:inline" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="wbm_pro_cancel_import"><input type="hidden" name="batch_id" value="' . (int) $batch['id'] . '">'; wp_nonce_field( 'wbm_pro_cancel_import' ); submit_button( __( 'Cancel', 'wpessential-bank-transfer-matcher-pro' ), 'small', 'submit', false ); echo '</form>'; }
+			if ( ! in_array( $batch['status'], array( 'pending', 'processing', 'failed' ), true ) ) echo '—';
 			echo '</td></tr>';
 		}
 		echo '</tbody></table>';
