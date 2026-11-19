@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T006",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify explicit merchant receiving bank binding, immutable audit, and matching enforcement in all Pro proposal, one-to-one checker and split-group paths; then persist mismatch cases."
+  "next_action": "Run native merchant bank-binding regression and existing one-to-one/split fixtures; then persist source-backed mismatch review cases and account mismatch audit."
 }
