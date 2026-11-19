@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P4-T002",
+  "id": "WBM-P4-T003",
   "phase": "P4",
-  "title": "unique reference/amount/account/currency matching with exact deterministic rules.",
+  "title": "secondary hints with ambiguity prevention.",
   "owner": "Matching engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
   "depends_on": [
-    "WBM-P4-T001"
+    "WBM-P4-T002"
   ],
-  "verification": "VERIFY-P4-T002",
+  "verification": "VERIFY-P4-T003",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Implement exact deterministic reference, amount, account and currency matching rules over eligible records, returning review-only candidates."
+  "next_action": "Implement secondary date/description/customer hints that can explain or rank review candidates but can never override ambiguity or missing exact primary evidence."
 }
