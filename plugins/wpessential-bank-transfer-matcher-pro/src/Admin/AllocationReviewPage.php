@@ -36,7 +36,7 @@ final class AllocationReviewPage {
 		}
 		$db = $GLOBALS['wpdb'];
 		echo '<div class="wrap"><h1>' . esc_html__( 'Bank allocation ledger', self::DOMAIN ) . '</h1>';
-		echo '<p>' . esc_html__( 'Read-only finance evidence. Proposed credits are not funded; approved credits do not mark WooCommerce paid. Reviewed corrections remain on hold. This page cannot approve, refund, reverse or finalize payments.', self::DOMAIN ) . '</p>';
+		echo '<p>' . esc_html__( 'Ledger and audit views are read-only. Explicit finance forms can propose and independently approve allocations or record correction holds. Proposed credits are not funded; approved credits do not mark WooCommerce paid. This page cannot complete payments or issue refunds.', self::DOMAIN ) . '</p>';
 		try {
 			( new AllocationLedgerRepository( $db ) )->install();
 			$id = isset( $_GET['allocation_id'] ) ? absint( $_GET['allocation_id'] ) : 0;
@@ -228,7 +228,7 @@ final class AllocationReviewPage {
 		$case_held = self::corrections( $db, $order_id, $source_id );
 		self::action_panels( $row, $case_held );
 		self::audit( $db, $id );
-		echo '<p><em>' . esc_html__( 'No finance mutation actions are enabled. A correction review never refunds, reverses or releases a hold automatically.', self::DOMAIN ) . '</em></p>';
+		echo '<p><em>' . esc_html__( 'No automatic payment or refund is available. Financial form actions require a separate authorized finance actor, a nonce, and an audited reason; a correction review never refunds or releases a hold automatically.', self::DOMAIN ) . '</em></p>';
 	}
 
 	private static function corrections( wpdb $db, int $order_id, int $source_id ): bool {

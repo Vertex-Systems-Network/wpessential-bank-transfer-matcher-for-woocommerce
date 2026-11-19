@@ -4,7 +4,7 @@ Status: in progress.
 
 A finance allocation workspace must remain WordPress/WooCommerce-native, using normal admin menu entries, scoped capabilities, real ledger/event/provenance data and exact per-currency minor units. It must show pending versus independently approved or committed allocations, split source links, mixed Free/Pro balance holds, and correction/dispute audit without treating a review case as a completed bank refund.
 
-The first UI is explicitly **read-only**: no import action, payment completion, refunds, reversal, approval, or REST mutation route is exposed. Read-only filters, linked order snapshots and append-only audit history can be shipped once permission, escaping, malformed money, HPOS and native tests pass. Later P5-T010 maker/checker action modals require dedicated nonce/capability/CSRF/idempotency, dual-actor state checks and further integration tests. A UI button must never bypass the existing internal service contracts.
+The queue and audit information is **read-only**, while explicit POST action panels now support proposal, independent checker allocation approval, and correction/reversal investigation. WordPress admin POST actions require contextual nonces, both finance capabilities, exact IDs/idempotency keys, verified bank clearance and independent finance actor, and reuse audited internal services under database locks. No payment completion, bank refund or silent reversal action is exposed. These action forms remain unverified until native permission, nonce, maker/checker, replay and forged-identity tests pass.
 
 
 ## Read-only first implementation (native CI pending)

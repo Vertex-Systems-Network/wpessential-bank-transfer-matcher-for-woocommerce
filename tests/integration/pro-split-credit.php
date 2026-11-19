@@ -338,7 +338,7 @@ try {
 		foreach ( [ 'Allocation and provenance', 'Live WooCommerce order', 'Imported bank source',
 			'Financial hold', 'Correction and reversal investigations',
 			'Append-only correction audit history', 'Append-only allocation audit history',
-			'No finance mutation actions are enabled' ] as $needle ) {
+			'No automatic payment or refund is available' ] as $needle ) {
 			if ( ! str_contains( $workspace_html, $needle ) ) {
 				throw new RuntimeException( 'Native allocation audit workspace lacks ' . $needle );
 			}

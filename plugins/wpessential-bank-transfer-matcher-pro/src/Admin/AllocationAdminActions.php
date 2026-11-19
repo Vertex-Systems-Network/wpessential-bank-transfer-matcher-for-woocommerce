@@ -118,7 +118,12 @@ final class AllocationAdminActions {
 				'', [ 'response' => 405 ] );
 		}
 		check_admin_referer( $nonce_action );
-		self::authorize();
+		if ( get_current_user_id() < 1 ||
+			! current_user_can( ProCaps::IMPORT ) ||
+			! current_user_can( FreeCaps::APPROVE ) ) {
+			wp_die( esc_html__( 'Finance allocation access is restricted.', 'wpessential-bank-transfer-matcher-pro' ),
+				'', [ 'response' => 403 ] );
+		}
 		$input = wp_unslash( $_POST );
 		if ( ! is_array( $input ) ) throw new RuntimeException( 'Invalid finance request.' );
 		try {
