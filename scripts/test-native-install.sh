@@ -57,6 +57,7 @@ wp_test eval-file "$root/tests/integration/pro-approval-locks.php"
 wp_test eval-file "$root/tests/integration/pro-one-to-one.php"
 wp_test eval-file "$root/tests/integration/pro-many-credits.php"
 wp_test eval-file "$root/tests/integration/pro-split-credit.php"
+wp_test eval-file "$root/tests/integration/pro-payment-finalizer.php"
 wp_test eval-file "$root/tests/integration/pro-overpayment-exceptions.php"
 wp_test eval-file "$root/tests/integration/free-pro-allocation-balance.php"
 

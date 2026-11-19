@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T008",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify fail-closed payment-readiness unit policy, then implement explicit Pro payment_complete intent/state machine with source+ledger revalidation, idempotency and crash recovery; never auto-trigger from imports or claims."
+  "next_action": "Verify explicit Pro payment finalizer against disposable WooCommerce/MariaDB, including actual payment_complete, hook interruption, durable replay and ledger audit; extend split/multi-credit cases and fix any failures."
 }

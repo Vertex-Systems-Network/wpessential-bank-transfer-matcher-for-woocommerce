@@ -70,7 +70,8 @@
     "mismatch_cases": "passed: GitHub Actions 44625635473 and 44625621260 native source-backed mismatch case fixture",
     "approval_lock_contention": "passed: GitHub Actions run 44626679846 native independent SQL order/source/split group locks",
     "playground_download_retry": "pending: bounded network-only retry unit test and full Playground CI",
-    "payment_readiness": "pending: pure P5-T008 unit policy CI"
+    "payment_readiness": "pending: pure P5-T008 unit policy CI",
+    "pro_payment_finalizer": "pending: source-verified WooCommerce payment completion, idempotency, replay recovery, maker/checker and failure-injected hook native CI"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -85,7 +86,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T008",
-  "next_action": "Verify fail-closed payment-readiness unit policy, then implement explicit Pro payment_complete intent/state machine with source+ledger revalidation, idempotency and crash recovery; never auto-trigger from imports or claims.",
+  "next_action": "Verify explicit Pro payment finalizer against disposable WooCommerce/MariaDB, including actual payment_complete, hook interruption, durable replay and ledger audit; extend split/multi-credit cases and fix any failures.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
