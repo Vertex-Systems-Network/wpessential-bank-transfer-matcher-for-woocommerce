@@ -109,9 +109,9 @@ final class ImportJob {
 	public function retry( int $batch_id ): void {
 		if ( ! current_user_can( Capabilities::IMPORT ) || ! function_exists( 'as_enqueue_async_action' ) ) throw new RuntimeException( 'Import retry is unavailable.' );
 		$this->ensure_schema();
-		$job = $this->db->get_row( $this->db->prepare( "SELECT j.source_path, b.file_sha256 FROM `{$this->jobs_table()}` j JOIN `{$this->db->prefix}wbm_pro_import_batches` b ON b.id = j.batch_id WHERE j.batch_id = %d AND b.status = 'failed'", $batch_id ), ARRAY_A );
+		$job = $this->db->get_row( $this->db->prepare( "SELECT j.source_path, b.file_sha256, b.valid_count, b.error_count, b.warning_count FROM `{$this->jobs_table()}` j JOIN `{$this->db->prefix}wbm_pro_import_batches` b ON b.id = j.batch_id WHERE j.batch_id = %d AND b.status = 'failed'", $batch_id ), ARRAY_A );
 		if ( ! is_array( $job ) || ! is_file( $job['source_path'] ) || ! hash_equals( $job['file_sha256'], hash_file( 'sha256', $job['source_path'] ) ?: '' ) ) throw new RuntimeException( 'The failed import source is missing or changed.' );
-		( new ImportBatchRepository( $this->db ) )->transition( $batch_id, 'failed', 'processing' );
+		( new ImportBatchRepository( $this->db ) )->transition( $batch_id, 'failed', 'processing', (int) $job['valid_count'], (int) $job['error_count'], (int) $job['warning_count'] );
 		as_enqueue_async_action( self::HOOK, array( $batch_id ), 'wpessential-wbm-import', true );
 	}
 
@@ -119,9 +119,9 @@ final class ImportJob {
 	public function cancel( int $batch_id ): void {
 		if ( ! current_user_can( Capabilities::IMPORT ) ) throw new RuntimeException( 'Import permission is required.' );
 		$this->ensure_schema();
-		$row = $this->db->get_row( $this->db->prepare( "SELECT j.source_path, b.status FROM `{$this->jobs_table()}` j JOIN `{$this->db->prefix}wbm_pro_import_batches` b ON b.id = j.batch_id WHERE j.batch_id = %d", $batch_id ), ARRAY_A );
+		$row = $this->db->get_row( $this->db->prepare( "SELECT j.source_path, b.status, b.valid_count, b.error_count, b.warning_count FROM `{$this->jobs_table()}` j JOIN `{$this->db->prefix}wbm_pro_import_batches` b ON b.id = j.batch_id WHERE j.batch_id = %d", $batch_id ), ARRAY_A );
 		if ( ! is_array( $row ) || ! in_array( $row['status'], array( 'pending', 'processing', 'failed' ), true ) ) throw new RuntimeException( 'This import can no longer be cancelled.' );
-		( new ImportBatchRepository( $this->db ) )->transition( $batch_id, $row['status'], 'cancelled' );
+		( new ImportBatchRepository( $this->db ) )->transition( $batch_id, $row['status'], 'cancelled', (int) $row['valid_count'], (int) $row['error_count'], (int) $row['warning_count'] );
 		if ( is_file( $row['source_path'] ) ) @unlink( $row['source_path'] );
 	}
 
