@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P5-T002",
+  "id": "WBM-P5-T003",
   "phase": "P5",
-  "title": "one-to-one allocation.",
+  "title": "many credits to one order (partial payments).",
   "owner": "Reconciliation engineering",
   "paths": "plugins/",
   "depends_on": [
-    "WBM-P5-T001"
+    "WBM-P5-T002"
   ],
-  "verification": "VERIFY-P5-T002",
+  "verification": "VERIFY-P5-T003",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify P5-T002 independent reviewer approval and ledger consumption without payment_complete; validate error paths and all CI before marking done."
+  "next_action": "Connect partial-payment preview to source-validated, authorized multi-credit proposal and approval flows; first verify pure planner in CI."
 }

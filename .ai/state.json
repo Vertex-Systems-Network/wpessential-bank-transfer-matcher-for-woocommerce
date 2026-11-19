@@ -56,7 +56,8 @@
     "matching_false_positive": "passed: GitHub Actions run 44594688149 foundation and native MariaDB matching safety",
     "pro_allocation_schema": "passed: GitHub Actions run 44602497110 native and Playground",
     "one_to_one_proposal": "passed: GitHub Actions runs 44606308069 and 44606296116 all jobs green (foundation, Playground, native WooCommerce/MariaDB)",
-    "one_to_one_approval": "pending: new P5-T002 reviewer gate and native test awaiting CI"
+    "one_to_one_approval": "passed: GitHub Actions run 44607440250 foundation, Playground, native MariaDB and maker-checker allocation tests",
+    "partial_credit_preview": "pending: P5-T003 new exact multi-credit unit checks"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -70,8 +71,8 @@
     "free_is_independent"
   ],
   "phase": "P5",
-  "active_task_id": "WBM-P5-T002",
-  "next_action": "Verify P5-T002 independent reviewer approval and ledger consumption without payment_complete; validate error paths and all CI before marking done.",
+  "active_task_id": "WBM-P5-T003",
+  "next_action": "Connect partial-payment preview to source-validated, authorized multi-credit proposal and approval flows; first verify pure planner in CI.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -126,7 +127,8 @@
     "WBM-P4-T006",
     "WBM-P4-T007",
     "WBM-P4-T008",
-    "WBM-P5-T001"
+    "WBM-P5-T001",
+    "WBM-P5-T002"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"

@@ -712,8 +712,8 @@
       "WBM-P5-T001"
     ],
     "verification": "VERIFY-P5-T002",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44607440250 passed Foundation/Playground and native WooCommerce/MariaDB for internal one-to-one proposal and independent finance approval. Native fixture confirms source/order eligibility, credit fingerprint, idempotent request and approval replay, maker-checker rejection, cleared-bank acknowledgment, exact approved ledger balances, immutable two-event audit, and unchanged WooCommerce unpaid status. No REST/payment completion is exposed."
   },
   {
     "id": "WBM-P5-T003",
@@ -725,7 +725,7 @@
       "WBM-P5-T002"
     ],
     "verification": "VERIFY-P5-T003",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {

@@ -1,0 +1,5 @@
+# ADR-0003 — P5-T003 multi-credit preview boundary
+
+The Pro read-only \`PartialCreditPlanner\` accepts merchant-selected proposed amounts from distinct bank credits, an existing approved allocation balance, and an explicit order currency and decimal exponent. It returns exact remaining balances in integer minor units without floating point arithmetic. Duplicate source IDs, overdrawn source balances, overdrawn orders, incorrect currencies/precision, zero amounts, and float values fail closed. Its result is \`review_only\`: it is not bank evidence, allocation approval or WooCommerce payment authorization.
+
+**Remaining work for P5-T003:** connect the preview to real validated completed source rows, persist per-credit proposals with unique idempotency and reviewer events, revalidate inside source/order locks, support partial coverage and later additional credits, keep the order unpaid until explicit full-settlement finalization, and add native concurrency/error regression tests. Bank imports and customer claims never approve payments.

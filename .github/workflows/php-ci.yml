@@ -41,6 +41,7 @@ jobs:
           php tests/matching-eligibility.php
           php tests/deterministic-matcher.php
           php tests/allocation-balance.php
+          php tests/partial-credit-plan.php
           php tests/secondary-hints.php
           php tests/conflict-cases.php
           php tests/camt053.php
