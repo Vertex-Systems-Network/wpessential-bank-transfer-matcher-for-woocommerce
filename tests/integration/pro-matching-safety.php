@@ -5,7 +5,8 @@ use WPEssential\BankTransferMatcherPro\Matching\EligibilityPolicy;
 use WPEssential\BankTransferMatcherPro\Matching\ExactMatchFacts;
 use WPEssential\BankTransferMatcherPro\Matching\WooOrderEligibility;
 
-$make_order = static function ( string $status = 'pending', string $gateway = 'bacs' ): WC_Order {
+$created_orders = [];
+$make_order = static function ( string $status = 'pending', string $gateway = 'bacs' ) use ( &$created_orders ): WC_Order {
 	$order = wc_create_order();
 	if ( is_wp_error( $order ) ) throw new RuntimeException( $order->get_error_message() );
 	$order->set_currency( 'USD' );
@@ -13,6 +14,7 @@ $make_order = static function ( string $status = 'pending', string $gateway = 'b
 	$order->set_payment_method( $gateway );
 	$order->set_status( $status );
 	$order->save();
+	$created_orders[] = $order;
 	return $order;
 };
 
@@ -48,4 +50,5 @@ foreach ( [
 	if ( $decision->eligible || 'blocked' !== $matcher->match( $context, $decision, $exact )->status ) throw new RuntimeException( "$label order/evidence was matchable." );
 }
 
+foreach ( $created_orders as $created_order ) $created_order->delete( true );
 echo "PASS false-match, missing-reference, cancelled, refunded, paid, non-BACS and duplicate safety\n";
