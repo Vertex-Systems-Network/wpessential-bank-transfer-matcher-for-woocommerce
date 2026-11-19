@@ -503,8 +503,8 @@
       "WBM-P3-T004"
     ],
     "verification": "VERIFY-P3-T005",
-    "status": "ready",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44396934079 passed native MariaDB batch provenance/state/history fixture and foundation packaging."
   },
   {
     "id": "WBM-P3-T006",
@@ -516,8 +516,8 @@
       "WBM-P3-T005"
     ],
     "verification": "VERIFY-P3-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44400332941 passed identity unit, PHP lint/static, native MariaDB and Playground foundation. Fallback fingerprints remain advisory; row-level persisted dedup belongs to P3-T007/T010."
   },
   {
     "id": "WBM-P3-T007",
@@ -529,8 +529,8 @@
       "WBM-P3-T006"
     ],
     "verification": "VERIFY-P3-T007",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44404491703 passed foundation and native MariaDB; run 44404920013 passed native 205-row three-chunk checkpoint, replay, tamper rejection and retry fixture. Background source cleanup and cross-batch dedup remain later tasks."
   },
   {
     "id": "WBM-P3-T008",
@@ -542,8 +542,8 @@
       "WBM-P3-T007"
     ],
     "verification": "VERIFY-P3-T008",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Internal CAMT.053 .02/.08 parser and synthetic safety fixtures passed PHP unit/static in GitHub Actions run 44411596017; native MariaDB passed. Not enabled or advertised; broader real-bank fixture and import integration remain release gates, see docs/testing/camt053-scope.md."
   },
   {
     "id": "WBM-P3-T009",
@@ -555,7 +555,7 @@
       "WBM-P3-T008"
     ],
     "verification": "VERIFY-P3-T009",
-    "status": "planned",
+    "status": "ready",
     "evidence": ""
   },
   {

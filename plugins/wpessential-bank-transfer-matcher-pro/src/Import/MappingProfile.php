@@ -14,9 +14,9 @@ final readonly class MappingProfile {
 		public string $date_header, public string $date_format,
 		public string $amount_header, public string $decimal_separator, public string $thousands_separator,
 		public int $exponent, public string $currency_header, public string $fixed_currency,
-		public string $reference_header, public string $description_header,
+		public string $reference_header, public string $description_header, public string $transaction_id_header = '',
 	) {
-		$headers = array_filter( array( $date_header, $amount_header, $currency_header, $reference_header, $description_header ), static fn ( string $value ): bool => '' !== $value );
+		$headers = array_filter( array( $date_header, $amount_header, $currency_header, $reference_header, $description_header, $transaction_id_header ), static fn ( string $value ): bool => '' !== $value );
 		if ( '' === $id || strlen( $id ) > 64 || '' === trim( $name ) || strlen( $name ) > 80 || ! in_array( $delimiter, self::DELIMITERS, true ) ||
 			! in_array( $date_format, self::DATE_FORMATS, true ) || '' === $date_header || '' === $amount_header || count( $headers ) !== count( array_unique( $headers ) ) ||
 			! in_array( $decimal_separator, array( '.', ',' ), true ) || ! in_array( $thousands_separator, array( '', '.', ',', ' ' ), true ) || $decimal_separator === $thousands_separator ||
@@ -30,7 +30,7 @@ final readonly class MappingProfile {
 			self::text( $data, 'id' ), self::text( $data, 'name' ), self::text( $data, 'delimiter' ),
 			self::text( $data, 'date_header' ), self::text( $data, 'date_format' ), self::text( $data, 'amount_header' ),
 			self::text( $data, 'decimal_separator' ), self::text( $data, 'thousands_separator' ), (int) ( $data['exponent'] ?? -1 ),
-			self::text( $data, 'currency_header' ), strtoupper( self::text( $data, 'fixed_currency' ) ), self::text( $data, 'reference_header' ), self::text( $data, 'description_header' )
+			self::text( $data, 'currency_header' ), strtoupper( self::text( $data, 'fixed_currency' ) ), self::text( $data, 'reference_header' ), self::text( $data, 'description_header' ), self::text( $data, 'transaction_id_header' )
 		);
 	}
 
@@ -45,7 +45,8 @@ final readonly class MappingProfile {
 		if ( 1 !== preg_match( '/\A[A-Z]{3}\z/', $currency ) ) throw new InvalidArgumentException( 'Row ' . $row->row_number . ' has an invalid ISO currency.' );
 		$reference = '' === $this->reference_header ? '' : (string) $row->value( $this->reference_header );
 		$description = '' === $this->description_header ? '' : (string) $row->value( $this->description_header );
-		return new CanonicalStatementRow( $row->row_number, $parsed->format( 'Y-m-d' ), $this->minor_units( $this->required( $row, $this->amount_header ), $row->row_number ), $currency, $this->exponent, $reference, $description );
+		$transaction_id = '' === $this->transaction_id_header ? '' : $this->required( $row, $this->transaction_id_header );
+		return new CanonicalStatementRow( $row->row_number, $parsed->format( 'Y-m-d' ), $this->minor_units( $this->required( $row, $this->amount_header ), $row->row_number ), $currency, $this->exponent, $reference, $description, $transaction_id );
 	}
 
 	private function required( RawStatementRow $row, string $header ): string {
