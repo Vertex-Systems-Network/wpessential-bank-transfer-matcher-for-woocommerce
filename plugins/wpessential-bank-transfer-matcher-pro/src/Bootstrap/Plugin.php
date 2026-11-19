@@ -9,6 +9,8 @@ namespace WPEssential\BankTransferMatcherPro\Bootstrap;
 
 use WPEssential\BankTransferMatcherPro\Access\Capabilities;
 use WPEssential\BankTransferMatcherPro\Admin\BankAccountsPage;
+use WPEssential\BankTransferMatcherPro\Admin\BankTransactionsPage;
+use WPEssential\BankTransferMatcherPro\Admin\ImportStatementsPage;
 use WPEssential\BankTransferMatcherPro\Admin\MappingProfilesPage;
 use WPEssential\BankTransferMatcherPro\Import\ImportJob;
 
