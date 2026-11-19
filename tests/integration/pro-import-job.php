@@ -13,7 +13,7 @@ $source = tempnam( sys_get_temp_dir(), 'wbm-job-' );
 $handle = fopen( $source, 'wb' ); fwrite( $handle, "Date,Amount,Reference,Bank ID\n" );
 for ( $i = 1; $i <= 205; ++$i ) fputcsv( $handle, [ '2026-11-18', '1.00', 'REF-' . $i, sprintf( '%06d', $i ) ], ',', '"', '' );
 fclose( $handle );
-$job = new ImportJob( $wpdb ); $batch = 0; $path = ''; $third = 0;
+$job = new ImportJob( $wpdb ); $batch = 0; $path = ''; $third = 0; $second_source = '';
 try {
 	$batch = $job->start( $source, $account, $profile, $actor->ID );
 	$jobs = $wpdb->prefix . 'wbm_pro_import_jobs'; $rows = $wpdb->prefix . 'wbm_pro_import_rows'; $batches = $wpdb->prefix . 'wbm_pro_import_batches';
@@ -28,14 +28,18 @@ try {
 	if ( 205 !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $batch ) ) ) throw new RuntimeException( 'Replay duplicated staged rows.' );
 	$first = $wpdb->get_var( $wpdb->prepare( "SELECT canonical_json FROM `$rows` WHERE batch_id = %d AND source_row = 2", $batch ) );
 	if ( '000001' !== ( json_decode( $first, true )['transaction_id'] ?? '' ) ) throw new RuntimeException( 'Bank transaction ID lost leading zeroes.' );
+	try { $job->start( $source, $account, $profile, $actor->ID ); throw new RuntimeException( 'Exact file reimport was accepted.' ); }
+	catch ( InvalidArgumentException $error ) { if ( 'Exact file reimport was accepted.' === $error->getMessage() ) throw $error; }
 	// A changed private source must fail closed before any additional row is written.
-	$second = $job->start( $source, $account, $profile, $actor->ID );
+	$second_source = tempnam( sys_get_temp_dir(), 'wbm-job-overlap-' );
+	copy( $source, $second_source ); file_put_contents( $second_source, "\n", FILE_APPEND );
+	$second = $job->start( $second_source, $account, $profile, $actor->ID );
 	$second_path = $wpdb->get_var( $wpdb->prepare( "SELECT source_path FROM `$jobs` WHERE batch_id = %d", $second ) );
 	file_put_contents( $second_path, 'tampered' );
 	try { $job->process( $second ); throw new RuntimeException( 'Changed source was accepted.' ); }
 	catch ( RuntimeException $error ) { if ( 'Changed source was accepted.' === $error->getMessage() ) throw $error; }
 	if ( 'failed' !== $wpdb->get_var( $wpdb->prepare( "SELECT status FROM `$batches` WHERE id = %d", $second ) ) ) throw new RuntimeException( 'Failed job was not recorded.' );
-	copy( $source, $second_path );
+	copy( $second_source, $second_path );
 	$job->retry( $second );
 	$job->process( $second ); $job->process( $second ); $job->process( $second );
 	if ( 'completed' !== $wpdb->get_var( $wpdb->prepare( "SELECT status FROM `$batches` WHERE id = %d", $second ) ) || 205 !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $second ) ) ) throw new RuntimeException( 'Explicit retry did not resume safely.' );
@@ -55,5 +59,5 @@ try {
 		$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_batches', [ 'id' => $id ], [ '%d' ] );
 	}
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_bank_accounts', [ 'id' => $account ], [ '%d' ] );
-	unlink( $source );
+	unlink( $source ); if ( $second_source && is_file( $second_source ) ) unlink( $second_source );
 }
