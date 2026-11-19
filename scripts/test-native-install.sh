@@ -47,6 +47,7 @@ wp_test eval-file "$root/tests/integration/pro-import-batches.php"
 wp_test eval-file "$root/tests/integration/pro-import-job.php"
 wp_test eval-file "$root/tests/integration/pro-import-ui.php"
 wp_test eval-file "$root/tests/integration/pro-review-cases.php"
+wp_test eval-file "$root/tests/integration/pro-review-ui.php"
 
 wp_test option update woocommerce_cod_settings '{"enabled":"yes"}' --format=json
 wp_test option update woocommerce_bacs_accounts '[{"account_name":"Fixture account","bank_name":"Fixture bank","account_number":"","sort_code":"","iban":"","bic":""}]' --format=json
