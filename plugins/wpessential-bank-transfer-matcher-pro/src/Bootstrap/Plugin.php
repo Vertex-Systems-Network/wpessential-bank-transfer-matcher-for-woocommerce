@@ -13,6 +13,7 @@ use WPEssential\BankTransferMatcherPro\Admin\BankTransactionsPage;
 use WPEssential\BankTransferMatcherPro\Admin\ImportStatementsPage;
 use WPEssential\BankTransferMatcherPro\Admin\MappingProfilesPage;
 use WPEssential\BankTransferMatcherPro\Admin\ReviewQueuePage;
+use WPEssential\BankTransferMatcherPro\Api\ReviewCaseController;
 use WPEssential\BankTransferMatcherPro\Import\ImportJob;
 
 defined( 'ABSPATH' ) || exit;
@@ -25,6 +26,7 @@ final class Plugin {
 		ImportStatementsPage::register();
 		BankTransactionsPage::register();
 		ReviewQueuePage::register();
+		ReviewCaseController::register();
 		ImportJob::register();
 		do_action( 'wpessential_bank_transfer_matcher_pro_ready' );
 	}
