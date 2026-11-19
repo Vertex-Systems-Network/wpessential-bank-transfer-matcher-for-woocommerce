@@ -20,6 +20,7 @@ final class Plugin {
 		BankAccountsPage::register();
 		MappingProfilesPage::register();
 		ImportStatementsPage::register();
+		BankTransactionsPage::register();
 		ImportJob::register();
 		do_action( 'wpessential_bank_transfer_matcher_pro_ready' );
 	}
