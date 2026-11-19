@@ -633,9 +633,8 @@
       "WBM-P4-T003"
     ],
     "verification": "VERIFY-P4-T004",
-    "status": "in_progress",
-    "evidence": "",
-    "next_action": "Generate typed duplicate-suspect, reversal and primary-field conflict cases without mutating imported evidence, allocations or payment state."
+    "status": "done",
+    "evidence": "GitHub Actions run 44586921335 passed task graph, docs, packaging, PHP syntax, PHPStan, duplicate/reversal/conflict case unit checks, Playground and native WordPress/WooCommerce/MariaDB. Duplicate suspects, reversals and reference/amount/currency/account mismatches generate separate typed cases with deterministic severity/reasons and no evidence or payment mutation."
   },
   {
     "id": "WBM-P4-T005",
@@ -647,8 +646,9 @@
       "WBM-P4-T004"
     ],
     "verification": "VERIFY-P4-T005",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Implement persisted review-case lifecycle, priority, assignee and append-only comments/history with compare-and-swap transitions."
   },
   {
     "id": "WBM-P4-T006",
