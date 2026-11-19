@@ -53,6 +53,22 @@ final class ProPaymentFinalizer {
 			static fn ( array $row ): int => (int) $row['transaction_row_id'], $preflight
 		) ) );
 		$lock_keys = [ $this->lock_key( 'wbm-allocation', $order_id ) ];
+		// A split source is shared by other recipient orders. Lock those orders
+		// too: a concurrent Free manual writer only holds its recipient order
+		// lock, and must never change split provenance during payment.
+		$placeholders = implode( ', ', array_fill( 0, count( $source_ids ), '%d' ) );
+		$recipient_ids = $this->db->get_col( $this->db->prepare(
+			"SELECT DISTINCT order_id FROM {$this->db->prefix}wbm_pro_allocations
+			 WHERE transaction_row_id IN ($placeholders)", ...$source_ids
+		) );
+		$this->check_db();
+		if ( ! is_array( $recipient_ids ) || [] === $recipient_ids ) {
+			throw new RuntimeException( 'Split payment recipients cannot be locked.' );
+		}
+		foreach ( $recipient_ids as $recipient_id ) {
+			if ( (int) $recipient_id < 1 ) throw new InvalidArgumentException( 'Invalid split recipient identity.' );
+			$lock_keys[] = $this->lock_key( 'wbm-allocation', (int) $recipient_id );
+		}
 		foreach ( $source_ids as $source_id ) {
 			if ( $source_id < 1 ) throw new InvalidArgumentException( 'Invalid imported source identity.' );
 			$lock_keys[] = $this->lock_key( 'wbm-pro-source', $source_id );
