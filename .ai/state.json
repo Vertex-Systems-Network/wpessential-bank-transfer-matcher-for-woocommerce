@@ -1,7 +1,7 @@
 {
   "project": "WPEssential Bank Transfer Matcher for WooCommerce",
   "schema_version": 1,
-  "current_branch": "development/phase-3-import-batches",
+  "current_branch": "development/autonomous-release-track",
   "last_verified_base_commit": "939b9c6c7ecd1882340af9dcd55fe932d4207251",
   "last_checkpoint_utc": "2026-11-19",
   "execution_status": "in_progress",
@@ -43,7 +43,9 @@
     "import_batches": "passed: GitHub Actions run 44396934079 native MariaDB and foundation",
     "transaction_identity": "passed: GitHub Actions run 44400332941 foundation and native MariaDB",
     "import_jobs": "passed: native MariaDB run 44404920013; foundation run 44404491703",
-    "camt053": "internal parser unit/static passed in run 44411596017; native MariaDB passed; release support gated"
+    "camt053": "internal parser unit/static passed in run 44411596017; native MariaDB passed; release support gated",
+    "import_ui": "passed: GitHub Actions run 44582174758 foundation, Playground and native WordPress/WooCommerce/MariaDB",
+    "import_reimports": "passed: run 44582174758 exact re-import rejection, overlap warnings, tamper/retry, cancellation, permissions and 1,005-row fixture"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -56,9 +58,9 @@
     "allocations_are_idempotent",
     "free_is_independent"
   ],
-  "phase": "P3",
-  "active_task_id": "WBM-P3-T009",
-  "next_action": "Build Pro import wizard and persistent history/progress/retry views, with explicit unverified-evidence warning and all permission/error/empty states.",
+  "phase": "P4",
+  "active_task_id": "WBM-P4-T001",
+  "next_action": "Define the matching candidate model, deterministic explanation codes and order/transaction eligibility policy without changing payment state.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -102,8 +104,10 @@
     "WBM-P3-T005",
     "WBM-P3-T006",
     "WBM-P3-T007",
-    "WBM-P3-T008"
+    "WBM-P3-T008",
+    "WBM-P3-T009",
+    "WBM-P3-T010"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "72aa38934276fdcc744a3d7ae29e9db34130a1f2"
+  "last_verified_remote_milestone": "41d8478b962c60109fdc7bfb5481b0675398c300"
 }
