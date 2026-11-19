@@ -82,6 +82,16 @@ $reject = static function ( callable $action, string $description ): void {
 		throw new RuntimeException( 'Unsafe split accepted: ' . $description );
 	} catch ( InvalidArgumentException $expected ) {}
 };
+$other_connection = new wpdb( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST );
+$held_lock = null;
+$expect_lock_failure = static function ( callable $operation ): void {
+	try {
+		$operation();
+		throw new RuntimeException( 'Active split lock was ignored.' );
+	} catch ( RuntimeException $error ) {
+		if ( ! str_contains( $error->getMessage(), 'under concurrent reconciliation' ) ) throw $error;
+	}
+};
 try {
 	wp_set_current_user( 0 );
 	try {
@@ -102,6 +112,18 @@ try {
 		[ 'order_id' => $orders[0]->get_id(), 'amount_minor' => 6000 ],
 		[ 'order_id' => $orders[2]->get_id(), 'amount_minor' => 4000 ],
 	], $admin->ID, hash( 'sha256', 'split-over-order' ), $reason ), 'order balance overrun' );
+	// A separate SQL connection locking the SECOND recipient blocks the entire group.
+	$held_lock = hash( 'sha256', DB_NAME . '/' . $wpdb->prefix . '/wbm-allocation/' . $orders[1]->get_id() );
+	if ( '1' !== (string) $other_connection->get_var(
+		$other_connection->prepare( 'SELECT GET_LOCK(%s, 0)', $held_lock ) ) ) {
+		throw new RuntimeException( 'Could not acquire independent split recipient lock.' );
+	}
+	$expect_lock_failure( static fn () => $writer->propose( $source_id, $lines, $admin->ID, $key, $reason ) );
+	$other_connection->get_var( $other_connection->prepare( 'SELECT RELEASE_LOCK(%s)', $held_lock ) );
+	$held_lock = null;
+	if ( 0 !== (int) $wpdb->get_var( $wpdb->prepare(
+		"SELECT COUNT(*) FROM {$wpdb->prefix}wbm_pro_allocations WHERE transaction_row_id = %d", $source_id
+	) ) ) throw new RuntimeException( 'Rejected split lock created partial ledger rows.' );
 	$proposed = $writer->propose( $source_id, $lines, $admin->ID, $key, $reason );
 	$again = $writer->propose( $source_id, array_reverse( $lines ), $admin->ID, $key, $reason );
 	if ( 'proposed' !== $proposed['status'] || 'already_proposed' !== $again['status'] ||
@@ -144,6 +166,20 @@ try {
 		'changed WooCommerce order total' );
 	$orders[1]->set_total( '40.00' );
 	$orders[1]->save();
+	// Bank-source lock held by a second session prevents ALL recipient approvals.
+	$held_lock = hash( 'sha256', DB_NAME . '/' . $wpdb->prefix . '/wbm-pro-source/' . $source_id );
+	if ( '1' !== (string) $other_connection->get_var(
+		$other_connection->prepare( 'SELECT GET_LOCK(%s, 0)', $held_lock ) ) ) {
+		throw new RuntimeException( 'Could not acquire independent bank source lock.' );
+	}
+	$expect_lock_failure( static fn () => $writer->approve( $key, $reviewer_id, true, $approval_reason ) );
+	$other_connection->get_var( $other_connection->prepare( 'SELECT RELEASE_LOCK(%s)', $held_lock ) );
+	$held_lock = null;
+	$proposed_count = (int) $wpdb->get_var( $wpdb->prepare(
+		"SELECT COUNT(*) FROM {$wpdb->prefix}wbm_pro_allocations
+		 WHERE split_group_key = %s AND state = 'proposed'", $key
+	) );
+	if ( 2 !== $proposed_count ) throw new RuntimeException( 'Split lock rejection partially approved a group.' );
 	$approved = $writer->approve( $key, $reviewer_id, true, $approval_reason );
 	$replay = $writer->approve( $key, $reviewer_id, true, $approval_reason );
 	if ( 'approved' !== $approved['status'] || 'already_approved' !== $replay['status'] ||
@@ -166,6 +202,7 @@ try {
 	if ( 4 !== $events_count ) throw new RuntimeException( 'Group approval audit events were not atomic.' );
 	echo "PASS atomic two-order split, maker-checker, idempotency, duplicate/drift guards and unchanged payment status\n";
 } finally {
+	if ( null !== $held_lock ) $other_connection->get_var( $other_connection->prepare( 'SELECT RELEASE_LOCK(%s)', $held_lock ) );
 	wp_set_current_user( $admin->ID );
 	$allocations = $wpdb->prefix . 'wbm_pro_allocations';
 	$ids = $wpdb->get_col( $wpdb->prepare(
