@@ -54,7 +54,8 @@
     "review_queue_ui": "passed: GitHub Actions run 44591051949 native UI and foundation",
     "review_actions_api": "passed: GitHub Actions run 44593008847 native REST and foundation",
     "matching_false_positive": "passed: GitHub Actions run 44594688149 foundation and native MariaDB matching safety",
-    "pro_allocation_schema": "pending: code and tests committed; CI not yet checked"
+    "pro_allocation_schema": "passed: GitHub Actions run 44602497110 native and Playground",
+    "one_to_one_proposal": "pending: CI for new P5-T002 code"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -68,8 +69,8 @@
     "free_is_independent"
   ],
   "phase": "P5",
-  "active_task_id": "WBM-P5-T001",
-  "next_action": "Verify new P5 ledger schema, Free/Pro exact balance coexistence and CI; do not enable approval writes yet.",
+  "active_task_id": "WBM-P5-T002",
+  "next_action": "Verify one-to-one review-only proposals, migration v2, idempotency and exact source/account/order checks in native CI; do not approve payments.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -123,7 +124,8 @@
     "WBM-P4-T005",
     "WBM-P4-T006",
     "WBM-P4-T007",
-    "WBM-P4-T008"
+    "WBM-P4-T008",
+    "WBM-P5-T001"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"

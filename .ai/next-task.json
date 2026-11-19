@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P5-T001",
+  "id": "WBM-P5-T002",
   "phase": "P5",
-  "title": "allocations schema/invariant constraints and balance recomputation.",
+  "title": "one-to-one allocation.",
   "owner": "Reconciliation engineering",
   "paths": "plugins/",
   "depends_on": [
-    "WBM-P4-T008"
+    "WBM-P5-T001"
   ],
-  "verification": "VERIFY-P5-T001",
+  "verification": "VERIFY-P5-T002",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify new P5 ledger schema, Free/Pro exact balance coexistence and CI; do not enable approval writes yet."
+  "next_action": "Verify one-to-one review-only proposals, migration v2, idempotency and exact source/account/order checks in native CI; do not approve payments."
 }

@@ -699,8 +699,8 @@
       "WBM-P4-T008"
     ],
     "verification": "VERIFY-P5-T001",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44602497110 passed foundation (PHP lint, static, unit, Playground) and native WordPress/WooCommerce/MariaDB including Pro ledger schema and balances. Duplicate run 44602510271 failed only on transient external WooCommerce ZIP download in Playground; native test passed."
   },
   {
     "id": "WBM-P5-T002",
@@ -712,7 +712,7 @@
       "WBM-P5-T001"
     ],
     "verification": "VERIFY-P5-T002",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {

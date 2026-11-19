@@ -7,7 +7,7 @@ $repo->install();
 $table = $wpdb->prefix . 'wbm_pro_allocations';
 $fields = $wpdb->get_col( "SHOW COLUMNS FROM $table", 0 );
 foreach ( [ 'transaction_row_id', 'source_fingerprint', 'bank_account_id', 'order_id',
-	'amount_minor', 'credit_minor', 'expected_minor', 'state', 'approved_by', 'version', 'reversed_at' ] as $field ) {
+	'amount_minor', 'credit_minor', 'expected_minor', 'state', 'approved_by', 'version', 'reversed_at', 'idempotency_key' ] as $field ) {
 	if ( ! in_array( $field, $fields, true ) ) throw new RuntimeException( "Missing schema field: $field" );
 }
 $order = 800000000 + random_int( 1, 100000 );

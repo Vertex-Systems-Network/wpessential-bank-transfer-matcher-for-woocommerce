@@ -41,6 +41,30 @@ final class AllocationLedgerRepository {
 				KEY account_state (bank_account_id, state, id),
 				KEY fingerprint (source_fingerprint)
 			) ENGINE=InnoDB $collation" );
+		}, static function ( wpdb $db ): bool {
+			$table = $db->prefix . 'wbm_pro_allocations';
+			$cols = $db->get_col( "SHOW COLUMNS FROM $table", 0 );
+			if ( ! is_array( $cols ) || '' !== $db->last_error ) return false;
+			if ( ! in_array( 'idempotency_key', $cols, true ) &&
+				false === $db->query( "ALTER TABLE $table ADD COLUMN idempotency_key CHAR(64) NULL" ) ) return false;
+			$indexes = $db->get_results( "SHOW INDEX FROM $table", ARRAY_A );
+			if ( ! is_array( $indexes ) || '' !== $db->last_error ) return false;
+			$unique = false;
+			foreach ( $indexes as $index ) {
+				if ( 'idempotency_key' === $index['Key_name'] && 0 === (int) $index['Non_unique'] ) $unique = true;
+			}
+			if ( ! $unique && false === $db->query( "ALTER TABLE $table ADD UNIQUE KEY idempotency_key (idempotency_key)" ) ) return false;
+			$events = $db->prefix . 'wbm_pro_allocation_events';
+			$collation = $db->get_charset_collate();
+			return false !== $db->query( "CREATE TABLE IF NOT EXISTS $events (
+				id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				allocation_id BIGINT UNSIGNED NOT NULL,
+				event_type VARCHAR(32) NOT NULL,
+				actor_id BIGINT UNSIGNED NOT NULL,
+				event_json TEXT NOT NULL,
+				created_at DATETIME NOT NULL,
+				KEY allocation_history (allocation_id, id)
+			) ENGINE=InnoDB $collation" );
 		} ] );
 	}
 
