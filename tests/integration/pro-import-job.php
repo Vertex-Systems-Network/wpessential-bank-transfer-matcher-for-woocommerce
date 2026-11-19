@@ -42,7 +42,9 @@ try {
 	copy( $second_source, $second_path );
 	$job->retry( $second );
 	$job->process( $second ); $job->process( $second ); $job->process( $second );
-	if ( 'completed' !== $wpdb->get_var( $wpdb->prepare( "SELECT status FROM `$batches` WHERE id = %d", $second ) ) || 205 !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $second ) ) ) throw new RuntimeException( 'Explicit retry did not resume safely.' );
+	$second_state = $wpdb->get_row( $wpdb->prepare( "SELECT status, warning_count FROM `$batches` WHERE id = %d", $second ), ARRAY_A );
+	if ( 'completed' !== $second_state['status'] || 205 !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $second ) ) ) throw new RuntimeException( 'Explicit retry did not resume safely.' );
+	if ( 205 !== (int) $second_state['warning_count'] || 205 !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d AND warning_code = 'possible_duplicate'", $second ) ) ) throw new RuntimeException( 'Overlapping-file duplicate warnings were not persisted.' );
 	$third = $job->start( $source, $account, $profile, $actor->ID );
 	$third_path = $wpdb->get_var( $wpdb->prepare( "SELECT source_path FROM `$jobs` WHERE batch_id = %d", $third ) );
 	$job->cancel( $third );
