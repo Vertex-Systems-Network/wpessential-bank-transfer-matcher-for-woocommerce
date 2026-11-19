@@ -45,7 +45,8 @@
     "import_jobs": "passed: native MariaDB run 44404920013; foundation run 44404491703",
     "camt053": "internal parser unit/static passed in run 44411596017; native MariaDB passed; release support gated",
     "import_ui": "passed: GitHub Actions run 44582174758 foundation, Playground and native WordPress/WooCommerce/MariaDB",
-    "import_reimports": "passed: run 44582174758 exact re-import rejection, overlap warnings, tamper/retry, cancellation, permissions and 1,005-row fixture"
+    "import_reimports": "passed: run 44582174758 exact re-import rejection, overlap warnings, tamper/retry, cancellation, permissions and 1,005-row fixture",
+    "matching_eligibility": "passed: GitHub Actions run 44583200121 foundation, Playground and native WordPress/WooCommerce/MariaDB"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -59,8 +60,8 @@
     "free_is_independent"
   ],
   "phase": "P4",
-  "active_task_id": "WBM-P4-T001",
-  "next_action": "Define the matching candidate model, deterministic explanation codes and order/transaction eligibility policy without changing payment state.",
+  "active_task_id": "WBM-P4-T002",
+  "next_action": "Implement exact deterministic reference, amount, bank-account and currency rules that only emit review candidates.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -106,8 +107,9 @@
     "WBM-P3-T007",
     "WBM-P3-T008",
     "WBM-P3-T009",
-    "WBM-P3-T010"
+    "WBM-P3-T010",
+    "WBM-P4-T001"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "41d8478b962c60109fdc7bfb5481b0675398c300"
+  "last_verified_remote_milestone": "744ff98a9a64d151d3745bd01d277b06d4f954ee"
 }
