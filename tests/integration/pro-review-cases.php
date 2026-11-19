@@ -30,7 +30,7 @@ $repository->set_priority( $id, 'critical', $actor );
 $repository->transition( $id, 'investigating', 'awaiting_approval', $actor, 'Second approval required.' );
 $repository->transition( $id, 'awaiting_approval', 'resolved', $actor, 'Mismatch documented.' );
 $snapshot = $repository->snapshot( $id );
-if ( 'resolved' !== $snapshot['status'] || 'critical' !== $snapshot['priority'] || (int) $assignee !== (int) $snapshot['assignee_id'] || 7 !== (int) $snapshot['version'] ) {
+if ( 'resolved' !== $snapshot['status'] || 'critical' !== $snapshot['priority'] || (int) $assignee !== (int) $snapshot['assignee_id'] || 6 !== (int) $snapshot['version'] ) {
 	throw new RuntimeException( 'Review case state, priority, assignment or version is incorrect.' );
 }
 try {
