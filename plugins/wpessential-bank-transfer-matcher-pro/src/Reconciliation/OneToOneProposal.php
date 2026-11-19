@@ -6,6 +6,7 @@ use RuntimeException;
 use WPEssential\BankTransferMatcher\Access\Capabilities as FreeCaps;
 use WPEssential\BankTransferMatcher\Domain\EntityId;
 use WPEssential\BankTransferMatcher\Domain\Money;
+use WPEssential\BankTransferMatcher\Evidence\CrossEditionEvidenceGuard;
 use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
 use WPEssential\BankTransferMatcherPro\Access\Capabilities as ProCaps;
 use WPEssential\BankTransferMatcherPro\Matching\ExactMatchFacts;
@@ -98,6 +99,8 @@ final class OneToOneProposal {
 				ExactMatchFacts::normalize_reference( $entry['reference'] ) ) {
 				throw new InvalidArgumentException( 'Exact order payment reference is required.' );
 			}
+			CrossEditionEvidenceGuard::assert_no_manual_overlap( $this->db, $order_id, (string) ( $entry['posted_date'] ?? '' ),
+				$entry['amount_minor'], $entry['currency'], $entry['exponent'], $entry['reference'] );
 			$expected = Money::from_decimal( (string) $order->get_total( 'edit' ), $order->get_currency(), $entry['exponent'] )->minor_units;
 			if ( $expected < 1 || $entry['amount_minor'] > $expected ) {
 				throw new InvalidArgumentException( 'A credit cannot exceed the order total.' );

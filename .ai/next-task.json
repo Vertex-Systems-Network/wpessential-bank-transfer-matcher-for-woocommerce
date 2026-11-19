@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T003",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify P5-T003 source-backed three-credit tests and Free write-side Pro balance guard in native CI; investigate same-source double-provenance before marking release-ready."
+  "next_action": "Verify conservative Free↔Pro same-deposit collision rejection and source-backed multi-credit payment safety in new native CI; keep P5-T003 open until verified."
 }

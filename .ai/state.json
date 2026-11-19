@@ -59,7 +59,8 @@
     "one_to_one_approval": "passed: GitHub Actions run 44607440250 foundation, Playground, native MariaDB and maker-checker allocation tests",
     "partial_credit_preview": "passed: GitHub Actions runs 44608365274 and 44608355773 completed successfully, including partial-credit-plan.php",
     "multi_credit_integration": "pending: new P5-T003 source-backed three-credit maker/checker native fixture",
-    "cross_edition_allocation": "pending: new Free write-side Pro approved balance guard and native fixture"
+    "cross_edition_allocation": "native passed in 44611779257 and 44611764798; extended cross-edition provenance collision tests pending new CI",
+    "cross_edition_provenance": "pending: same-deposit Free↔Pro collision tests in native CI"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -74,7 +75,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T003",
-  "next_action": "Verify P5-T003 source-backed three-credit tests and Free write-side Pro balance guard in native CI; investigate same-source double-provenance before marking release-ready.",
+  "next_action": "Verify conservative Free↔Pro same-deposit collision rejection and source-backed multi-credit payment safety in new native CI; keep P5-T003 open until verified.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

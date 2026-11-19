@@ -1,6 +1,9 @@
 <?php
 use WPEssential\BankTransferMatcher\Domain\EntityId;
 use WPEssential\BankTransferMatcher\Domain\PaymentReference;
+use WPEssential\BankTransferMatcher\Domain\Money;
+use WPEssential\BankTransferMatcher\Evidence\AllocationRepository;
+use WPEssential\BankTransferMatcher\Evidence\EvidenceRepository;
 use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
 use WPEssential\BankTransferMatcherPro\Import\BankAccountRepository;
 use WPEssential\BankTransferMatcherPro\Import\ImportBatchRepository;
@@ -79,6 +82,18 @@ $assert_outstanding = static function ( int $expected, int $source_id, int $cred
 	}
 };
 try {
+	// A manually approved credit with the same date, amount and reference is NOT another deposit.
+	$manual_repo = new AllocationRepository( $wpdb );
+	$evidence_repo = new EvidenceRepository( $wpdb );
+	$manual = $evidence_repo->record( $order->get_id(), $admin->ID, gmdate( 'Y-m-d' ),
+		new Money( 2500, 'USD', 2 ), $reference->value, 'Same source as imported statement row' );
+	$manual_repo->allocate( $order->get_id(), $manual['id'], $admin->ID,
+		new Money( 10000, 'USD', 2 ), new Money( 2500, 'USD', 2 ),
+		'Synthetic manual allocation predates the import review' );
+	$failed( static fn (): array => $maker->propose( $order->get_id(), $source_ids[0], $admin->ID,
+		hash( 'sha256', 'overlapping-manual-and-import' ), $credit_reason ), 'Imported credit duplicating approved Free evidence' );
+	$wpdb->delete( $wpdb->prefix . 'wbm_manual_allocations', [ 'order_id' => $order->get_id() ], [ '%d' ] );
+	$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence', [ 'id' => $manual['id'] ], [ '%d' ] );
 	// Three distinct full credits can be proposed concurrently; proposals do not reserve order balance.
 	foreach ( array_slice( $source_ids, 0, 3 ) as $i => $source_id ) {
 		$proposals[] = $maker->propose( $order->get_id(), $source_id, $admin->ID,
@@ -108,6 +123,17 @@ try {
 			throw new RuntimeException( 'Reviewed partial payment was not recorded correctly.' );
 		}
 		$assert_outstanding( $outstanding, $source_ids[$i], [ 2500, 3500 ][$i] );
+		if ( 0 === $i ) {
+			// Even with $75 still due, Free must not count the imported $25 as a second credit.
+			wp_set_current_user( $admin->ID );
+			$replay_evidence = $evidence_repo->record( $order->get_id(), $admin->ID, gmdate( 'Y-m-d' ),
+				new Money( 2500, 'USD', 2 ), $reference->value, 'Same deposit as first Pro approval' );
+			$failed( static fn (): array => $manual_repo->allocate( $order->get_id(), $replay_evidence['id'], $admin->ID,
+				new Money( 10000, 'USD', 2 ), new Money( 2500, 'USD', 2 ),
+				'Duplicate bank deposit was not a new payment' ), 'Free credit duplicating approved Pro evidence' );
+			$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence', [ 'id' => $replay_evidence['id'] ], [ '%d' ] );
+			wp_set_current_user( $reviewer_id );
+		}
 	}
 	wp_set_current_user( $admin->ID );
 	$failed( static fn (): array => $maker->propose( $order->get_id(), $source_ids[3], $admin->ID,
@@ -137,6 +163,8 @@ try {
 	$ids = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM $allocations WHERE order_id = %d", $order->get_id() ) );
 	foreach ( $ids as $id ) $wpdb->delete( $wpdb->prefix . 'wbm_pro_allocation_events', [ 'allocation_id' => (int) $id ], [ '%d' ] );
 	$wpdb->delete( $allocations, [ 'order_id' => $order->get_id() ], [ '%d' ] );
+	$wpdb->delete( $wpdb->prefix . 'wbm_manual_allocations', [ 'order_id' => $order->get_id() ], [ '%d' ] );
+	$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$wpdb->delete( $table, [ 'batch_id' => $batch ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_batches', [ 'id' => $batch ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_bank_accounts', [ 'id' => $account ], [ '%d' ] );

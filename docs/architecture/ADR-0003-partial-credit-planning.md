@@ -19,3 +19,10 @@ Regression test \`tests/integration/pro-many-credits.php\` provides three source
 Free's manual allocation writer shares the deterministic order lock with the Pro approval path. It must also count all Pro \`approved\` and \`committed\` allocations in the same order, even when the Pro plugin is inactive but historical Pro tables are still installed. It rejects mismatched order totals/currencies or a combined overdraw. Its returned \`allocated_minor\` and \`outstanding_minor\` represent the combined approved financial balance, not just Free allocations. P5 tests cover a Pro $70 credit plus Free $30 credit against a $100 order, both over-allocation directions and unchanged WooCommerce on-hold status. Existing Pro reader already includes Free allocations.
 
 Exact duplicate provenance between a manually entered credit and an imported statement row still requires additional source identity investigation. Treat it as a release-blocking safeguard until explicitly tested; overlapping evidence must never be silently assumed to represent independent funds.
+
+
+## Provenance collision hold (Free + Pro)
+
+\`CrossEditionEvidenceGuard\` conservatively compares date, exact source amount, currency, exponent and punctuation-insensitive payment reference for manual evidence versus imported statement rows **of the same order**. An already-approved Free manual source blocks a Pro proposal or approval for the same apparent deposit. An approved Pro imported source blocks a Free manual allocation for the same apparent deposit, even if the combined order balance still allows an additional credit. Underlying bank truth cannot be inferred from a customer's claim or matching amounts; collisions require finance investigation, not automatic duplication or payment completion.
+
+The named order lock is held throughout each guard; import source row and ledger locks are held in the Pro path. Missing Pro source provenance with active approvals fails closed on Free allocation. Same-reference deposits across different orders, edited legacy evidence, and performance/index hardening remain explicit P8 release gates.

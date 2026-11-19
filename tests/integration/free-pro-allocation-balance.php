@@ -24,8 +24,21 @@ $evidence = ( new EvidenceRepository( $wpdb ) )->record(
 $ledger = new AllocationLedgerRepository( $wpdb );
 $ledger->install();
 $pro = $wpdb->prefix . 'wbm_pro_allocations';
+// Synthetic source distinct from the merchant-entered Free evidence.
+$stage_table = $wpdb->prefix . 'wbm_pro_import_rows';
+$stage = $wpdb->insert( $stage_table, [
+	'batch_id' => 900000000 + $order->get_id(), 'source_row' => 2,
+	'canonical_json' => wp_json_encode( [
+		'posted_date' => gmdate( 'Y-m-d' ), 'amount_minor' => 7000, 'currency' => 'USD',
+		'exponent' => 2, 'reference' => 'UNRELATED-PRO-SOURCE',
+	] ),
+	'error_code' => '', 'warning_code' => '',
+	'identity_fingerprint' => hash( 'sha256', 'cross-edition-other-bank-credit-' . $order->get_id() ),
+] );
+if ( 1 !== $stage ) throw new RuntimeException( 'Could not create synthetic distinct Pro source.' );
+$source_id = (int) $wpdb->insert_id;
 $approved = $wpdb->insert( $pro, [
-	'transaction_row_id' => 950000000 + $order->get_id(),
+	'transaction_row_id' => $source_id,
 	'source_fingerprint' => hash( 'sha256', 'distinct-imported-source-' . $order->get_id() ),
 	'bank_account_id' => 3, 'order_id' => $order->get_id(),
 	'amount_minor' => 7000, 'credit_minor' => 7000, 'expected_minor' => 10000,
@@ -60,6 +73,7 @@ try {
 } finally {
 	$wpdb->delete( $wpdb->prefix . 'wbm_manual_allocations', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$wpdb->delete( $pro, [ 'order_id' => $order->get_id() ], [ '%d' ] );
+	$wpdb->delete( $stage_table, [ 'id' => $source_id ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$order->delete( true );
 }

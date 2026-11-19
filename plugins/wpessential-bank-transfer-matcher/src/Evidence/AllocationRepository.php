@@ -48,6 +48,9 @@ final class AllocationRepository {
 			if ( $duplicates !== 1 ) {
 				throw new InvalidArgumentException( 'Duplicate bank evidence must be resolved before allocation.' );
 			}
+			CrossEditionEvidenceGuard::assert_no_import_overlap( $this->db, $order_id,
+				(string) $source['transfer_date'], (int) $source['amount_minor'],
+				(string) $source['currency'], (int) $source['exponent'], (string) $source['reference'] );
 			$rows = $this->db->get_results( $this->db->prepare( "SELECT evidence_id, amount_minor, expected_minor, currency, exponent FROM `$table` WHERE order_id = %d FOR UPDATE", $order_id ), ARRAY_A );
 			if ( '' !== $this->db->last_error ) {
 				throw new RuntimeException( 'Could not read existing allocations.' );
