@@ -594,9 +594,8 @@
       "WBM-P3-T010"
     ],
     "verification": "VERIFY-P4-T001",
-    "status": "in_progress",
-    "evidence": "",
-    "next_action": "Define a persisted matching candidate model, deterministic explanation codes and an eligibility policy that cannot alter payment state."
+    "status": "done",
+    "evidence": "GitHub Actions run 44583200121 passed task graph, docs, packaging, PHP syntax, PHPStan, typed matching unit contracts, Playground and native WordPress/WooCommerce/MariaDB. Candidate records are advisory-only; stable explanation codes and deterministic credit/duplicate/currency/BACS/open/unpaid eligibility gates cannot mutate payment state."
   },
   {
     "id": "WBM-P4-T002",
@@ -608,8 +607,9 @@
       "WBM-P4-T001"
     ],
     "verification": "VERIFY-P4-T002",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Implement exact deterministic reference, amount, account and currency matching rules over eligible records, returning review-only candidates."
   },
   {
     "id": "WBM-P4-T003",
