@@ -10,6 +10,7 @@ use WPEssential\BankTransferMatcherPro\Reconciliation\AllocationLedgerRepository
 use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneApproval;
 use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneProposal;
 use WPEssential\BankTransferMatcherPro\Reconciliation\SplitCreditAllocation;
+use WPEssential\BankTransferMatcherPro\Reconciliation\CorrectionCaseRepository;
 use WPEssential\BankTransferMatcherPro\Reconciliation\ProPaymentFinalizer;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
@@ -249,11 +250,52 @@ try {
 		throw new RuntimeException( 'Split source ledger and payment audit did not commit consistently.' );
 	}
 	echo "PASS split source paid exactly once per recipient, cross-recipient locks and idempotent WooCommerce finalization\n";
+
+	// A post-payment correction on either split recipient must HOLD the
+	// common source for BOTH recipients, without performing a refund.
+	$correction = new CorrectionCaseRepository( $wpdb );
+	$case = $correction->raise( $proposed['allocation_ids'][0], $reviewer_id,
+		hash( 'sha256', 'split-disputed-source/' . $source_id ), 'duplicate_credit',
+		'The shared bank transfer needs investigation for duplicate deposit provenance.'
+	);
+	try {
+		\WPEssential\BankTransferMatcher\Evidence\CorrectionHoldGuard::assert_no_hold(
+			$wpdb, $orders[1]->get_id()
+		);
+		throw new RuntimeException( 'Free writer did not see the split-bank credit correction hold.' );
+	} catch ( InvalidArgumentException $expected ) {}
+	wp_set_current_user( $admin->ID );
+	$reviewed = $correction->review( $case['case_id'], $admin->ID,
+		'continue_hold', 'I independently reviewed the duplicate source; no refund or payment action is authorized.' );
+	if ( 'reviewed' !== $reviewed['status'] || $reviewed['ledger_changed'] ||
+		$reviewed['order_payment_changed'] ) {
+		throw new RuntimeException( 'Post-payment correction changed split ledger or payment.' );
+	}
+	try {
+		\WPEssential\BankTransferMatcher\Evidence\CorrectionHoldGuard::assert_no_hold(
+			$wpdb, $orders[1]->get_id(), $source_id
+		);
+		throw new RuntimeException( 'Reviewed split correction silently released the hold.' );
+	} catch ( InvalidArgumentException $expected ) {}
+	if ( ! wc_get_order( $orders[0]->get_id() )->is_paid() ||
+		! wc_get_order( $orders[1]->get_id() )->is_paid() ) {
+		throw new RuntimeException( 'Correction investigation incorrectly reversed a paid WooCommerce order.' );
+	}
+	echo "PASS immutable paid-source split correction blocks all recipient orders without refund or ledger change\n";
 } finally {
 	if ( null !== $held_lock ) $other_connection->get_var( $other_connection->prepare( 'SELECT RELEASE_LOCK(%s)', $held_lock ) );
 	wp_set_current_user( $admin->ID );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_payment_finalizations', [ 'order_id' => $orders[0]->get_id() ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_payment_finalizations', [ 'order_id' => $orders[1]->get_id() ], [ '%d' ] );
+	$case_table = $wpdb->prefix . 'wbm_pro_correction_cases';
+	$case_ids = $wpdb->get_col( $wpdb->prepare(
+		"SELECT id FROM $case_table WHERE transaction_row_id = %d", $source_id
+	) );
+	foreach ( $case_ids as $case_id ) {
+		$wpdb->delete( $wpdb->prefix . 'wbm_pro_correction_events',
+			[ 'correction_case_id' => (int) $case_id ], [ '%d' ] );
+	}
+	$wpdb->delete( $case_table, [ 'transaction_row_id' => $source_id ], [ '%d' ] );
 	$allocations = $wpdb->prefix . 'wbm_pro_allocations';
 	$ids = $wpdb->get_col( $wpdb->prepare(
 		"SELECT id FROM $allocations WHERE transaction_row_id = %d", $source_id

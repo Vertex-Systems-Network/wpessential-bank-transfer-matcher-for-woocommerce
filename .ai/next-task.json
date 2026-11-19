@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T009",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Build append-only P5-T009 correction/reversal investigation cases with independent reviewer, immutable source/order snapshots, cross-edition allocation/finalization holds and native MariaDB tests; do not mutate bank ledger or Woo payment status when opening a case."
+  "next_action": "Verify P5-T009 source-backed correction cases and cross-edition holds in disposable WooCommerce/MariaDB; fix fixture or case lifecycle regressions before proceeding to corrections UI."
 }

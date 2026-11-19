@@ -73,7 +73,9 @@
     "payment_readiness": "passed: GitHub Actions runs 44627524479 and 44627511410 fully green (foundation, Playground, native)",
     "pro_payment_finalizer": "passed: GitHub Actions runs 44631943970 and 44631932845 full foundation/Playground and native",
     "pro_payment_hpos": "passed: both classic and HPOS mode in GitHub Actions runs 44631943970 and 44631932845",
-    "pro_payment_strict_ledger": "passed: overflow-safe credit/order shared ledger check in GitHub Actions runs 44631943970 and 44631932845"
+    "pro_payment_strict_ledger": "passed: overflow-safe credit/order shared ledger check in GitHub Actions runs 44631943970 and 44631932845",
+    "correction_cases": "pending: source-linked approved and committed allocation correction cases, independent review, source/order drift and immutable audit native CI",
+    "correction_cross_edition_holds": "pending: Free/Pro source/order guard, split recipient propagation, and no automatic refund or paid changes native CI"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -88,7 +90,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T009",
-  "next_action": "Build append-only P5-T009 correction/reversal investigation cases with independent reviewer, immutable source/order snapshots, cross-edition allocation/finalization holds and native MariaDB tests; do not mutate bank ledger or Woo payment status when opening a case.",
+  "next_action": "Verify P5-T009 source-backed correction cases and cross-edition holds in disposable WooCommerce/MariaDB; fix fixture or case lifecycle regressions before proceeding to corrections UI.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

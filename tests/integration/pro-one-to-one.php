@@ -8,6 +8,9 @@ use WPEssential\BankTransferMatcherPro\Import\ImportBatchRepository;
 use WPEssential\BankTransferMatcherPro\Import\MappingProfile;
 use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneProposal;
 use WPEssential\BankTransferMatcherPro\Reconciliation\AllocationLedgerRepository;
+use WPEssential\BankTransferMatcherPro\Reconciliation\CorrectionCaseRepository;
+use WPEssential\BankTransferMatcherPro\Reconciliation\ProPaymentFinalizer;
+use WPEssential\BankTransferMatcher\Evidence\PaymentFinalizer;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) throw new RuntimeException( 'Disposable wbm_ci database required.' );
 global $wpdb;
@@ -117,6 +120,83 @@ try {
 		) );
 		if ( 2 !== $history ) throw new RuntimeException( 'Approval audit history was duplicated or omitted.' );
 		echo "PASS second-reviewer one-to-one allocation, idempotent approval and unpaid WooCommerce order\n";
+
+		// A suspected bank reversal is documented, NOT applied to the Pro
+		// allocation, and blocks both Pro and Free finalization.
+		$corrections = new CorrectionCaseRepository( $wpdb );
+		$case_key = hash( 'sha256', 'test-pro-correction/' . $first['allocation_id'] );
+		$case_reason = 'The finance reviewer received a bank reversal notice and must investigate the credit.';
+		$review_note = 'I independently reviewed the reversal notice and require a new bank statement.';
+		$case = $corrections->raise(
+			$first['allocation_id'], $reviewer_id, $case_key, 'bank_reversal_notice', $case_reason
+		);
+		$case_replay = $corrections->raise(
+			$first['allocation_id'], $reviewer_id, $case_key, 'bank_reversal_notice', $case_reason
+		);
+		if ( 'open' !== $case['status'] || 'already_open' !== $case_replay['status'] ||
+			$case['case_id'] !== $case_replay['case_id'] ||
+			$case['order_payment_changed'] || $case['ledger_changed'] ) {
+			throw new RuntimeException( 'Correction case creation and idempotency failed.' );
+		}
+		$reject_case = static function ( callable $fn, string $label ): void {
+			try {
+				$fn();
+				throw new RuntimeException( 'Correction financial hold was bypassed: ' . $label );
+			} catch ( InvalidArgumentException $expected ) {}
+		};
+		$reject_case( static fn () => $corrections->raise(
+			$first['allocation_id'], $reviewer_id, hash( 'sha256', 'second-correction-key' ),
+			'bank_reversal_notice', $case_reason
+		), 'second case for same allocation' );
+		$reject_case( static fn () => $approval->approve(
+			$first['allocation_id'], $reviewer_id, true, $review_note
+		), 'approved Pro allocation replay with a correction hold' );
+		$reject_case( static fn () => ( new ProPaymentFinalizer( $wpdb ) )->complete(
+			$order->get_id(), $reviewer_id, hash( 'sha256', 'case-held-finalization' ),
+			true, 'Source remains disputed and is not eligible for payment finalization.'
+		), 'Pro finalization while a correction exists' );
+		$reject_case( static fn () => ( new PaymentFinalizer( $wpdb ) )->complete(
+			$order->get_id(), $reviewer_id
+		), 'Free finalization while a Pro correction exists' );
+		$source_rows = $wpdb->prefix . 'wbm_pro_import_rows';
+		$wpdb->update( $source_rows, [ 'warning_code' => 'possible_duplicate' ], [ 'id' => $source_id ] );
+		wp_set_current_user( $admin->ID );
+		$reject_case( static fn () => $corrections->review(
+			$case['case_id'], $admin->ID, 'request_bank_restatement', $review_note
+		), 'changed source warning was not detected' );
+		$wpdb->update( $source_rows, [ 'warning_code' => '' ], [ 'id' => $source_id ] );
+		$order->set_total( '21.00' );
+		$order->save();
+		$reject_case( static fn () => $corrections->review(
+			$case['case_id'], $admin->ID, 'request_bank_restatement', $review_note
+		), 'changed WooCommerce amount was not detected' );
+		$order->set_total( '20.00' );
+		$order->save();
+		$reviewed_case = $corrections->review(
+			$case['case_id'], $admin->ID, 'request_bank_restatement', $review_note
+		);
+		$replayed_review = $corrections->review(
+			$case['case_id'], $admin->ID, 'request_bank_restatement', $review_note
+		);
+		if ( 'reviewed' !== $reviewed_case['status'] ||
+			'already_reviewed' !== $replayed_review['status'] ) {
+			throw new RuntimeException( 'Independent correction review was not idempotent.' );
+		}
+		$reject_case( static fn () => \WPEssential\BankTransferMatcher\Evidence\CorrectionHoldGuard::assert_no_hold(
+			$wpdb, $order->get_id(), $source_id
+		), 'independent review falsely released the source hold' );
+		$case_events = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->prefix}wbm_pro_correction_events WHERE correction_case_id = %d",
+			$case['case_id']
+		) );
+		if ( 2 !== $case_events || wc_get_order( $order->get_id() )->is_paid() ||
+			'approved' !== (string) $wpdb->get_var( $wpdb->prepare(
+				"SELECT state FROM {$wpdb->prefix}wbm_pro_allocations WHERE id = %d",
+				$first['allocation_id']
+			) ) ) {
+			throw new RuntimeException( 'Correction review mutated the WooCommerce order or Pro ledger.' );
+		}
+		echo "PASS source-linked Pro reversal case, independent review, drift, idempotent audit and Free/Pro payment holds\n";
 	} finally {
 		wp_set_current_user( $admin->ID );
 		require_once ABSPATH . 'wp-admin/includes/user.php';
@@ -125,6 +205,15 @@ try {
 
 } finally {
 	wp_set_current_user( $admin->ID );
+	$case_table = $wpdb->prefix . 'wbm_pro_correction_cases';
+	$case_ids = $wpdb->get_col( $wpdb->prepare(
+		"SELECT id FROM $case_table WHERE order_id = %d", $order->get_id()
+	) );
+	foreach ( $case_ids as $case_id ) {
+		$wpdb->delete( $wpdb->prefix . 'wbm_pro_correction_events',
+			[ 'correction_case_id' => (int) $case_id ], [ '%d' ] );
+	}
+	$wpdb->delete( $case_table, [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$table = $wpdb->prefix . 'wbm_pro_allocations';
 	$ids = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM $table WHERE order_id = %d", $order->get_id() ) );
 	foreach ( $ids as $id ) $wpdb->delete( $wpdb->prefix . 'wbm_pro_allocation_events', [ 'allocation_id' => (int) $id ], [ '%d' ] );
