@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P4-T001",
+  "id": "WBM-P4-T002",
   "phase": "P4",
-  "title": "matching candidate model/explanation codes and eligibility policy.",
+  "title": "unique reference/amount/account/currency matching with exact deterministic rules.",
   "owner": "Matching engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
   "depends_on": [
-    "WBM-P3-T010"
+    "WBM-P4-T001"
   ],
-  "verification": "VERIFY-P4-T001",
+  "verification": "VERIFY-P4-T002",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Define a persisted matching candidate model, deterministic explanation codes and an eligibility policy that cannot alter payment state."
+  "next_action": "Implement exact deterministic reference, amount, account and currency matching rules over eligible records, returning review-only candidates."
 }
