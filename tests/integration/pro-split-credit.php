@@ -10,6 +10,7 @@ use WPEssential\BankTransferMatcherPro\Reconciliation\AllocationLedgerRepository
 use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneApproval;
 use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneProposal;
 use WPEssential\BankTransferMatcherPro\Reconciliation\SplitCreditAllocation;
+use WPEssential\BankTransferMatcherPro\Reconciliation\ProPaymentFinalizer;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
 	throw new RuntimeException( 'Run this fixture only in the disposable wbm_ci database.' );
@@ -201,9 +202,58 @@ try {
 	) );
 	if ( 4 !== $events_count ) throw new RuntimeException( 'Group approval audit events were not atomic.' );
 	echo "PASS atomic two-order split, maker-checker, idempotency, duplicate/drift guards and unchanged payment status\n";
+
+	// Finalization must lock every recipient order, not just the one being paid.
+	$pay = new ProPaymentFinalizer( $wpdb );
+	$pay_reason = 'I confirmed the full, independently approved split bank source and each order balance.';
+	$pay_key_one = hash( 'sha256', 'split-pay/' . $orders[0]->get_id() );
+	$pay_key_two = hash( 'sha256', 'split-pay/' . $orders[1]->get_id() );
+	$held_lock = hash( 'sha256', DB_NAME . '/' . $wpdb->prefix . '/wbm-allocation/' . $orders[1]->get_id() );
+	if ( '1' !== (string) $other_connection->get_var(
+		$other_connection->prepare( 'SELECT GET_LOCK(%s, 0)', $held_lock ) ) ) {
+		throw new RuntimeException( 'Could not lock other split recipient during finalization.' );
+	}
+	try {
+		$pay->complete( $orders[0]->get_id(), $reviewer_id, $pay_key_one, true, $pay_reason );
+		throw new RuntimeException( 'Split payment completed while another recipient was locked.' );
+	} catch ( RuntimeException $expected ) {
+		if ( ! str_contains( $expected->getMessage(), 'concurrent reconciliation' ) ) throw $expected;
+	}
+	$other_connection->get_var( $other_connection->prepare( 'SELECT RELEASE_LOCK(%s)', $held_lock ) );
+	$held_lock = null;
+	if ( wc_get_order( $orders[0]->get_id() )->is_paid() ) {
+		throw new RuntimeException( 'Contended split recipient was silently marked paid.' );
+	}
+	$paid_one = $pay->complete( $orders[0]->get_id(), $reviewer_id, $pay_key_one, true, $pay_reason );
+	if ( 'completed' !== $paid_one['status'] || ! $paid_one['order_payment_changed'] ||
+		! wc_get_order( $orders[0]->get_id() )->is_paid() ||
+		wc_get_order( $orders[1]->get_id() )->is_paid() ) {
+		throw new RuntimeException( 'First split order did not finalize independently.' );
+	}
+	$paid_two = $pay->complete( $orders[1]->get_id(), $reviewer_id, $pay_key_two, true, $pay_reason );
+	$replay_one = $pay->complete( $orders[0]->get_id(), $reviewer_id, $pay_key_one, true, $pay_reason );
+	if ( 'completed' !== $paid_two['status'] || ! $paid_two['order_payment_changed'] ||
+		'already_completed' !== $replay_one['status'] || $replay_one['order_payment_changed'] ||
+		! wc_get_order( $orders[1]->get_id() )->is_paid() ) {
+		throw new RuntimeException( 'Shared bank credit split was paid twice or failed finalization.' );
+	}
+	$committed_count = (int) $wpdb->get_var( $wpdb->prepare(
+		"SELECT COUNT(*) FROM {$wpdb->prefix}wbm_pro_allocations
+		 WHERE split_group_key = %s AND state = 'committed'", $key
+	) );
+	$final_events = (int) $wpdb->get_var( $wpdb->prepare(
+		"SELECT COUNT(*) FROM $events WHERE allocation_id IN (%d, %d)",
+		$proposed['allocation_ids'][0], $proposed['allocation_ids'][1]
+	) );
+	if ( 2 !== $committed_count || 6 !== $final_events ) {
+		throw new RuntimeException( 'Split source ledger and payment audit did not commit consistently.' );
+	}
+	echo "PASS split source paid exactly once per recipient, cross-recipient locks and idempotent WooCommerce finalization\n";
 } finally {
 	if ( null !== $held_lock ) $other_connection->get_var( $other_connection->prepare( 'SELECT RELEASE_LOCK(%s)', $held_lock ) );
 	wp_set_current_user( $admin->ID );
+	$wpdb->delete( $wpdb->prefix . 'wbm_pro_payment_finalizations', [ 'order_id' => $orders[0]->get_id() ], [ '%d' ] );
+	$wpdb->delete( $wpdb->prefix . 'wbm_pro_payment_finalizations', [ 'order_id' => $orders[1]->get_id() ], [ '%d' ] );
 	$allocations = $wpdb->prefix . 'wbm_pro_allocations';
 	$ids = $wpdb->get_col( $wpdb->prepare(
 		"SELECT id FROM $allocations WHERE transaction_row_id = %d", $source_id
