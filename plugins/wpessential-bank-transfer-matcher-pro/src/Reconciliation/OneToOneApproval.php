@@ -64,6 +64,10 @@ final class OneToOneApproval {
 				(int) $proposal['transaction_row_id'] !== $source_id ) {
 				throw new InvalidArgumentException( 'Proposal changed during finance review.' );
 			}
+			// Split rows MUST be reviewed atomically as an entire distribution.
+			if ( ! empty( $proposal['split_group_key'] ) ) {
+				throw new InvalidArgumentException( 'Split allocations require group approval; individual approval is forbidden.' );
+			}
 			if ( 'approved' === $proposal['state'] && (int) $proposal['approved_by'] === $reviewer_id ) {
 				if ( false === $this->db->query( 'COMMIT' ) ) throw new RuntimeException( 'Replay commit failed.' );
 				$in_transaction = false;

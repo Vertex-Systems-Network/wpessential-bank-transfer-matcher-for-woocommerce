@@ -65,6 +65,16 @@ final class AllocationLedgerRepository {
 				created_at DATETIME NOT NULL,
 				KEY allocation_history (allocation_id, id)
 			) ENGINE=InnoDB $collation" );
+		}, static function ( wpdb $db ): bool {
+			$table = $db->prefix . 'wbm_pro_allocations';
+			$cols = $db->get_col( "SHOW COLUMNS FROM $table", 0 );
+			if ( ! is_array( $cols ) || '' !== $db->last_error ) return false;
+			if ( ! in_array( 'split_group_key', $cols, true ) &&
+				false === $db->query( "ALTER TABLE $table ADD COLUMN split_group_key CHAR(64) NULL" ) ) return false;
+			$indexes = $db->get_results( "SHOW INDEX FROM $table", ARRAY_A );
+			if ( ! is_array( $indexes ) || '' !== $db->last_error ) return false;
+			foreach ( $indexes as $index ) if ( 'split_group' === $index['Key_name'] ) return true;
+			return false !== $db->query( "ALTER TABLE $table ADD KEY split_group (split_group_key, id)" );
 		} ] );
 	}
 
