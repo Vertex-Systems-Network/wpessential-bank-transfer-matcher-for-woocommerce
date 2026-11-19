@@ -14,7 +14,7 @@ The initial \`MismatchReview::inspect\` classifier is side-effect free; its \`ex
 All Pro one-to-one and split allocation proposal/approval paths now require that the imported receiving bank account exactly matches the order's confirmed account. A missing binding fails closed, even if amount and reference otherwise match. This **prevents approval** rather than completing a payment. Historical records need explicit merchant confirmation before any new allocations. Mismatch cases remain a separate source-backed review workflow pending P5-T006 native verification.
 
 
-## Source-backed mismatch case and audit (CI pending)
+## Source-backed mismatch case and audit (verified: GitHub Actions runs 44625635473 and 44625621260)
 
 The internal \`MismatchCaseRepository\` checks completed imported-row and batch/account provenance, the bank row's amount/reference/currency/precision, duplicate fingerprint/warning, the WooCommerce BACS order and immutable reference, its current combined Free+Pro outstanding minor-unit balance, and the separately confirmed receiving bank account. It classifies exact-money mismatches without ever approving a credit or marking a WooCommerce order paid.
 

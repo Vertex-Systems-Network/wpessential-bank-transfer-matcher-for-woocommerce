@@ -764,8 +764,8 @@
       "WBM-P5-T005"
     ],
     "verification": "VERIFY-P5-T006",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions runs 44625635473 and 44625621260 both passed foundation (lint, static, unit, Playground packaging/bootstraps) and native WordPress/WooCommerce/MariaDB. Includes strict amount/currency/reference/receiving-account mismatch classifier, immutable merchant-confirmed bank binding and enforcement on one-to-one and split proposals/checkers, persisted source-backed mismatch cases with duplicate/idempotency protection, audit-only separate review, source/order drift blocks and no order payment mutation. Independent lock contention fixture prepared next."
   },
   {
     "id": "WBM-P5-T007",
@@ -777,7 +777,7 @@
       "WBM-P5-T006"
     ],
     "verification": "VERIFY-P5-T007",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {

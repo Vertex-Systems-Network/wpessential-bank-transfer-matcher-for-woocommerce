@@ -65,10 +65,10 @@
     "split_group_allocation": "passed: GitHub Actions run 44618354738 foundation/Playground and native maker-checker split integration",
     "overpayment_review": "passed: GitHub Actions run 44620581332 foundation/Playground and MariaDB",
     "overpayment_exception_schema": "passed: run 44620581332 native source-backed exception case and independent review",
-    "mismatch_review": "unit and native checks passed in 44621599451/44621589757, Playground external download failed",
-    "receiving_bank_binding": "pending: new dedicated native authorization and immutable bank mapping test",
-    "mismatch_cases": "pending: source-backed persistent amount/currency/account mismatch native fixture and audit",
-    "approval_lock_contention": "pending: independent MariaDB source/order advisory lock and maker-checker audit regression"
+    "mismatch_review": "passed: GitHub Actions 44625635473 and 44625621260 both full foundation/Playground and native",
+    "receiving_bank_binding": "passed: GitHub Actions 44624804673, 44624789987 and 44625635473",
+    "mismatch_cases": "passed: GitHub Actions 44625635473 and 44625621260 native source-backed mismatch case fixture",
+    "approval_lock_contention": "pending: P5-T007 independent second connection lock fixture CI"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -82,8 +82,8 @@
     "free_is_independent"
   ],
   "phase": "P5",
-  "active_task_id": "WBM-P5-T006",
-  "next_action": "Verify native P5-T006 mismatch case lifecycle and independent P5-T007 lock contention fixture; hold task transitions until CI results.",
+  "active_task_id": "WBM-P5-T007",
+  "next_action": "Verify separate MariaDB connection source/order named-lock contention and maker-checker review guard in CI; extend split-group lock contention and independent review permissions.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -142,7 +142,8 @@
     "WBM-P5-T002",
     "WBM-P5-T003",
     "WBM-P5-T004",
-    "WBM-P5-T005"
+    "WBM-P5-T005",
+    "WBM-P5-T006"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"

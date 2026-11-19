@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P5-T006",
+  "id": "WBM-P5-T007",
   "phase": "P5",
-  "title": "amount/currency/account mismatch handling.",
+  "title": "maker-checker approvals and review locks.",
   "owner": "Reconciliation engineering",
   "paths": "plugins/",
   "depends_on": [
-    "WBM-P5-T005"
+    "WBM-P5-T006"
   ],
-  "verification": "VERIFY-P5-T006",
+  "verification": "VERIFY-P5-T007",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify native P5-T006 mismatch case lifecycle and independent P5-T007 lock contention fixture; hold task transitions until CI results."
+  "next_action": "Verify separate MariaDB connection source/order named-lock contention and maker-checker review guard in CI; extend split-group lock contention and independent review permissions."
 }
