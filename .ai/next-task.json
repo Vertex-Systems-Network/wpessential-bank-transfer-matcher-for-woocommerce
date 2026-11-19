@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P5-T007",
+  "id": "WBM-P5-T008",
   "phase": "P5",
-  "title": "maker-checker approvals and review locks.",
+  "title": "WC payment_complete orchestration; idempotency, failure recovery.",
   "owner": "Reconciliation engineering",
   "paths": "plugins/",
   "depends_on": [
-    "WBM-P5-T006"
+    "WBM-P5-T007"
   ],
-  "verification": "VERIFY-P5-T007",
+  "verification": "VERIFY-P5-T008",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify explicit maker-checker and multi-recipient lock contention in native CI, plus narrow Playground retry policy; then close P5-T007 if all safety tests pass."
+  "next_action": "Verify fail-closed payment-readiness unit policy, then implement explicit Pro payment_complete intent/state machine with source+ledger revalidation, idempotency and crash recovery; never auto-trigger from imports or claims."
 }

@@ -777,8 +777,8 @@
       "WBM-P5-T006"
     ],
     "verification": "VERIFY-P5-T007",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44626679846 passed foundation/PHPStan/Playground and native WordPress/WooCommerce/MariaDB. Independent second-connection named-lock contention tests reject one-to-one maker proposals while the order is locked and checker approvals while the source is locked, and reject multi-recipient split maker/checker actions under contested recipient/source locks. Native fixtures confirm zero partial writes, maker!=checker, explicit clearance, idempotent approval+audit, and unchanged WooCommerce paid status."
   },
   {
     "id": "WBM-P5-T008",
@@ -790,7 +790,7 @@
       "WBM-P5-T007"
     ],
     "verification": "VERIFY-P5-T008",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {

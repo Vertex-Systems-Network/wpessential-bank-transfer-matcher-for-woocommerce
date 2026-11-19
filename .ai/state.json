@@ -68,8 +68,9 @@
     "mismatch_review": "passed: GitHub Actions 44625635473 and 44625621260 both full foundation/Playground and native",
     "receiving_bank_binding": "passed: GitHub Actions 44624804673, 44624789987 and 44625635473",
     "mismatch_cases": "passed: GitHub Actions 44625635473 and 44625621260 native source-backed mismatch case fixture",
-    "approval_lock_contention": "pending: P5-T007 independent second connection lock fixture CI",
-    "playground_download_retry": "pending: transient upstream WooCommerce ZIP retry simulation in foundation CI"
+    "approval_lock_contention": "passed: GitHub Actions run 44626679846 native independent SQL order/source/split group locks",
+    "playground_download_retry": "pending: bounded network-only retry unit test and full Playground CI",
+    "payment_readiness": "pending: pure P5-T008 unit policy CI"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -83,8 +84,8 @@
     "free_is_independent"
   ],
   "phase": "P5",
-  "active_task_id": "WBM-P5-T007",
-  "next_action": "Verify explicit maker-checker and multi-recipient lock contention in native CI, plus narrow Playground retry policy; then close P5-T007 if all safety tests pass.",
+  "active_task_id": "WBM-P5-T008",
+  "next_action": "Verify fail-closed payment-readiness unit policy, then implement explicit Pro payment_complete intent/state machine with source+ledger revalidation, idempotency and crash recovery; never auto-trigger from imports or claims.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -144,7 +145,8 @@
     "WBM-P5-T003",
     "WBM-P5-T004",
     "WBM-P5-T005",
-    "WBM-P5-T006"
+    "WBM-P5-T006",
+    "WBM-P5-T007"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"
