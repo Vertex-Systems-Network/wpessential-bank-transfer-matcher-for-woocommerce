@@ -46,6 +46,7 @@ final class OneToOneProposal {
 			}
 			if ( false === $this->db->query( 'START TRANSACTION' ) ) throw new RuntimeException( 'Transactions required.' );
 			$active = true;
+			\WPEssential\BankTransferMatcher\Evidence\CorrectionHoldGuard::assert_no_hold( $this->db, $order_id, $source_id );
 			$replay = $this->db->get_row( $this->db->prepare( "SELECT id, order_id, transaction_row_id, state FROM $table WHERE idempotency_key = %s FOR UPDATE", $request_key ), ARRAY_A );
 			$this->check_db();
 			if ( $replay ) {

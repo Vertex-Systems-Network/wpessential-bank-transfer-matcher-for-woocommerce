@@ -410,7 +410,7 @@ final class ProPaymentFinalizer {
 		}
 		// A reviewed exception is still not an actual completed bank refund or
 		// allocation correction. Both open and reviewed cases block finalization.
-		foreach ( [ 'wbm_pro_exceptions', 'wbm_pro_mismatch_cases' ] as $suffix ) {
+		foreach ( [ 'wbm_pro_exceptions', 'wbm_pro_mismatch_cases', 'wbm_pro_correction_cases' ] as $suffix ) {
 			$table = $this->db->prefix . $suffix;
 			if ( ! $this->table_exists( $table ) ) continue;
 			$placeholders = implode( ', ', array_fill( 0, count( $source_ids ), '%d' ) );

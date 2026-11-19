@@ -32,6 +32,7 @@ final class AllocationRepository {
 				throw new RuntimeException( 'Could not begin allocation transaction.' );
 			}
 			$transaction = true;
+			CorrectionHoldGuard::assert_no_hold( $this->db, $order_id );
 			$evidence_table = $this->db->prefix . 'wbm_bank_evidence';
 			$table = $this->db->prefix . 'wbm_manual_allocations';
 			$source = $this->db->get_row( $this->db->prepare( "SELECT * FROM `$evidence_table` WHERE id = %d FOR UPDATE", $evidence_id ), ARRAY_A );

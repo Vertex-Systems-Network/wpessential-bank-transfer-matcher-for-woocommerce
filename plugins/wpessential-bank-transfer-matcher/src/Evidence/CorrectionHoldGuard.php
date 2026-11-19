@@ -21,14 +21,28 @@ final class CorrectionHoldGuard {
 		$exists = $db->get_var( $db->prepare( 'SHOW TABLES LIKE %s', $table ) );
 		if ( '' !== $db->last_error ) throw new RuntimeException( 'Financial correction hold storage is unavailable.' );
 		if ( $exists !== $table ) return;
+		$pro = $db->prefix . 'wbm_pro_allocations';
+		$pro_exists = $db->get_var( $db->prepare( 'SHOW TABLES LIKE %s', $pro ) );
+		if ( '' !== $db->last_error || $pro_exists !== $pro ) {
+			throw new RuntimeException( 'Pro source ledger unavailable while correction holds exist.' );
+		}
+		// The shared bank source may fund several orders. A Free writer has
+		// no imported source ID, so resolve all Pro bank sources of its order
+		// and block if ANY of those sources has an active correction case.
 		if ( $source_id > 0 ) {
 			$count = $db->get_var( $db->prepare(
-				"SELECT COUNT(*) FROM $table WHERE order_id = %d OR transaction_row_id = %d",
-				$order_id, $source_id
+				"SELECT COUNT(*) FROM $table c WHERE c.order_id = %d
+				 OR c.transaction_row_id = %d
+				 OR EXISTS (SELECT 1 FROM $pro p WHERE p.order_id = %d
+				 AND p.transaction_row_id = c.transaction_row_id)",
+				$order_id, $source_id, $order_id
 			) );
 		} else {
 			$count = $db->get_var( $db->prepare(
-				"SELECT COUNT(*) FROM $table WHERE order_id = %d", $order_id
+				"SELECT COUNT(*) FROM $table c WHERE c.order_id = %d
+				 OR EXISTS (SELECT 1 FROM $pro p WHERE p.order_id = %d
+				 AND p.transaction_row_id = c.transaction_row_id)",
+				$order_id, $order_id
 			) );
 		}
 		if ( '' !== $db->last_error || null === $count ) {

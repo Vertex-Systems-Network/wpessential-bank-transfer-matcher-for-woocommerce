@@ -292,10 +292,21 @@ final class CorrectionCaseRepository {
 	}
 
 	private function locked( int $order_id, int $source_id, callable $callback ): array {
-		$locks = [
-			hash( 'sha256', DB_NAME . '/' . $this->db->prefix . '/wbm-allocation/' . $order_id ),
-			hash( 'sha256', DB_NAME . '/' . $this->db->prefix . '/wbm-pro-source/' . $source_id ),
-		];
+		$pro = $this->db->prefix . 'wbm_pro_allocations';
+		$recipients = $this->db->get_col( $this->db->prepare(
+			"SELECT DISTINCT order_id FROM $pro WHERE transaction_row_id = %d", $source_id
+		) );
+		$this->check_db();
+		if ( ! is_array( $recipients ) || [] === $recipients ) {
+			throw new InvalidArgumentException( 'Correction source has no linked order recipients.' );
+		}
+		$locks = [ hash( 'sha256', DB_NAME . '/' . $this->db->prefix . '/wbm-pro-source/' . $source_id ) ];
+		foreach ( $recipients as $recipient ) {
+			$id = self::positive( $recipient );
+			$locks[] = hash( 'sha256', DB_NAME . '/' . $this->db->prefix . '/wbm-allocation/' . $id );
+		}
+		$locks[] = hash( 'sha256', DB_NAME . '/' . $this->db->prefix . '/wbm-allocation/' . $order_id );
+		$locks = array_values( array_unique( $locks ) );
 		sort( $locks, SORT_STRING );
 		$held = [];
 		$active = false;

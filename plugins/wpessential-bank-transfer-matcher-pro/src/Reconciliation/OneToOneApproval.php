@@ -56,6 +56,7 @@ final class OneToOneApproval {
 			}
 			if ( false === $this->db->query( 'START TRANSACTION' ) ) throw new RuntimeException( 'Transaction unavailable.' );
 			$in_transaction = true;
+			\WPEssential\BankTransferMatcher\Evidence\CorrectionHoldGuard::assert_no_hold( $this->db, $order_id, $source_id );
 			$proposal = $this->db->get_row( $this->db->prepare(
 				"SELECT * FROM $table WHERE id = %d FOR UPDATE", $allocation_id
 			), ARRAY_A );

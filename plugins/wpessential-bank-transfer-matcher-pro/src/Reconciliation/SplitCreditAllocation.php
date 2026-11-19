@@ -48,6 +48,9 @@ final class SplitCreditAllocation {
 		$this->ledger()->install();
 		return $this->locked( $source_id, array_keys( $lines ), function () use ( $source_id, $lines, $maker_id, $request_key, $reason ): array {
 			$table = $this->table();
+			foreach ( array_keys( $lines ) as $order_id ) {
+				\WPEssential\BankTransferMatcher\Evidence\CorrectionHoldGuard::assert_no_hold( $this->db, $order_id, $source_id );
+			}
 			$existing = $this->group_rows( $request_key, true );
 			if ( $existing ) {
 				$this->assert_group( $existing, $source_id, $lines, $maker_id, 'proposed' );
@@ -129,6 +132,11 @@ final class SplitCreditAllocation {
 		$order_ids = array_map( static fn ( array $row ): int => (int) $row['order_id'], $preflight );
 		return $this->locked( $source_id, $order_ids, function () use ( $group_key, $preflight,
 			$source_id, $reviewer_id, $reason ): array {
+			foreach ( $preflight as $recipient ) {
+				\WPEssential\BankTransferMatcher\Evidence\CorrectionHoldGuard::assert_no_hold(
+					$this->db, (int) $recipient['order_id'], $source_id
+				);
+			}
 			$rows = $this->group_rows( $group_key, true );
 			// Protect against modifications or added rows between preflight and locking.
 			$before = array_map( static fn ( array $row ): string =>
