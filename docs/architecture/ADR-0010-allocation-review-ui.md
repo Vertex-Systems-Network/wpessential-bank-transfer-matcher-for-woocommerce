@@ -14,3 +14,10 @@ The first UI is explicitly **read-only**: no import action, payment completion, 
 An allocation's workspace shows its original source/expected/allocated amounts, reviewer and split-group identity, current WooCommerce status, bank-source warning, shared correction and reversal holds, correction event timeline and append-only allocation history. It deliberately exposes no POST form, REST mutation, payment, refund, approval or reversal control.
 
 Native checks now assert queue filters, empty state, fully committed split allocation review, masked bank source, correction history, ledger audit and absence of mutation forms.
+
+
+## Manual finance action forms (native CI pending)
+
+A separate \`AllocationAdminActions\` adapter registers WordPress \`admin_post\` handlers for one-to-one proposals, independent one-to-one or atomic split-group approval, creation of correction holds and independent correction review. Every actual handler requires POST, context-specific WordPress nonce, both finance capabilities, exact IDs and stable request keys; services revalidate immutable imported sources, order balances, clearance and independent actor identity under database/named locks. A split recipient ID is validated *before* the group service is invoked, never after it commits. Review details are rendered in native expandable finance panels, with explicit clearance checkbox and reason.
+
+None of these actions calls \`payment_complete()\`, triggers a refund, removes a case hold, changes an order status or imports files. The queue forms create proposals that remain unapproved until a second reviewer acts. Actual WooCommerce payment completion remains a separate internal, explicit P5-T008 service without an admin action route. Native tests cover idempotent admin adapter replay, forged split recipient, finance form markup and absence of payment/refund controls. Tests pending.

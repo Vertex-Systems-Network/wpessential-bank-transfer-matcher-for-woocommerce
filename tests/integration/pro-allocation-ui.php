@@ -18,10 +18,16 @@ try {
 		'No allocations match these filters', 'Read-only finance evidence' ] as $phrase ) {
 		if ( ! str_contains( $html, $phrase ) ) throw new RuntimeException( 'Allocation list missing: ' . $phrase );
 	}
-	if ( str_contains( $html, 'admin-post.php' ) ) {
-		throw new RuntimeException( 'Read-only allocation queue must not expose mutation actions.' );
+	if ( ! str_contains( $html, 'wbm_pro_allocation_propose' ) ||
+		! str_contains( $html, 'name="_wpnonce"' ) ) {
+		throw new RuntimeException( 'Finance proposal form must be explicit and nonce protected.' );
 	}
-	echo "PASS finance allocation UI filter empty state and read-only controls\n";
+	if ( str_contains( $html, 'payment_complete' ) ||
+		str_contains( $html, 'wbm_pro_complete_payment' ) ||
+		str_contains( $html, 'automatic_refund' ) ) {
+		throw new RuntimeException( 'Finance allocation queue must not expose payment/refund triggers.' );
+	}
+	echo "PASS finance allocation UI filters, nonce-protected manual proposal and no payment/refund trigger\n";
 } finally {
 	$_GET = $before;
 }

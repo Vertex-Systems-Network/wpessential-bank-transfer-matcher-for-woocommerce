@@ -12,6 +12,7 @@ use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneProposal;
 use WPEssential\BankTransferMatcherPro\Reconciliation\SplitCreditAllocation;
 use WPEssential\BankTransferMatcherPro\Reconciliation\CorrectionCaseRepository;
 use WPEssential\BankTransferMatcherPro\Admin\AllocationReviewPage;
+use WPEssential\BankTransferMatcherPro\Admin\AllocationAdminActions;
 use WPEssential\BankTransferMatcherPro\Reconciliation\ProPaymentFinalizer;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
@@ -185,6 +186,22 @@ try {
 	if ( 2 !== $proposed_count ) throw new RuntimeException( 'Split lock rejection partially approved a group.' );
 	$approved = $writer->approve( $key, $reviewer_id, true, $approval_reason );
 	$replay = $writer->approve( $key, $reviewer_id, true, $approval_reason );
+	$ui_split_review = AllocationAdminActions::process_approval( [
+		'allocation_id' => (string) $proposed['allocation_ids'][0],
+		'split_group_key' => $key, 'cleared_confirmed' => '1', 'reason' => $approval_reason,
+	] );
+	if ( 'already_approved' !== $ui_split_review['status'] ||
+		$ui_split_review['order_payment_changed'] ) {
+		throw new RuntimeException( 'Finance split-review form did not use atomic group approval.' );
+	}
+	try {
+		AllocationAdminActions::process_approval( [
+			'allocation_id' => (string) ( $proposed['allocation_ids'][0] + 1000000 ),
+			'split_group_key' => $key, 'cleared_confirmed' => '1',
+			'reason' => $approval_reason,
+		] );
+		throw new RuntimeException( 'Forged split recipient was approved by finance form.' );
+	} catch ( InvalidArgumentException $expected ) {}
 	if ( 'approved' !== $approved['status'] || 'already_approved' !== $replay['status'] ||
 		$approved['order_payment_changed'] || $approved['allocation_ids'] !== $proposed['allocation_ids'] ) {
 		throw new RuntimeException( 'Two-person split approval and idempotent replay failed.' );

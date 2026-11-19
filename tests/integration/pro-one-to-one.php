@@ -10,6 +10,7 @@ use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneProposal;
 use WPEssential\BankTransferMatcherPro\Reconciliation\AllocationLedgerRepository;
 use WPEssential\BankTransferMatcherPro\Reconciliation\CorrectionCaseRepository;
 use WPEssential\BankTransferMatcherPro\Reconciliation\ProPaymentFinalizer;
+use WPEssential\BankTransferMatcherPro\Admin\AllocationAdminActions;
 use WPEssential\BankTransferMatcher\Evidence\PaymentFinalizer;
 use WPEssential\BankTransferMatcher\Evidence\EvidenceRepository;
 use WPEssential\BankTransferMatcher\Evidence\AllocationRepository;
@@ -70,6 +71,11 @@ try {
 	wp_set_current_user( $admin->ID );
 	$first = $allocator->propose( $order->get_id(), $source_id, $admin->ID, $key, $reason );
 	$replay = $allocator->propose( $order->get_id(), $source_id, $admin->ID, $key, $reason );
+	$ui_proposal = AllocationAdminActions::process_proposal( [
+		'order_id' => (string) $order->get_id(), 'source_id' => (string) $source_id,
+		'request_key' => $key, 'reason' => $reason,
+	] );
+	if ( $ui_proposal !== $first ) throw new RuntimeException( 'Finance admin proposal adapter replay changed the ledger.' );
 	if ( $first !== $replay || 'proposed' !== $first['state'] || $first['order_payment_changed'] ||
 		wc_get_order( $order->get_id() )->is_paid() ) throw new RuntimeException( 'Proposal replay or payment guard failed.' );
 	$balance = ( new AllocationLedgerRepository( $wpdb ) )->snapshot( $order->get_id(), $source_id, 2000, 2000, 'USD', 2, $account );
@@ -114,6 +120,14 @@ try {
 			wc_get_order( $order->get_id() )->is_paid() ) {
 			throw new RuntimeException( 'Separate approval or unchanged WooCommerce payment failed.' );
 		}
+		$ui_approval = AllocationAdminActions::process_approval( [
+			'allocation_id' => (string) $first['allocation_id'], 'split_group_key' => '',
+			'cleared_confirmed' => '1',
+			'reason' => 'I independently reviewed this cleared source and the BACS order evidence.',
+		] );
+		if ( 'already_approved' !== $ui_approval['status'] || $ui_approval['order_payment_changed'] ) {
+			throw new RuntimeException( 'Finance admin approval adapter replay was not idempotent.' );
+		}
 		$approved_balance = ( new AllocationLedgerRepository( $wpdb ) )->snapshot( $order->get_id(), $source_id, 2000, 2000, 'USD', 2, $account );
 		if ( 0 !== $approved_balance['order_outstanding_minor'] || 0 !== $approved_balance['credit_unallocated_minor'] ) {
 			throw new RuntimeException( 'Reviewed ledger failed to allocate exact bank credit.' );
@@ -136,6 +150,14 @@ try {
 		$case_replay = $corrections->raise(
 			$first['allocation_id'], $reviewer_id, $case_key, 'bank_reversal_notice', $case_reason
 		);
+		$ui_case = AllocationAdminActions::process_correction( [
+			'allocation_id' => (string) $first['allocation_id'],
+			'request_key' => $case_key, 'case_type' => 'bank_reversal_notice',
+			'reason' => $case_reason,
+		] );
+		if ( 'already_open' !== $ui_case['status'] || $ui_case['ledger_changed'] ) {
+			throw new RuntimeException( 'Finance correction POST adapter changed an existing hold.' );
+		}
 		if ( 'open' !== $case['status'] || 'already_open' !== $case_replay['status'] ||
 			$case['case_id'] !== $case_replay['case_id'] ||
 			$case['order_payment_changed'] || $case['ledger_changed'] ) {
@@ -221,6 +243,13 @@ try {
 		$replayed_review = $corrections->review(
 			$case['case_id'], $admin->ID, 'request_bank_restatement', $review_note
 		);
+		$ui_case_review = AllocationAdminActions::process_correction_review( [
+			'case_id' => (string) $case['case_id'], 'review_decision' => 'request_bank_restatement',
+			'reason' => $review_note,
+		] );
+		if ( 'already_reviewed' !== $ui_case_review['status'] ) {
+			throw new RuntimeException( 'Finance case review adapter did not preserve its audit replay.' );
+		}
 		if ( 'reviewed' !== $reviewed_case['status'] ||
 			'already_reviewed' !== $replayed_review['status'] ) {
 			throw new RuntimeException( 'Independent correction review was not idempotent.' );

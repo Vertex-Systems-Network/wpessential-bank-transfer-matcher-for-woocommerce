@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T010",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify finance allocation queue and correction audit page under native WooCommerce/MariaDB and Playground; then plan protected nonce/capability/idempotent maker-checker review forms and warning-safe UI."
+  "next_action": "Verify P5-T010 native WordPress finance queue and manual nonce-gated proposal/approval/correction panels, including forged split recipient rejection and unchanged Woo paid state; then add accessible review modal behavior and permission matrix."
 }
