@@ -254,6 +254,23 @@ try {
 	// A post-payment correction on either split recipient must HOLD the
 	// common source for BOTH recipients, without performing a refund.
 	$correction = new CorrectionCaseRepository( $wpdb );
+	// Creation itself must acquire the other recipient's order lock.
+	$held_lock = hash( 'sha256', DB_NAME . '/' . $wpdb->prefix . '/wbm-allocation/' . $orders[1]->get_id() );
+	if ( '1' !== (string) $other_connection->get_var(
+		$other_connection->prepare( 'SELECT GET_LOCK(%s, 0)', $held_lock ) ) ) {
+		throw new RuntimeException( 'Could not establish competing split correction lock.' );
+	}
+	try {
+		$correction->raise( $proposed['allocation_ids'][0], $reviewer_id,
+			hash( 'sha256', 'split-disputed-source/' . $source_id ), 'duplicate_credit',
+			'The shared bank transfer needs investigation for duplicate deposit provenance.'
+		);
+		throw new RuntimeException( 'Split correction bypassed locked second recipient.' );
+	} catch ( RuntimeException $expected ) {
+		if ( ! str_contains( $expected->getMessage(), 'concurrent financial reconciliation' ) ) throw $expected;
+	}
+	$other_connection->get_var( $other_connection->prepare( 'SELECT RELEASE_LOCK(%s)', $held_lock ) );
+	$held_lock = null;
 	$case = $correction->raise( $proposed['allocation_ids'][0], $reviewer_id,
 		hash( 'sha256', 'split-disputed-source/' . $source_id ), 'duplicate_credit',
 		'The shared bank transfer needs investigation for duplicate deposit provenance.'

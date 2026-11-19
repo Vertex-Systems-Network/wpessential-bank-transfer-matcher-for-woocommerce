@@ -11,6 +11,9 @@ use WPEssential\BankTransferMatcherPro\Reconciliation\AllocationLedgerRepository
 use WPEssential\BankTransferMatcherPro\Reconciliation\CorrectionCaseRepository;
 use WPEssential\BankTransferMatcherPro\Reconciliation\ProPaymentFinalizer;
 use WPEssential\BankTransferMatcher\Evidence\PaymentFinalizer;
+use WPEssential\BankTransferMatcher\Evidence\EvidenceRepository;
+use WPEssential\BankTransferMatcher\Evidence\AllocationRepository;
+use WPEssential\BankTransferMatcher\Domain\Money;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) throw new RuntimeException( 'Disposable wbm_ci database required.' );
 global $wpdb;
@@ -158,6 +161,24 @@ try {
 		$reject_case( static fn () => ( new PaymentFinalizer( $wpdb ) )->complete(
 			$order->get_id(), $reviewer_id
 		), 'Free finalization while a Pro correction exists' );
+		// Actual Free writer must reject a DIFFERENT manual credit while Pro
+		// has a source-linked correction case, even before normal balance checks.
+		$manual = ( new EvidenceRepository( $wpdb ) )->record(
+			$order->get_id(), $reviewer_id, gmdate( 'Y-m-d' ),
+			new Money( 100, 'USD', 2 ), $reference->value,
+			'Independent synthetic manual credit entered during a correction hold.'
+		);
+		try {
+			( new AllocationRepository( $wpdb ) )->allocate(
+				$order->get_id(), $manual['id'], $reviewer_id,
+				new Money( 2000, 'USD', 2 ), new Money( 100, 'USD', 2 ),
+				'Manual finance writer must see the existing Pro correction hold.'
+			);
+			throw new RuntimeException( 'Free writer accepted credit while a Pro correction holds the order.' );
+		} catch ( InvalidArgumentException $expected ) {
+			if ( ! str_contains( $expected->getMessage(), 'Correction/reversal investigation holds' ) ) throw $expected;
+		}
+		$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence', [ 'id' => $manual['id'] ], [ '%d' ] );
 		$source_rows = $wpdb->prefix . 'wbm_pro_import_rows';
 		$wpdb->update( $source_rows, [ 'warning_code' => 'possible_duplicate' ], [ 'id' => $source_id ] );
 		wp_set_current_user( $admin->ID );
@@ -165,6 +186,28 @@ try {
 			$case['case_id'], $admin->ID, 'request_bank_restatement', $review_note
 		), 'changed source warning was not detected' );
 		$wpdb->update( $source_rows, [ 'warning_code' => '' ], [ 'id' => $source_id ] );
+		// Even a new PROPOSED allocation by another source invalidates the
+		// immutable whole-order review snapshot. Simulate direct DB tampering.
+		$pro_table = $wpdb->prefix . 'wbm_pro_allocations';
+		if ( 1 !== $wpdb->insert( $pro_table, [
+			'transaction_row_id' => $source_id + 100000,
+			'source_fingerprint' => hash( 'sha256', 'tampered-uncleared-source' ),
+			'bank_account_id' => $account, 'order_id' => $order->get_id(),
+			'amount_minor' => 100, 'credit_minor' => 100, 'expected_minor' => 2000,
+			'currency' => 'USD', 'exponent' => 2, 'state' => 'proposed',
+			'created_by' => $admin->ID, 'reason' => 'Injected test-only unreviewed allocation',
+			'created_at' => gmdate( 'Y-m-d H:i:s' ),
+		] ) ) {
+			throw new RuntimeException( 'Could not create disposable unauthorized ledger change.' );
+		}
+		$injected_id = (int) $wpdb->insert_id;
+		try {
+			$reject_case( static fn () => $corrections->review(
+				$case['case_id'], $admin->ID, 'request_bank_restatement', $review_note
+			), 'another allocation changed the whole-order ledger' );
+		} finally {
+			$wpdb->delete( $pro_table, [ 'id' => $injected_id ], [ '%d' ] );
+		}
 		$order->set_total( '21.00' );
 		$order->save();
 		$reject_case( static fn () => $corrections->review(
