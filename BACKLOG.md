@@ -1,6 +1,6 @@
 # Backlog
 
-The task graph lives in `.ai/tasks.json`. Run `python3 scripts/update-backlog.py` after recording evidence.
+The task graph lives in `.ai/tasks.json`. Run `python3 scripts/update-backlog.py` after recording implementation and evidence.
 
 | Task | Acceptance | Owner | Files | Prerequisites | Verification | Status | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -12,6 +12,7 @@ The task graph lives in `.ai/tasks.json`. Run `python3 scripts/update-backlog.py
 | WBM-P0-T006 | write entity glossary and domain invariants. | Product and research | docs/ | WBM-P0-T005 | VERIFY-P0-T006 | done | docs/architecture/glossary.md |
 | WBM-P0-T007 | seed full backlog, memory contracts, ADR templates and next-task system. | Product and research | docs/ | WBM-P0-T006 | VERIFY-P0-T007 | done | .ai/tasks.json and scripts/update-backlog.py |
 | WBM-P0-T008 | list synthetic fixture matrix and financial threat model. | Product and research | docs/ | WBM-P0-T007 | VERIFY-P0-T008 | done | docs/testing/fixture-matrix.md and docs/security/threat-model.md |
+| WBM-P0-T009 | Harden task graph selection and validate dependency integrity. | Platform | scripts/update-backlog.py; .ai/ | WBM-P0-T008 | VERIFY-P0-T009 | done | Corrected resume selection to preserve the active unfinished checkpoint, exclude terminal tasks, and validate duplicate IDs, missing dependencies and cycles. Implemented in scripts/update-backlog.py; runtime verification pending local runner. |
 | WBM-P1-T001 | build disposable WP/WC local environment (Docker or equivalent), reproducible commands. | Platform | plugins/; playground/ | WBM-P0-T008 | VERIFY-P1-T001 | done | Disposable WordPress and WooCommerce verified on native MariaDB with WP-CLI. Reproduction commands in .ai/runbooks/mysql-test.md. |
 | WBM-P1-T002 | create separate Free and Pro plugin directory/bootstrap/**independent Composer 2 PSR-4 manifests + lockfiles + autoload runtime** (Section 16A). | Platform | plugins/; playground/ | WBM-P0-T008 | VERIFY-P1-T002 | done | Separate sources, manifests and lockfiles. playground/evidence/composer-2026-11-17.log and foundation-2026-11-17.log. |
 | WBM-P1-T003 | create activation/deactivation/dependency/version checks, clean error states. | Platform | plugins/; playground/ | WBM-P1-T002 | VERIFY-P1-T003 | done | playground/evidence/dependency-2026-11-17.log and playground/evidence/version-lifecycle-2026-11-17.log |
@@ -46,7 +47,7 @@ The task graph lives in `.ai/tasks.json`. Run `python3 scripts/update-backlog.py
 | WBM-P3-T006 | robust transaction fingerprint and unique-ID handling. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T005 | VERIFY-P3-T006 | done | GitHub Actions run 44400332941 passed identity unit, PHP lint/static, native MariaDB and Playground foundation. Fallback fingerprints remain advisory; row-level persisted dedup belongs to P3-T007/T010. |
 | WBM-P3-T007 | streaming/chunked Action Scheduler jobs, progress/retries. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T006 | VERIFY-P3-T007 | done | GitHub Actions run 44404491703 passed foundation and native MariaDB; run 44404920013 passed native 205-row three-chunk checkpoint, replay, tamper rejection and retry fixture. Background source cleanup and cross-batch dedup remain later tasks. |
 | WBM-P3-T008 | CAMT.053 secure XML parser (only release when coverage confirmed). | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T007 | VERIFY-P3-T008 | done | Internal CAMT.053 .02/.08 parser and synthetic safety fixtures passed PHP unit/static in GitHub Actions run 44411596017; native MariaDB passed. Not enabled or advertised; broader real-bank fixture and import integration remain release gates, see docs/testing/camt053-scope.md. |
-| WBM-P3-T009 | import wizard/transactions UI and all empty/error/progress states. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T008 | VERIFY-P3-T009 | ready |  |
+| WBM-P3-T009 | import wizard/transactions UI and all empty/error/progress states. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T008 | VERIFY-P3-T009 | in_progress |  |
 | WBM-P3-T010 | test re-imports, overlapping files, large fixtures and permission restrictions. | Import engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Import/ | WBM-P3-T009 | VERIFY-P3-T010 | planned |  |
 | WBM-P4-T001 | matching candidate model/explanation codes and eligibility policy. | Matching engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Matching/ | WBM-P3-T010 | VERIFY-P4-T001 | planned |  |
 | WBM-P4-T002 | unique reference/amount/account/currency matching with exact deterministic rules. | Matching engineering | plugins/wpessential-bank-transfer-matcher-pro/src/Matching/ | WBM-P4-T001 | VERIFY-P4-T002 | planned |  |
