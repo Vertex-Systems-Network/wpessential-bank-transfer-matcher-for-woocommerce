@@ -12,3 +12,10 @@ A single imported credit continues to be consumed in full by at most one order i
 The pure \`PartialCreditPlanner\` is used as a fail-closed exact-money guard in both proposal and approval paths. The bank source balance must remain wholly unallocated at approval, with no cross-order splits until P5-T004. The WooCommerce order stays on-hold even when all Pro allocations cover it; \`payment_complete()\` stays behind P5-T008. API and UI remain unexposed pending review controls.
 
 Regression test \`tests/integration/pro-many-credits.php\` provides three source rows covering a single USD order; checks duplicate source conflicts, newly ambiguous source identity, stale changed order totals, over-allocation, append-only audit, and remaining outstanding balances. Concurrent multi-request and Free/Pro mixed-write adversarial verification remain explicit later safety gates.
+
+
+## Cross-edition allocation guard
+
+Free's manual allocation writer shares the deterministic order lock with the Pro approval path. It must also count all Pro \`approved\` and \`committed\` allocations in the same order, even when the Pro plugin is inactive but historical Pro tables are still installed. It rejects mismatched order totals/currencies or a combined overdraw. Its returned \`allocated_minor\` and \`outstanding_minor\` represent the combined approved financial balance, not just Free allocations. P5 tests cover a Pro $70 credit plus Free $30 credit against a $100 order, both over-allocation directions and unchanged WooCommerce on-hold status. Existing Pro reader already includes Free allocations.
+
+Exact duplicate provenance between a manually entered credit and an imported statement row still requires additional source identity investigation. Treat it as a release-blocking safeguard until explicitly tested; overlapping evidence must never be silently assumed to represent independent funds.

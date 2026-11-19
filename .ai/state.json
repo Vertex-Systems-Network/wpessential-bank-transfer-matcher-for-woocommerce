@@ -58,7 +58,8 @@
     "one_to_one_proposal": "passed: GitHub Actions runs 44606308069 and 44606296116 all jobs green (foundation, Playground, native WooCommerce/MariaDB)",
     "one_to_one_approval": "passed: GitHub Actions run 44607440250 foundation, Playground, native MariaDB and maker-checker allocation tests",
     "partial_credit_preview": "passed: GitHub Actions runs 44608365274 and 44608355773 completed successfully, including partial-credit-plan.php",
-    "multi_credit_integration": "pending: new P5-T003 source-backed three-credit maker/checker native fixture"
+    "multi_credit_integration": "pending: new P5-T003 source-backed three-credit maker/checker native fixture",
+    "cross_edition_allocation": "pending: new Free write-side Pro approved balance guard and native fixture"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -73,7 +74,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T003",
-  "next_action": "Verify three-credit source-backed proposals and sequential independent approvals in native MariaDB CI, including rejection of duplicated sources, oversubscription and order-total drift.",
+  "next_action": "Verify P5-T003 source-backed three-credit tests and Free write-side Pro balance guard in native CI; investigate same-source double-provenance before marking release-ready.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

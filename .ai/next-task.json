@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T003",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify three-credit source-backed proposals and sequential independent approvals in native MariaDB CI, including rejection of duplicated sources, oversubscription and order-total drift."
+  "next_action": "Verify P5-T003 source-backed three-credit tests and Free write-side Pro balance guard in native CI; investigate same-source double-provenance before marking release-ready."
 }

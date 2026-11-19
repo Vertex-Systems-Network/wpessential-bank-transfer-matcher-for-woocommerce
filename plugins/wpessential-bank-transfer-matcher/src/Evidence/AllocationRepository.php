@@ -67,7 +67,44 @@ final class AllocationRepository {
 					$source_used += $value;
 				}
 			}
-			if ( $amount->minor_units > $expected->minor_units - $order_used || $amount->minor_units > (int) $source['amount_minor'] - $source_used ) {
+			
+			// Free and Pro share the same order lock. Count approved imported credits too,
+			// including if Pro has since been deactivated but its ledger remains present.
+			$pro_used = 0;
+			$pro_table = $this->db->prefix . 'wbm_pro_allocations';
+			$pro_exists = $this->db->get_var( $this->db->prepare( 'SHOW TABLES LIKE %s', $pro_table ) );
+			if ( '' !== $this->db->last_error ) {
+				throw new RuntimeException( 'Could not inspect the Pro reconciliation ledger.' );
+			}
+			if ( $pro_exists === $pro_table ) {
+				$pro_rows = $this->db->get_results( $this->db->prepare(
+					"SELECT amount_minor, expected_minor, currency, exponent FROM $pro_table
+					 WHERE order_id = %d AND state IN ('approved', 'committed') FOR UPDATE",
+					$order_id
+				), ARRAY_A );
+				if ( ! is_array( $pro_rows ) || '' !== $this->db->last_error ) {
+					throw new RuntimeException( 'Could not read approved Pro allocations.' );
+				}
+				foreach ( $pro_rows as $pro_row ) {
+					if ( (string) $pro_row['expected_minor'] !== (string) $expected->minor_units ||
+						$pro_row['currency'] !== $expected->currency ||
+						(int) $pro_row['exponent'] !== $expected->exponent ) {
+						throw new InvalidArgumentException( 'Order total or currency differs from approved Pro allocations.' );
+					}
+					$raw = (string) $pro_row['amount_minor'];
+					if ( ! ctype_digit( $raw ) ||
+						strlen( $raw ) > strlen( (string) PHP_INT_MAX ) ||
+						( strlen( $raw ) === strlen( (string) PHP_INT_MAX ) && strcmp( $raw, (string) PHP_INT_MAX ) > 0 ) ) {
+						throw new RuntimeException( 'Invalid approved Pro balance.' );
+					}
+					$value = (int) $raw;
+					if ( $value < 1 || $value > $expected->minor_units - $order_used - $pro_used ) {
+						throw new InvalidArgumentException( 'Combined Free and Pro allocation balance is exceeded.' );
+					}
+					$pro_used += $value;
+				}
+			}
+			if ( $amount->minor_units > $expected->minor_units - $order_used - $pro_used || $amount->minor_units > (int) $source['amount_minor'] - $source_used ) {
 				throw new InvalidArgumentException( 'Allocation exceeds the outstanding order or bank credit balance.' );
 			}
 			$written = $this->db->query( $this->db->prepare(
@@ -83,8 +120,8 @@ final class AllocationRepository {
 				throw new RuntimeException( 'Could not commit allocation.' );
 			}
 			$transaction = false;
-			$outstanding = $expected->minor_units - $order_used - $amount->minor_units;
-			return [ 'allocation_id' => $id, 'allocated_minor' => $order_used + $amount->minor_units, 'outstanding_minor' => $outstanding,
+			$outstanding = $expected->minor_units - $order_used - $pro_used - $amount->minor_units;
+			return [ 'allocation_id' => $id, 'allocated_minor' => $order_used + $pro_used + $amount->minor_units, 'outstanding_minor' => $outstanding,
 				'currency' => $expected->currency, 'fully_allocated' => 0 === $outstanding, 'order_payment_changed' => false ];
 		} finally {
 			if ( $transaction ) {
