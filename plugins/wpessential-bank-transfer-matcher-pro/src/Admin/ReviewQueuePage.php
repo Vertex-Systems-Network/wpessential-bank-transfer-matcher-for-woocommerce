@@ -91,13 +91,45 @@ final class ReviewQueuePage {
 		echo '</section><section class="wbm-review-card"><h3>' . esc_html__( 'Decision context', 'wpessential-bank-transfer-matcher-pro' ) . '</h3>';
 		echo '<p><strong>' . esc_html__( 'Why this case exists', 'wpessential-bank-transfer-matcher-pro' ) . '</strong></p><ul>';
 		foreach ( is_array( $reasons ) ? $reasons : [] as $reason ) echo '<li><code>' . esc_html( $reason ) . '</code></li>';
-		echo '</ul><p>' . esc_html__( 'Actions remain disabled until the secure reviewer-action API is available. No suggestion confirms payment.', 'wpessential-bank-transfer-matcher-pro' ) . '</p></section></div>';
+		echo '</ul><p>' . esc_html__( 'Reviewer actions update the case audit trail only. No suggestion confirms payment.', 'wpessential-bank-transfer-matcher-pro' ) . '</p>';
+		if ( current_user_can( 'wbm_review_claim' ) ) self::actions( $case );
+		else echo '<p>' . esc_html__( 'You have read-only access to this case.', 'wpessential-bank-transfer-matcher-pro' ) . '</p>';
+		echo '</section></div>';
 		echo '<h3>' . esc_html__( 'Comments', 'wpessential-bank-transfer-matcher-pro' ) . '</h3>';
 		if ( [] === $comments ) echo '<p>' . esc_html__( 'No comments yet.', 'wpessential-bank-transfer-matcher-pro' ) . '</p>';
 		else foreach ( $comments as $comment ) echo '<blockquote><p>' . esc_html( $comment['comment_text'] ) . '</p><cite>#' . (int) $comment['actor_id'] . ' · ' . esc_html( $comment['created_at'] ) . '</cite></blockquote>';
 		echo '<h3>' . esc_html__( 'Audit history', 'wpessential-bank-transfer-matcher-pro' ) . '</h3><ol>';
 		foreach ( $history as $event ) echo '<li><strong>' . esc_html( $event['event_type'] ) . '</strong> · #' . (int) $event['actor_id'] . ' · ' . esc_html( $event['created_at'] ) . '</li>';
 		echo '</ol>';
+	}
+
+	/** @param array<string, mixed> $case */
+	private static function actions( array $case ): void {
+		$id = (int) $case['id'];
+		$next = [
+			'open' => [ 'assigned', 'dismissed' ],
+			'assigned' => [ 'investigating', 'dismissed' ],
+			'investigating' => [ 'awaiting_approval', 'resolved', 'dismissed' ],
+			'awaiting_approval' => [ 'investigating', 'resolved', 'dismissed' ],
+			'resolved' => [ 'reopened' ],
+			'dismissed' => [ 'reopened' ],
+			'reopened' => [ 'assigned', 'investigating', 'dismissed' ],
+		][ $case['status'] ] ?? [];
+		echo '<hr><h4>' . esc_html__( 'Reviewer actions', 'wpessential-bank-transfer-matcher-pro' ) . '</h4><div id="wbm-review-action-status" role="status"></div>';
+		if ( [] !== $next ) {
+			echo '<form class="wbm-review-action" data-path="/transition"><input type="hidden" name="from" value="' . esc_attr( $case['status'] ) . '"><label>' . esc_html__( 'Change state', 'wpessential-bank-transfer-matcher-pro' ) . ' <select name="to">';
+			foreach ( $next as $status ) echo '<option value="' . esc_attr( $status ) . '">' . esc_html( ucwords( str_replace( '_', ' ', $status ) ) ) . '</option>';
+			echo '</select></label> <label>' . esc_html__( 'Reason', 'wpessential-bank-transfer-matcher-pro' ) . ' <select name="reason_code">';
+			foreach ( [ 'evidence_reviewed', 'duplicate_confirmed', 'not_order_payment', 'mismatch_resolved', 'second_approval_required', 'new_evidence' ] as $reason ) echo '<option value="' . esc_attr( $reason ) . '">' . esc_html( ucwords( str_replace( '_', ' ', $reason ) ) ) . '</option>';
+			echo '</select></label> <button class="button">' . esc_html__( 'Update state', 'wpessential-bank-transfer-matcher-pro' ) . '</button></form>';
+		}
+		echo '<form class="wbm-review-action" data-path="/assign"><label>' . esc_html__( 'Assignee user ID', 'wpessential-bank-transfer-matcher-pro' ) . ' <input required type="number" min="1" name="assignee_id"></label> <button class="button">' . esc_html__( 'Assign', 'wpessential-bank-transfer-matcher-pro' ) . '</button></form>';
+		echo '<form class="wbm-review-action" data-path="/priority"><label>' . esc_html__( 'Priority', 'wpessential-bank-transfer-matcher-pro' ) . ' <select name="priority">';
+		foreach ( [ 'normal', 'high', 'critical' ] as $priority ) echo '<option value="' . esc_attr( $priority ) . '"' . selected( $case['priority'], $priority, false ) . '>' . esc_html( ucfirst( $priority ) ) . '</option>';
+		echo '</select></label> <button class="button">' . esc_html__( 'Set priority', 'wpessential-bank-transfer-matcher-pro' ) . '</button></form>';
+		echo '<form class="wbm-review-action" data-path="/comments"><label>' . esc_html__( 'Add comment', 'wpessential-bank-transfer-matcher-pro' ) . ' <textarea required maxlength="2000" name="comment"></textarea></label> <button class="button">' . esc_html__( 'Add comment', 'wpessential-bank-transfer-matcher-pro' ) . '</button></form>';
+		$config = wp_json_encode( [ 'base' => rest_url( 'wpessential-wbm/v1/review-cases/' . $id ), 'nonce' => wp_create_nonce( 'wp_rest' ) ] );
+		if ( is_string( $config ) ) echo '<script>(function(c){document.querySelectorAll(".wbm-review-action").forEach(function(f){f.addEventListener("submit",async function(e){e.preventDefault();var s=document.getElementById("wbm-review-action-status");s.textContent="Processing…";var data=Object.fromEntries(new FormData(f).entries());try{var r=await fetch(c.base+f.dataset.path,{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json","X-WP-Nonce":c.nonce},body:JSON.stringify(data)});var b=await r.json();if(!r.ok){throw new Error(b.message||"Action failed.");}s.textContent="Saved.";window.location.reload();}catch(x){s.textContent=x.message;}});});})(' . $config . ');</script>';
 	}
 
 	private static function select( string $name, string $all, array $values, string $selected_value ): void {
