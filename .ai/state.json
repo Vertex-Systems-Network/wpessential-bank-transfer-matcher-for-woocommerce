@@ -66,7 +66,8 @@
     "overpayment_review": "passed: GitHub Actions run 44620581332 foundation/Playground and MariaDB",
     "overpayment_exception_schema": "passed: run 44620581332 native source-backed exception case and independent review",
     "mismatch_review": "unit and native checks passed in 44621599451/44621589757, Playground external download failed",
-    "receiving_bank_binding": "pending: new dedicated native authorization and immutable bank mapping test"
+    "receiving_bank_binding": "pending: new dedicated native authorization and immutable bank mapping test",
+    "mismatch_cases": "pending: source-backed persistent amount/currency/account mismatch native fixture and audit"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -81,7 +82,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T006",
-  "next_action": "Run native merchant bank-binding regression and existing one-to-one/split fixtures; then persist source-backed mismatch review cases and account mismatch audit.",
+  "next_action": "Verify receiving bank mapping and source-backed mismatch cases in native CI, including wrong account/currency/amount, replay and finance-review drift; keep order unpaid.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

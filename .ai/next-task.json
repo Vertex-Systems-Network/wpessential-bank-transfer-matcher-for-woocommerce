@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T006",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Run native merchant bank-binding regression and existing one-to-one/split fixtures; then persist source-backed mismatch review cases and account mismatch audit."
+  "next_action": "Verify receiving bank mapping and source-backed mismatch cases in native CI, including wrong account/currency/amount, replay and finance-review drift; keep order unpaid."
 }
