@@ -52,12 +52,17 @@ final class BankTransactionsPage {
 		foreach ( $rows as $row ) {
 			$data = is_string( $row['canonical_json'] ?? null ) ? json_decode( $row['canonical_json'], true ) : null;
 			$amount = is_array( $data ) ? (int) $data['amount_minor'] : 0;
-			printf( '<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', (int) $row['source_row'], esc_html( is_array( $data ) ? $data['posted_date'] : '—' ), esc_html( ! is_array( $data ) ? '—' : ( $amount > 0 ? __( 'Credit', 'wpessential-bank-transfer-matcher-pro' ) : __( 'Debit', 'wpessential-bank-transfer-matcher-pro' ) ) ), esc_html( is_array( $data ) ? abs( $amount ) . ' ' . $data['currency'] : '—' ), esc_html( is_array( $data ) ? self::mask( (string) $data['reference'] ) : '—' ), esc_html( is_array( $data ) ? self::mask( (string) $data['transaction_id'] ) : '—' ), esc_html( '' !== ( $row['error_code'] ?? '' ) ? $row['error_code'] : __( 'Parsed — unverified', 'wpessential-bank-transfer-matcher-pro' ) ) );
+			printf( '<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', (int) $row['source_row'], esc_html( is_array( $data ) ? $data['posted_date'] : '—' ), esc_html( ! is_array( $data ) ? '—' : ( $amount > 0 ? __( 'Credit', 'wpessential-bank-transfer-matcher-pro' ) : __( 'Debit', 'wpessential-bank-transfer-matcher-pro' ) ) ), esc_html( is_array( $data ) ? self::amount( $amount, (int) $data['exponent'] ) . ' ' . $data['currency'] : '—' ), esc_html( is_array( $data ) ? self::mask( (string) $data['reference'] ) : '—' ), esc_html( is_array( $data ) ? self::mask( (string) $data['transaction_id'] ) : '—' ), esc_html( '' !== ( $row['error_code'] ?? '' ) ? $row['error_code'] : ( '' !== ( $row['warning_code'] ?? '' ) ? $row['warning_code'] . ' — ' . __( 'unverified', 'wpessential-bank-transfer-matcher-pro' ) : __( 'Parsed — unverified', 'wpessential-bank-transfer-matcher-pro' ) ) ) );
 		}
 		echo '</tbody></table><p>';
 		if ( $page > 1 ) echo '<a class="button" href="' . esc_url( add_query_arg( array( 'page' => self::SLUG, 'batch' => $batch_id, 'paged' => $page - 1, 'per_page' => $limit ), admin_url( 'admin.php' ) ) ) . '">' . esc_html__( 'Previous', 'wpessential-bank-transfer-matcher-pro' ) . '</a> ';
 		if ( count( $rows ) === $limit ) echo '<a class="button" href="' . esc_url( add_query_arg( array( 'page' => self::SLUG, 'batch' => $batch_id, 'paged' => $page + 1, 'per_page' => $limit ), admin_url( 'admin.php' ) ) ) . '">' . esc_html__( 'Next', 'wpessential-bank-transfer-matcher-pro' ) . '</a>';
 		echo '</p></div>';
+	}
+
+	private static function amount( int $minor, int $exponent ): string {
+		$digits = str_pad( (string) abs( $minor ), $exponent + 1, '0', STR_PAD_LEFT );
+		return 0 === $exponent ? $digits : substr( $digits, 0, -$exponent ) . '.' . substr( $digits, -$exponent );
 	}
 
 	private static function mask( string $value ): string {
