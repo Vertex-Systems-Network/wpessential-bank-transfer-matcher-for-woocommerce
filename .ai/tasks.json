@@ -568,8 +568,8 @@
       "WBM-P3-T008"
     ],
     "verification": "VERIFY-P3-T009",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44582174758 passed foundation, Playground and native WordPress/WooCommerce/MariaDB. Import wizard provides nonce/capability protected preview, commit, retry and cancel; private draft storage; persistent progress/history; row errors/warnings; transactions pagination and masked identifiers; imports remain explicitly unverified."
   },
   {
     "id": "WBM-P3-T010",
@@ -581,8 +581,8 @@
       "WBM-P3-T009"
     ],
     "verification": "VERIFY-P3-T010",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44582174758 passed exact same-file re-import rejection, overlapping-file possible-duplicate warnings, source-tamper retry rejection, cancellation, permission denial and a 1,005-row import fixture in native WordPress/WooCommerce/MariaDB."
   },
   {
     "id": "WBM-P4-T001",
@@ -594,8 +594,9 @@
       "WBM-P3-T010"
     ],
     "verification": "VERIFY-P4-T001",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Define a persisted matching candidate model, deterministic explanation codes and an eligibility policy that cannot alter payment state."
   },
   {
     "id": "WBM-P4-T002",
