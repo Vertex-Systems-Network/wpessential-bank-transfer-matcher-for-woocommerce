@@ -2,8 +2,8 @@
   "project": "WPEssential Bank Transfer Matcher for WooCommerce",
   "schema_version": 1,
   "current_branch": "development/phase-3-import-batches",
-  "last_verified_base_commit": "2b9e86060cdc244748ba37fb7d655628a7f8ad27",
-  "last_checkpoint_utc": "2026-11-18",
+  "last_verified_base_commit": "939b9c6c7ecd1882340af9dcd55fe932d4207251",
+  "last_checkpoint_utc": "2026-11-19",
   "execution_status": "in_progress",
   "tests": {
     "php_unit": "not_run",
@@ -58,7 +58,7 @@
   ],
   "phase": "P3",
   "active_task_id": "WBM-P3-T009",
-  "next_action": "import wizard/transactions UI and all empty/error/progress states.",
+  "next_action": "Build Pro import wizard and persistent history/progress/retry views, with explicit unverified-evidence warning and all permission/error/empty states.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -68,6 +68,7 @@
     "WBM-P0-T006",
     "WBM-P0-T007",
     "WBM-P0-T008",
+    "WBM-P0-T009",
     "WBM-P1-T001",
     "WBM-P1-T002",
     "WBM-P1-T003",
