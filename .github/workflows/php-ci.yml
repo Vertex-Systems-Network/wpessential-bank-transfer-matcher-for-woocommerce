@@ -40,6 +40,7 @@ jobs:
           php tests/transaction-identity.php
           php tests/matching-eligibility.php
           php tests/deterministic-matcher.php
+          php tests/secondary-hints.php
           php tests/camt053.php
           php tests/migrations.php
       - name: Package and test in Playground
