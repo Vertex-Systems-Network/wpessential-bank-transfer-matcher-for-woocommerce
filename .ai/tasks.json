@@ -659,9 +659,8 @@
       "WBM-P4-T005"
     ],
     "verification": "VERIFY-P4-T006",
-    "status": "in_progress",
-    "evidence": "",
-    "next_action": "Build a real read-only review queue and three-column case workspace from persisted cases, imported evidence and WooCommerce orders, covering empty/error/permission/pagination states."
+    "status": "done",
+    "evidence": "GitHub Actions run 44591051949 passed task graph, docs, packaging, PHP syntax, PHPStan, Playground and native WordPress/WooCommerce/MariaDB. Review queue filters/pagination/empty state and three-column bank evidence, order comparison and decision-context workspace rendered from persisted cases with explicit unverified/no-payment messaging and capability enforcement."
   },
   {
     "id": "WBM-P4-T007",
@@ -673,8 +672,9 @@
       "WBM-P4-T006"
     ],
     "verification": "VERIFY-P4-T007",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Implement capability-protected REST reviewer actions with typed reason codes, strict schemas, expected-state compare-and-swap and nonce-authenticated workspace controls."
   },
   {
     "id": "WBM-P4-T008",
