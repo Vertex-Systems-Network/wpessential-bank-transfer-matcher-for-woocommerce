@@ -1,6 +1,6 @@
 # ADR-0008 — P5-T008 explicit payment readiness and finalization boundary
 
-Status: the pure readiness policy and internal, explicitly invoked Pro finalizer have both passed native and full CI regression. The new HPOS double-mode and strict-ledger recomputation changes are awaiting their own full CI verification; no public Pro finalization route or import automation exists.
+Status: the pure readiness policy and internal, explicitly invoked Pro finalizer have both passed native and full CI regression. HPOS double-mode and strict-ledger recomputation have passed full CI verification; no public Pro finalization route or import automation exists.
 
 \`PaymentReadiness::inspect\` accepts exact typed snapshots of total order amount, approved Free and Pro allocations, count of approved Pro rows, pending allocation reviews, unresolved exceptions, order payment gateway/status, currency precision and verified provenance/independent reviewer/bank-account binding facts. It rejects malformed snapshots and overdrawn balances; a partial order, open case, unverified source, missing receiving bank confirmation, missing maker/checker signoff or paid/invalid WooCommerce order is not ready.
 
@@ -9,7 +9,7 @@ A \`ready_for_explicit_finalization=true\` result only indicates that a separate
 Remaining P5-T008: verify classic + HPOS payment completion and immutable audit recovery on the same code revision, including strict rejection of malformed database money. Mixed Free/Pro evidence intentionally remains blocked pending equivalent independent manual bank-source approval. No live payment processing or marketplace release before those gates.
 
 
-## Explicit Pro payment completion with durable replay (CI pending)
+## Explicit Pro payment completion with durable replay (verified in full CI runs 44631943970 and 44631932845)
 
 A Pro-internal \`ProPaymentFinalizer::complete\` now takes the order ID, the authenticated finance reviewer identity, a stable SHA-256 request key, **fresh explicit bank-clearance confirmation**, and an auditable reason. The caller may only have both Free approval and Pro import capabilities; the same person who originally proposed any of the sources cannot finalize. The finalizer has **no REST route, scheduled task, importer callback, or customer-claim trigger**.
 

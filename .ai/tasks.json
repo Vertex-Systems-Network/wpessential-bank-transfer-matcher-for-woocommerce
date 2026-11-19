@@ -790,8 +790,8 @@
       "WBM-P5-T007"
     ],
     "verification": "VERIFY-P5-T008",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions runs 44631943970 and 44631932845 both completely green for latest checked-out HEAD bc02cc6: foundation syntax/PHPStan/unit/Playground and native WordPress/WooCommerce/MariaDB. Verified Pro source-backed explicit maker/checker and clearance, durable pending intent before WC hooks, idempotent complete + paid-but-pending audit recovery, multi-credit order, split bank source shared across recipients, native source/order lock challenges, negative partial/unverified/mixed Free+Pro evidence, both classic and HPOS Woo order storage and strict overflow-safe LedgerBalance recomputation. No public API or auto importer trigger."
   },
   {
     "id": "WBM-P5-T009",
@@ -803,7 +803,7 @@
       "WBM-P5-T008"
     ],
     "verification": "VERIFY-P5-T009",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {

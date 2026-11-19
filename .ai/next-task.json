@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P5-T008",
+  "id": "WBM-P5-T009",
   "phase": "P5",
-  "title": "WC payment_complete orchestration; idempotency, failure recovery.",
+  "title": "reversal/correction event model without silent ledger mutation.",
   "owner": "Reconciliation engineering",
   "paths": "plugins/",
   "depends_on": [
-    "WBM-P5-T007"
+    "WBM-P5-T008"
   ],
-  "verification": "VERIFY-P5-T008",
+  "verification": "VERIFY-P5-T009",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify native classic+HPOS explicit finalization and stricter overflow-safe ledger recomputation in CI; then close P5-T008 and advance to P5-T009 correction/reversal events without automatic financial reversal."
+  "next_action": "Build append-only P5-T009 correction/reversal investigation cases with independent reviewer, immutable source/order snapshots, cross-edition allocation/finalization holds and native MariaDB tests; do not mutate bank ledger or Woo payment status when opening a case."
 }
