@@ -11,6 +11,7 @@ use WPEssential\BankTransferMatcherPro\Import\ImportBatchRepository;
 use WPEssential\BankTransferMatcherPro\Import\MappingProfile;
 use WPEssential\BankTransferMatcherPro\Reconciliation\AllocationLedgerRepository;
 use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneApproval;
+use WPEssential\BankTransferMatcherPro\Reconciliation\ProPaymentFinalizer;
 use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneProposal;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
@@ -163,8 +164,33 @@ try {
 	) );
 	if ( 2 !== $events ) throw new RuntimeException( 'Failed approval attempt changed append-only audit.' );
 	echo "PASS three credits fund one order; duplicate, drift and over-allocation blocked, maker-checker audit, no paid transition\n";
+	$payment = new ProPaymentFinalizer( $wpdb );
+	$final_reason = 'The finance reviewer confirmed all three independent cleared bank credits cover this BACS order.';
+	$final_key = hash( 'sha256', 'three-credit-finalization/' . $order->get_id() );
+	$completed = $payment->complete( $order->get_id(), $reviewer_id, $final_key, true, $final_reason );
+	$replay = $payment->complete( $order->get_id(), $reviewer_id, $final_key, true, $final_reason );
+	if ( 'completed' !== $completed['status'] || ! $completed['order_payment_changed'] ||
+		'already_completed' !== $replay['status'] || $replay['order_payment_changed'] ||
+		! wc_get_order( $order->get_id() )->is_paid() ) {
+		throw new RuntimeException( 'Approved three-source order failed explicit and idempotent WooCommerce completion.' );
+	}
+	foreach ( array_slice( $proposals, 0, 3 ) as $proposal ) {
+		$state = $wpdb->get_var( $wpdb->prepare(
+			"SELECT state FROM {$wpdb->prefix}wbm_pro_allocations WHERE id = %d", $proposal['allocation_id']
+		) );
+		$history = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->prefix}wbm_pro_allocation_events WHERE allocation_id = %d",
+			$proposal['allocation_id']
+		) );
+		if ( 'committed' !== $state || 3 !== $history ) {
+			throw new RuntimeException( 'One of three reviewed bank credits was not committed and audited.' );
+		}
+	}
+	echo "PASS three-credit order finalized once with each source independently committed and audited\n";
 } finally {
 	wp_set_current_user( $admin->ID );
+	$wpdb->delete( $wpdb->prefix . 'wbm_pro_payment_finalizations',
+		[ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$allocations = $wpdb->prefix . 'wbm_pro_allocations';
 	$ids = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM $allocations WHERE order_id = %d", $order->get_id() ) );
 	foreach ( $ids as $id ) $wpdb->delete( $wpdb->prefix . 'wbm_pro_allocation_events', [ 'allocation_id' => (int) $id ], [ '%d' ] );
