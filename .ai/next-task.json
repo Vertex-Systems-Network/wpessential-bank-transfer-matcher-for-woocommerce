@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P4-T003",
+  "id": "WBM-P4-T004",
   "phase": "P4",
-  "title": "secondary hints with ambiguity prevention.",
+  "title": "duplicate-suspect and reversal/conflict case generation.",
   "owner": "Matching engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
   "depends_on": [
-    "WBM-P4-T002"
+    "WBM-P4-T003"
   ],
-  "verification": "VERIFY-P4-T003",
+  "verification": "VERIFY-P4-T004",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Implement secondary date/description/customer hints that can explain or rank review candidates but can never override ambiguity or missing exact primary evidence."
+  "next_action": "Generate typed duplicate-suspect, reversal and primary-field conflict cases without mutating imported evidence, allocations or payment state."
 }
