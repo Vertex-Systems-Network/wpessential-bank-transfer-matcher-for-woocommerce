@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P4-T005",
+  "id": "WBM-P4-T006",
   "phase": "P4",
-  "title": "review case state machine, priority/assignee/comments.",
+  "title": "review queue table, case workspace and evidence comparison UI.",
   "owner": "Matching engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
   "depends_on": [
-    "WBM-P4-T004"
+    "WBM-P4-T005"
   ],
-  "verification": "VERIFY-P4-T005",
+  "verification": "VERIFY-P4-T006",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Implement persisted review-case lifecycle, priority, assignee and append-only comments/history with compare-and-swap transitions."
+  "next_action": "Build a real read-only review queue and three-column case workspace from persisted cases, imported evidence and WooCommerce orders, covering empty/error/permission/pagination states."
 }
