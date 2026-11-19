@@ -1,4 +1,7 @@
 <?php
+use WPEssential\BankTransferMatcher\Evidence\AllocationRepository;
+use WPEssential\BankTransferMatcher\Evidence\EvidenceRepository;
+use WPEssential\BankTransferMatcher\Domain\Money;
 use WPEssential\BankTransferMatcher\Domain\EntityId;
 use WPEssential\BankTransferMatcher\Domain\PaymentReference;
 use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
@@ -121,6 +124,26 @@ try {
 	if ( wc_get_order( $orders[2]->get_id() )->is_paid() ) {
 		throw new RuntimeException( 'Partial bank payment silently marked the order paid.' );
 	}
+	// Even when a separate Free manual claim fills the $10 remainder, Pro
+	// cannot treat its origin as independently cleared and skip maker/checker.
+	wp_set_current_user( $admin->ID );
+	$manual_evidence = ( new EvidenceRepository( $wpdb ) )->record(
+		$orders[2]->get_id(), $admin->ID, gmdate( 'Y-m-d' ),
+		new Money( 1000, 'USD', 2 ), $references[2],
+		'Merchant-entered remaining ten dollars has no Pro bank clearance attestation.'
+	);
+	( new AllocationRepository( $wpdb ) )->allocate(
+		$orders[2]->get_id(), $manual_evidence['id'], $admin->ID,
+		new Money( 3000, 'USD', 2 ), new Money( 1000, 'USD', 2 ),
+		'Manual source requires its own review and is not cleared Pro evidence.'
+	);
+	wp_set_current_user( $checker );
+	$reject( static fn (): array => $finalizer->complete(
+		$orders[2]->get_id(), $checker, $partial_key, true, $final_reason
+	), 'mixed Free manual and Pro credits without independent source attestation' );
+	if ( wc_get_order( $orders[2]->get_id() )->is_paid() ) {
+		throw new RuntimeException( 'A mixed Free/Pro order was marked paid without verified manual evidence.' );
+	}
 	$reject( static fn (): array => $finalizer->complete(
 		$orders[0]->get_id(), $checker, $key1, false, $final_reason
 	), 'unconfirmed bank clearance' );
@@ -220,6 +243,8 @@ try {
 	wp_set_current_user( $admin->ID );
 	foreach ( $orders as $order ) {
 		$wpdb->delete( $intent_table, [ 'order_id' => $order->get_id() ], [ '%d' ] );
+		$wpdb->delete( $wpdb->prefix . 'wbm_manual_allocations', [ 'order_id' => $order->get_id() ], [ '%d' ] );
+		$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 		$ids = $wpdb->get_col( $wpdb->prepare(
 			"SELECT id FROM $allocation_table WHERE order_id = %d", $order->get_id()
 		) );
