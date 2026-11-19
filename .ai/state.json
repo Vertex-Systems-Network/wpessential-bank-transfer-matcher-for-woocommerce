@@ -55,7 +55,8 @@
     "review_actions_api": "passed: GitHub Actions run 44593008847 native REST and foundation",
     "matching_false_positive": "passed: GitHub Actions run 44594688149 foundation and native MariaDB matching safety",
     "pro_allocation_schema": "passed: GitHub Actions run 44602497110 native and Playground",
-    "one_to_one_proposal": "pending: CI for new P5-T002 code"
+    "one_to_one_proposal": "passed: GitHub Actions runs 44606308069 and 44606296116 all jobs green (foundation, Playground, native WooCommerce/MariaDB)",
+    "one_to_one_approval": "pending: new P5-T002 reviewer gate and native test awaiting CI"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -70,7 +71,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T002",
-  "next_action": "Verify one-to-one review-only proposals, migration v2, idempotency and exact source/account/order checks in native CI; do not approve payments.",
+  "next_action": "Verify P5-T002 independent reviewer approval and ledger consumption without payment_complete; validate error paths and all CI before marking done.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T002",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify one-to-one review-only proposals, migration v2, idempotency and exact source/account/order checks in native CI; do not approve payments."
+  "next_action": "Verify P5-T002 independent reviewer approval and ledger consumption without payment_complete; validate error paths and all CI before marking done."
 }
