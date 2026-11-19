@@ -32,7 +32,7 @@ try {
 	if ( 0 !== $bindings->expected_account_id( $order->get_id() ) ) {
 		throw new RuntimeException( 'Missing receiving account was inferred from import.' );
 	}
-	$reject( static fn (): void => $bindings->assert_matches( $order->get_id(), $account_a ),
+	$reject( static fn () => $bindings->assert_matches( $order->get_id(), $account_a ),
 		'Unconfirmed bank source match' );
 	wp_set_current_user( $reviewer_id );
 	try {
@@ -50,7 +50,7 @@ try {
 		$account_a !== $bindings->expected_account_id( $order->get_id() ) ) {
 		throw new RuntimeException( 'Expected receiving account binding is not stable.' );
 	}
-	$reject( static fn (): void => $bindings->assert_matches( $order->get_id(), $account_b ),
+	$reject( static fn () => $bindings->assert_matches( $order->get_id(), $account_b ),
 		'Wrong USD receiving account' );
 	$reject( static fn (): array => $bindings->confirm( $order->get_id(), $account_b, $admin->ID, $reason ),
 		'Unaudited bank reassignment' );
