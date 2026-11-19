@@ -157,7 +157,7 @@ final class ImportStatementsPage {
 			$canonical = $row->canonical;
 			$reference = $canonical ? self::masked_reference( $canonical->reference ) : '—';
 			$outcome = $row->error ?: ( $row->warnings ? implode( ', ', $row->warnings ) : __( 'Ready', 'wpessential-bank-transfer-matcher-pro' ) );
-			printf( '<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row->source_row, esc_html( $canonical?->booking_date ?? '—' ), esc_html( $canonical ? $canonical->amount_minor . ' ' . $canonical->currency : '—' ), esc_html( $reference ), esc_html( $outcome ) );
+			printf( '<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row->source_row, esc_html( $canonical?->posted_date ?? '—' ), esc_html( $canonical ? $canonical->amount_minor . ' ' . $canonical->currency : '—' ), esc_html( $reference ), esc_html( $outcome ) );
 		}
 		echo '</tbody></table>';
 		if ( count( $result->rows ) > 100 ) echo '<p class="description">' . esc_html__( 'Showing the first 100 rows. All rows were validated.', 'wpessential-bank-transfer-matcher-pro' ) . '</p>';
