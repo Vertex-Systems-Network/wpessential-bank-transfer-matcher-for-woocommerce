@@ -57,6 +57,7 @@ wp_test eval-file "$root/tests/integration/pro-approval-locks.php"
 wp_test eval-file "$root/tests/integration/pro-one-to-one.php"
 wp_test eval-file "$root/tests/integration/pro-many-credits.php"
 wp_test eval-file "$root/tests/integration/pro-split-credit.php"
+wp_test eval-file "$root/tests/integration/pro-allocation-ui.php"
 # Exercise actual payment completion and audit recovery under both WooCommerce storage modes.
 wp_test option update woocommerce_custom_orders_table_enabled no
 wp_test eval-file "$root/tests/integration/pro-payment-finalizer.php"

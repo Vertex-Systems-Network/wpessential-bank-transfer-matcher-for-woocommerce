@@ -11,6 +11,7 @@ use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneApproval;
 use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneProposal;
 use WPEssential\BankTransferMatcherPro\Reconciliation\SplitCreditAllocation;
 use WPEssential\BankTransferMatcherPro\Reconciliation\CorrectionCaseRepository;
+use WPEssential\BankTransferMatcherPro\Admin\AllocationReviewPage;
 use WPEssential\BankTransferMatcherPro\Reconciliation\ProPaymentFinalizer;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
@@ -299,6 +300,40 @@ try {
 		throw new RuntimeException( 'Correction investigation incorrectly reversed a paid WooCommerce order.' );
 	}
 	echo "PASS immutable paid-source split correction blocks all recipient orders without refund or ledger change\n";
+	$before_get = $_GET;
+	try {
+		$_GET = [ 'page' => 'wpessential-wbm-pro-allocations', 'state' => 'committed',
+			'order_id' => (string) $orders[0]->get_id() ];
+		ob_start();
+		AllocationReviewPage::render();
+		$queue_html = ob_get_clean();
+		foreach ( [ 'Bank allocation ledger', 'Visible page totals by currency and state',
+			'committed', 'View audit', '100.00', 'USD' ] as $needle ) {
+			if ( ! str_contains( $queue_html, $needle ) ) {
+				throw new RuntimeException( 'Native bank allocation queue lacks ' . $needle );
+			}
+		}
+		$_GET = [ 'page' => 'wpessential-wbm-pro-allocations',
+			'allocation_id' => (string) $proposed['allocation_ids'][0] ];
+		ob_start();
+		AllocationReviewPage::render();
+		$workspace_html = ob_get_clean();
+		foreach ( [ 'Allocation and provenance', 'Live WooCommerce order', 'Imported bank source',
+			'Financial hold', 'Correction and reversal investigations',
+			'Append-only correction audit history', 'Append-only allocation audit history',
+			'No finance mutation actions are enabled' ] as $needle ) {
+			if ( ! str_contains( $workspace_html, $needle ) ) {
+				throw new RuntimeException( 'Native allocation audit workspace lacks ' . $needle );
+			}
+		}
+		if ( str_contains( $workspace_html, '<form method="post"' ) ||
+			str_contains( $workspace_html, 'admin-post.php' ) ) {
+			throw new RuntimeException( 'Read-only finance workspace exposes unintended mutation controls.' );
+		}
+	} finally {
+		$_GET = $before_get;
+	}
+	echo "PASS WordPress-native allocation queue, masked source, correction audit and no financial mutation forms\n";
 } finally {
 	if ( null !== $held_lock ) $other_connection->get_var( $other_connection->prepare( 'SELECT RELEASE_LOCK(%s)', $held_lock ) );
 	wp_set_current_user( $admin->ID );

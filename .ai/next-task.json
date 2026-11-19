@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T010",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Build P5-T010 WordPress-native finance allocation queue, exact-money order summaries, provenance and correction-case audit workspace; add native permission/escaping/HPOS UI verification. Do not expose finance mutations before independent authenticated action controllers and review gates."
+  "next_action": "Verify finance allocation queue and correction audit page under native WooCommerce/MariaDB and Playground; then plan protected nonce/capability/idempotent maker-checker review forms and warning-safe UI."
 }

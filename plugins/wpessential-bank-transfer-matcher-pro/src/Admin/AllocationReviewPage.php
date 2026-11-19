@@ -236,6 +236,27 @@ final class AllocationReviewPage {
 				esc_html( $row['created_at'] ) );
 		}
 		echo '</tbody></table>';
+		$case_ids = array_map( static fn ( array $item ): int => (int) $item['id'], $rows );
+		$events_table = $db->prefix . 'wbm_pro_correction_events';
+		$placeholders = implode( ', ', array_fill( 0, count( $case_ids ), '%d' ) );
+		$events = $db->get_results( $db->prepare(
+			"SELECT correction_case_id, actor_id, event_type, event_json, created_at
+			 FROM $events_table WHERE correction_case_id IN ($placeholders)
+			 ORDER BY id ASC LIMIT 100", ...$case_ids
+		), ARRAY_A );
+		self::check( $db );
+		if ( ! is_array( $events ) ) throw new RuntimeException( 'Correction audit is unavailable.' );
+		echo '<h3>' . esc_html__( 'Append-only correction audit history', self::DOMAIN ) . '</h3>';
+		echo '<table class="wp-list-table widefat striped"><thead><tr><th>Case</th><th>Event</th><th>Finance actor</th><th>Recorded (UTC)</th><th>Review note</th></tr></thead><tbody>';
+		foreach ( $events as $event ) {
+			$payload = json_decode( (string) $event['event_json'], true );
+			$reason = is_array( $payload ) && is_string( $payload['reason'] ?? null )
+				? $payload['reason'] : '';
+			printf( '<tr><td>#%d</td><td>%s</td><td>#%d</td><td>%s</td><td>%s</td></tr>',
+				(int) $event['correction_case_id'], esc_html( $event['event_type'] ),
+				(int) $event['actor_id'], esc_html( $event['created_at'] ), esc_html( $reason ) );
+		}
+		echo '</tbody></table>';
 	}
 
 	private static function audit( wpdb $db, int $allocation_id ): void {
