@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P4-T006",
+  "id": "WBM-P4-T007",
   "phase": "P4",
-  "title": "review queue table, case workspace and evidence comparison UI.",
+  "title": "reviewer actions, reason codes and secure API.",
   "owner": "Matching engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
   "depends_on": [
-    "WBM-P4-T005"
+    "WBM-P4-T006"
   ],
-  "verification": "VERIFY-P4-T006",
+  "verification": "VERIFY-P4-T007",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Build a real read-only review queue and three-column case workspace from persisted cases, imported evidence and WooCommerce orders, covering empty/error/permission/pagination states."
+  "next_action": "Implement capability-protected REST reviewer actions with typed reason codes, strict schemas, expected-state compare-and-swap and nonce-authenticated workspace controls."
 }
