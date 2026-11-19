@@ -14,7 +14,7 @@ $row_total = 1005;
 $handle = fopen( $source, 'wb' ); fwrite( $handle, "Date,Amount,Reference,Bank ID\n" );
 for ( $i = 1; $i <= $row_total; ++$i ) fputcsv( $handle, [ '2026-11-18', '1.00', 'REF-' . $i, sprintf( '%06d', $i ) ], ',', '"', '' );
 fclose( $handle );
-$job = new ImportJob( $wpdb ); $batch = 0; $path = ''; $third = 0; $second_source = '';
+$job = new ImportJob( $wpdb ); $batch = 0; $path = ''; $third = 0; $second_source = ''; $third_source = '';
 try {
 	$batch = $job->start( $source, $account, $profile, $actor->ID );
 	$jobs = $wpdb->prefix . 'wbm_pro_import_jobs'; $rows = $wpdb->prefix . 'wbm_pro_import_rows'; $batches = $wpdb->prefix . 'wbm_pro_import_batches';
@@ -46,7 +46,9 @@ try {
 	$second_state = $wpdb->get_row( $wpdb->prepare( "SELECT status, warning_count FROM `$batches` WHERE id = %d", $second ), ARRAY_A );
 	if ( 'completed' !== $second_state['status'] || $row_total !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $second ) ) ) throw new RuntimeException( 'Explicit retry did not resume safely.' );
 	if ( $row_total !== (int) $second_state['warning_count'] || $row_total !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d AND warning_code = 'possible_duplicate'", $second ) ) ) throw new RuntimeException( 'Overlapping-file duplicate warnings were not persisted.' );
-	$third = $job->start( $source, $account, $profile, $actor->ID );
+	$third_source = tempnam( sys_get_temp_dir(), 'wbm-job-cancel-' );
+	copy( $source, $third_source ); file_put_contents( $third_source, "\n\n", FILE_APPEND );
+	$third = $job->start( $third_source, $account, $profile, $actor->ID );
 	$third_path = $wpdb->get_var( $wpdb->prepare( "SELECT source_path FROM `$jobs` WHERE batch_id = %d", $third ) );
 	$job->cancel( $third );
 	if ( 'cancelled' !== $wpdb->get_var( $wpdb->prepare( "SELECT status FROM `$batches` WHERE id = %d", $third ) ) || is_file( $third_path ) ) throw new RuntimeException( 'Cancelled import retained an active source or state.' );
@@ -62,5 +64,5 @@ try {
 		$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_batches', [ 'id' => $id ], [ '%d' ] );
 	}
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_bank_accounts', [ 'id' => $account ], [ '%d' ] );
-	unlink( $source ); if ( $second_source && is_file( $second_source ) ) unlink( $second_source );
+	unlink( $source ); if ( $second_source && is_file( $second_source ) ) unlink( $second_source ); if ( $third_source && is_file( $third_source ) ) unlink( $third_source );
 }
