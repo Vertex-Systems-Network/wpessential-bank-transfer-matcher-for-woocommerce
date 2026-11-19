@@ -6,7 +6,7 @@ Build independent Free and Pro WooCommerce plugins for local bank transfer recon
 
 Branch: `development/autonomous-release-track`  
 Base: `main` at `939b9c6c7ecd1882340af9dcd55fe932d4207251`  
-Active task: `WBM-P5-T003` — many credits for one order; partial-payment planning and controlled approval (new planner CI pending).
+Active task: `WBM-P5-T004` — one imported credit split across orders; read-only split-preview CI pending.
 
 This is an unmerged development branch. Continue through every unblocked task while the runner is active. Do not pause for a routine “start/continue?” prompt. Never claim background work after the runner ends. Do not merge, publish, submit WordPress.org/Woo Marketplace, or transmit financial data externally. Fixtures must be synthetic.
 

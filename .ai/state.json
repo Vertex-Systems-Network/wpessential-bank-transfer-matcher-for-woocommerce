@@ -58,9 +58,10 @@
     "one_to_one_proposal": "passed: GitHub Actions runs 44606308069 and 44606296116 all jobs green (foundation, Playground, native WooCommerce/MariaDB)",
     "one_to_one_approval": "passed: GitHub Actions run 44607440250 foundation, Playground, native MariaDB and maker-checker allocation tests",
     "partial_credit_preview": "passed: GitHub Actions runs 44608365274 and 44608355773 completed successfully, including partial-credit-plan.php",
-    "multi_credit_integration": "pending: new P5-T003 source-backed three-credit maker/checker native fixture",
+    "multi_credit_integration": "passed: GitHub Actions 44612420651 full foundation/Playground and native MariaDB",
     "cross_edition_allocation": "native passed in 44611779257 and 44611764798; extended cross-edition provenance collision tests pending new CI",
-    "cross_edition_provenance": "pending: same-deposit Free↔Pro collision tests in native CI"
+    "cross_edition_provenance": "passed: GitHub Actions 44612420651 native Free↔Pro duplicate-provenance guard",
+    "split_credit_preview": "pending: new P5-T004 pure split preview CI verification"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -74,8 +75,8 @@
     "free_is_independent"
   ],
   "phase": "P5",
-  "active_task_id": "WBM-P5-T003",
-  "next_action": "Verify conservative Free↔Pro same-deposit collision rejection and source-backed multi-credit payment safety in new native CI; keep P5-T003 open until verified.",
+  "active_task_id": "WBM-P5-T004",
+  "next_action": "Verify source-to-many-orders read-only split preview in CI; then implement explicitly authorized split proposals under all target-order and source locks with fresh revalidation and maker-checker audit.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -131,7 +132,8 @@
     "WBM-P4-T007",
     "WBM-P4-T008",
     "WBM-P5-T001",
-    "WBM-P5-T002"
+    "WBM-P5-T002",
+    "WBM-P5-T003"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"

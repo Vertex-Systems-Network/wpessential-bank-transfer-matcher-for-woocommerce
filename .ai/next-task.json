@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P5-T003",
+  "id": "WBM-P5-T004",
   "phase": "P5",
-  "title": "many credits to one order (partial payments).",
+  "title": "one credit to multiple orders (explicit split and limits).",
   "owner": "Reconciliation engineering",
   "paths": "plugins/",
   "depends_on": [
-    "WBM-P5-T002"
+    "WBM-P5-T003"
   ],
-  "verification": "VERIFY-P5-T003",
+  "verification": "VERIFY-P5-T004",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify conservative Free↔Pro same-deposit collision rejection and source-backed multi-credit payment safety in new native CI; keep P5-T003 open until verified."
+  "next_action": "Verify source-to-many-orders read-only split preview in CI; then implement explicitly authorized split proposals under all target-order and source locks with fresh revalidation and maker-checker audit."
 }

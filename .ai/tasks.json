@@ -725,8 +725,8 @@
       "WBM-P5-T002"
     ],
     "verification": "VERIFY-P5-T003",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44612420651 passed Foundation (PHP syntax, PHPStan, exact money and partial planner, Playground) and native WordPress/WooCommerce/MariaDB. Tests verify 3 unique imported credits to one order, independent maker/checker, partial and fully allocated balances, overamount and stale order rejection, shared Free/Pro writer balances, Free↔Pro same-order duplicate-provenance blocks and no payment state changes. Other release-wide concurrency/cross-order identity gates remain pending."
   },
   {
     "id": "WBM-P5-T004",
@@ -738,7 +738,7 @@
       "WBM-P5-T003"
     ],
     "verification": "VERIFY-P5-T004",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {
