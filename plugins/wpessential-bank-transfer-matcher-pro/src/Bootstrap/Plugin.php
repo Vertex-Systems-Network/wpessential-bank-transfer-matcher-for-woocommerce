@@ -19,6 +19,7 @@ final class Plugin {
 		add_action( 'init', array( Capabilities::class, 'install_defaults' ), 30 );
 		BankAccountsPage::register();
 		MappingProfilesPage::register();
+		ImportStatementsPage::register();
 		ImportJob::register();
 		do_action( 'wpessential_bank_transfer_matcher_pro_ready' );
 	}
