@@ -1,6 +1,9 @@
 <?php
 /** Real concurrent WP-CLI requests to one disposable WooCommerce/MariaDB. */
 use WPEssential\BankTransferMatcher\Domain\EntityId;
+use WPEssential\BankTransferMatcher\Domain\Money;
+use WPEssential\BankTransferMatcher\Evidence\AllocationRepository;
+use WPEssential\BankTransferMatcher\Evidence\EvidenceRepository;
 use WPEssential\BankTransferMatcher\Domain\PaymentReference;
 use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
 use WPEssential\BankTransferMatcherPro\Import\BankAccountRepository;
@@ -66,6 +69,11 @@ if ( 'setup' === $stage ) {
 		'identity_fingerprint' => hash( 'sha256', 'race-source/' . $batch_id ),
 	] ) ) throw new RuntimeException( 'Could not stage imported credit.' );
 	$source_id = (int) $wpdb->insert_id;
+	$manual_source = ( new EvidenceRepository( $wpdb ) )->record(
+		$order->get_id(), $admin->ID, gmdate( 'Y-m-d' ),
+		new Money( 10000, 'USD', 2 ), $reference->value,
+		'Separate merchant-entered claim matches this imported bank credit; it must not duplicate payment.'
+	);
 	$checker = wp_create_user( 'wbm-race-checker-' . wp_generate_password( 8, false ),
 		wp_generate_password( 20 ), 'wbm-race-' . wp_generate_password( 8, false ) . '@example.test' );
 	if ( is_wp_error( $checker ) ) throw new RuntimeException( $checker->get_error_message() );
@@ -82,6 +90,7 @@ if ( 'setup' === $stage ) {
 	update_option( $option_key, [
 		'order_id' => $order->get_id(), 'source_id' => $source_id,
 		'batch_id' => $batch_id, 'account_id' => $account,
+		'manual_evidence_id' => $manual_source['id'],
 		'maker_id' => $admin->ID, 'checker_id' => $checker,
 	], false );
 	echo "PASS initialized synthetic bank-source concurrency fixture\n";
@@ -111,6 +120,9 @@ if ( 'cleanup' === $stage ) {
 	foreach ( $ids as $id ) {
 		$wpdb->delete( $events_table, [ 'allocation_id' => (int) $id ], [ '%d' ] );
 	}
+	$wpdb->delete( $wpdb->prefix . 'wbm_manual_allocations', [ 'order_id' => $order_id ], [ '%d' ] );
+	$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence',
+		[ 'id' => $fixture['manual_evidence_id'] ], [ '%d' ] );
 	$wpdb->delete( $intent_table, [ 'order_id' => $order_id ], [ '%d' ] );
 	$wpdb->delete( $alloc_table, [ 'order_id' => $order_id ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_rows', [ 'batch_id' => $fixture['batch_id'] ], [ '%d' ] );
@@ -148,6 +160,21 @@ if ( str_ends_with( $stage, '_hold' ) ) {
 		}
 		return $sql;
 	}, 999 );
+}
+if ( 'free_contender' === $stage ) {
+	wp_set_current_user( $maker_id );
+	try {
+		( new AllocationRepository( $wpdb ) )->allocate(
+			$order_id, (int) $fixture['manual_evidence_id'], $maker_id,
+			new Money( 10000, 'USD', 2 ), new Money( 10000, 'USD', 2 ),
+			'Merchant-entered copy of imported bank credit must never double-fund an order.'
+		);
+		throw new RuntimeException( 'Concurrent Free manual writer bypassed active Pro order lock.' );
+	} catch ( RuntimeException $expected ) {
+		if ( ! str_contains( $expected->getMessage(), 'Order is being reconciled' ) ) throw $expected;
+	}
+	echo "PASS Free manual writer blocked by concurrent Pro source/order reconciliation\\n";
+	return;
 }
 if ( str_starts_with( $stage, 'propose_' ) ) {
 	wp_set_current_user( $maker_id );
@@ -221,6 +248,12 @@ if ( in_array( $stage, [ 'verify_propose', 'verify_approve', 'verify_complete' ]
 	) );
 	$expected_events = [ 'verify_propose' => 1, 'verify_approve' => 2, 'verify_complete' => 3 ][$stage];
 	$expected_state = [ 'verify_propose' => 'proposed', 'verify_approve' => 'approved', 'verify_complete' => 'committed' ][$stage];
+	$manual_spend = (int) $wpdb->get_var( $wpdb->prepare(
+		"SELECT COUNT(*) FROM {$wpdb->prefix}wbm_manual_allocations WHERE order_id = %d", $order_id
+	) );
+	if ( $manual_spend !== 0 ) {
+		throw new RuntimeException( 'Cross-edition simultaneous manual writer double-funded this order.' );
+	}
 	if ( $count !== 1 || $event_count !== $expected_events ||
 		$row['state'] !== $expected_state || (int) $row['created_by'] !== $maker_id ||
 		( 'verify_propose' !== $stage && (int) $row['approved_by'] !== $checker_id ) ) {

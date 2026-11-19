@@ -13,10 +13,15 @@ if [[ "$("$wp_cli" --path="$site" --no-color config get DB_NAME)" != wbm_ci ]]; 
 fi
 scratch="$(mktemp -d /tmp/wbm-pro-race-XXXXXX)"
 primary_pid=""
+free_pid=""
 cleanup() {
   if [[ -n "$primary_pid" ]] && kill -0 "$primary_pid" 2>/dev/null; then
     kill "$primary_pid" 2>/dev/null || true
     wait "$primary_pid" 2>/dev/null || true
+  fi
+  if [[ -n "$free_pid" ]] && kill -0 "$free_pid" 2>/dev/null; then
+    kill "$free_pid" 2>/dev/null || true
+    wait "$free_pid" 2>/dev/null || true
   fi
   wp_race cleanup >/dev/null 2>&1 || true
   rm -rf "$scratch"
@@ -38,7 +43,13 @@ race_phase() {
   if [[ "$signaled" != yes ]]; then
     echo "Primary worker never signaled held named locks" >&2; cat "$primary" >&2; exit 1
   fi
+  local free_log="$scratch/$1.free.log"
+  wp_race free_contender >"$free_log" 2>&1 &
+  free_pid=$!
   if ! wp_race "$stage"_contender >"$contender" 2>&1; then cat "$contender" >&2; exit 1; fi
+  if ! wait "$free_pid"; then cat "$free_log" >&2; exit 1; fi
+  free_pid=""
+  cat "$free_log"
   cat "$contender"
   if ! wait "$primary_pid"; then cat "$primary" >&2; exit 1; fi
   primary_pid=""
