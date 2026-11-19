@@ -49,7 +49,8 @@
     "matching_eligibility": "passed: GitHub Actions run 44583200121 foundation, Playground and native WordPress/WooCommerce/MariaDB",
     "deterministic_matching": "passed: GitHub Actions run 44584431775 all jobs",
     "secondary_hints": "passed: GitHub Actions run 44586058010 all jobs",
-    "conflict_cases": "passed: GitHub Actions run 44586921335 all jobs"
+    "conflict_cases": "passed: GitHub Actions run 44586921335 all jobs",
+    "review_case_lifecycle": "passed: GitHub Actions run 44588872295 native MariaDB and foundation"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -63,8 +64,8 @@
     "free_is_independent"
   ],
   "phase": "P4",
-  "active_task_id": "WBM-P4-T005",
-  "next_action": "Implement review case state machine with persisted priority, assignee and append-only comments/history.",
+  "active_task_id": "WBM-P4-T006",
+  "next_action": "Build review queue table and case evidence-comparison workspace over persisted data.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -114,8 +115,9 @@
     "WBM-P4-T001",
     "WBM-P4-T002",
     "WBM-P4-T003",
-    "WBM-P4-T004"
+    "WBM-P4-T004",
+    "WBM-P4-T005"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "c918d110c268d7673521cc495bb50125a74021bf"
+  "last_verified_remote_milestone": "e06f642a0d33bf129d574e20983e539a0be5d3d1"
 }
