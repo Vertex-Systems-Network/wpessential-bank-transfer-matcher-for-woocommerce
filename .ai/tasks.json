@@ -672,9 +672,8 @@
       "WBM-P4-T006"
     ],
     "verification": "VERIFY-P4-T007",
-    "status": "in_progress",
-    "evidence": "",
-    "next_action": "Implement capability-protected REST reviewer actions with typed reason codes, strict schemas, expected-state compare-and-swap and nonce-authenticated workspace controls."
+    "status": "done",
+    "evidence": "GitHub Actions run 44593008847 passed task graph, docs, packaging, PHP syntax, PHPStan, Playground and native WordPress/WooCommerce/MariaDB. Capability-protected REST actions verified authorized assign/transition/priority/comment, typed reason rejection, unauthorized 403, expected-state CAS and nonce-authenticated workspace controls; actions mutate case audit state only."
   },
   {
     "id": "WBM-P4-T008",
@@ -686,8 +685,9 @@
       "WBM-P4-T007"
     ],
     "verification": "VERIFY-P4-T008",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Add false-positive regression matrix for missing references, ambiguous evidence, cancelled/refunded/paid orders, non-BACS orders and duplicate suspects using real WooCommerce orders where applicable."
   },
   {
     "id": "WBM-P5-T001",
