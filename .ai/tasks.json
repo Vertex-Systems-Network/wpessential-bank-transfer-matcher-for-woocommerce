@@ -738,8 +738,8 @@
       "WBM-P5-T003"
     ],
     "verification": "VERIFY-P5-T004",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44618354738 passed foundation/PHPStan/Playground and native WordPress/WooCommerce/MariaDB. Version 3 split-group schema, atomic 2-order maker proposal and independent checker approval, order/source named locks, unique idempotency, exact credit/order balances, duplicate-source, changed-order, uncleared-credit, individual-approval bypass rejection, append-only audit and no payment_complete were tested. Split allocations intentionally require full source distribution."
   },
   {
     "id": "WBM-P5-T005",
@@ -751,7 +751,7 @@
       "WBM-P5-T004"
     ],
     "verification": "VERIFY-P5-T005",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {

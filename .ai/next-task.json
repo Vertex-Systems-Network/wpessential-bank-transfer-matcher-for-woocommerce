@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P5-T004",
+  "id": "WBM-P5-T005",
   "phase": "P5",
-  "title": "one credit to multiple orders (explicit split and limits).",
+  "title": "overpayments/unallocated remainder and exceptions.",
   "owner": "Reconciliation engineering",
   "paths": "plugins/",
   "depends_on": [
-    "WBM-P5-T003"
+    "WBM-P5-T004"
   ],
-  "verification": "VERIFY-P5-T004",
+  "verification": "VERIFY-P5-T005",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify native P5 split-group migration, two-order maker-checker approvals, conflict/rollback/replay and no paid WooCommerce transitions; do not close task until CI green."
+  "next_action": "Verify overpayment/remainder classification in CI; then persist explicit review exceptions for excess bank funds without silently allocating, refunding or marking WooCommerce paid."
 }

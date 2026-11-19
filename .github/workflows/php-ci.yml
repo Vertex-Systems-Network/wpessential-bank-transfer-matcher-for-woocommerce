@@ -43,6 +43,7 @@ jobs:
           php tests/allocation-balance.php
           php tests/partial-credit-plan.php
           php tests/split-credit-plan.php
+          php tests/overpayment-review.php
           php tests/secondary-hints.php
           php tests/conflict-cases.php
           php tests/camt053.php
