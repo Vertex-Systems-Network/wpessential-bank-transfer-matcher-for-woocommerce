@@ -117,7 +117,7 @@ final class AllocationReviewPage {
 		}
 		echo '</p><table class="wp-list-table widefat fixed striped"><thead><tr>';
 		foreach ( [ 'Allocation', 'WooCommerce order', 'Imported source', 'Allocated amount',
-			'Order expected', 'State', 'Bank account', 'Split group', 'Reviewer', 'Evidence' ] as $label ) {
+			'Source credit', 'Order expected', 'State', 'Bank account', 'Split group', 'Reviewer', 'Evidence' ] as $label ) {
 			echo '<th>' . esc_html( $label ) . '</th>';
 		}
 		echo '</tr></thead><tbody>';
@@ -126,12 +126,15 @@ final class AllocationReviewPage {
 				admin_url( 'admin.php' ) );
 			$amount = self::money( self::unsigned( $row['amount_minor'] ), self::exponent( $row['exponent'] ) );
 			$expected = self::money( self::unsigned( $row['expected_minor'] ), self::exponent( $row['exponent'] ) );
+			$source_credit = self::money( self::unsigned( $row['credit_minor'] ), self::exponent( $row['exponent'] ) );
 			$split = is_string( $row['split_group_key'] ) && '' !== $row['split_group_key']
 				? substr( $row['split_group_key'], 0, 12 ) . '…' : '—';
-			printf( '<tr><td>#%d</td><td>#%d</td><td>#%d</td><td>%s %s</td><td>%s %s</td><td>%s</td><td>#%d</td><td><code>%s</code></td><td>%s</td><td><a href="%s">%s</a></td></tr>',
+			printf( '<tr><td>#%d</td><td>#%d</td><td>#%d</td><td>%s %s</td><td>%s %s</td><td>%s %s</td><td>%s</td><td>#%d</td><td><code>%s</code></td><td>%s</td><td><a href="%s">%s</a></td></tr>',
 				(int) $row['id'], (int) $row['order_id'], (int) $row['transaction_row_id'],
-				esc_html( $amount ), esc_html( $row['currency'] ), esc_html( $expected ),
-				esc_html( $row['currency'] ), esc_html( $row['state'] ), (int) $row['bank_account_id'],
+				esc_html( $amount ), esc_html( $row['currency'] ),
+				esc_html( $source_credit ), esc_html( $row['currency'] ),
+				esc_html( $expected ), esc_html( $row['currency'] ),
+				esc_html( $row['state'] ), (int) $row['bank_account_id'],
 				esc_html( $split ), $row['approved_by'] ? '#' . (int) $row['approved_by'] :
 				esc_html__( 'Awaiting reviewer', self::DOMAIN ),
 				esc_url( $url ), esc_html__( 'View audit', self::DOMAIN ) );
