@@ -51,7 +51,8 @@
     "secondary_hints": "passed: GitHub Actions run 44586058010 all jobs",
     "conflict_cases": "passed: GitHub Actions run 44586921335 all jobs",
     "review_case_lifecycle": "passed: GitHub Actions run 44588872295 native MariaDB and foundation",
-    "review_queue_ui": "passed: GitHub Actions run 44591051949 native UI and foundation"
+    "review_queue_ui": "passed: GitHub Actions run 44591051949 native UI and foundation",
+    "review_actions_api": "passed: GitHub Actions run 44593008847 native REST and foundation"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -65,8 +66,8 @@
     "free_is_independent"
   ],
   "phase": "P4",
-  "active_task_id": "WBM-P4-T007",
-  "next_action": "Implement secure reviewer action API and real workspace controls with reason codes.",
+  "active_task_id": "WBM-P4-T008",
+  "next_action": "Verify false-match prevention for missing references and ineligible WooCommerce order states.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -118,8 +119,9 @@
     "WBM-P4-T003",
     "WBM-P4-T004",
     "WBM-P4-T005",
-    "WBM-P4-T006"
+    "WBM-P4-T006",
+    "WBM-P4-T007"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "fb835a077cef1256d69366e3028cdff5e2988886"
+  "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"
 }
