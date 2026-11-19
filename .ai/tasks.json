@@ -102,6 +102,19 @@
     "evidence": "docs/testing/fixture-matrix.md and docs/security/threat-model.md"
   },
   {
+    "id": "WBM-P0-T009",
+    "phase": "P0",
+    "title": "Harden task graph selection and validate dependency integrity.",
+    "owner": "Platform",
+    "paths": "scripts/update-backlog.py; .ai/",
+    "depends_on": [
+      "WBM-P0-T008"
+    ],
+    "verification": "VERIFY-P0-T009",
+    "status": "done",
+    "evidence": "Corrected resume selection to preserve the active unfinished checkpoint, exclude terminal tasks, and validate duplicate IDs, missing dependencies and cycles. Implemented in scripts/update-backlog.py; runtime verification pending local runner."
+  },
+  {
     "id": "WBM-P1-T001",
     "phase": "P1",
     "title": "build disposable WP/WC local environment (Docker or equivalent), reproducible commands.",
@@ -555,7 +568,7 @@
       "WBM-P3-T008"
     ],
     "verification": "VERIFY-P3-T009",
-    "status": "ready",
+    "status": "in_progress",
     "evidence": ""
   },
   {
@@ -925,7 +938,7 @@
   {
     "id": "WBM-P7-T001",
     "phase": "P7",
-    "title": "finalize all screen schemas UI-001\u2013UI-014 and component states.",
+    "title": "finalize all screen schemas UI-001–UI-014 and component states.",
     "owner": "UX and QA",
     "paths": "docs/ux/; plugins/",
     "depends_on": [
