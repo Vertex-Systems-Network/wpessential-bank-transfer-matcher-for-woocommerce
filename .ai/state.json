@@ -65,7 +65,8 @@
     "split_group_allocation": "passed: GitHub Actions run 44618354738 foundation/Playground and native maker-checker split integration",
     "overpayment_review": "passed: GitHub Actions run 44620581332 foundation/Playground and MariaDB",
     "overpayment_exception_schema": "passed: run 44620581332 native source-backed exception case and independent review",
-    "mismatch_review": "pending: P5-T006 unit classifier CI"
+    "mismatch_review": "unit and native checks passed in 44621599451/44621589757, Playground external download failed",
+    "receiving_bank_binding": "pending: new source/order account binding fixture and existing allocation native regression"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -80,7 +81,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T006",
-  "next_action": "Verify advisory currency/account/amount/reference mismatch classifier in CI, then connect source and order validation to persistent mismatch review cases without automatic payment authorization.",
+  "next_action": "Verify explicit merchant receiving bank binding, immutable audit, and matching enforcement in all Pro proposal, one-to-one checker and split-group paths; then persist mismatch cases.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

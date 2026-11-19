@@ -6,6 +6,7 @@ use WPEssential\BankTransferMatcher\Evidence\AllocationRepository;
 use WPEssential\BankTransferMatcher\Evidence\EvidenceRepository;
 use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
 use WPEssential\BankTransferMatcherPro\Import\BankAccountRepository;
+use WPEssential\BankTransferMatcherPro\Reconciliation\OrderReceivingAccountRepository;
 use WPEssential\BankTransferMatcherPro\Import\ImportBatchRepository;
 use WPEssential\BankTransferMatcherPro\Import\MappingProfile;
 use WPEssential\BankTransferMatcherPro\Reconciliation\AllocationLedgerRepository;
@@ -27,6 +28,11 @@ $order->save();
 $reference = PaymentReference::issue();
 ( new ReferenceRepository( $wpdb ) )->reserve( new EntityId( $order->get_id() ), $reference );
 $account = ( new BankAccountRepository( $wpdb ) )->create( 'Partial fixture', 'Synthetic bank', 'USD', '6543', $admin->ID );
+$binding = ( new OrderReceivingAccountRepository( $wpdb ) )->confirm(
+	$order->get_id(), $account, $admin->ID,
+	'Merchant explicitly selected the verified USD receiving bank account for this order.'
+);
+if ( $binding['bank_account_id'] !== $account ) throw new RuntimeException( 'Binding was not confirmed.' );
 $profile = MappingProfile::from_array( [
 	'id' => 'partial-fixture', 'name' => 'Partial fixture', 'delimiter' => ',',
 	'date_header' => 'Date', 'date_format' => 'Y-m-d', 'amount_header' => 'Amount',
@@ -167,6 +173,8 @@ try {
 	$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$wpdb->delete( $table, [ 'batch_id' => $batch ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_batches', [ 'id' => $batch ], [ '%d' ] );
+	$wpdb->delete( $wpdb->prefix . 'wbm_pro_order_bank_events', [ 'order_id' => $order->get_id() ], [ '%d' ] );
+	$wpdb->delete( $wpdb->prefix . 'wbm_pro_order_receiving_accounts', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_bank_accounts', [ 'id' => $account ], [ '%d' ] );
 	require_once ABSPATH . 'wp-admin/includes/user.php';
 	wp_delete_user( $reviewer_id );

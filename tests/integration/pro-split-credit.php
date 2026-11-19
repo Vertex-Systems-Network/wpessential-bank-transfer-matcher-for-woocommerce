@@ -3,6 +3,7 @@ use WPEssential\BankTransferMatcher\Domain\EntityId;
 use WPEssential\BankTransferMatcher\Domain\PaymentReference;
 use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
 use WPEssential\BankTransferMatcherPro\Import\BankAccountRepository;
+use WPEssential\BankTransferMatcherPro\Reconciliation\OrderReceivingAccountRepository;
 use WPEssential\BankTransferMatcherPro\Import\ImportBatchRepository;
 use WPEssential\BankTransferMatcherPro\Import\MappingProfile;
 use WPEssential\BankTransferMatcherPro\Reconciliation\AllocationLedgerRepository;
@@ -40,6 +41,11 @@ $profile = MappingProfile::from_array( [
 $account = ( new BankAccountRepository( $wpdb ) )->create(
 	'Split credit test', 'Synthetic bank', 'USD', '9876', $admin->ID
 );
+$bank_bindings = new OrderReceivingAccountRepository( $wpdb );
+foreach ( $orders as $eligible_order ) {
+	$bank_bindings->confirm( $eligible_order->get_id(), $account, $admin->ID,
+		'Merchant confirmed the USD receiving account for this split recipient.' );
+}
 $batch_repo = new ImportBatchRepository( $wpdb );
 $batch = $batch_repo->create( $account, $profile, hash( 'sha256', 'split-credit-batch/' . $orders[0]->get_id() ), 100, $admin->ID );
 $batch_repo->transition( $batch, 'pending', 'processing' );
@@ -170,6 +176,8 @@ try {
 	$wpdb->delete( $allocations, [ 'transaction_row_id' => $source_id ], [ '%d' ] );
 	$wpdb->delete( $imports, [ 'batch_id' => $batch ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_batches', [ 'id' => $batch ], [ '%d' ] );
+	$wpdb->query( "DELETE FROM {$wpdb->prefix}wbm_pro_order_bank_events WHERE bank_account_id = " . (int) $account );
+	$wpdb->query( "DELETE FROM {$wpdb->prefix}wbm_pro_order_receiving_accounts WHERE bank_account_id = " . (int) $account );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_bank_accounts', [ 'id' => $account ], [ '%d' ] );
 	require_once ABSPATH . 'wp-admin/includes/user.php';
 	wp_delete_user( $reviewer_id );

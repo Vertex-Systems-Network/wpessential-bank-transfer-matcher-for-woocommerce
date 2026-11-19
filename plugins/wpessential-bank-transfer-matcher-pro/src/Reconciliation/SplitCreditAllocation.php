@@ -260,6 +260,7 @@ final class SplitCreditAllocation {
 			$order->get_currency() !== $source['currency'] || wc_get_price_decimals() !== $source['exponent'] ) {
 			throw new InvalidArgumentException( 'A currently unpaid eligible BACS order is required.' );
 		}
+		( new OrderReceivingAccountRepository( $this->db ) )->assert_matches( $order_id, (int) $source['account_id'] );
 		$reference = ( new ReferenceRepository( $this->db ) )->find( new EntityId( $order_id ) );
 		if ( ! $reference ) throw new InvalidArgumentException( 'Target order has no immutable payment reference.' );
 		if ( $cross_edition ) {

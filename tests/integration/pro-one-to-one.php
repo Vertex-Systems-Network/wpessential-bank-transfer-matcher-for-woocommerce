@@ -3,6 +3,7 @@ use WPEssential\BankTransferMatcher\Domain\EntityId;
 use WPEssential\BankTransferMatcher\Domain\PaymentReference;
 use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
 use WPEssential\BankTransferMatcherPro\Import\BankAccountRepository;
+use WPEssential\BankTransferMatcherPro\Reconciliation\OrderReceivingAccountRepository;
 use WPEssential\BankTransferMatcherPro\Import\ImportBatchRepository;
 use WPEssential\BankTransferMatcherPro\Import\MappingProfile;
 use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneProposal;
@@ -21,6 +22,11 @@ $order->save();
 $reference = PaymentReference::issue();
 ( new ReferenceRepository( $wpdb ) )->reserve( new EntityId( $order->get_id() ), $reference );
 $account = ( new BankAccountRepository( $wpdb ) )->create( 'One-to-one fixture', 'Synthetic bank', 'USD', '4321', $admin->ID );
+$binding = ( new OrderReceivingAccountRepository( $wpdb ) )->confirm(
+	$order->get_id(), $account, $admin->ID,
+	'Merchant explicitly selected the verified USD receiving bank account for this order.'
+);
+if ( $binding['bank_account_id'] !== $account ) throw new RuntimeException( 'Binding was not confirmed.' );
 $profile = MappingProfile::from_array( [
 	'id' => 'one-to-one-fixture', 'name' => 'One-to-one fixture', 'delimiter' => ',',
 	'date_header' => 'Date', 'date_format' => 'Y-m-d', 'amount_header' => 'Amount',
@@ -125,6 +131,8 @@ try {
 	$wpdb->delete( $table, [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$wpdb->delete( $rows, [ 'batch_id' => $batch ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_batches', [ 'id' => $batch ], [ '%d' ] );
+	$wpdb->delete( $wpdb->prefix . 'wbm_pro_order_bank_events', [ 'order_id' => $order->get_id() ], [ '%d' ] );
+	$wpdb->delete( $wpdb->prefix . 'wbm_pro_order_receiving_accounts', [ 'order_id' => $order->get_id() ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_bank_accounts', [ 'id' => $account ], [ '%d' ] );
 	$order->delete( true );
 }

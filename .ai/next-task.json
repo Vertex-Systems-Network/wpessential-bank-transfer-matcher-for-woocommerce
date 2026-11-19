@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T006",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify advisory currency/account/amount/reference mismatch classifier in CI, then connect source and order validation to persistent mismatch review cases without automatic payment authorization."
+  "next_action": "Verify explicit merchant receiving bank binding, immutable audit, and matching enforcement in all Pro proposal, one-to-one checker and split-group paths; then persist mismatch cases."
 }

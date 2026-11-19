@@ -121,6 +121,7 @@ final class OneToOneApproval {
 				wc_get_price_decimals() !== $entry['exponent'] ) {
 				throw new InvalidArgumentException( 'Order payment eligibility changed.' );
 			}
+			( new OrderReceivingAccountRepository( $this->db ) )->assert_matches( $order_id, (int) $source['account_id'] );
 			$reference = ( new ReferenceRepository( $this->db ) )->find( new EntityId( $order_id ) );
 			if ( ! $reference ||
 				ExactMatchFacts::normalize_reference( $reference->value ) !==

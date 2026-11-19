@@ -93,6 +93,7 @@ final class OneToOneProposal {
 				$order->get_currency() !== $entry['currency'] || wc_get_price_decimals() !== $entry['exponent'] ) {
 				throw new InvalidArgumentException( 'The order is not eligible for this credit.' );
 			}
+			( new OrderReceivingAccountRepository( $this->db ) )->assert_matches( $order_id, (int) $source['account_id'] );
 			$reference = ( new ReferenceRepository( $this->db ) )->find( new EntityId( $order_id ) );
 			if ( ! $reference ||
 				ExactMatchFacts::normalize_reference( $reference->value ) !==
