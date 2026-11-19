@@ -74,8 +74,8 @@
     "pro_payment_finalizer": "passed: GitHub Actions runs 44631943970 and 44631932845 full foundation/Playground and native",
     "pro_payment_hpos": "passed: both classic and HPOS mode in GitHub Actions runs 44631943970 and 44631932845",
     "pro_payment_strict_ledger": "passed: overflow-safe credit/order shared ledger check in GitHub Actions runs 44631943970 and 44631932845",
-    "correction_cases": "pending: source-linked approved and committed allocation correction cases, independent review, source/order drift and immutable audit native CI",
-    "correction_cross_edition_holds": "pending: Free/Pro source/order guard, split recipient propagation, and no automatic refund or paid changes native CI"
+    "correction_cases": "passed: GitHub Actions runs 44636169810 and 44636161200 full foundation/Playground/native correction reviews",
+    "correction_cross_edition_holds": "passed: both runs 44636169810 and 44636161200 Free/Pro writer hold, split recipient lock and no payment/refund"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -89,8 +89,8 @@
     "free_is_independent"
   ],
   "phase": "P5",
-  "active_task_id": "WBM-P5-T009",
-  "next_action": "Verify P5-T009 source-backed correction cases and cross-edition holds in disposable WooCommerce/MariaDB; fix fixture or case lifecycle regressions before proceeding to corrections UI.",
+  "active_task_id": "WBM-P5-T010",
+  "next_action": "Build P5-T010 WordPress-native finance allocation queue, exact-money order summaries, provenance and correction-case audit workspace; add native permission/escaping/HPOS UI verification. Do not expose finance mutations before independent authenticated action controllers and review gates.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -152,7 +152,8 @@
     "WBM-P5-T005",
     "WBM-P5-T006",
     "WBM-P5-T007",
-    "WBM-P5-T008"
+    "WBM-P5-T008",
+    "WBM-P5-T009"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"

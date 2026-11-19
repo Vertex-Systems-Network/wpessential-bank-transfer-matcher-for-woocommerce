@@ -803,8 +803,8 @@
       "WBM-P5-T008"
     ],
     "verification": "VERIFY-P5-T009",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions runs 44636169810 and 44636161200 both passed complete Foundation PHP/static/Playground and native WordPress/WooCommerce/MariaDB for P5-T009 immutable source+allocation correction/reversal cases; independent finance maker/checker audit; idempotent replay and duplicate case holds; source/warning/order/related Pro+Free ledger drift rejection; separate SQL session split-recipient locks; Free and Pro allocation/payment holds even across split recipient orders. Paid Woo orders stay paid, ledger unchanged, no automatic refund or bank reversal."
   },
   {
     "id": "WBM-P5-T010",
@@ -816,7 +816,7 @@
       "WBM-P5-T009"
     ],
     "verification": "VERIFY-P5-T010",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {

@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P5-T009",
+  "id": "WBM-P5-T010",
   "phase": "P5",
-  "title": "reversal/correction event model without silent ledger mutation.",
+  "title": "allocation UI, summaries, review/action modals and audit.",
   "owner": "Reconciliation engineering",
   "paths": "plugins/",
   "depends_on": [
-    "WBM-P5-T008"
+    "WBM-P5-T009"
   ],
-  "verification": "VERIFY-P5-T009",
+  "verification": "VERIFY-P5-T010",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify P5-T009 source-backed correction cases and cross-edition holds in disposable WooCommerce/MariaDB; fix fixture or case lifecycle regressions before proceeding to corrections UI."
+  "next_action": "Build P5-T010 WordPress-native finance allocation queue, exact-money order summaries, provenance and correction-case audit workspace; add native permission/escaping/HPOS UI verification. Do not expose finance mutations before independent authenticated action controllers and review gates."
 }

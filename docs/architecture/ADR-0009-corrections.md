@@ -4,7 +4,7 @@ A bank reversal, wrongly attributed credit, duplicate deposit, or refund request
 
 Case creation and review must serialize with all allocation writers under the existing named source and order locks, carry immutable exact-money/source/order snapshots, and append audit events in the same DB transaction. Neither creation nor review may execute refunds, bank transfers, change allocation states, remove evidence, or call WooCommerce `payment_complete()`. Already-paid orders remain paid; any real-world bank return/refund requires explicit external operations and their own separate auditable model. Free continues to observe Pro correction holds even if the Pro plugin is temporarily disabled.
 
-Implementation and native CI pending. P5-T010 UI, P5-T011 concurrency and P8 release gating remain mandatory.
+Implementation verified by GitHub Actions 44636169810 and 44636161200, including full foundation/Playground and native database. Real bank reversal/refund actions remain deliberately unavailable. P5-T010 UI, P5-T011 concurrency and P8 release gating remain mandatory.
 
 
 ## Initial case implementation (native CI pending)
