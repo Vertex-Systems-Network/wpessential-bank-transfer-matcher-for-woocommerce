@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T006",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify receiving bank mapping and source-backed mismatch cases in native CI, including wrong account/currency/amount, replay and finance-review drift; keep order unpaid."
+  "next_action": "Verify native P5-T006 mismatch case lifecycle and independent P5-T007 lock contention fixture; hold task transitions until CI results."
 }
