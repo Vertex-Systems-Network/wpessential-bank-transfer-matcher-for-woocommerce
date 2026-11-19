@@ -70,8 +70,10 @@
     "mismatch_cases": "passed: GitHub Actions 44625635473 and 44625621260 native source-backed mismatch case fixture",
     "approval_lock_contention": "passed: GitHub Actions run 44626679846 native independent SQL order/source/split group locks",
     "playground_download_retry": "pending: bounded network-only retry unit test and full Playground CI",
-    "payment_readiness": "pending: pure P5-T008 unit policy CI",
-    "pro_payment_finalizer": "pending: source-verified WooCommerce payment completion, idempotency, replay recovery, maker/checker and failure-injected hook native CI"
+    "payment_readiness": "passed: GitHub Actions runs 44627524479 and 44627511410 fully green (foundation, Playground, native)",
+    "pro_payment_finalizer": "passed: GitHub Actions runs 44630744249 and 44630733222 fully green for explicit WC paid, pending intent recovery, three-credit full order, two-recipient split, and Free/Pro mixed-evidence hold; HPOS double-mode and strict ledger check pending new CI",
+    "pro_payment_hpos": "pending: both classic and HPOS modes in native fixture at/after commit 3c02731",
+    "pro_payment_strict_ledger": "pending: overflow-safe LedgerBalance::summarize recheck in payment finalizer at commit 224dd36"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -86,7 +88,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T008",
-  "next_action": "Verify explicit Pro payment finalizer against disposable WooCommerce/MariaDB, including actual payment_complete, hook interruption, durable replay and ledger audit; extend split/multi-credit cases and fix any failures.",
+  "next_action": "Verify native classic+HPOS explicit finalization and stricter overflow-safe ledger recomputation in CI; then close P5-T008 and advance to P5-T009 correction/reversal events without automatic financial reversal.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

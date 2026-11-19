@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T008",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify explicit Pro payment finalizer against disposable WooCommerce/MariaDB, including actual payment_complete, hook interruption, durable replay and ledger audit; extend split/multi-credit cases and fix any failures."
+  "next_action": "Verify native classic+HPOS explicit finalization and stricter overflow-safe ledger recomputation in CI; then close P5-T008 and advance to P5-T009 correction/reversal events without automatic financial reversal."
 }
