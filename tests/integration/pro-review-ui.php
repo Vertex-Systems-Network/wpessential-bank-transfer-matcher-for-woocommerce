@@ -6,6 +6,7 @@ global $wpdb;
 $administrator = get_role( 'administrator' );
 if ( ! $administrator ) throw new RuntimeException( 'Administrator role is missing.' );
 $administrator->add_cap( 'wbm_view' );
+$administrator->add_cap( 'wbm_review_claim' );
 wp_set_current_user( 1 );
 if ( ! current_user_can( 'wbm_view' ) ) throw new RuntimeException( 'Authorized review fixture is missing wbm_view.' );
 $case_id = (int) $wpdb->get_var( "SELECT id FROM {$wpdb->prefix}wbm_pro_review_cases ORDER BY id DESC LIMIT 1" );
@@ -23,7 +24,7 @@ $_GET = [ 'page' => 'wpessential-wbm-pro-review-queue', 'case_id' => (string) $c
 ob_start();
 ReviewQueuePage::render();
 $workspace = ob_get_clean();
-foreach ( [ 'Bank evidence', 'Order comparison', 'Decision context', 'Comments', 'Audit history', 'Actions remain disabled' ] as $needle ) {
+foreach ( [ 'Bank evidence', 'Order comparison', 'Decision context', 'Comments', 'Audit history', 'Reviewer actions', 'Update state', 'Add comment' ] as $needle ) {
 	if ( ! str_contains( $workspace, $needle ) ) throw new RuntimeException( "Review workspace is missing $needle." );
 }
 
