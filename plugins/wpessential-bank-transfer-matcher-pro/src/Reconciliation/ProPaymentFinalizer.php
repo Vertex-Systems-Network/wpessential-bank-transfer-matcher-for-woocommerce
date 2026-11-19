@@ -396,6 +396,17 @@ final class ProPaymentFinalizer {
 				( null !== $group && count( $source_allocations ) < 2 ) ) {
 				throw new InvalidArgumentException( 'Bank credit is not fully and consistently assigned.' );
 			}
+			// The shared ledger parser rejects malformed BIGINT UNSIGNED records,
+			// overflow, changed order/source snapshots and Free/Pro double spend.
+			// Do not rely on PHP's unsafe casts of database numeric strings.
+			$strict_balance = ( new AllocationLedgerRepository( $this->db ) )->snapshot(
+				$order_id, $source_id, $total, $entry['amount_minor'],
+				$currency, $exponent, (int) $source['account_id']
+			);
+			if ( 0 !== $strict_balance['order_outstanding_minor'] ||
+				0 !== $strict_balance['credit_unallocated_minor'] ) {
+				throw new InvalidArgumentException( 'Strict reviewed source/order ledger is not completely funded.' );
+			}
 		}
 		// A reviewed exception is still not an actual completed bank refund or
 		// allocation correction. Both open and reviewed cases block finalization.
