@@ -10,8 +10,9 @@ $actor = get_user_by( 'login', 'wbm_ci' ); wp_set_current_user( $actor->ID );
 $account = ( new BankAccountRepository( $wpdb ) )->create( 'Job fixture', 'Fixture Bank', 'USD', '1234', $actor->ID );
 $profile = MappingProfile::from_array( [ 'id' => 'job-fixture', 'name' => 'Job fixture', 'delimiter' => ',', 'date_header' => 'Date', 'date_format' => 'Y-m-d', 'amount_header' => 'Amount', 'decimal_separator' => '.', 'thousands_separator' => '', 'exponent' => 2, 'currency_header' => '', 'fixed_currency' => 'USD', 'reference_header' => 'Reference', 'description_header' => '', 'transaction_id_header' => 'Bank ID' ] );
 $source = tempnam( sys_get_temp_dir(), 'wbm-job-' );
+$row_total = 1005;
 $handle = fopen( $source, 'wb' ); fwrite( $handle, "Date,Amount,Reference,Bank ID\n" );
-for ( $i = 1; $i <= 205; ++$i ) fputcsv( $handle, [ '2026-11-18', '1.00', 'REF-' . $i, sprintf( '%06d', $i ) ], ',', '"', '' );
+for ( $i = 1; $i <= $row_total; ++$i ) fputcsv( $handle, [ '2026-11-18', '1.00', 'REF-' . $i, sprintf( '%06d', $i ) ], ',', '"', '' );
 fclose( $handle );
 $job = new ImportJob( $wpdb ); $batch = 0; $path = ''; $third = 0; $second_source = '';
 try {
@@ -21,11 +22,11 @@ try {
 	if ( ! is_file( $path ) || str_starts_with( realpath( $path ), realpath( ABSPATH ) ) ) throw new RuntimeException( 'Statement was not staged privately.' );
 	$job->process( $batch );
 	if ( 100 !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT valid_count FROM `$jobs` WHERE batch_id = %d", $batch ) ) ) throw new RuntimeException( 'First chunk did not checkpoint.' );
-	$job->process( $batch ); $job->process( $batch );
+	for ( $i = 0; $i < 20 && 'completed' !== $wpdb->get_var( $wpdb->prepare( "SELECT status FROM `$batches` WHERE id = %d", $batch ) ); ++$i ) $job->process( $batch );
 	$state = $wpdb->get_row( $wpdb->prepare( "SELECT status, valid_count FROM `$batches` WHERE id = %d", $batch ), ARRAY_A );
-	if ( 'completed' !== $state['status'] || 205 !== (int) $state['valid_count'] ) throw new RuntimeException( 'Batch did not finish three chunks.' );
+	if ( 'completed' !== $state['status'] || $row_total !== (int) $state['valid_count'] ) throw new RuntimeException( 'Batch did not finish three chunks.' );
 	$job->process( $batch );
-	if ( 205 !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $batch ) ) ) throw new RuntimeException( 'Replay duplicated staged rows.' );
+	if ( $row_total !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $batch ) ) ) throw new RuntimeException( 'Replay duplicated staged rows.' );
 	$first = $wpdb->get_var( $wpdb->prepare( "SELECT canonical_json FROM `$rows` WHERE batch_id = %d AND source_row = 2", $batch ) );
 	if ( '000001' !== ( json_decode( $first, true )['transaction_id'] ?? '' ) ) throw new RuntimeException( 'Bank transaction ID lost leading zeroes.' );
 	try { $job->start( $source, $account, $profile, $actor->ID ); throw new RuntimeException( 'Exact file reimport was accepted.' ); }
@@ -41,17 +42,17 @@ try {
 	if ( 'failed' !== $wpdb->get_var( $wpdb->prepare( "SELECT status FROM `$batches` WHERE id = %d", $second ) ) ) throw new RuntimeException( 'Failed job was not recorded.' );
 	copy( $second_source, $second_path );
 	$job->retry( $second );
-	$job->process( $second ); $job->process( $second ); $job->process( $second );
+	for ( $i = 0; $i < 20 && 'completed' !== $wpdb->get_var( $wpdb->prepare( "SELECT status FROM `$batches` WHERE id = %d", $second ) ); ++$i ) $job->process( $second );
 	$second_state = $wpdb->get_row( $wpdb->prepare( "SELECT status, warning_count FROM `$batches` WHERE id = %d", $second ), ARRAY_A );
-	if ( 'completed' !== $second_state['status'] || 205 !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $second ) ) ) throw new RuntimeException( 'Explicit retry did not resume safely.' );
-	if ( 205 !== (int) $second_state['warning_count'] || 205 !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d AND warning_code = 'possible_duplicate'", $second ) ) ) throw new RuntimeException( 'Overlapping-file duplicate warnings were not persisted.' );
+	if ( 'completed' !== $second_state['status'] || $row_total !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $second ) ) ) throw new RuntimeException( 'Explicit retry did not resume safely.' );
+	if ( $row_total !== (int) $second_state['warning_count'] || $row_total !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d AND warning_code = 'possible_duplicate'", $second ) ) ) throw new RuntimeException( 'Overlapping-file duplicate warnings were not persisted.' );
 	$third = $job->start( $source, $account, $profile, $actor->ID );
 	$third_path = $wpdb->get_var( $wpdb->prepare( "SELECT source_path FROM `$jobs` WHERE batch_id = %d", $third ) );
 	$job->cancel( $third );
 	if ( 'cancelled' !== $wpdb->get_var( $wpdb->prepare( "SELECT status FROM `$batches` WHERE id = %d", $third ) ) || is_file( $third_path ) ) throw new RuntimeException( 'Cancelled import retained an active source or state.' );
 	$job->process( $third );
 	if ( 0 !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $third ) ) ) throw new RuntimeException( 'Cancelled import processed rows.' );
-	echo "PASS 100-row transactional chunks, progress, replay, source integrity, retry, cancel and private staging\n";
+	echo "PASS 100-row transactional chunks over 1,005 rows, progress, replay, source integrity, retry, cancel and private staging\n";
 } finally {
 	foreach ( [ $batch, $second ?? 0, $third ] as $id ) if ( $id ) {
 		$staged = $wpdb->get_var( $wpdb->prepare( "SELECT source_path FROM `{$wpdb->prefix}wbm_pro_import_jobs` WHERE batch_id = %d", $id ) );
