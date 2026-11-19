@@ -12,7 +12,7 @@ use WPEssential\BankTransferMatcherPro\Matching\ExactMatchFacts;
 use wpdb;
 
 /**
- * Explicit second-person finance review of a single, exact imported bank credit.
+ * Explicit second-person finance review of a complete imported credit, including partial order funding.
  * Approval records an allocation; WooCommerce payment completion is a separate step.
  * No REST route, background trigger, or automatic import integration.
  */
@@ -124,14 +124,20 @@ final class OneToOneApproval {
 			}
 			$expected = Money::from_decimal( (string) $order->get_total( 'edit' ), $order->get_currency(), $entry['exponent'] )->minor_units;
 			if ( $expected < 1 || $expected !== (int) $proposal['expected_minor'] ||
-				$expected !== $entry['amount_minor'] ) {
+				$entry['amount_minor'] > $expected ) {
 				throw new InvalidArgumentException( 'Order amount changed since proposal.' );
 			}
-			$balance = $ledger->snapshot( $order_id, $source_id, $expected, $expected,
+			$credit_minor = $entry['amount_minor'];
+			$balance = $ledger->snapshot( $order_id, $source_id, $expected, $credit_minor,
 				$entry['currency'], $entry['exponent'], (int) $source['account_id'] );
-			if ( $balance['order_outstanding_minor'] !== $expected || $balance['credit_unallocated_minor'] !== $expected ) {
-				throw new InvalidArgumentException( 'Existing Free or Pro allocation conflicts with this credit.' );
+			if ( $balance['credit_unallocated_minor'] !== $credit_minor ) {
+				throw new InvalidArgumentException( 'Bank credit was previously allocated.' );
 			}
+			PartialCreditPlanner::preview( $expected, $expected - $balance['order_outstanding_minor'],
+				$entry['currency'], $entry['exponent'], [ [
+					'source_id' => $source_id, 'available_minor' => $credit_minor,
+					'allocate_minor' => $credit_minor, 'currency' => $entry['currency'], 'exponent' => $entry['exponent'],
+				] ] );
 			$updated = $this->db->query( $this->db->prepare(
 				"UPDATE $table SET state = 'approved', approved_by = %d, approved_at = UTC_TIMESTAMP(),
 				 version = version + 1 WHERE id = %d AND state = 'proposed' AND created_by <> %d",

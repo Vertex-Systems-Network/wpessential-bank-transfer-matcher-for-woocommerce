@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T003",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Connect partial-payment preview to source-validated, authorized multi-credit proposal and approval flows; first verify pure planner in CI."
+  "next_action": "Verify three-credit source-backed proposals and sequential independent approvals in native MariaDB CI, including rejection of duplicated sources, oversubscription and order-total drift."
 }

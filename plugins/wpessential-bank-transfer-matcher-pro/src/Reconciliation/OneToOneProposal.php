@@ -11,7 +11,7 @@ use WPEssential\BankTransferMatcherPro\Access\Capabilities as ProCaps;
 use WPEssential\BankTransferMatcherPro\Matching\ExactMatchFacts;
 use wpdb;
 
-/** Internal review PROPOSAL only: no allocation approval, no payment_complete, no REST route. */
+/** Proposes ONE whole imported credit for ONE order; multiple credits may fund the same order. No payment_complete or REST route. */
 final class OneToOneProposal {
 	public function __construct( private readonly wpdb $db ) {}
 
@@ -99,25 +99,32 @@ final class OneToOneProposal {
 				throw new InvalidArgumentException( 'Exact order payment reference is required.' );
 			}
 			$expected = Money::from_decimal( (string) $order->get_total( 'edit' ), $order->get_currency(), $entry['exponent'] )->minor_units;
-			if ( $expected < 1 || $entry['amount_minor'] !== $expected ) {
-				throw new InvalidArgumentException( 'One-to-one proposals require an exact full credit.' );
+			if ( $expected < 1 || $entry['amount_minor'] > $expected ) {
+				throw new InvalidArgumentException( 'A credit cannot exceed the order total.' );
 			}
 			$conflicts = $this->db->get_results( $this->db->prepare(
-				"SELECT id FROM $table WHERE (order_id = %d OR transaction_row_id = %d) AND state <> 'reversed' FOR UPDATE",
-				$order_id, $source_id
+				"SELECT id FROM $table WHERE transaction_row_id = %d AND state <> 'reversed' FOR UPDATE",
+				$source_id
 			), ARRAY_A );
 			$this->check_db();
-			if ( $conflicts ) throw new InvalidArgumentException( 'An existing proposal or allocation needs review.' );
-			$balance = $ledger->snapshot( $order_id, $source_id, $expected, $expected, $entry['currency'], $entry['exponent'], (int) $source['account_id'] );
-			if ( $balance['order_outstanding_minor'] !== $expected || $balance['credit_unallocated_minor'] !== $expected ) {
-				throw new InvalidArgumentException( 'Existing Free or Pro allocations prevent a full one-to-one proposal.' );
+			if ( $conflicts ) throw new InvalidArgumentException( 'This bank credit already has an active proposal or allocation.' );
+			$credit_minor = $entry['amount_minor'];
+			$balance = $ledger->snapshot( $order_id, $source_id, $expected, $credit_minor, $entry['currency'], $entry['exponent'], (int) $source['account_id'] );
+			if ( $balance['credit_unallocated_minor'] !== $credit_minor ) {
+				throw new InvalidArgumentException( 'Bank credit was already allocated.' );
 			}
+			// Source must be spent in full by one order; split sources are a separate P5-T004 gate.
+			PartialCreditPlanner::preview( $expected, $expected - $balance['order_outstanding_minor'],
+				$entry['currency'], $entry['exponent'], [ [
+					'source_id' => $source_id, 'available_minor' => $credit_minor,
+					'allocate_minor' => $credit_minor, 'currency' => $entry['currency'], 'exponent' => $entry['exponent'],
+				] ] );
 			$insert = $this->db->query( $this->db->prepare(
 				"INSERT INTO $table (transaction_row_id, source_fingerprint, bank_account_id, order_id,
 				amount_minor, credit_minor, expected_minor, currency, exponent, state, created_by, reason, idempotency_key, created_at)
 				VALUES (%d, %s, %d, %d, %d, %d, %d, %s, %d, 'proposed', %d, %s, %s, UTC_TIMESTAMP())",
 				$source_id, $source['identity_fingerprint'], (int) $source['account_id'],
-				$order_id, $expected, $expected, $expected, $entry['currency'], $entry['exponent'], $actor_id, $reason, $request_key
+				$order_id, $credit_minor, $credit_minor, $expected, $entry['currency'], $entry['exponent'], $actor_id, $reason, $request_key
 			) );
 			if ( 1 !== $insert ) throw new RuntimeException( 'Could not insert proposal.' );
 			$id = (int) $this->db->insert_id;
