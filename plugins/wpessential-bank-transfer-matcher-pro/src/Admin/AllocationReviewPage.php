@@ -90,6 +90,22 @@ final class AllocationReviewPage {
 		echo '</select> ';
 		submit_button( __( 'Filter allocations', self::DOMAIN ), 'secondary', '', false );
 		echo '</form>';
+		echo '<details style="background:#fff;border:1px solid #c3c4c7;padding:12px 16px;margin:16px 0"><summary><strong>' .
+			esc_html__( 'Propose a bank credit for independent review', self::DOMAIN ) .
+			'</strong></summary><p>' .
+			esc_html__( 'A proposal does not allocate or mark an order paid. The source, bank account, exact reference and outstanding order balance are checked again during independent approval.', self::DOMAIN ) .
+			'</p><form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+		echo '<input type="hidden" name="action" value="wbm_pro_allocation_propose">';
+		echo '<input type="hidden" name="request_key" value="' . esc_attr( hash( 'sha256', wp_generate_uuid4() ) ) . '">';
+		wp_nonce_field( 'wbm_pro_allocation_propose' );
+		echo '<p><label>' . esc_html__( 'Unpaid BACS order ID', self::DOMAIN ) .
+			' <input name="order_id" type="number" min="1" required></label> ';
+		echo '<label>' . esc_html__( 'Completed imported bank source ID', self::DOMAIN ) .
+			' <input name="source_id" type="number" min="1" required></label></p>';
+		echo '<p><label for="wbm-proposal-reason">' . esc_html__( 'Finance proposal reason', self::DOMAIN ) .
+			'</label></p><textarea id="wbm-proposal-reason" name="reason" rows="3" cols="75" required minlength="20" maxlength="500"></textarea>';
+		submit_button( __( 'Create proposal — does not pay the order', self::DOMAIN ), 'secondary' );
+		echo '</form></details>';
 		if ( ! $rows ) {
 			echo '<p>' . esc_html__( 'No allocations match these filters.', self::DOMAIN ) . '</p>';
 			return;
@@ -209,14 +225,15 @@ final class AllocationReviewPage {
 			}
 		} else echo '<p>' . esc_html__( 'Imported source is missing; financial provenance cannot be verified.', self::DOMAIN ) . '</p>';
 		echo '</div>';
-		self::corrections( $db, $order_id, $source_id );
+		$case_held = self::corrections( $db, $order_id, $source_id );
+		self::action_panels( $row, $case_held );
 		self::audit( $db, $id );
 		echo '<p><em>' . esc_html__( 'No finance mutation actions are enabled. A correction review never refunds, reverses or releases a hold automatically.', self::DOMAIN ) . '</em></p>';
 	}
 
-	private static function corrections( wpdb $db, int $order_id, int $source_id ): void {
+	private static function corrections( wpdb $db, int $order_id, int $source_id ): bool {
 		$table = $db->prefix . 'wbm_pro_correction_cases';
-		if ( ! self::table_exists( $db, $table ) ) return;
+		if ( ! self::table_exists( $db, $table ) ) return false;
 		$rows = $db->get_results( $db->prepare(
 			"SELECT id, case_type, status, allocation_id, created_by, reviewed_by,
 			 review_decision, created_at FROM $table
@@ -224,7 +241,7 @@ final class AllocationReviewPage {
 			$order_id, $source_id
 		), ARRAY_A );
 		self::check( $db );
-		if ( ! $rows ) return;
+		if ( ! $rows ) return false;
 		echo '<div class="notice notice-warning"><p><strong>' .
 			esc_html__( 'Financial hold: correction or reversal investigation exists. Reviewer annotation never releases this hold.', self::DOMAIN ) .
 			'</strong></p></div>';
@@ -260,6 +277,87 @@ final class AllocationReviewPage {
 				(int) $event['actor_id'], esc_html( $event['created_at'] ), esc_html( $reason ) );
 		}
 		echo '</tbody></table>';
+		self::correction_review_forms( $rows );
+		return true;
+	}
+
+	private static function action_panels( array $row, bool $case_held ): void {
+		$state = (string) $row['state'];
+		$id = (int) $row['id'];
+		if ( $case_held ) {
+			echo '<p><strong>' . esc_html__( 'Actions held: this bank source or order has an unresolved correction. No approval or payment can proceed.', self::DOMAIN ) . '</strong></p>';
+			return;
+		}
+		if ( 'proposed' === $state && (int) $row['created_by'] !== get_current_user_id() ) {
+			echo '<details class="wbm-finance-card"><summary><strong>' .
+				esc_html__( 'Independent finance allocation approval', self::DOMAIN ) .
+				'</strong></summary><p>' .
+				esc_html__( 'Confirm cleared bank funds only after verifying the original bank statement and all target orders. This approval records the allocation but does not mark WooCommerce paid.', self::DOMAIN ) .
+				'</p><form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+			echo '<input type="hidden" name="action" value="wbm_pro_allocation_approve">';
+			echo '<input type="hidden" name="allocation_id" value="' . $id . '">';
+			echo '<input type="hidden" name="split_group_key" value="' .
+				esc_attr( (string) ( $row['split_group_key'] ?? '' ) ) . '">';
+			wp_nonce_field( 'wbm_pro_allocation_approve' );
+			echo '<p><label><input type="checkbox" name="cleared_confirmed" value="1" required> ' .
+				esc_html__( 'I independently verified the entire bank credit has cleared', self::DOMAIN ) .
+				'</label></p><p><label for="wbm-approval-reason">' .
+				esc_html__( 'Independent review reason', self::DOMAIN ) .
+				'</label></p><textarea id="wbm-approval-reason" name="reason" rows="3" cols="75" required minlength="20" maxlength="500"></textarea>';
+			submit_button( __( 'Record approval — do not mark order paid', self::DOMAIN ), 'primary' );
+			echo '</form></details>';
+		} elseif ( 'proposed' === $state ) {
+			echo '<p>' . esc_html__( 'Awaiting a separate finance reviewer. The proposer cannot approve their own source.', self::DOMAIN ) . '</p>';
+		}
+		if ( in_array( $state, [ 'approved', 'committed' ], true ) ) {
+			echo '<details class="wbm-finance-card"><summary><strong>' .
+				esc_html__( 'Open a correction or reversal investigation (financial hold)', self::DOMAIN ) .
+				'</strong></summary><p>' .
+				esc_html__( 'Recording a suspected bank reversal or wrong attribution does not refund money or change the ledger; it places all related recipients on hold.', self::DOMAIN ) .
+				'</p><form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+			echo '<input type="hidden" name="action" value="wbm_pro_correction_raise">';
+			echo '<input type="hidden" name="allocation_id" value="' . $id . '">';
+			echo '<input type="hidden" name="request_key" value="' . esc_attr( hash( 'sha256', wp_generate_uuid4() ) ) . '">';
+			wp_nonce_field( 'wbm_pro_correction_raise' );
+			echo '<p><label>' . esc_html__( 'Investigation type', self::DOMAIN ) . ' <select name="case_type" required>';
+			foreach ( [ 'bank_reversal_notice', 'duplicate_credit', 'wrong_order', 'amount_dispute',
+				'refund_investigation', 'source_correction' ] as $kind ) {
+				echo '<option value="' . esc_attr( $kind ) . '">' . esc_html( $kind ) . '</option>';
+			}
+			echo '</select></label></p><p><label for="wbm-correction-reason">' .
+				esc_html__( 'Evidence and case reason', self::DOMAIN ) .
+				'</label></p><textarea id="wbm-correction-reason" name="reason" rows="3" cols="75" required minlength="20" maxlength="500"></textarea>';
+			submit_button( __( 'Open investigation and hold the source', self::DOMAIN ), 'secondary' );
+			echo '</form></details>';
+		}
+	}
+
+	/** @param list<array<string,mixed>> $rows */
+	private static function correction_review_forms( array $rows ): void {
+		foreach ( $rows as $case ) {
+			if ( 'open' !== $case['status'] ||
+				(int) $case['created_by'] === get_current_user_id() ) continue;
+			echo '<details class="wbm-finance-card"><summary><strong>' .
+				sprintf( esc_html__( 'Independent correction case #%d review', self::DOMAIN ), (int) $case['id'] ) .
+				'</strong></summary><p>' .
+				esc_html__( 'Review notes are audit-only. Even a rejected or reviewed case still holds the bank source pending an authorized resolution.', self::DOMAIN ) .
+				'</p><form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+			echo '<input type="hidden" name="action" value="wbm_pro_correction_review">';
+			echo '<input type="hidden" name="case_id" value="' . (int) $case['id'] . '">';
+			wp_nonce_field( 'wbm_pro_correction_review' );
+			echo '<p><label>' . esc_html__( 'Review decision', self::DOMAIN ) .
+				' <select name="review_decision" required>';
+			foreach ( [ 'continue_hold', 'request_bank_restatement',
+				'request_external_refund_review', 'reject_unsupported_claim' ] as $decision ) {
+				echo '<option value="' . esc_attr( $decision ) . '">' . esc_html( $decision ) . '</option>';
+			}
+			echo '</select></label></p><p><label for="wbm-review-reason-' . (int) $case['id'] . '">' .
+				esc_html__( 'Independent reviewer findings', self::DOMAIN ) .
+				'</label></p><textarea id="wbm-review-reason-' . (int) $case['id'] .
+				'" name="reason" rows="3" cols="75" required minlength="20" maxlength="500"></textarea>';
+			submit_button( __( 'Record audit-only decision — hold remains', self::DOMAIN ), 'secondary' );
+			echo '</form></details>';
+		}
 	}
 
 	private static function audit( wpdb $db, int $allocation_id ): void {
