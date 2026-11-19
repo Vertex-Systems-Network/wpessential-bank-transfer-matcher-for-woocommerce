@@ -55,15 +55,21 @@ final class AllocationAdminActions {
 			if ( 1 !== preg_match( '/\A[a-f0-9]{64}\z/', $group ) ) {
 				throw new InvalidArgumentException( 'Split review requires the original immutable group key.' );
 			}
-			// The group service validates all recipient IDs, independent
-			// reviewer and bank evidence. A forged group cannot approve a row.
+			// Validate the selected recipient BEFORE the mutating group call.
+			// Never throw a client-input error after approval has committed.
+			$table = $GLOBALS['wpdb']->prefix . 'wbm_pro_allocations';
+			$belongs = $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare(
+				"SELECT split_group_key FROM $table WHERE id = %d", $allocation_id
+			) );
+			if ( '' !== $GLOBALS['wpdb']->last_error || $belongs !== $group ) {
+				throw new InvalidArgumentException( 'Selected allocation does not belong to this split group.' );
+			}
 			$group_result = ( new SplitCreditAllocation( $GLOBALS['wpdb'] ) )->approve(
 				$group, get_current_user_id(), $confirmed, $reason
 			);
-			if ( ! in_array( $allocation_id, $group_result['allocation_ids'], true ) ) {
-				throw new InvalidArgumentException( 'The selected allocation is not in the reviewed split.' );
-			}
-			return [ 'allocation_id' => $allocation_id,
+			// Only use returned, service-validated recipients to form the
+			// redirect; the group service enforces all source/order locks.
+			return [ 'allocation_id' => (int) $group_result['allocation_ids'][0],
 				'status' => $group_result['status'], 'order_payment_changed' => false ];
 		}
 		return ( new OneToOneApproval( $GLOBALS['wpdb'] ) )->approve(
@@ -125,7 +131,7 @@ final class AllocationAdminActions {
 		$id = (int) ( $result['allocation_id'] ?? 0 );
 		wp_safe_redirect( add_query_arg( [
 			'page' => 'wpessential-wbm-pro-allocations',
-			'allocation_id' => $id, 'finance_updated' => sanitize_key( (string) $result['status'] ),
+			'allocation_id' => $id, 'finance_updated' => sanitize_key( (string) ( $result['status'] ?? $result['state'] ?? 'updated' ) ),
 		], admin_url( 'admin.php' ) ) );
 		exit;
 	}
