@@ -6,13 +6,13 @@ Build independent Free and Pro WooCommerce plugins for local bank transfer recon
 
 Branch: `development/autonomous-release-track`  
 Base: `main` at `939b9c6c7ecd1882340af9dcd55fe932d4207251`  
-Active task: `WBM-P3-T009` — Pro import wizard and transactions/history UI, including persistent empty/loading/progress/success/error/permission states.
+Active task: `WBM-P4-T001` — matching candidate model, deterministic explanation codes and eligibility policy.
 
 This is an unmerged development branch. Continue through every unblocked task while the runner is active. Do not pause for a routine “start/continue?” prompt. Never claim background work after the runner ends. Do not merge, publish, submit WordPress.org/Woo Marketplace, or transmit financial data externally. Fixtures must be synthetic.
 
 ## Plan integrity
 
-`scripts/update-backlog.py` now preserves a valid active unfinished task, excludes terminal statuses, validates duplicate/missing IDs and dependency cycles, and deterministically selects the first unblocked item when the active item is complete. The task graph remains sequential pending a deliberate dependency audit; do not add parallel dependencies that violate implementation prerequisites. Runtime execution of the script remains unverified in this connector-only session.
+`scripts/update-backlog.py` now preserves a valid active unfinished task, excludes terminal statuses, validates duplicate/missing IDs and dependency cycles, and deterministically selects the first unblocked item when the active item is complete. The task graph remains sequential pending a deliberate dependency audit; do not add parallel dependencies that violate implementation prerequisites. Task graph and generated documentation passed in GitHub Actions run 44582174758.
 
 ## Reproduce and verify
 
