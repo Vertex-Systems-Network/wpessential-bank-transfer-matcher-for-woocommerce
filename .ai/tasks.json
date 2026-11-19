@@ -646,9 +646,8 @@
       "WBM-P4-T004"
     ],
     "verification": "VERIFY-P4-T005",
-    "status": "in_progress",
-    "evidence": "",
-    "next_action": "Implement persisted review-case lifecycle, priority, assignee and append-only comments/history with compare-and-swap transitions."
+    "status": "done",
+    "evidence": "GitHub Actions run 44588872295 passed task graph, docs, packaging, PHP syntax, PHPStan, Playground and native WordPress/WooCommerce/MariaDB including persisted review-case integration. Compare-and-swap lifecycle transitions, stale-state rejection, priority, assignee, append-only comments and immutable event history passed."
   },
   {
     "id": "WBM-P4-T006",
@@ -660,8 +659,9 @@
       "WBM-P4-T005"
     ],
     "verification": "VERIFY-P4-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Build a real read-only review queue and three-column case workspace from persisted cases, imported evidence and WooCommerce orders, covering empty/error/permission/pagination states."
   },
   {
     "id": "WBM-P4-T007",
