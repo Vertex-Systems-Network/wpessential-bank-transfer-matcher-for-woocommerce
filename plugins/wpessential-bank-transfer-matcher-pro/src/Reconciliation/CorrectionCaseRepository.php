@@ -263,7 +263,40 @@ final class CorrectionCaseRepository {
 		}
 		// Changes and warnings may be the reason for investigating the credit;
 		// capture them as immutable evidence rather than claiming it is clean.
+		// Snapshot the WHOLE affected order and the shared imported source,
+		// not just the disputed allocation. A different credit, split
+		// recipient or Free manual allocation changing later invalidates review.
+		$related = $this->db->get_results( $this->db->prepare(
+			"SELECT id, order_id, transaction_row_id, bank_account_id, amount_minor,
+			 credit_minor, expected_minor, currency, exponent, state, created_by,
+			 approved_by, source_fingerprint, split_group_key, version
+			 FROM $table WHERE order_id = %d OR transaction_row_id = %d
+			 ORDER BY id ASC FOR UPDATE", $order_id, $source_id
+		), ARRAY_A );
+		$this->check_db();
+		if ( ! is_array( $related ) || [] === $related ) {
+			throw new RuntimeException( 'Complete order/source ledger cannot be reviewed.' );
+		}
+		$manual = [];
+		$manual_table = $this->db->prefix . 'wbm_manual_allocations';
+		$exists = $this->db->get_var( $this->db->prepare( 'SHOW TABLES LIKE %s', $manual_table ) );
+		$this->check_db();
+		if ( $exists === $manual_table ) {
+			$manual = $this->db->get_results( $this->db->prepare(
+				"SELECT id, evidence_id, amount_minor, expected_minor, currency, exponent
+				 FROM $manual_table WHERE order_id = %d ORDER BY id ASC FOR UPDATE", $order_id
+			), ARRAY_A );
+			$this->check_db();
+			if ( ! is_array( $manual ) ) {
+				throw new RuntimeException( 'Free manual credit history cannot be reviewed.' );
+			}
+		}
+		$ledger_json = wp_json_encode( [ 'pro' => $related, 'manual' => $manual ] );
+		if ( ! is_string( $ledger_json ) ) {
+			throw new RuntimeException( 'Could not fingerprint related approved allocations.' );
+		}
 		$payload = [
+			'affected_ledger_sha256' => hash( 'sha256', $ledger_json ),
 			'allocation_id' => $allocation_id,
 			'order_id' => $order_id, 'transaction_row_id' => $source_id,
 			'bank_account_id' => self::positive( $alloc['bank_account_id'] ),
@@ -300,6 +333,8 @@ final class CorrectionCaseRepository {
 		if ( ! is_array( $recipients ) || [] === $recipients ) {
 			throw new InvalidArgumentException( 'Correction source has no linked order recipients.' );
 		}
+		$recipient_set = array_map( static fn ( mixed $id ): int => self::positive( $id ), $recipients );
+		sort( $recipient_set, SORT_NUMERIC );
 		$locks = [ hash( 'sha256', DB_NAME . '/' . $this->db->prefix . '/wbm-pro-source/' . $source_id ) ];
 		foreach ( $recipients as $recipient ) {
 			$id = self::positive( $recipient );
@@ -321,6 +356,21 @@ final class CorrectionCaseRepository {
 				throw new RuntimeException( 'Correction review requires transactional storage.' );
 			}
 			$active = true;
+			// Preflight recipient collection precedes named locking. Confirm
+			// the set has not changed while we acquired the locks; otherwise
+			// a newly added split recipient would be left unprotected.
+			$locked_recipients = $this->db->get_col( $this->db->prepare(
+				"SELECT DISTINCT order_id FROM $pro WHERE transaction_row_id = %d FOR UPDATE", $source_id
+			) );
+			$this->check_db();
+			if ( ! is_array( $locked_recipients ) ) {
+				throw new RuntimeException( 'Could not lock correction recipient group.' );
+			}
+			$locked_set = array_map( static fn ( mixed $id ): int => self::positive( $id ), $locked_recipients );
+			sort( $locked_set, SORT_NUMERIC );
+			if ( $locked_set !== $recipient_set ) {
+				throw new InvalidArgumentException( 'Split recipient set changed during correction review.' );
+			}
 			$result = $callback();
 			if ( false === $this->db->query( 'COMMIT' ) ) throw new RuntimeException( 'Could not commit correction investigation.' );
 			$active = false;
