@@ -150,8 +150,15 @@ final class ProPaymentFinalizer {
 				throw new RuntimeException( 'WooCommerce payment hook failed; pending intent retained for recovery.', 0, $error );
 			}
 			$paid = wc_get_order( $order_id );
-			if ( ! $completed || ! $paid || ! $paid->is_paid() ) {
-				throw new RuntimeException( 'WooCommerce did not record a completed payment; retry requires finance review.' );
+			if ( ! $completed ) {
+				// WooCommerce can swallow a thrown payment hook and return false
+				// AFTER it has already persisted the paid order. Keep the durable
+				// intent pending so an explicit retry reconciles the audit and
+				// never invokes payment_complete for an already-paid order.
+				throw new RuntimeException( 'WooCommerce payment reported failure; pending intent retained for recovery.' );
+			}
+			if ( ! $paid || ! $paid->is_paid() ) {
+				throw new RuntimeException( 'WooCommerce has not recorded a paid order; pending intent retained for recovery.' );
 			}
 
 			if ( false === $this->db->query( 'START TRANSACTION' ) ) {
