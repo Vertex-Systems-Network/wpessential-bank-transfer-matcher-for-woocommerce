@@ -1,13 +1,14 @@
 {
-  "id": "WBM-P3-T009",
-  "phase": "P3",
-  "title": "import wizard/transactions UI and all empty/error/progress states.",
-  "owner": "Import engineering",
-  "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Import/",
+  "id": "WBM-P4-T002",
+  "phase": "P4",
+  "title": "unique reference/amount/account/currency matching with exact deterministic rules.",
+  "owner": "Matching engineering",
+  "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
   "depends_on": [
-    "WBM-P3-T008"
+    "WBM-P4-T001"
   ],
-  "verification": "VERIFY-P3-T009",
-  "status": "ready",
-  "evidence": ""
+  "verification": "VERIFY-P4-T002",
+  "status": "in_progress",
+  "evidence": "",
+  "next_action": "Implement exact deterministic reference, amount, account and currency matching rules over eligible records, returning review-only candidates."
 }

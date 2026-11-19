@@ -102,6 +102,19 @@
     "evidence": "docs/testing/fixture-matrix.md and docs/security/threat-model.md"
   },
   {
+    "id": "WBM-P0-T009",
+    "phase": "P0",
+    "title": "Harden task graph selection and validate dependency integrity.",
+    "owner": "Platform",
+    "paths": "scripts/update-backlog.py; .ai/",
+    "depends_on": [
+      "WBM-P0-T008"
+    ],
+    "verification": "VERIFY-P0-T009",
+    "status": "done",
+    "evidence": "Corrected resume selection to preserve the active unfinished checkpoint, exclude terminal tasks, and validate duplicate IDs, missing dependencies and cycles. Implemented in scripts/update-backlog.py; runtime verification pending local runner."
+  },
+  {
     "id": "WBM-P1-T001",
     "phase": "P1",
     "title": "build disposable WP/WC local environment (Docker or equivalent), reproducible commands.",
@@ -555,8 +568,8 @@
       "WBM-P3-T008"
     ],
     "verification": "VERIFY-P3-T009",
-    "status": "ready",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44582174758 passed foundation, Playground and native WordPress/WooCommerce/MariaDB. Import wizard provides nonce/capability protected preview, commit, retry and cancel; private draft storage; persistent progress/history; row errors/warnings; transactions pagination and masked identifiers; imports remain explicitly unverified."
   },
   {
     "id": "WBM-P3-T010",
@@ -568,8 +581,8 @@
       "WBM-P3-T009"
     ],
     "verification": "VERIFY-P3-T010",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44582174758 passed exact same-file re-import rejection, overlapping-file possible-duplicate warnings, source-tamper retry rejection, cancellation, permission denial and a 1,005-row import fixture in native WordPress/WooCommerce/MariaDB."
   },
   {
     "id": "WBM-P4-T001",
@@ -581,8 +594,8 @@
       "WBM-P3-T010"
     ],
     "verification": "VERIFY-P4-T001",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44583200121 passed task graph, docs, packaging, PHP syntax, PHPStan, typed matching unit contracts, Playground and native WordPress/WooCommerce/MariaDB. Candidate records are advisory-only; stable explanation codes and deterministic credit/duplicate/currency/BACS/open/unpaid eligibility gates cannot mutate payment state."
   },
   {
     "id": "WBM-P4-T002",
@@ -594,8 +607,9 @@
       "WBM-P4-T001"
     ],
     "verification": "VERIFY-P4-T002",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Implement exact deterministic reference, amount, account and currency matching rules over eligible records, returning review-only candidates."
   },
   {
     "id": "WBM-P4-T003",
@@ -925,7 +939,7 @@
   {
     "id": "WBM-P7-T001",
     "phase": "P7",
-    "title": "finalize all screen schemas UI-001\u2013UI-014 and component states.",
+    "title": "finalize all screen schemas UI-001–UI-014 and component states.",
     "owner": "UX and QA",
     "paths": "docs/ux/; plugins/",
     "depends_on": [

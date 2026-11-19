@@ -1,33 +1,35 @@
 # Start here
 
-Build independent Free and Pro WooCommerce plugins for local bank transfer reconciliation. Read both root directives, then reconcile [.ai/state.json](.ai/state.json) with Git and the [backlog](BACKLOG.md).
+Build independent Free and Pro WooCommerce plugins for local bank transfer reconciliation. Resume from `.ai/state.json`, `.ai/next-task.json`, and `BACKLOG.md`; the master prompt's Section 23 defines completion.
 
-## Checkpoint
+## Current checkpoint — 2026-11-19
 
-Branch `development/phase-0-1` started from `2b9e860`. The initial repository held three tracked documents and had no issues in the connector search. Phase 0 seeded product, architecture, UX, test and release contracts. Phase 1 has separate development bootstraps, package tooling, generated development readmes and an exact money slice.
+Branch: `development/autonomous-release-track`  
+Base: `main` at `939b9c6c7ecd1882340af9dcd55fe932d4207251`  
+Active task: `WBM-P4-T002` — exact deterministic reference, amount, account and currency matching rules.
 
-## Reproduce
+This is an unmerged development branch. Continue through every unblocked task while the runner is active. Do not pause for a routine “start/continue?” prompt. Never claim background work after the runner ends. Do not merge, publish, submit WordPress.org/Woo Marketplace, or transmit financial data externally. Fixtures must be synthetic.
+
+## Plan integrity
+
+`scripts/update-backlog.py` now preserves a valid active unfinished task, excludes terminal statuses, validates duplicate/missing IDs and dependency cycles, and deterministically selects the first unblocked item when the active item is complete. The task graph remains sequential pending a deliberate dependency audit; do not add parallel dependencies that violate implementation prerequisites. Task graph and generated documentation passed in GitHub Actions run 44582174758.
+
+## Reproduce and verify
 
 ```sh
-for plugin in plugins/*; do
-  composer --working-dir="$plugin" validate --strict
-  composer --working-dir="$plugin" install --no-dev --prefer-dist --no-interaction --optimize-autoloader
-done
-node scripts/generate-readmes.ts --check
-php tests/money.php
-python3 scripts/build-plugin-zips.py
-python3 scripts/build_playground_bundles.py
-python3 scripts/test-playground-foundation.py
+python3 scripts/update-backlog.py
+python3 scripts/check-project-state.py
+php -l plugins/wpessential-bank-transfer-matcher-pro/src/Import/ImportJob.php
+# Follow .ai/runbooks/mysql-test.md for disposable WordPress + WooCommerce + MariaDB.
+# Run the task-specific PHP/static/unit/integration tests and Playground scenarios.
 ```
 
-## Next task
+Record only commands actually run and their exact outcomes. Update the task evidence, state, next-task pointer, generated backlog, and append-only handoff before ending a session. Move to the next task automatically after acceptance is verified.
 
-Use [.ai/next-task.json](.ai/next-task.json) for the current command and acceptance evidence. See [Playground evidence](playground/evidence/) for recorded runs.
+## Financial invariants
 
-All fixtures must be synthetic. Any WooCommerce payment completion depends on explicit authorization from the merchant, cleared bank evidence and exact allocation checks. Keep Free deployable independently of Pro. Verify financial integrity on transactional MySQL or MariaDB.
+Customer claims and imported statements remain unverified. Import never marks an order paid. Only explicit authorized merchant review, cleared evidence, exact allocation and idempotent WooCommerce payment semantics can complete payment. Keep Free deployable independently of Pro.
 
 ## Package an edition
 
-Run `bash scripts/package-plugin.sh free` or `bash scripts/package-plugin.sh pro` from the repository root. Each command validates its Composer metadata, installs optimized production dependencies from its own lockfile, and writes one ZIP to `dist/`. The ZIP inspector checks required files, production dependencies, and excluded paths using that edition's `build/package-manifest.json`.
-
-The native install test loads both packages into a disposable WordPress site and checks their independent Composer loaders. It also checks that both editions boot after same-version ZIP replacement. Cross-version production data upgrades and rollback remain release tests.
+Use `bash scripts/package-plugin.sh free` or `bash scripts/package-plugin.sh pro` after local runtime is available. Run clean-install, upgrade/recovery, Playground and MariaDB checks; do not infer them from connector-only reads.

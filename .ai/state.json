@@ -1,9 +1,9 @@
 {
   "project": "WPEssential Bank Transfer Matcher for WooCommerce",
   "schema_version": 1,
-  "current_branch": "development/phase-3-import-batches",
-  "last_verified_base_commit": "2b9e86060cdc244748ba37fb7d655628a7f8ad27",
-  "last_checkpoint_utc": "2026-11-18",
+  "current_branch": "development/autonomous-release-track",
+  "last_verified_base_commit": "939b9c6c7ecd1882340af9dcd55fe932d4207251",
+  "last_checkpoint_utc": "2026-11-19",
   "execution_status": "in_progress",
   "tests": {
     "php_unit": "not_run",
@@ -43,7 +43,10 @@
     "import_batches": "passed: GitHub Actions run 44396934079 native MariaDB and foundation",
     "transaction_identity": "passed: GitHub Actions run 44400332941 foundation and native MariaDB",
     "import_jobs": "passed: native MariaDB run 44404920013; foundation run 44404491703",
-    "camt053": "internal parser unit/static passed in run 44411596017; native MariaDB passed; release support gated"
+    "camt053": "internal parser unit/static passed in run 44411596017; native MariaDB passed; release support gated",
+    "import_ui": "passed: GitHub Actions run 44582174758 foundation, Playground and native WordPress/WooCommerce/MariaDB",
+    "import_reimports": "passed: run 44582174758 exact re-import rejection, overlap warnings, tamper/retry, cancellation, permissions and 1,005-row fixture",
+    "matching_eligibility": "passed: GitHub Actions run 44583200121 foundation, Playground and native WordPress/WooCommerce/MariaDB"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -56,9 +59,9 @@
     "allocations_are_idempotent",
     "free_is_independent"
   ],
-  "phase": "P3",
-  "active_task_id": "WBM-P3-T009",
-  "next_action": "import wizard/transactions UI and all empty/error/progress states.",
+  "phase": "P4",
+  "active_task_id": "WBM-P4-T002",
+  "next_action": "Implement exact deterministic reference, amount, bank-account and currency rules that only emit review candidates.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -68,6 +71,7 @@
     "WBM-P0-T006",
     "WBM-P0-T007",
     "WBM-P0-T008",
+    "WBM-P0-T009",
     "WBM-P1-T001",
     "WBM-P1-T002",
     "WBM-P1-T003",
@@ -101,8 +105,11 @@
     "WBM-P3-T005",
     "WBM-P3-T006",
     "WBM-P3-T007",
-    "WBM-P3-T008"
+    "WBM-P3-T008",
+    "WBM-P3-T009",
+    "WBM-P3-T010",
+    "WBM-P4-T001"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "72aa38934276fdcc744a3d7ae29e9db34130a1f2"
+  "last_verified_remote_milestone": "744ff98a9a64d151d3745bd01d277b06d4f954ee"
 }
