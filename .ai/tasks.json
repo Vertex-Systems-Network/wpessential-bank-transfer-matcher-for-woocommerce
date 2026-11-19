@@ -751,8 +751,8 @@
       "WBM-P5-T004"
     ],
     "verification": "VERIFY-P5-T005",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44620581332 passed foundation/PHPStan/Playground and native WordPress/WooCommerce/MariaDB. P5-T005 exact OverpaymentReview classification and versioned source-linked Pro exception ledger/events, idempotent case creation, independent audit-only reviewer decisions, source/order drift blockers and no allocation/refund/payment_complete validated in native integration fixture. One duplicate run failed only at external WordPress.org WooCommerce download, with native tests passing."
   },
   {
     "id": "WBM-P5-T006",
@@ -764,7 +764,7 @@
       "WBM-P5-T005"
     ],
     "verification": "VERIFY-P5-T006",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {

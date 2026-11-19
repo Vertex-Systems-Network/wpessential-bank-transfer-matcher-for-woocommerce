@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P5-T005",
+  "id": "WBM-P5-T006",
   "phase": "P5",
-  "title": "overpayments/unallocated remainder and exceptions.",
+  "title": "amount/currency/account mismatch handling.",
   "owner": "Reconciliation engineering",
   "paths": "plugins/",
   "depends_on": [
-    "WBM-P5-T004"
+    "WBM-P5-T005"
   ],
-  "verification": "VERIFY-P5-T005",
+  "verification": "VERIFY-P5-T006",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify native source-linked overpayment exception cases, independent review and source/order drift handling; ensure review never consumes money or marks WooCommerce paid."
+  "next_action": "Verify advisory currency/account/amount/reference mismatch classifier in CI, then connect source and order validation to persistent mismatch review cases without automatic payment authorization."
 }

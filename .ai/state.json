@@ -63,8 +63,9 @@
     "cross_edition_provenance": "passed: GitHub Actions 44612420651 native Free↔Pro duplicate-provenance guard",
     "split_credit_preview": "passed: GitHub Actions runs 44613122530 and 44613105946 foundation, Playground and native",
     "split_group_allocation": "passed: GitHub Actions run 44618354738 foundation/Playground and native maker-checker split integration",
-    "overpayment_review": "pending: P5-T005 exact review-only money classification unit CI",
-    "overpayment_exception_schema": "pending: new native source-backed overpayment exception and audit case CI"
+    "overpayment_review": "passed: GitHub Actions run 44620581332 foundation/Playground and MariaDB",
+    "overpayment_exception_schema": "passed: run 44620581332 native source-backed exception case and independent review",
+    "mismatch_review": "pending: P5-T006 unit classifier CI"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -78,8 +79,8 @@
     "free_is_independent"
   ],
   "phase": "P5",
-  "active_task_id": "WBM-P5-T005",
-  "next_action": "Verify native source-linked overpayment exception cases, independent review and source/order drift handling; ensure review never consumes money or marks WooCommerce paid.",
+  "active_task_id": "WBM-P5-T006",
+  "next_action": "Verify advisory currency/account/amount/reference mismatch classifier in CI, then connect source and order validation to persistent mismatch review cases without automatic payment authorization.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -137,7 +138,8 @@
     "WBM-P5-T001",
     "WBM-P5-T002",
     "WBM-P5-T003",
-    "WBM-P5-T004"
+    "WBM-P5-T004",
+    "WBM-P5-T005"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"
