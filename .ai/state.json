@@ -63,7 +63,8 @@
     "cross_edition_provenance": "passed: GitHub Actions 44612420651 native Free↔Pro duplicate-provenance guard",
     "split_credit_preview": "passed: GitHub Actions runs 44613122530 and 44613105946 foundation, Playground and native",
     "split_group_allocation": "passed: GitHub Actions run 44618354738 foundation/Playground and native maker-checker split integration",
-    "overpayment_review": "pending: P5-T005 exact review-only money classification unit CI"
+    "overpayment_review": "pending: P5-T005 exact review-only money classification unit CI",
+    "overpayment_exception_schema": "pending: new native source-backed overpayment exception and audit case CI"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -78,7 +79,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T005",
-  "next_action": "Verify overpayment/remainder classification in CI; then persist explicit review exceptions for excess bank funds without silently allocating, refunding or marking WooCommerce paid.",
+  "next_action": "Verify native source-linked overpayment exception cases, independent review and source/order drift handling; ensure review never consumes money or marks WooCommerce paid.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

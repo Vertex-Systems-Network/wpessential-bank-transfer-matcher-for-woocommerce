@@ -54,6 +54,7 @@ wp_test eval-file "$root/tests/integration/pro-allocation-schema.php"
 wp_test eval-file "$root/tests/integration/pro-one-to-one.php"
 wp_test eval-file "$root/tests/integration/pro-many-credits.php"
 wp_test eval-file "$root/tests/integration/pro-split-credit.php"
+wp_test eval-file "$root/tests/integration/pro-overpayment-exceptions.php"
 wp_test eval-file "$root/tests/integration/free-pro-allocation-balance.php"
 
 wp_test option update woocommerce_cod_settings '{"enabled":"yes"}' --format=json

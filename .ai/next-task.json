@@ -10,5 +10,5 @@
   "verification": "VERIFY-P5-T005",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify overpayment/remainder classification in CI; then persist explicit review exceptions for excess bank funds without silently allocating, refunding or marking WooCommerce paid."
+  "next_action": "Verify native source-linked overpayment exception cases, independent review and source/order drift handling; ensure review never consumes money or marks WooCommerce paid."
 }

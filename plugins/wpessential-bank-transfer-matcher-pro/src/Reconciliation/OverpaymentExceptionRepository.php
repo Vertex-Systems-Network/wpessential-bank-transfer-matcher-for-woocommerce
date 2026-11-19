@@ -230,7 +230,9 @@ final class OverpaymentExceptionRepository {
 		if ( ! is_array( $entry ) || ! is_int( $entry['amount_minor'] ?? null ) || $entry['amount_minor'] < 1 ||
 			! is_int( $entry['exponent'] ?? null ) || $entry['exponent'] < 0 || $entry['exponent'] > 3 ||
 			! is_string( $entry['currency'] ?? null ) || ! is_string( $entry['reference'] ?? null ) ||
-			! is_string( $entry['posted_date'] ?? null ) || $entry['posted_date'] > gmdate( 'Y-m-d' ) ||
+			! is_string( $entry['posted_date'] ?? null ) ||
+			! preg_match( '/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/', $entry['posted_date'] ) ||
+			$entry['posted_date'] > gmdate( 'Y-m-d' ) ||
 			$entry['currency'] !== $source['batch_currency'] || $entry['currency'] !== $source['account_currency'] ) {
 			throw new InvalidArgumentException( 'Bank credit does not have complete valid monetary provenance.' );
 		}
