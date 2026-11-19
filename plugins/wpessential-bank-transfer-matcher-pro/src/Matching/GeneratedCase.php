@@ -13,6 +13,9 @@ final readonly class GeneratedCase {
 		public string $priority,
 		public array $explanations,
 	) {
+		if ( $transaction_id < 1 || ( null !== $order_id && $order_id < 1 ) ) {
+			throw new InvalidArgumentException( 'Generated case identifiers must be positive.' );
+		}
 		if ( ! in_array( $type, [ 'duplicate_suspect', 'reversal', 'conflict' ], true ) ) {
 			throw new InvalidArgumentException( 'Unsupported generated case type.' );
 		}
