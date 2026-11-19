@@ -3,6 +3,11 @@
 use WPEssential\BankTransferMatcherPro\Admin\ReviewQueuePage;
 
 global $wpdb;
+$administrator = get_role( 'administrator' );
+if ( ! $administrator ) throw new RuntimeException( 'Administrator role is missing.' );
+$administrator->add_cap( 'wbm_view' );
+wp_set_current_user( 1 );
+if ( ! current_user_can( 'wbm_view' ) ) throw new RuntimeException( 'Authorized review fixture is missing wbm_view.' );
 $case_id = (int) $wpdb->get_var( "SELECT id FROM {$wpdb->prefix}wbm_pro_review_cases ORDER BY id DESC LIMIT 1" );
 if ( $case_id < 1 ) throw new RuntimeException( 'Review UI fixture is missing.' );
 
