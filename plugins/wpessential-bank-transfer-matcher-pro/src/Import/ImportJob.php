@@ -28,6 +28,10 @@ final class ImportJob {
 		if ( ! function_exists( 'as_enqueue_async_action' ) ) throw new RuntimeException( 'Action Scheduler is unavailable.' );
 		$size = is_file( $source ) ? filesize( $source ) : false;
 		if ( false === $size || $size < 1 || $size > 20 * 1024 * 1024 || ! is_readable( $source ) ) throw new InvalidArgumentException( 'Invalid statement file.' );
+		// Fail before private copying, batch creation or async enqueue. Without
+		// this guard, a >10k file could stage 10,000 rows then fail in a later
+		// chunk, wasting DB resources and leaving a misleading partial import.
+		self::assert_within_row_cap( $source, $profile->delimiter );
 		$this->ensure_schema();
 		$hash = hash_file( 'sha256', $source );
 		if ( false === $hash ) throw new RuntimeException( 'Could not hash statement file.' );
@@ -51,6 +55,31 @@ final class ImportJob {
 			if ( isset( $batch ) ) ( new ImportBatchRepository( $this->db ) )->transition( $batch, 'pending', 'failed' );
 			unlink( $destination );
 			throw $error;
+		}
+	}
+
+	/**
+	 * Bounded CSV row preflight. Streaming fgetcsv holds only one source row in
+	 * memory; the existing 20 MiB file-size gate bounds any single row.
+	 * Do not normalize/correct source data before the per-row parser checks.
+	 */
+	private static function assert_within_row_cap( string $source, string $delimiter ): void {
+		$stream = fopen( $source, 'rb' );
+		if ( false === $stream ) throw new RuntimeException( 'Cannot read the CSV source.' );
+		try {
+			if ( false === fgetcsv( $stream, null, $delimiter, '"', '' ) ) {
+				throw new InvalidArgumentException( 'CSV header is missing.' );
+			}
+			$rows = 0;
+			while ( false !== ( $values = fgetcsv( $stream, null, $delimiter, '"', '' ) ) ) {
+				if ( array( null ) === $values ||
+					( 1 === count( $values ) && '' === $values[0] ) ) continue;
+				if ( ++$rows > CsvParser::MAX_ROWS ) {
+					throw new InvalidArgumentException( 'The CSV row limit was exceeded.' );
+				}
+			}
+		} finally {
+			fclose( $stream );
 		}
 	}
 
