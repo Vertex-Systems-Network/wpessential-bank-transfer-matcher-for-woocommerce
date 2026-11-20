@@ -37,6 +37,10 @@ final class AllocationReviewPage {
 	}
 
 	public static function menu(): void {
+		if ( ! current_user_can( ProCaps::IMPORT ) || ! current_user_can( FreeCaps::APPROVE ) ) {
+			return;
+		}
+
 		add_submenu_page(
 			'woocommerce', __( 'Bank allocations', self::DOMAIN ),
 			__( 'Bank allocations', self::DOMAIN ), ProCaps::IMPORT, self::SLUG, [ self::class, 'render' ]
