@@ -170,12 +170,12 @@ jobs:
             --source-sha "$GITHUB_SHA" \
             --run-id "$GITHUB_RUN_ID"
       - name: Upload source-backed release screenshot candidates
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: p9-source-verified-release-screenshots
           path: /tmp/p9-release-screenshots/
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 14
       - name: Upload real screenshot/report artifacts even if visual checks fail
         if: always()
