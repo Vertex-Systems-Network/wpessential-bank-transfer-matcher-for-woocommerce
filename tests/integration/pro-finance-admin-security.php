@@ -2,6 +2,7 @@
 use WPEssential\BankTransferMatcherPro\Admin\AllocationAdminActions;
 use WPEssential\BankTransferMatcherPro\Admin\AllocationReviewPage;
 use WPEssential\BankTransferMatcherPro\Admin\ReportExportsPage;
+use WPEssential\BankTransferMatcherPro\Admin\FinanceNotificationsPage;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
 	throw new RuntimeException( 'Use disposable wbm_ci for finance admin security tests only.' );
@@ -24,6 +25,13 @@ if ( false === has_action( 'admin_post_wbm_pro_export_report' ) ||
 	false !== has_action( 'admin_post_nopriv_wbm_pro_schedule_report_export' ) ||
 	false === has_action( 'admin_menu', [ ReportExportsPage::class, 'menu' ] ) ) {
 	throw new RuntimeException( 'Finance CSV export must be a registered authenticated admin POST only.' );
+}
+if ( false === has_action( 'admin_post_wbm_pro_save_finance_notifications' ) ||
+	false === has_action( 'admin_post_wbm_pro_test_finance_notification' ) ||
+	false !== has_action( 'admin_post_nopriv_wbm_pro_save_finance_notifications' ) ||
+	false !== has_action( 'admin_post_nopriv_wbm_pro_test_finance_notification' ) ||
+	false === has_action( 'admin_menu', [ FinanceNotificationsPage::class, 'menu' ] ) ) {
+	throw new RuntimeException( 'Opt-in finance notifications need authenticated admin settings and explicit tests.' );
 }
 if ( false === has_action( 'admin_menu', [ AllocationReviewPage::class, 'menu' ] ) ) {
 	throw new RuntimeException( 'Finance review queue was not registered as WordPress menu.' );
@@ -55,6 +63,16 @@ try {
 		! str_contains( $html, 'name="before_id"' ) ||
 		str_contains( $html, 'bank_account_number' ) ) {
 		throw new RuntimeException( 'Native finance export UI lost guarded form fields or leaked account data.' );
+	}
+	ob_start();
+	FinanceNotificationsPage::render();
+	$notifications_html = ob_get_clean();
+	if ( ! str_contains( $notifications_html, 'name="action" value="wbm_pro_save_finance_notifications"' ) ||
+		! str_contains( $notifications_html, 'name="_wpnonce"' ) ||
+		! str_contains( $notifications_html, 'name="recipient_ids[]"' ) ||
+		! str_contains( $notifications_html, '[PREVIEW]' ) ||
+		str_contains( $notifications_html, 'bank_account_number' ) ) {
+		throw new RuntimeException( 'Finance notification settings lost nonce, eligible recipient choices or preview safety.' );
 	}
 	foreach ( [ '0', '1.5', '99999999999999999999999999999' ] as $invalid_id ) {
 		try {
@@ -108,15 +126,31 @@ try {
 			}
 		}
 		foreach ( [
+			'wbm_pro_save_finance_notifications' => 'save',
+			'wbm_pro_test_finance_notification' => 'send_test',
+		] as $action => $handler ) {
+			$_POST = [ 'action' => $action, '_wpnonce' => 'invalid-finance-nonce',
+				'enabled_types' => [], 'recipient_ids' => [],
+				'notification_type' => 'pending_review_digest' ];
+			try {
+				FinanceNotificationsPage::$handler();
+				throw new RuntimeException( 'Invalid nonce executed notification action.' );
+			} catch ( RuntimeException $expected ) {
+				if ( 'Finance nonce rejected before business operation.' !== $expected->getMessage() ) {
+					throw $expected;
+				}
+			}
+		}
+		foreach ( [
 			'wbm_pro_schedule_report_export' => 'schedule',
 			'wbm_pro_download_queued_export' => 'download_queued',
 			'wbm_pro_cancel_queued_export' => 'cancel_queued',
-		] as $action => $method ) {
+		] as $action => $handler ) {
 			$_POST = [ 'action' => $action, '_wpnonce' => 'invalid-finance-nonce',
 				'job_id' => '1', 'report' => 'import_batches',
 				'from' => gmdate( 'Y-m-d' ), 'to' => gmdate( 'Y-m-d' ) ];
 			try {
-				ReportExportsPage::$method();
+				ReportExportsPage::$handler();
 				throw new RuntimeException( 'Invalid nonce executed queued export action.' );
 			} catch ( RuntimeException $expected ) {
 				if ( 'Finance nonce rejected before business operation.' !== $expected->getMessage() ) {
