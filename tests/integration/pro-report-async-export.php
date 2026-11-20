@@ -72,6 +72,12 @@ try {
 		str_contains( $data['csv'], 'file_sha256' ) ) {
 		throw new RuntimeException( 'Queued CSV contained unapproved sensitive fields.' );
 	}
+	// Download-rate controls apply to queued CSVs too, not just the
+	// immediate export endpoint. The audit table records exactly 3.
+	$job->download( $first, $admin->ID, $download_nonce );
+	$job->download( $first, $admin->ID, $download_nonce );
+	$reject( static fn () => $job->download( $first, $admin->ID, $download_nonce ),
+		'fourth queued CSV download in one minute' );
 	$job->cancel( $second, $admin->ID, $cancel_nonce );
 	if ( $job->status( $second, $admin->ID )['status'] !== 'cancelled' ) {
 		throw new RuntimeException( 'Queued cancellation did not clear job.' );
@@ -108,6 +114,12 @@ try {
 		}
 		$wpdb->delete( $wpdb->prefix . 'wbm_pro_report_export_jobs', [ 'id' => $id ], [ '%d' ] );
 	}
+	$export_scope = $scope->canonical();
+	unset( $export_scope['version'] );
+	$export_scope['limit'] = 100;
+	$export_scope = ReportDefinition::from_array( $export_scope );
+	$wpdb->delete( $wpdb->prefix . 'wbm_pro_report_exports',
+		[ 'scope_sha256' => $export_scope->fingerprint() ], [ '%s' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_batches', [ 'id' => $batch ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_bank_accounts', [ 'id' => $bank ], [ '%d' ] );
 	wp_set_current_user( $prior );
