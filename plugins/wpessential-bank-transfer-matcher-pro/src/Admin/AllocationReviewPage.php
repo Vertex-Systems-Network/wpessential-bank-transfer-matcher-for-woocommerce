@@ -85,7 +85,7 @@ final class AllocationReviewPage {
 		), ARRAY_A );
 		self::check( $db );
 		if ( ! is_array( $rows ) ) throw new RuntimeException( 'Financial allocation list missing.' );
-		echo '<form method="get"><input type="hidden" name="page" value="' . esc_attr( self::SLUG ) . '">';
+		echo '<form class="wbm-pro-toolbar" method="get" role="search" aria-label="' . esc_attr__( 'Filter finance allocations', self::DOMAIN ) . '"><input type="hidden" name="page" value="' . esc_attr( self::SLUG ) . '">';
 		echo '<label for="wbm-allocation-status">' . esc_html__( 'Allocation state', self::DOMAIN ) . '</label> ';
 		echo '<select id="wbm-allocation-status" name="state"><option value="">' .
 			esc_html__( 'All allocation states', self::DOMAIN ) . '</option>';
@@ -97,7 +97,7 @@ final class AllocationReviewPage {
 			esc_html__( 'Order ID', self::DOMAIN ) . '</label> ';
 		echo '<input id="wbm-allocation-order" type="number" min="1" name="order_id" value="' .
 			esc_attr( $order_id ?: '' ) . '" style="width:110px"> ';
-		echo '<select name="per_page">';
+		echo '<label for="wbm-allocation-page-size">' . esc_html__( 'Rows per page', self::DOMAIN ) . '</label> <select id="wbm-allocation-page-size" name="per_page">';
 		foreach ( [ 20, 50 ] as $size ) {
 			printf( '<option value="%d"%s>%d</option>', $size, selected( $limit, $size, false ), $size );
 		}
@@ -121,7 +121,7 @@ final class AllocationReviewPage {
 		submit_button( __( 'Create proposal — does not pay the order', self::DOMAIN ), 'secondary' );
 		echo '</form></details>';
 		if ( ! $rows ) {
-			echo '<p>' . esc_html__( 'No allocations match these filters.', self::DOMAIN ) . '</p>';
+			echo '<p role="status" class="wbm-pro-empty">' . esc_html__( 'No allocations match these filters.', self::DOMAIN ) . '</p>';
 			return;
 		}
 		// Totals are page-scoped and segregated by currency, precision and
@@ -145,7 +145,7 @@ final class AllocationReviewPage {
 				esc_html( self::money( $amount, (int) $precision ) . ' ' . $currency ) .
 				'</strong> <small>' . esc_html( $state ) . '</small></span>';
 		}
-		echo '</p><table class="wp-list-table widefat fixed striped"><thead><tr>';
+		echo '</p><div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Allocation ledger by currency and approval state', self::DOMAIN ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr>';
 		foreach ( [ 'Allocation', 'WooCommerce order', 'Imported source', 'Allocated amount',
 			'Source credit', 'Order expected', 'State', 'Bank account', 'Split group', 'Reviewer', 'Evidence' ] as $label ) {
 			echo '<th>' . esc_html( $label ) . '</th>';
@@ -169,14 +169,14 @@ final class AllocationReviewPage {
 				esc_html__( 'Awaiting reviewer', self::DOMAIN ),
 				esc_url( $url ), esc_html__( 'View audit', self::DOMAIN ) );
 		}
-		echo '</tbody></table><p>';
+		echo '</tbody></table></div><nav class="wbm-pro-pagination" aria-label="' . esc_attr__( 'Allocation ledger pages', self::DOMAIN ) . '">';
 		if ( $page > 1 ) echo '<a class="button" href="' .
 			esc_url( self::queue_url( $status, $order_id, $page - 1, $limit ) ) . '">' .
 			esc_html__( 'Previous', self::DOMAIN ) . '</a> ';
 		if ( count( $rows ) === $limit ) echo '<a class="button" href="' .
 			esc_url( self::queue_url( $status, $order_id, $page + 1, $limit ) ) . '">' .
 			esc_html__( 'Next', self::DOMAIN ) . '</a>';
-		echo '</p>';
+		echo '</nav>';
 	}
 
 	private static function workspace( wpdb $db, int $id ): void {
@@ -260,7 +260,7 @@ final class AllocationReviewPage {
 			esc_html__( 'Financial hold: correction or reversal investigation exists. Reviewer annotation never releases this hold.', self::DOMAIN ) .
 			'</strong></p></div>';
 		echo '<h3>' . esc_html__( 'Correction and reversal investigations', self::DOMAIN ) . '</h3>';
-		echo '<table class="wp-list-table widefat striped"><thead><tr><th>Case</th><th>Allocation</th><th>Issue</th><th>Review</th><th>Maker</th><th>Checker</th><th>Created</th></tr></thead><tbody>';
+		echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Financial correction and reversal case records', self::DOMAIN ) . '"><table class="wp-list-table widefat striped"><thead><tr><th>Case</th><th>Allocation</th><th>Issue</th><th>Review</th><th>Maker</th><th>Checker</th><th>Created</th></tr></thead><tbody>';
 		foreach ( $rows as $row ) {
 			printf( '<tr><td>#%d</td><td>#%d</td><td>%s</td><td>%s%s</td><td>#%d</td><td>%s</td><td>%s</td></tr>',
 				(int) $row['id'], (int) $row['allocation_id'],
@@ -269,7 +269,7 @@ final class AllocationReviewPage {
 				(int) $row['created_by'], $row['reviewed_by'] ? '#' . (int) $row['reviewed_by'] : '—',
 				esc_html( $row['created_at'] ) );
 		}
-		echo '</tbody></table>';
+		echo '</tbody></table></div>';
 		$case_ids = array_map( static fn ( array $item ): int => (int) $item['id'], $rows );
 		$events_table = $db->prefix . 'wbm_pro_correction_events';
 		$placeholders = implode( ', ', array_fill( 0, count( $case_ids ), '%d' ) );
@@ -281,7 +281,7 @@ final class AllocationReviewPage {
 		self::check( $db );
 		if ( ! is_array( $events ) ) throw new RuntimeException( 'Correction audit is unavailable.' );
 		echo '<h3>' . esc_html__( 'Append-only correction audit history', self::DOMAIN ) . '</h3>';
-		echo '<table class="wp-list-table widefat striped"><thead><tr><th>Case</th><th>Event</th><th>Finance actor</th><th>Recorded (UTC)</th><th>Review note</th></tr></thead><tbody>';
+		echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Append-only correction event history', self::DOMAIN ) . '"><table class="wp-list-table widefat striped"><thead><tr><th>Case</th><th>Event</th><th>Finance actor</th><th>Recorded (UTC)</th><th>Review note</th></tr></thead><tbody>';
 		foreach ( $events as $event ) {
 			$payload = json_decode( (string) $event['event_json'], true );
 			$reason = is_array( $payload ) && is_string( $payload['reason'] ?? null )
@@ -290,7 +290,7 @@ final class AllocationReviewPage {
 				(int) $event['correction_case_id'], esc_html( $event['event_type'] ),
 				(int) $event['actor_id'], esc_html( $event['created_at'] ), esc_html( $reason ) );
 		}
-		echo '</tbody></table>';
+		echo '</tbody></table></div>';
 		self::correction_review_forms( $rows );
 		return true;
 	}
@@ -387,7 +387,7 @@ final class AllocationReviewPage {
 			echo '<p>' . esc_html__( 'No audit events were found; this allocation cannot be trusted without review.', self::DOMAIN ) . '</p>';
 			return;
 		}
-		echo '<table class="wp-list-table widefat striped"><thead><tr><th>Event</th><th>Actor</th><th>Recorded (UTC)</th><th>Reason</th></tr></thead><tbody>';
+		echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Append-only allocation audit history', self::DOMAIN ) . '"><table class="wp-list-table widefat striped"><thead><tr><th>Event</th><th>Actor</th><th>Recorded (UTC)</th><th>Reason</th></tr></thead><tbody>';
 		foreach ( $events as $event ) {
 			$payload = json_decode( (string) $event['event_json'], true );
 			$reason = is_array( $payload ) && is_string( $payload['reason'] ?? null )
@@ -396,7 +396,7 @@ final class AllocationReviewPage {
 				esc_html( $event['event_type'] ), (int) $event['actor_id'],
 				esc_html( $event['created_at'] ), esc_html( $reason ) );
 		}
-		echo '</tbody></table>';
+		echo '</tbody></table></div>';
 	}
 
 	private static function money( int $minor, int $exponent ): string {
