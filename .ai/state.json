@@ -105,7 +105,8 @@
     "p7_visual_rubric": "PASSED on exact SHA 3b0341ffa7999cea882402ebed45ecf1acd849ea: Browser 44708991135 success, artifacts 14614998226 (before) and 14617205750 (after), LTR/RTL all 14 IDs, 16 real first-column geometry checks and 0 issues; Foundation/native/Playground 44708991058+44708998653 SUCCESS. Formal WCAG screen reader and Arabic plugin translations unverified.",
     "p7_usability": "VERIFIED exact code SHA a1103c4d416f53cb472cff1ebae627256747f431: real WP/WC 44715095307 SUCCESS, artifact 14618693822, 10 actual LTR+Arabic RTL persona tasks / 12 snapshots / 131 PNGs, 0 issues in six reports, real 375 mobile guest CSS geometry, claim+WC order status unchanged. Foundation/Playground/native MariaDB 44715095410 and 44715103038 both SUCCESS. Human Arabic content translation and full WCAG screen reader not certified.",
     "p8_route_capability_matrix": "passed exact code SHA cb6f22d77ec1df5a053f15b4815ab9e729086a13: WP7/WC11/native MariaDB/Playground Actions 44717249254 SUCCESS; 9 personas, 10 registered REST methods, 100 safe permission/read-only checks, 24 WordPress admin hook gates. No money POST; threat model and residual risk register present. P8-T002 private storage audit active; phase incomplete.",
-    "p8_private_storage": "PASSED at bafae85cff093bad371742654735ca77f2acfc4f: two Foundation/native MariaDB/Playground runs 44719809919 and 44719800103, browser 44719800023, artifact 14621347905; real order-specific receipt nonce, expired purge, private outside-webroot CSV + six HTTP negative tests with zero bank byte exposure."
+    "p8_private_storage": "PASSED at bafae85cff093bad371742654735ca77f2acfc4f: two Foundation/native MariaDB/Playground runs 44719809919 and 44719800103, browser 44719800023, artifact 14621347905; real order-specific receipt nonce, expired purge, private outside-webroot CSV + six HTTP negative tests with zero bank byte exposure.",
+    "p8_adversarial": "PASSED at exact SHA 44f569439ecbf9c1969111357d356dfb14180d46: 5 green checks (44817993455,44817986338 native/foundation, Chromium 44817986325), native 20 SQL/XSS/CSV/XXE/file validation assertions, HTTP six invalid/missing nonce admin and REST denials, no authorized finance POST or Woo BACS paid mutation. CI WP-CLI fallback pinned SHA256 v2.12.0. Scope limited; not pen certification."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -119,8 +120,8 @@
     "free_is_independent"
   ],
   "phase": "P8",
-  "active_task_id": "WBM-P8-T003",
-  "next_action": "Run source-backed SQL/XSS/CSRF/XXE/CSV formula-injection negative checks in isolated real WordPress/WooCommerce/MariaDB; distinguish payload from actual execution and enforce denial/escape; no authorized finance POST/payment mutation. Fix actual vulnerabilities, record exact-head CI evidence then progress to P8-T004.",
+  "active_task_id": "WBM-P8-T004",
+  "next_action": "Verify against actual native MariaDB two independent SQL connection locks, Pro unique source/idempotency and duplicate fingerprint/overallocation guards, Woo order cancellation/refund/total drift between proposal and approval, correction hold/invalidation, no partial ledger writes and idempotent payment hook replay. Add missing synthetic negative tests and exact-head CI without real financial movement. Record evidence before P8-T005.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -203,8 +204,9 @@
     "WBM-P7-T007",
     "WBM-P7-T008",
     "WBM-P8-T001",
-    "WBM-P8-T002"
+    "WBM-P8-T002",
+    "WBM-P8-T003"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "bafae85cff093bad371742654735ca77f2acfc4f"
+  "last_verified_remote_milestone": "44f569439ecbf9c1969111357d356dfb14180d46"
 }

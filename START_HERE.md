@@ -2,11 +2,11 @@
 
 Build independent Free and Pro WooCommerce plugins for local bank transfer reconciliation. Resume from `.ai/state.json`, `.ai/next-task.json`, and `BACKLOG.md`; the master prompt's Section 23 defines completion.
 
-## P7 merged; P8-T001/T002 verified; P8-T003 active — 2026-11-21
+## P8-T001–T003 verified; P8-T004 active — 2026-11-21
 
-P7 corrective PR #14 merged at `4aa10da38e73ac5effc27280efbc05ccd719fb8d`. P8 draft [PR #15](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/15) lives on `development/p8-threat-model-access-matrix-20261120`. T001 role security verified via native WP/WC/MariaDB at `cb6f22d7`, 9 synthetic personas × 10 real REST route gates = 100 probes and 24 admin-post registration checks. **T002 private source/receipt verified** exact source `bafae85c`: Foundation/Playground/native MariaDB Actions 44719809919 + 44719800103 and LTR/Arabic RTL/HTTP browser 44719800023 all SUCCESS. Real 6 no-leak source/nonce HTTP probes; native permission/nonce/expiry/outside-webroot CSV integrity checks. Evidence `docs/security/p8-t002-private-receipt-statement-audit.md`; browser artifact 14621347905.
+P7 corrective PR #14 merged into main at `4aa10da38e73ac5effc27280efbc05ccd719fb8d`; P8 draft [PR #15](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/15) remains unmerged. T001 actual WP REST role matrix: 9 personas × 10 routes plus 24 private/guest hook registrations and 100 probes (native 44717249254 SUCCESS). T002 real outside-docroot bank source and receipt access: Foundation/native 44719809919 + 44719800103, Chromium 44719800023, all SUCCESS, 6 synthetic negative HTTP probes. T003 adversarial **VERIFIED** on exact source `44f569439ecbf9c1969111357d356dfb14180d46`: 20 native SQL/XSS/CSV/XXE/receipt attacks plus six real authenticated invalid/missing nonce CSRF probes, native Foundation/Playground actions 44817993455 + 44817986338 SUCCESS, real Chromium [44817986325](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44817986325) SUCCESS and artifact 14670457940. Formal evidence `docs/security/p8-t003-adversarial-verification.md`. CI-only SHA256 pinned WP-CLI fallback handles optional setup-php tool install failures.
 
-**T003 in progress**: SQL/XSS/CSRF/XXE/CSV formula adversarial regression; P8 T004–T009 and P9 remain not verified. Do not merge P8 PR #15, publish, move live funds, or claim accessibility/security certification. Master Issue #7 remains open.
+**P8-T004 active:** source-backed concurrency/duplicate allocation, stale Woo order/refund/reversal and invalidation probes, real MariaDB cross-process locks; no live money transfer. T005–T009 and P9 remain pending. P8 PR stays draft; main unchanged since P7. Master Issue #7 open, no marketplace publication or pen/WCAG certification claimed.
 
 ## Historical checkpoint — 2026-11-20
 

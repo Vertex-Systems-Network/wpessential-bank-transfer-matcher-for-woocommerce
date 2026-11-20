@@ -1092,8 +1092,8 @@
       "WBM-P8-T002"
     ],
     "verification": "VERIFY-P8-T003",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "VERIFIED exact source SHA 44f569439ecbf9c1969111357d356dfb14180d46: two Foundation/Playground/native WP7/WC11/MariaDB runs 44817993455 and 44817986338 SUCCESS, real Chromium 44817986325 SUCCESS, screenshot/report artifact 14670457940 (5 checks all green). Native tests/integration/p8-adversarial-inputs.php 20 checks: SQL literal/repository integrity, stored HTML escaping, formula-prefixed CSV neutralization/redaction, NUL/UTF8/size rejection, CAMT.053 XXE denial, malicious receipt MIME rejection. Real tests/browser/p8-csrf-http.mjs six actual authenticated wrong/missing-nonce admin-post/REST financial denial checks; no authorized finance POST; post-browser BACS orders remain unpaid. GH runner WP-CLI missing-tool issue fixed via CI-only official WP-CLI 2.12.0 pinned SHA256 fallback. docs/security/p8-t003-adversarial-verification.md. Not exhaustive pen-test/security certification.",
     "next_action": "Run source-backed SQL/XSS/CSRF/XXE/CSV formula-injection negative checks in isolated real WordPress/WooCommerce/MariaDB; distinguish payload from actual execution and enforce denial/escape; no authorized finance POST/payment mutation. Fix actual vulnerabilities, record exact-head CI evidence then progress to P8-T004."
   },
   {
@@ -1106,8 +1106,9 @@
       "WBM-P8-T003"
     ],
     "verification": "VERIFY-P8-T004",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Verify against actual native MariaDB two independent SQL connection locks, Pro unique source/idempotency and duplicate fingerprint/overallocation guards, Woo order cancellation/refund/total drift between proposal and approval, correction hold/invalidation, no partial ledger writes and idempotent payment hook replay. Add missing synthetic negative tests and exact-head CI without real financial movement. Record evidence before P8-T005."
   },
   {
     "id": "WBM-P8-T005",

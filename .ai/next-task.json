@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P8-T003",
+  "id": "WBM-P8-T004",
   "phase": "P8",
-  "title": "SQL/XSS/CSRF/XXE/CSV-injection adversarial tests.",
+  "title": "allocation concurrency/duplicates/stale order/invalidation tests.",
   "owner": "Security and QA",
   "paths": "docs/security/; plugins/",
   "depends_on": [
-    "WBM-P8-T002"
+    "WBM-P8-T003"
   ],
-  "verification": "VERIFY-P8-T003",
+  "verification": "VERIFY-P8-T004",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Run source-backed SQL/XSS/CSRF/XXE/CSV formula-injection negative checks in isolated real WordPress/WooCommerce/MariaDB; distinguish payload from actual execution and enforce denial/escape; no authorized finance POST/payment mutation. Fix actual vulnerabilities, record exact-head CI evidence then progress to P8-T004."
+  "next_action": "Verify against actual native MariaDB two independent SQL connection locks, Pro unique source/idempotency and duplicate fingerprint/overallocation guards, Woo order cancellation/refund/total drift between proposal and approval, correction hold/invalidation, no partial ledger writes and idempotent payment hook replay. Add missing synthetic negative tests and exact-head CI without real financial movement. Record evidence before P8-T005."
 }
