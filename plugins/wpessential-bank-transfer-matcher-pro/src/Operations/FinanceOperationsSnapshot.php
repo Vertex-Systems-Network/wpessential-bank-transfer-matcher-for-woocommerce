@@ -84,9 +84,13 @@ final class FinanceOperationsSnapshot {
 					'warning_rows' => 0,
 				];
 				if ( 'import_batches' === $type ) {
-					$entry['processed_rows'] = self::number( $row['valid_count'] ) +
-						self::number( $row['error_count'] );
-					$entry['error_rows'] = self::number( $row['error_count'] );
+					$valid = self::number( $row['valid_count'] );
+					$invalid = self::number( $row['error_count'] );
+					if ( $valid > PHP_INT_MAX - $invalid ) {
+						throw new InvalidArgumentException( 'Finance diagnostic row counts overflow.' );
+					}
+					$entry['processed_rows'] = $valid + $invalid;
+					$entry['error_rows'] = $invalid;
 					$entry['warning_rows'] = self::number( $row['warning_count'] );
 				}
 				if ( 'report_exports' === $type ) {
