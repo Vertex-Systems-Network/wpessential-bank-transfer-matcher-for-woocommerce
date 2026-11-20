@@ -118,7 +118,8 @@ try {
             const bounds = form.getBoundingClientRect();
             const labels = [...form.querySelectorAll(':scope > label.wbm-pro-field')];
             const submit = form.querySelector(':scope > .submit');
-            const control = submit?.querySelector('input[type="submit"],button');
+            const control = submit?.querySelector('input[type="submit"],button') ||
+              form.querySelector(':scope > input[type="submit"], :scope > button[type="submit"]');
             const boxes = labels.map(n => n.getBoundingClientRect());
             return {
               missing: false, fields: labels.length,

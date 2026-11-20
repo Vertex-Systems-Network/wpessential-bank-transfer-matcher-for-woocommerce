@@ -355,6 +355,15 @@ body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-table-scroll {
     max-inline-size: 100%;
     box-sizing: border-box;
   }
+  /* submit_button(..., ..., false) returns an unwrapped native input. */
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > :is(input[type="submit"],button[type="submit"]) {
+    flex: 1 0 100%;
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    min-block-size: 40px;
+    box-sizing: border-box;
+  }
   body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .submit {
     flex: 1 0 100%;
     inline-size: 100%;
