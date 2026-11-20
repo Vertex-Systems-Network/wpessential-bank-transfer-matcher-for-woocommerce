@@ -132,6 +132,9 @@ try {
 	}
 	$reject( static fn () => $job->download( $first, $admin->ID, $download_nonce ),
 		'read expired finance CSV' );
+	$job->cancel( $third, $admin->ID, $cancel_nonce );
+	$reject( static fn () => $job->start( $scope, $admin->ID, $nonce ),
+		'fourth export job queued within one minute even with cancelled earlier jobs' );
 	echo "PASS queued finance CSV owner auth, nonce, Action Scheduler, 2-active cap, idempotent worker, cancellation, expiry, redaction\n";
 } finally {
 	wp_set_current_user( $admin->ID );
