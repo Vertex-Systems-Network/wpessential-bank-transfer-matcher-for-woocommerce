@@ -92,12 +92,13 @@ final class ExceptionAgingReportRepository {
 				);
 				if ( ! $created ) throw new InvalidArgumentException( 'Exception date is invalid.' );
 				$days = max( 0, intdiv( $now - $created->getTimestamp(), 86400 ) );
+				$age_band = $days <= 2 ? '0-2d' : ( $days <= 7 ? '3-7d' : ( $days <= 30 ? '8-30d' : '31+d' ) );
 				$collected[] = [
 					'id' => $virtual, 'case_id' => $id, 'case_type' => $kind,
 					'order_id' => self::positive( $row['order_id'] ),
 					'bank_account_id' => self::positive( $row['account_id'] ),
 					'currency' => $currency, 'exponent' => $exponent,
-					'state' => $state, 'age_days' => $days,
+					'state' => $state, 'age_days' => $days, 'age_band' => $age_band,
 					'disputed_minor_non_additive' => self::nonnegative( $row['disputed_minor'] ),
 					// Case amount is NOT a ledger amount: two cases can flag
 					// the exact same imported bank credit.
@@ -110,11 +111,18 @@ final class ExceptionAgingReportRepository {
 		usort( $collected, static fn ( array $a, array $b ): int => $b['id'] <=> $a['id'] );
 		$has_more = count( $collected ) > $scope->limit;
 		$rows = array_slice( $collected, 0, $scope->limit );
+		$age_counts = [];
+		foreach ( $rows as $case ) {
+			$bucket = $case['currency'] . '/' . $case['case_type'] . '/' . $case['state'] . '/' . $case['age_band'];
+			$age_counts[$bucket] = ( $age_counts[$bucket] ?? 0 ) + 1;
+		}
+		ksort( $age_counts, SORT_STRING );
 		return [
 			'definition' => $scope->canonical(),
 			'fingerprint' => $scope->fingerprint(),
 			'generated_at_utc' => gmdate( 'Y-m-d H:i:s' ),
 			'rows' => $rows, 'page_totals' => PerCurrencyTotals::summarize( $rows ),
+			'age_bucket_counts' => $age_counts,
 			'has_more' => $has_more,
 			'next_before_id' => $has_more && $rows ? $rows[count( $rows ) - 1]['id'] : 0,
 			'non_additive_case_exposure' => true,

@@ -89,7 +89,9 @@ try {
 	$old_case = array_values( array_filter( $all['rows'],
 		static fn ( array $row ): bool => $row['case_type'] === 'overpayment'
 	) );
-	if ( count( $old_case ) !== 1 || $old_case[0]['age_days'] < 3 ) {
+	if ( count( $old_case ) !== 1 || $old_case[0]['age_days'] < 3 ||
+		( $all['age_bucket_counts']['USD/overpayment/open/3-7d'] ?? 0 ) !== 1 ||
+		( $all['age_bucket_counts']['USD/correction/open/0-2d'] ?? 0 ) !== 1 ) {
 		throw new RuntimeException( 'Exception age did not use UTC immutable case creation date.' );
 	}
 	$seen = [];
