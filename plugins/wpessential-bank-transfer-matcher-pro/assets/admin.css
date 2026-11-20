@@ -249,3 +249,80 @@ body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-card dd {
     box-shadow: none;
   }
 }
+
+
+/* P7-T005 screenshot review: keep decision states legible without color-only
+ * badges; right-to-left labels, filters and pagination remain native. */
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-state {
+  display: inline-flex;
+  align-items: center;
+  max-inline-size: 100%;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid #a7aaad;
+  border-inline-start-width: 3px;
+  border-radius: 3px;
+  background: #f6f7f7;
+  color: #1d2327;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  font-weight: 600;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-transform: none;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-state:is([data-priority="high"],[data-priority="critical"],[data-state="reopened"],[data-state="awaiting_approval"]) {
+  border-inline-start-color: #b26200;
+  background: #fcf9ed;
+  color: #352800;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-state:is([data-state="resolved"],[data-state="committed"]) {
+  border-inline-start-color: #008a20;
+  background: #f0f6f1;
+  color: #143721;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-state:is([data-state="dismissed"],[data-state="reversed"]) {
+  border-inline-start-color: #787c82;
+  background: #f6f7f7;
+  color: #1d2327;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-disclosure {
+  margin-block: 1rem;
+  padding: 0.8rem 1rem;
+  background: #fff;
+  border: 1px solid #dcdcde;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-disclosure summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-disclosure summary:focus-visible {
+  outline: 2px solid #2271b1;
+  outline-offset: 3px;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro-field {
+  flex: 0 1 12rem;
+  min-inline-size: min(100%,10rem);
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro-field input {
+  inline-size: 100%;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-pagination:empty {
+  display: none;
+}
+@media (max-width: 782px) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro-field {
+    flex: 1 1 min(100%,11rem);
+  }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar .submit {
+    min-inline-size: min(100%,8rem);
+  }
+}
+@media (forced-colors: active) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-state,
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-disclosure {
+    color: CanvasText;
+    background: Canvas;
+    border: 1px solid CanvasText;
+    border-inline-start-width: 3px;
+  }
+}

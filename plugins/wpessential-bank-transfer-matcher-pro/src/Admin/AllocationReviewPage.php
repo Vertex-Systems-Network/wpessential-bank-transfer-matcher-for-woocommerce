@@ -108,7 +108,7 @@ final class AllocationReviewPage {
 		echo '</select></label> ';
 		submit_button( __( 'Filter allocations', self::DOMAIN ), 'secondary', '', false );
 		echo '</form>';
-		echo '<details data-wbm-finance-dialog style="background:#fff;border:1px solid #c3c4c7;padding:12px 16px;margin:16px 0"><summary><strong>' .
+		echo '<details class="wbm-pro-disclosure" data-wbm-finance-dialog><summary><strong>' .
 			esc_html__( 'Propose a bank credit for independent review', self::DOMAIN ) .
 			'</strong></summary><p>' .
 			esc_html__( 'A proposal does not allocate or mark an order paid. The source, bank account, exact reference and outstanding order balance are checked again during independent approval.', self::DOMAIN ) .

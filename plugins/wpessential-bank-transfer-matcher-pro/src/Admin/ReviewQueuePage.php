@@ -62,9 +62,9 @@ final class ReviewQueuePage {
 		foreach ( $rows as $row ) {
 			$url = add_query_arg( [ 'page' => self::SLUG, 'case_id' => (int) $row['id'] ], admin_url( 'admin.php' ) );
 			$priority_tag = sprintf( '<span class="wbm-pro-state" data-priority="%s">%s</span>',
-				esc_attr( (string) $row['priority'] ), esc_html( (string) $row['priority'] ) );
+				esc_attr( (string) $row['priority'] ), esc_html( ucfirst( (string) $row['priority'] ) ) );
 			$case_state = sprintf( '<span class="wbm-pro-state" data-state="%s">%s</span>',
-				esc_attr( (string) $row['status'] ), esc_html( (string) $row['status'] ) );
+				esc_attr( (string) $row['status'] ), esc_html( ucwords( str_replace( '_', ' ', (string) $row['status'] ) ) ) );
 			printf( '<tr><td>#%d</td><td>%s</td><td>%s</td><td>%s</td><td>#%d</td><td>%s</td><td>%s</td><td><a class="button" href="%s">%s</a></td></tr>', (int) $row['id'], esc_html( $row['case_type'] ), $priority_tag, $case_state, (int) $row['transaction_id'], $row['order_id'] ? '#' . (int) $row['order_id'] : '—', $row['assignee_id'] ? '#' . (int) $row['assignee_id'] : esc_html__( 'Unassigned', 'wpessential-bank-transfer-matcher-pro' ), esc_url( $url ), esc_html__( 'Open workspace', 'wpessential-bank-transfer-matcher-pro' ) );
 		}
 		echo '</tbody></table></div><nav class="wbm-pro-pagination" aria-label="' . esc_attr__( 'Review case result pages', 'wpessential-bank-transfer-matcher-pro' ) . '">';

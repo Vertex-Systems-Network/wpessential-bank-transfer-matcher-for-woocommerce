@@ -22,14 +22,17 @@ final class BankTransactionsPage {
 	public static function render(): void {
 		if ( ! current_user_can( Capabilities::IMPORT ) ) wp_die( esc_html__( 'Statement import permission is required.', 'wpessential-bank-transfer-matcher-pro' ), '', array( 'response' => 403 ) );
 		$batch_id = isset( $_GET['batch'] ) ? absint( $_GET['batch'] ) : 0;
-		$page = isset( $_GET['paged'] ) ? max( 1, absint( $_GET['paged'] ) ) : 1;
+		$page = isset( $_GET['paged'] ) ? max( 1, min( 10000, absint( $_GET['paged'] ) ) ) : 1;
 		$limit = isset( $_GET['per_page'] ) && in_array( absint( $_GET['per_page'] ), array( 20, 50, 100 ), true ) ? absint( $_GET['per_page'] ) : 50;
 		try {
 			$history = ( new ImportBatchRepository( $GLOBALS['wpdb'] ) )->history( 1, 100 );
 			if ( 0 === $batch_id && $history ) $batch_id = (int) $history[0]['id'];
 			$selected = null;
 			foreach ( $history as $batch ) if ( $batch_id === (int) $batch['id'] ) { $selected = $batch; break; }
-			$rows = $selected ? ( new ImportJob( $GLOBALS['wpdb'] ) )->staged_rows( $batch_id, $page, $limit ) : array();
+			$job = new ImportJob( $GLOBALS['wpdb'] );
+			$rows = $selected ? $job->staged_rows( $batch_id, $page, $limit ) : array();
+			$has_more = $selected && count( $rows ) === $limit && $page < 10000 &&
+				[] !== $job->staged_rows( $batch_id, $page + 1, $limit );
 		} catch ( RuntimeException $error ) {
 			echo '<div class="wrap wbm-pro-screen"><h1>' . esc_html__( 'Bank transactions', 'wpessential-bank-transfer-matcher-pro' ) . '</h1><div class="notice notice-error"><p>' . esc_html__( 'Imported rows are unavailable. Check database health and retry.', 'wpessential-bank-transfer-matcher-pro' ) . '</p></div></div>';
 			return;
@@ -45,7 +48,9 @@ final class BankTransactionsPage {
 		foreach ( array( 20, 50, 100 ) as $size ) printf( '<option value="%d"%s>%d</option>', $size, selected( $limit, $size, false ), $size );
 		echo '</select></label> '; submit_button( __( 'Apply', 'wpessential-bank-transfer-matcher-pro' ), 'secondary', '', false ); echo '</form>';
 		if ( ! $rows ) {
-			echo '<p role="status" class="wbm-pro-empty">' . esc_html__( 'This batch has no staged rows on the selected page. It may still be queued, failed before parsing, or the page may be out of range.', 'wpessential-bank-transfer-matcher-pro' ) . '</p></div>';
+			echo '<p role="status" class="wbm-pro-empty">' . esc_html__( 'This batch has no staged rows on the selected page. It may still be queued, failed before parsing, or the page may be out of range.', 'wpessential-bank-transfer-matcher-pro' ) . '</p>';
+			if ( $page > 1 ) echo '<p><a class="button" href="' . esc_url( add_query_arg( [ 'page' => self::SLUG, 'batch' => $batch_id, 'paged' => $page - 1, 'per_page' => $limit ], admin_url( 'admin.php' ) ) ) . '">' . esc_html__( 'Previous source page', 'wpessential-bank-transfer-matcher-pro' ) . '</a></p>';
+			echo '</div>';
 			return;
 		}
 		echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Imported statement rows', 'wpessential-bank-transfer-matcher-pro' ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr><th scope="col">' . esc_html__( 'Source row', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Date', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Debit / credit', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Amount', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Reference', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Bank ID', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Parse state', 'wpessential-bank-transfer-matcher-pro' ) . '</th></tr></thead><tbody>';
@@ -56,7 +61,7 @@ final class BankTransactionsPage {
 		}
 		echo '</tbody></table></div><nav class="wbm-pro-pagination" aria-label="' . esc_attr__( 'Bank statement row pages', 'wpessential-bank-transfer-matcher-pro' ) . '">';
 		if ( $page > 1 ) echo '<a class="button" href="' . esc_url( add_query_arg( array( 'page' => self::SLUG, 'batch' => $batch_id, 'paged' => $page - 1, 'per_page' => $limit ), admin_url( 'admin.php' ) ) ) . '">' . esc_html__( 'Previous', 'wpessential-bank-transfer-matcher-pro' ) . '</a> ';
-		if ( count( $rows ) === $limit ) echo '<a class="button" href="' . esc_url( add_query_arg( array( 'page' => self::SLUG, 'batch' => $batch_id, 'paged' => $page + 1, 'per_page' => $limit ), admin_url( 'admin.php' ) ) ) . '">' . esc_html__( 'Next', 'wpessential-bank-transfer-matcher-pro' ) . '</a>';
+		if ( $has_more ) echo '<a class="button" href="' . esc_url( add_query_arg( array( 'page' => self::SLUG, 'batch' => $batch_id, 'paged' => $page + 1, 'per_page' => $limit ), admin_url( 'admin.php' ) ) ) . '">' . esc_html__( 'Next', 'wpessential-bank-transfer-matcher-pro' ) . '</a>';
 		echo '</nav></div>';
 	}
 
