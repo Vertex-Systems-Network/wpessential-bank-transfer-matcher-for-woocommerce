@@ -16,7 +16,7 @@ try {
 	$html = ob_get_clean();
 	foreach ( [ 'Bank allocation ledger', 'All allocation states', 'Filter allocations',
 		'No allocations match these filters', 'Ledger and audit views are read-only',
-		'wbm-pro-toolbar', 'role="search"', 'id="wbm-allocation-page-size"' ] as $phrase ) {
+		'wbm-pro-toolbar', 'role="search"', 'id="wbm-allocation-page-size"', 'for="wbm-allocation-order"' ] as $phrase ) {
 		if ( ! str_contains( $html, $phrase ) ) throw new RuntimeException( 'Allocation list missing: ' . $phrase );
 	}
 	if ( str_contains( $html, '<style>.wbm-finance-dialog' ) ) throw new RuntimeException( 'Finance detail dialog still emits inline layout CSS instead of scoped native stylesheet.' );

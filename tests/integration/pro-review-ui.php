@@ -16,7 +16,7 @@ $_GET = [ 'page' => 'wpessential-wbm-pro-review-queue' ];
 ob_start();
 ReviewQueuePage::render();
 $queue = ob_get_clean();
-foreach ( [ 'Bank review queue', 'unverified', 'Open workspace', 'reopened', 'critical', 'wbm-pro-table-scroll', 'role="region"', 'id="wbm-filter-status"', 'id="wbm-filter-assignee"', 'id="wbm-review-page-size"' ] as $needle ) {
+foreach ( [ 'Bank review queue', 'unverified', 'Open workspace', 'reopened', 'critical', 'wbm-pro-table-scroll', 'role="region"', 'id="wbm-filter-status"', 'id="wbm-filter-assignee"', 'id="wbm-review-page-size"', 'wbm-pro-scroll-hint', 'Scroll sideways to view all review-case columns' ] as $needle ) {
 	if ( ! str_contains( $queue, $needle ) ) throw new RuntimeException( "Review queue is missing $needle." );
 }
 

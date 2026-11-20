@@ -45,6 +45,9 @@ $css = is_file( $css_path ) ? file_get_contents( $css_path ) : false;
 if ( ! is_string( $css ) || strlen( $css ) < 4500 ||
 	! str_contains( $css, 'body[class*="woocommerce_page_wpessential-wbm-pro-"]' ) ||
 	! str_contains( $css, '.wbm-pro-table-scroll' ) ||
+	! str_contains( $css, '.wbm-pro-scroll-hint' ) ||
+	! str_contains( $css, 'flex: 1 0 100%' ) ||
+	! str_contains( $css, 'scrollbar-gutter: stable' ) ||
 	! str_contains( $css, ':focus-visible' ) ||
 	! str_contains( $css, 'forced-colors: active' ) ||
 	! str_contains( $css, 'max-width: 782px' ) ||

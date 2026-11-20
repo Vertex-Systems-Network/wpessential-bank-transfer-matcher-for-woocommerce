@@ -38,7 +38,8 @@ try {
 	if ( ! str_contains( $transactions, '25.00 USD' ) && ! str_contains( $transactions, '2500 USD' ) ) throw new RuntimeException( 'Imported amount is missing.' );
 	if ( str_contains( $transactions, 'PRIVATE-REFERENCE' ) || ! str_contains( $transactions, 'PR' ) ) throw new RuntimeException( 'Transaction reference was not masked.' );
 	if ( ! str_contains( $transactions, 'unverified' ) ) throw new RuntimeException( 'Unverified evidence warning is missing.' );
-	foreach ( [ 'wbm-pro-table-scroll', 'tabindex="0"', 'role="region"', 'id="wbm-bank-page-size"', 'wbm-pro-toolbar' ] as $token ) {
+	foreach ( [ 'wbm-pro-table-scroll', 'tabindex="0"', 'role="region"', 'id="wbm-bank-page-size"', 'wbm-pro-toolbar', 'for="wbm-batch"',
+		'wbm-pro-scroll-hint', 'Scroll the table sideways' ] as $token ) {
 		if ( ! str_contains( $transactions, $token ) ) throw new RuntimeException( 'Native bank transaction UI missing responsive/accessible control: ' . $token );
 	}
 	echo "PASS import UI first-run, persisted history, progress result and masked transaction evidence\n";
