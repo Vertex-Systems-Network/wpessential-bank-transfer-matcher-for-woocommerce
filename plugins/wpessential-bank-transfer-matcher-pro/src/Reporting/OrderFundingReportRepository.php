@@ -48,6 +48,12 @@ final class OrderFundingReportRepository {
 		for ( $page = 1; $page <= self::MAX_SCAN / self::PAGE_SIZE + 1; ++$page ) {
 			$orders = wc_get_orders( [
 				'status' => [ 'pending', 'on-hold' ],
+				// Push exact UTC creation bounds and BACS into WooCommerce's
+				// native order query, for both classic and HPOS storage. Without
+				// these filters unrelated orders can exhaust MAX_SCAN before any
+				// matching financial order is inspected.
+				'payment_method' => 'bacs',
+				'date_created' => $start . '...' . ( $end - 1 ),
 				'limit' => self::PAGE_SIZE,
 				'page' => $page,
 				'orderby' => 'ID', 'order' => 'DESC',
