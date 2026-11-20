@@ -19,6 +19,7 @@ try {
 		'wbm-pro-toolbar', 'role="search"', 'id="wbm-allocation-page-size"' ] as $phrase ) {
 		if ( ! str_contains( $html, $phrase ) ) throw new RuntimeException( 'Allocation list missing: ' . $phrase );
 	}
+	if ( str_contains( $html, '<style>.wbm-finance-dialog' ) ) throw new RuntimeException( 'Finance detail dialog still emits inline layout CSS instead of scoped native stylesheet.' );
 	if ( ! str_contains( $html, 'data-wbm-finance-dialog' ) ) {
 		throw new RuntimeException( 'Finance proposal must support progressive dialog enhancement.' );
 	}

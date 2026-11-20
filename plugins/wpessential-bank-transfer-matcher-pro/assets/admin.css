@@ -191,3 +191,61 @@ body[class*="woocommerce_page_wpessential-wbm-pro-"] #wbm-review-action-status:n
   body[class*="woocommerce_page_wpessential-wbm-pro-"] :is(.wbm-pro-card,.wbm-review-card,.wbm-pro-table-scroll,.wbm-pro-filter-panel) { border: 1px solid CanvasText; }
   body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-empty { border-inline-start: 3px solid CanvasText; }
 }
+
+/* Existing explicit finance allocation dialogs; styles no longer inline.
+ * Modal JS, original POST nonce and approval/hold semantics are unchanged. */
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-dialog {
+  width: min(680px,calc(100% - 40px));
+  max-height: 85vh;
+  overflow: auto;
+  border: 1px solid #c3c4c7;
+  border-radius: 6px;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 14px 45px rgb(0 0 0 / 22%);
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-dialog::backdrop {
+  background: rgb(0 0 0 / 48%);
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-block-end: 1px solid #dcdcde;
+  margin-block-end: 14px;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-dialog-launch {
+  margin: 10px 12px 10px 0;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 16px;
+  margin-block: 16px;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-card {
+  min-inline-size: 0;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #c3c4c7;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-card dt {
+  font-weight: 600;
+  margin-block-start: 9px;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-card dd {
+  margin: 2px 0 8px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 900px) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (forced-colors: active) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] :is(.wbm-finance-dialog,.wbm-finance-card) {
+    border: 1px solid CanvasText;
+    box-shadow: none;
+  }
+}

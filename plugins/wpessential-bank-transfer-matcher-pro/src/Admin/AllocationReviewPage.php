@@ -197,7 +197,6 @@ final class AllocationReviewPage {
 		echo '<h2>' . sprintf( esc_html__( 'Allocation #%d — finance evidence', self::DOMAIN ), $id ) . '</h2>';
 		echo '<p><strong>' . esc_html( $row['state'] ) . '</strong> · ' .
 			esc_html__( 'Read-only; independent approval and explicit finalization are separate operations.', self::DOMAIN ) . '</p>';
-		echo '<style>.wbm-finance-dialog{width:min(680px,calc(100% - 40px));max-height:85vh;overflow:auto;border:1px solid #c3c4c7;border-radius:6px;padding:20px;background:#fff;box-shadow:0 14px 45px rgba(0,0,0,.22)}.wbm-finance-dialog::backdrop{background:rgba(0,0,0,.48)}.wbm-finance-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #dcdcde;margin-bottom:14px}.wbm-finance-dialog-launch{margin:10px 12px 10px 0}.wbm-finance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:16px 0}.wbm-finance-card{background:#fff;border:1px solid #c3c4c7;padding:16px}.wbm-finance-card dt{font-weight:600;margin-top:9px}.wbm-finance-card dd{margin:2px 0 8px;overflow-wrap:anywhere}@media(max-width:900px){.wbm-finance-grid{grid-template-columns:1fr}}</style>';
 		echo '<div class="wbm-finance-grid"><section class="wbm-finance-card"><h3>' .
 			esc_html__( 'Allocation and provenance', self::DOMAIN ) . '</h3>';
 		self::definition( 'Amount allocated', $allocated . ' ' . $currency );
