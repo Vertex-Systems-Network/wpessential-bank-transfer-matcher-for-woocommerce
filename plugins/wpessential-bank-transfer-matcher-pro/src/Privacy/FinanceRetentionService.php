@@ -202,7 +202,7 @@ final class FinanceRetentionService {
 		$count = 0;
 		foreach ( $rows as $row ) {
 			$path = (string) $row['source_path'];
-			if ( ! preg_match( '~\A(?:.*[/\\])?[a-f0-9]{48}\.csv\z~', $path ) ||
+			if ( ! preg_match( '/\A[a-f0-9]{48}\.csv\z/', basename( $path ) ) ||
 				is_link( $path ) ) {
 				throw new RuntimeException( 'Unsafe or unexpected private import source path.' );
 			}
