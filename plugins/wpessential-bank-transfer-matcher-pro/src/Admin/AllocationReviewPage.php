@@ -66,7 +66,7 @@ final class AllocationReviewPage {
 		$status = isset( $_GET['state'] ) ? sanitize_key( wp_unslash( $_GET['state'] ) ) : '';
 		$status = in_array( $status, [ '', 'proposed', 'approved', 'committed', 'reversed' ], true ) ? $status : '';
 		$order_id = isset( $_GET['order_id'] ) ? absint( $_GET['order_id'] ) : 0;
-		$page = isset( $_GET['paged'] ) ? max( 1, absint( $_GET['paged'] ) ) : 1;
+		$page = isset( $_GET['paged'] ) ? max( 1, min( 10000, absint( $_GET['paged'] ) ) ) : 1;
 		$limit = isset( $_GET['per_page'] ) && in_array( absint( $_GET['per_page'] ), [ 20, 50 ], true )
 			? absint( $_GET['per_page'] ) : 20;
 		$table = $db->prefix . 'wbm_pro_allocations';
