@@ -31,6 +31,15 @@ jobs:
         run: |
           bash scripts/package-plugin.sh free
           bash scripts/package-plugin.sh pro
+      - name: P9 independent ZIP licenses, optimized autoload and deterministic repeat
+        run: |
+          python3 scripts/verify-release-archives.py --output /tmp/wbm-p9-license-inventory.json
+          sha256sum dist/wpessential-bank-transfer-matcher.zip dist/wpessential-bank-transfer-matcher-pro.zip > /tmp/wbm-package-first.sha256
+          bash scripts/package-plugin.sh free
+          bash scripts/package-plugin.sh pro
+          sha256sum dist/wpessential-bank-transfer-matcher.zip dist/wpessential-bank-transfer-matcher-pro.zip > /tmp/wbm-package-second.sha256
+          cmp /tmp/wbm-package-first.sha256 /tmp/wbm-package-second.sha256
+          python3 scripts/verify-release-archives.py
       - name: Check finance dialog JavaScript syntax
         run: |
           node --check plugins/wpessential-bank-transfer-matcher-pro/assets/js/finance-dialogs.js
