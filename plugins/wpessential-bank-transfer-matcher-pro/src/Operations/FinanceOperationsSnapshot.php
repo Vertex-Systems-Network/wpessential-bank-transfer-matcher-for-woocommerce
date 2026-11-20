@@ -4,6 +4,7 @@ namespace WPEssential\BankTransferMatcherPro\Operations;
 use InvalidArgumentException;
 use RuntimeException;
 use WPEssential\BankTransferMatcher\Access\Capabilities as FreeCaps;
+use WPEssential\BankTransferMatcher\Database\MigrationRunner;
 use WPEssential\BankTransferMatcherPro\Access\Capabilities as ProCaps;
 use wpdb;
 
@@ -151,6 +152,75 @@ final class FinanceOperationsSnapshot {
 		} finally {
 			fclose( $out );
 		}
+	}
+
+	/** Nonce-verified, actor-limited and metadata-audited redacted CSV egress. */
+	public function export_redacted( int $actor_id, string $nonce ): array {
+		$this->authorize( $actor_id );
+		if ( ! wp_verify_nonce( $nonce, 'wbm_pro_ops_diagnostics_export' ) ) {
+			throw new RuntimeException( 'Diagnostics export requires a valid purpose-specific nonce.' );
+		}
+		$data = $this->inspect( $actor_id );
+		$csv = self::to_redacted_csv( $data );
+		if ( strlen( $csv ) > 131072 ) {
+			throw new RuntimeException( 'Support diagnostics exceeded 128 KiB.' );
+		}
+		$this->install_export_audit();
+		$lock = 'wbm-diag-export-' . substr(
+			hash( 'sha256', $this->db->prefix . '/' . $actor_id ), 0, 32
+		);
+		$held = $this->db->get_var( $this->db->prepare(
+			'SELECT GET_LOCK(%s, 3)', $lock
+		) );
+		$this->check_db();
+		if ( '1' !== (string) $held ) {
+			throw new RuntimeException( 'A support export is already in progress.' );
+		}
+		try {
+			$table = $this->db->prefix . 'wbm_pro_diagnostics_exports';
+			$recent = $this->db->get_var( $this->db->prepare(
+				"SELECT COUNT(*) FROM $table WHERE actor_id = %d
+				 AND created_at > UTC_TIMESTAMP() - INTERVAL 1 HOUR",
+				$actor_id
+			) );
+			$this->check_db();
+			if ( null === $recent || (int) $recent >= 3 ) {
+				throw new RuntimeException( 'At most three redacted diagnostics exports per finance manager per hour.' );
+			}
+			$insert = $this->db->query( $this->db->prepare(
+				"INSERT INTO $table (actor_id,csv_sha256,byte_count,created_at)
+				 VALUES (%d,%s,%d,UTC_TIMESTAMP())",
+				$actor_id, hash( 'sha256', $csv ), strlen( $csv )
+			) );
+			$this->check_db();
+			if ( 1 !== $insert ) throw new RuntimeException( 'Could not audit redacted diagnostics export.' );
+		} finally {
+			$this->db->get_var( $this->db->prepare(
+				'SELECT RELEASE_LOCK(%s)', $lock
+			) );
+			$this->check_db();
+		}
+		return [
+			'filename' => 'wbm-redacted-operations-' . gmdate( 'Ymd' ) . '.csv',
+			'csv' => $csv, 'sha256' => hash( 'sha256', $csv ),
+		];
+	}
+
+	private function install_export_audit(): void {
+		( new MigrationRunner( $this->db, 'wpessential_wbm_pro_ops_export_v1' ) )->upgrade( [
+			static function ( wpdb $db ): bool {
+				$table = $db->prefix . 'wbm_pro_diagnostics_exports';
+				$collation = $db->get_charset_collate();
+				return false !== $db->query( "CREATE TABLE IF NOT EXISTS $table (
+					id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+					actor_id BIGINT UNSIGNED NOT NULL,
+					csv_sha256 CHAR(64) NOT NULL,
+					byte_count INT UNSIGNED NOT NULL,
+					created_at DATETIME NOT NULL,
+					KEY actor_window (actor_id,created_at)
+				) ENGINE=InnoDB $collation" );
+			},
+		] );
 	}
 
 	private function authorize( int $actor_id ): void {
