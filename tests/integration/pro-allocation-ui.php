@@ -15,7 +15,8 @@ try {
 	AllocationReviewPage::render();
 	$html = ob_get_clean();
 	foreach ( [ 'Bank allocation ledger', 'All allocation states', 'Filter allocations',
-		'No allocations match these filters', 'Ledger and audit views are read-only' ] as $phrase ) {
+		'No allocations match these filters', 'Ledger and audit views are read-only',
+		'wbm-pro-toolbar', 'role="search"', 'id="wbm-allocation-page-size"' ] as $phrase ) {
 		if ( ! str_contains( $html, $phrase ) ) throw new RuntimeException( 'Allocation list missing: ' . $phrase );
 	}
 	if ( ! str_contains( $html, 'data-wbm-finance-dialog' ) ) {

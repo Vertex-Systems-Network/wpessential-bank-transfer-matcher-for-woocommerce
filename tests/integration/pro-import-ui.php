@@ -32,12 +32,15 @@ try {
 	$job->process( $batch );
 	$_GET = array( 'page' => 'wpessential-wbm-pro-import-statements', 'batch' => $batch );
 	ob_start(); ImportStatementsPage::render(); $history = ob_get_clean();
-	if ( ! str_contains( $history, '#' . $batch ) || ! str_contains( $history, 'Completed' ) || ! str_contains( $history, '1 valid' ) ) throw new RuntimeException( 'Persisted import result is missing.' );
+	if ( ! str_contains( $history, '#' . $batch ) || ! str_contains( $history, 'Completed' ) || ! str_contains( $history, '1 valid' ) || ! str_contains( $history, 'wbm-pro-table-scroll' ) || ! str_contains( $history, 'Statement import history' ) ) throw new RuntimeException( 'Persisted import history lost bounded responsive table or provenance.' );
 	$_GET = array( 'page' => 'wpessential-wbm-pro-bank-transactions', 'batch' => $batch );
 	ob_start(); BankTransactionsPage::render(); $transactions = ob_get_clean();
 	if ( ! str_contains( $transactions, '25.00 USD' ) && ! str_contains( $transactions, '2500 USD' ) ) throw new RuntimeException( 'Imported amount is missing.' );
 	if ( str_contains( $transactions, 'PRIVATE-REFERENCE' ) || ! str_contains( $transactions, 'PR' ) ) throw new RuntimeException( 'Transaction reference was not masked.' );
 	if ( ! str_contains( $transactions, 'unverified' ) ) throw new RuntimeException( 'Unverified evidence warning is missing.' );
+	foreach ( [ 'wbm-pro-table-scroll', 'tabindex="0"', 'role="region"', 'id="wbm-bank-page-size"', 'wbm-pro-toolbar' ] as $token ) {
+		if ( ! str_contains( $transactions, $token ) ) throw new RuntimeException( 'Native bank transaction UI missing responsive/accessible control: ' . $token );
+	}
 	echo "PASS import UI first-run, persisted history, progress result and masked transaction evidence\n";
 } finally {
 	$_GET = array();

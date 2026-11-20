@@ -16,7 +16,7 @@ $_GET = [ 'page' => 'wpessential-wbm-pro-review-queue' ];
 ob_start();
 ReviewQueuePage::render();
 $queue = ob_get_clean();
-foreach ( [ 'Bank review queue', 'unverified', 'Open workspace', 'reopened', 'critical' ] as $needle ) {
+foreach ( [ 'Bank review queue', 'unverified', 'Open workspace', 'reopened', 'critical', 'wbm-pro-table-scroll', 'role="region"', 'id="wbm-filter-status"', 'id="wbm-filter-assignee"', 'id="wbm-review-page-size"' ] as $needle ) {
 	if ( ! str_contains( $queue, $needle ) ) throw new RuntimeException( "Review queue is missing $needle." );
 }
 
@@ -24,7 +24,7 @@ $_GET = [ 'page' => 'wpessential-wbm-pro-review-queue', 'case_id' => (string) $c
 ob_start();
 ReviewQueuePage::render();
 $workspace = ob_get_clean();
-foreach ( [ 'Bank evidence', 'Order comparison', 'Decision context', 'Comments', 'Audit history', 'Reviewer actions', 'Update state', 'Add comment' ] as $needle ) {
+foreach ( [ 'Bank evidence', 'Order comparison', 'Decision context', 'Comments', 'Audit history', 'Reviewer actions', 'Update state', 'Add comment', 'wbm-review-grid', 'wbm-review-card' ] as $needle ) {
 	if ( ! str_contains( $workspace, $needle ) ) throw new RuntimeException( "Review workspace is missing $needle." );
 }
 
@@ -32,6 +32,6 @@ $_GET = [ 'page' => 'wpessential-wbm-pro-review-queue', 'status' => 'resolved' ]
 ob_start();
 ReviewQueuePage::render();
 $empty = ob_get_clean();
-if ( ! str_contains( $empty, 'No review cases match these filters.' ) ) throw new RuntimeException( 'Review queue empty state is missing.' );
+if ( ! str_contains( $empty, 'No review cases match these filters.' ) || ! str_contains( $empty, 'role="status"' ) ) throw new RuntimeException( 'Review queue empty state is missing.' );
 
 echo "PASS review queue, filters, empty state and evidence workspace UI\n";

@@ -25,7 +25,7 @@ try {
 	$columns = $wpdb->get_col( "SHOW COLUMNS FROM `{$wpdb->prefix}wbm_pro_bank_accounts`" );
 	foreach ( [ 'account_number', 'iban', 'bic', 'routing_number' ] as $forbidden ) if ( in_array( $forbidden, $columns, true ) ) throw new RuntimeException( 'Sensitive bank identifier column exists: ' . $forbidden );
 	ob_start(); BankAccountsPage::render(); $admin_html = ob_get_clean();
-	if ( ! str_contains( $admin_html, '•••• A123' ) || ! str_contains( $admin_html, 'wbm_pro_save_bank_account' ) || str_contains( $admin_html, 'FULL-ACCOUNT' ) ) throw new RuntimeException( 'Administrator UI did not mask or scope bank metadata correctly.' );
+	if ( ! str_contains( $admin_html, '•••• A123' ) || ! str_contains( $admin_html, 'wbm_pro_save_bank_account' ) || ! str_contains( $admin_html, 'Bank account metadata' ) || ! str_contains( $admin_html, 'wbm-pro-table-scroll' ) || str_contains( $admin_html, 'FULL-ACCOUNT' ) ) throw new RuntimeException( 'Administrator UI did not mask or scope bank metadata correctly.' );
 
 	wp_set_current_user( $manager->ID );
 	if ( ! current_user_can( Capabilities::IMPORT ) || current_user_can( Capabilities::MANAGE_ACCOUNTS ) ) throw new RuntimeException( 'Shop manager Pro capability boundary is incorrect.' );

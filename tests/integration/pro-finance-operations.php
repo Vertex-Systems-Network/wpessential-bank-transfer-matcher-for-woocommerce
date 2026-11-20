@@ -151,6 +151,7 @@ try {
 	FinanceOperationsPage::render();
 	$html = ob_get_clean();
 	if ( ! str_contains( $html, 'Bank operations diagnostics' ) ||
+		! str_contains( $html, 'wbm-pro-table-scroll' ) ||
 		! str_contains( $html, 'Redacted support diagnostics' ) ||
 		! str_contains( $html, 'name="action" value="wbm_pro_ops_diagnostics_export"' ) ||
 		! str_contains( $html, 'name="action" value="wbm_pro_ops_recovery"' ) ||
