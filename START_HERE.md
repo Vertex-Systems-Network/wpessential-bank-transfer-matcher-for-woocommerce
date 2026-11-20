@@ -2,11 +2,11 @@
 
 Build independent Free and Pro WooCommerce plugins for local bank transfer reconciliation. Resume from `.ai/state.json`, `.ai/next-task.json`, and `BACKLOG.md`; the master prompt's Section 23 defines completion.
 
-## P7 merged, P8-T001 verified, P8-T002 active — 2026-11-20
+## P7 merged; P8-T001/T002 verified; P8-T003 active — 2026-11-21
 
-P7 corrective PR #14 **merged** into main at `4aa10da38e73ac5effc27280efbc05ccd719fb8d`. Exact pre-merge head `c5d9c6d8` passed all five Foundation/MariaDB/Playground and genuine LTR/Arabic RTL browser checks. P8 separate security branch: `development/p8-threat-model-access-matrix-20261120` and draft [PR #15](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/15).
+P7 corrective PR #14 merged at `4aa10da38e73ac5effc27280efbc05ccd719fb8d`. P8 draft [PR #15](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/15) lives on `development/p8-threat-model-access-matrix-20261120`. T001 role security verified via native WP/WC/MariaDB at `cb6f22d7`, 9 synthetic personas × 10 real REST route gates = 100 probes and 24 admin-post registration checks. **T002 private source/receipt verified** exact source `bafae85c`: Foundation/Playground/native MariaDB Actions 44719809919 + 44719800103 and LTR/Arabic RTL/HTTP browser 44719800023 all SUCCESS. Real 6 no-leak source/nonce HTTP probes; native permission/nonce/expiry/outside-webroot CSV integrity checks. Evidence `docs/security/p8-t002-private-receipt-statement-audit.md`; browser artifact 14621347905.
 
-**P8-T001 done:** nine synthetic WordPress capability profiles × ten registered REST routes, 100 role/GET probes, 24 private/guest admin hook checks, reviewer-only verified-claim denial. Actual native WP/WC/MariaDB and Playground GitHub Actions **44717249254 SUCCESS**, exact code `cb6f22d77ec1df5a053f15b4815ab9e729086a13`. Threat model: `docs/security/threat-model.md`. **P8-T002 active:** private attachment/statement authorization, outside-webroot file staging and negative HTTP validation. P8 phase not merged, issue #7 still open; P9 release work pending. No real financial transfers, external merchant data or publication. Formal WCAG and full Arabic plugin localization not certified.
+**T003 in progress**: SQL/XSS/CSRF/XXE/CSV formula adversarial regression; P8 T004–T009 and P9 remain not verified. Do not merge P8 PR #15, publish, move live funds, or claim accessibility/security certification. Master Issue #7 remains open.
 
 ## Historical checkpoint — 2026-11-20
 
