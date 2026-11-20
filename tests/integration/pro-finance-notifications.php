@@ -43,6 +43,10 @@ try {
 		'enabled_types' => [ 'pending_review_digest' ],
 		'recipient_ids' => [ $admin->ID ],
 	], $admin->ID, 'forged-nonce' ), 'forged settings request' );
+	$reject( static fn () => $service->save( [
+		'enabled_types' => [ 'pending_review_digest' ],
+		'recipient_ids' => [ 999999999 ],
+	], $admin->ID, $nonce ), 'nonexistent and non-finance recipient ID' );
 	$preferences = $service->save( [
 		'enabled_types' => [ 'pending_review_digest', 'reminder_digest' ],
 		'recipient_ids' => [ $admin->ID ],
@@ -56,6 +60,8 @@ try {
 		count( $captured ) !== 0 ) {
 		throw new RuntimeException( 'Preview unexpectedly sent a finance message.' );
 	}
+	$reject( static fn () => $service->send_test( 'exception_digest', $admin->ID, $test_nonce ),
+		'send disabled notification template' );
 	$first = $service->send_test( 'pending_review_digest', $admin->ID, $test_nonce );
 	if ( $first['sent'] !== 1 || count( $captured ) !== 1 ) {
 		throw new RuntimeException( 'Explicit, authorized test email was not delivered to the mail intercept.' );
