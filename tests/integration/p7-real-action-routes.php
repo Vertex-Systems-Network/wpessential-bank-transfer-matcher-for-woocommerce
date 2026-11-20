@@ -91,20 +91,59 @@ try {
 			throw new RuntimeException( 'REST route has no valid method, role callback or matching parser: ' . $route );
 		}
 	}
-	// Denial-only anonymous dispatch, with nonexistent synthetic IDs. If a
-	// route accidentally becomes public, reject before any apparent success.
-	// NO authorized money mutation is dispatched by this audit.
+	// WordPress may validate a missing required POST field before running
+	// permission callbacks and return 400. Test the *actual registered*
+	// permission callbacks directly, without ever dispatching a money
+	// operation or confusing invalid input with legitimate authorization.
 	wp_set_current_user( 0 );
 	foreach ( $manifest['rest'] as $spec ) {
-		$request = new WP_REST_Request( $spec['method'], $spec['anonymous_probe'] );
-		$result = rest_do_request( $request );
-		$status = $result->get_status();
-		if ( ! in_array( $status, [ 401, 403 ], true ) ) {
-			throw new RuntimeException( 'REST operation is public or lacks permission enforcement: ' .
-				$spec['route'] . ' (HTTP ' . $status . ')' );
+		$registered = $routes[$spec['route']];
+		$checked = false;
+		foreach ( $registered as $entry ) {
+			if ( ! is_array( $entry ) ||
+				! is_callable( $entry['permission_callback'] ?? null ) ||
+				! isset( $entry['methods'] ) ) continue;
+			$methods = $entry['methods'];
+			$allows = is_array( $methods )
+				? ! empty( $methods[$spec['method']] )
+				: ( is_string( $methods ) &&
+					in_array( $spec['method'], explode( ',', $methods ), true ) );
+			if ( ! $allows ) continue;
+			$request = new WP_REST_Request(
+				$spec['method'], $spec['anonymous_probe']
+			);
+			$permission = call_user_func(
+				$entry['permission_callback'], $request
+			);
+			if ( ! is_wp_error( $permission ) ) {
+				throw new RuntimeException(
+					'Registered REST permission callback did not explicitly reject anonymous user: ' .
+					$spec['route']
+				);
+			}
+			$data = $permission->get_error_data();
+			$status = is_array( $data ) ? (int) ( $data['status'] ?? 0 ) : (int) $data;
+			if ( ! in_array( $status, [ 401, 403 ], true ) ) {
+				throw new RuntimeException(
+					'Anonymous registered REST denial lacks 401/403 status: ' .
+					$spec['route']
+				);
+			}
+			$checked = true;
+		}
+		if ( ! $checked ) {
+			throw new RuntimeException( 'No registered REST anonymous role test executed for: ' . $spec['route'] );
 		}
 	}
-	echo "PASS live WordPress 24 admin hooks (only 1 guarded customer guest claim), 10 exact REST methods/required fields, authenticated permission callbacks and all anonymous REST denials\n";
+	// For a GET route with no required body fields, also exercise real
+	// WordPress REST dispatch to prove end-to-end anonymous denial.
+	$public_read = rest_do_request( new WP_REST_Request(
+		'GET', '/wpessential-wbm/v1/capabilities'
+	) );
+	if ( ! in_array( $public_read->get_status(), [ 401, 403 ], true ) ) {
+		throw new RuntimeException( 'Capabilities endpoint bypassed WordPress REST anonymous denial.' );
+	}
+	echo "PASS live WordPress 24 admin hooks (only 1 guarded customer guest claim), 10 exact REST methods/required fields, authenticated permission callbacks and all registered anonymous permission denials\n";
 } finally {
 	wp_set_current_user( $original_user );
 }
