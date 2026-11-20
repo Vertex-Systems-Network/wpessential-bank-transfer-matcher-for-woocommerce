@@ -307,7 +307,8 @@ body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro
   inline-size: 100%;
 }
 body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-pagination:empty {
-  display: none;
+  margin-block: 0;
+  min-block-size: 0;
 }
 @media (max-width: 782px) {
   body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro-field {
