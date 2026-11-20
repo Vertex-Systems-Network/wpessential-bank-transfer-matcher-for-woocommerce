@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P8-T009",
-  "phase": "P8",
-  "title": "fix security, correctness, reliability and performance defects to gate.",
-  "owner": "Security and QA",
-  "paths": "docs/security/; plugins/",
+  "id": "WBM-P9-T001",
+  "phase": "P9",
+  "title": "generate WordPress.org `readme.txt` + Free/Pro `README.md` from canonical metadata; run documentation drift and readme validator checks (Section 16D).",
+  "owner": "Release engineering",
+  "paths": "docs/release/; scripts/",
   "depends_on": [
-    "WBM-P8-T008"
+    "WBM-P8-T009"
   ],
-  "verification": "VERIFY-P8-T009",
+  "verification": "VERIFY-P9-T001",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Perform final source-backed risk/defect review against P8 threat model and verified tasks, inspect CSV/XML/untrusted headers, import state/checkpoints, receipt/privacy/capability/nonce paths and Woo payment guard. Add adversarial native negative regressions for any discovered fail-open/correctness issues, fix confirmed defects with exact-head CI (all Foundation/MariaDB/Playground, real Chromium, 4-cell matrix, 1k/10k/50k benchmark, HPOS/classic WC upgrade). Document explicit residual risks, zero unresolved known critical/high release blockers if justified; do not claim external penetration or marketplace compliance. Only then mark P8 complete and merge its phase PR if actual branch reviews/protection/required checks permit."
+  "next_action": "FIRST verify final P8 T009 task/evidence HEAD succeeds on ALL 12 configured exact-head GitHub checks and PR #15 has no unresolved reviews/protection conflicts; then mark ready and merge verified P8 phase PR into main with expected SHA per owner-authorized .ai/phase-merge-policy.md. Verify main commit/merged status. Create dedicated P9 release engineering branch and only then start true P9-T001: canonically generate WordPress.org readme.txt and separate Free/Pro READMEs, run docs drift/readme validator on actual source; record exact-head CI. No plugin publication."
 }
