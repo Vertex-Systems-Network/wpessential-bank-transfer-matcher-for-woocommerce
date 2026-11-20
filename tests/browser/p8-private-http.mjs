@@ -43,7 +43,10 @@ try {
     // and MIME type; never accept a CSV/XML/octet-stream response.
     const privateBytesExposed = body.includes('SYNTHETIC-CREDIT') ||
       body.includes('CI-P7-001') ||
-      (kind === 'private_statement' && /text\\/csv|application\\/(?:octet-stream|xml)/.test(contentType)) ||
+      (kind === 'private_statement' && (
+        contentType.includes('text/csv') ||
+        contentType.includes('application/octet-stream') ||
+        contentType.includes('application/xml'))) ||
       (kind === 'private_receipt' && status === 200);
     if (privateBytesExposed) {
       report.issues.push({ type: 'anonymous_public_file', status,
