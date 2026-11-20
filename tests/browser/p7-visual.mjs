@@ -163,12 +163,29 @@ try {
           // of a wide ledger. Restore the logical start before taking the
           // visual baseline; otherwise the screenshot appears to clip the
           // first columns even though the real table is horizontally scrollable.
-          await region.evaluate(node => { node.scrollLeft = 0; });
-          const restored = await region.evaluate(node => Math.abs(node.scrollLeft) < 1);
-          if (!restored) {
-            throw new Error('Unable to restore initial ledger scroll after keyboard QA');
+          const restored = await region.evaluate(node => {
+            // Scroll coordinates differ between RTL browser engines. Rather
+            // than assume scrollLeft===0, expose the actual first table
+            // column after the focus-to-Tab probe and measure visibility.
+            if (document.activeElement instanceof HTMLElement) {
+              document.activeElement.blur();
+            }
+            const first = node.querySelector('thead th:first-child');
+            if (!first) return { visible: false, reason: 'missing-first-header' };
+            first.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'start' });
+            const viewport = node.getBoundingClientRect();
+            const box = first.getBoundingClientRect();
+            const overlap = Math.max(0,
+              Math.min(viewport.right, box.right) - Math.max(viewport.left, box.left));
+            const fraction = box.width > 0 ? overlap / box.width : 0;
+            return { visible: fraction >= 0.85, fraction,
+              scrollLeft: node.scrollLeft, direction: getComputedStyle(node).direction };
+          });
+          if (!restored.visible) {
+            throw new Error('First ledger column still clipped after keyboard QA: ' +
+              JSON.stringify(restored));
           }
-          entry.table_scroll_restored_for_screenshot = true;
+          entry.table_first_column_visible_for_screenshot = true;
         }
         const filename = mode + '-' + spec.ui + '-' + spec.key + '-' + size.width + '.png';
         await page.screenshot({ path: join(output, filename), fullPage: true,
