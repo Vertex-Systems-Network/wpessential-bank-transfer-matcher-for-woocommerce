@@ -44,3 +44,34 @@ with TemporaryDirectory(prefix='wbm-docs-') as temp:
     future.pop('evidence', None)
     assert_rejected(catalog, json.dumps(features), 'Missing verified evidence')
     print('PASS generated-file drift, plugin header drift, and unverified feature promotion rejected')
+
+    # The structural validator must also reject source-mismatched readme
+    # content, not just the generator's equality comparison.
+    def assert_offline_rejected(copy_with_defect: str, expected: str) -> None:
+        readme.write_text(copy_with_defect)
+        result = subprocess.run(
+            ['python3', 'scripts/validate-wporg-readme.py'],
+            cwd=fixture, capture_output=True, text=True,
+        )
+        readme.write_text(copy)
+        if result.returncode == 0 or expected not in result.stderr:
+            raise AssertionError(result.stderr or f'Expected structural rejection: {expected}')
+
+    assert_offline_rejected(
+        copy.replace('Stable tag: 0.1.0', 'Stable tag: 9.9.9'),
+        'Stable tag'
+    )
+    assert_offline_rejected(
+        copy.replace('== Changelog ==', '== Release notes =='),
+        'Missing readme section'
+    )
+    assert_offline_rejected(
+        copy.replace('== Installation ==',
+                     '- Import and validate bank statement rows.\n\n== Installation =='),
+        'unverified or Pro-only feature'
+    )
+    assert_offline_rejected(
+        copy.replace('Tags: woocommerce, ', 'Tags: woocommerce, woocommerce, ', 1),
+        'Tags'
+    )
+    print('PASS offline WordPress readme tag, verified Free scope, stable tag and section mutation denials')

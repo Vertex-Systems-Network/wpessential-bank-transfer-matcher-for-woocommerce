@@ -23,7 +23,8 @@ jobs:
         run: python3 scripts/check-project-state.py
       - name: Verify generated documentation
         run: |
-          node scripts/generate-readmes.ts --check
+          npm run docs:check
+          npm run docs:readme-validate
           python3 tests/docs_generation.py
       - name: Validate and build independent Composer packages
         run: |
