@@ -112,7 +112,8 @@
     "p8_checkout_matrix": "PASSED at exact SHA ce5d78392d8b0f0cd8042aa4a55e4b45ce3bf50a: 9/9 checks green in native/Playground runs 44829621364/44829632822, Chromium 44829621375 artifact 14673854609, matrix 44829621415 PHP8.3+8.4 × WC10.8.0+11.3.0. Actual classic guest UI and Store API BACS two on-hold/unpaid orders, separate references/claim forms. Block frontend rendered; Block Pay button not clicked. No production payment.",
     "p8_import_benchmarks": "PASSED at exact d0b5143ed64bb66eaf86779fa651358961b08481: 10/10 GHA checks green; 44831039401 real benchmark artifact 14675449713, 1k 398.02ms, 10k 3670ms, 50k rejected pre-staging 21.21ms, PHP allocated peak 133.81MiB. SQL confirms unchanged rows/jobs/batches for 50k. Foundations 44831039373/44831053993, WC/PHP matrix 44831039366, Chromium 44831039387 all success. Not process RSS/production SLA.",
     "p8_upgrade_coexistence": "VERIFIED code 680602d833018fda5ebfaaa62bd0f1c95e1bb355: all 12 GitHub checks success, actual real HPOS+classic Woo 10.8.0->11.3.0 upgrade and Free+Pro dependency/reinstall with synthetic companion, ref/claim/bank rows intact; upgrade 44832609979, Foundation/native 44832609976+44832619094, browser 44832609830, PHP/WC matrix 44832609858, benchmark 44832610042. No production upgrade certification.",
-    "p8_final_security_closure": "CODE ACCEPTANCE PASS exact 11c19383bc2f61091be742939415c1437326514b: 12/12 GitHub check runs all success; genuine WP/WC/MariaDB six invalid CSV headers fail before private stage/queued action and real UTF-8 BOM one-row import succeeds; all T001–T008 existing security/checkout/upgrade/benchmark matrix green. Final T009 docs/state head requires new exact-head CI before merging phase PR. No independent pen certification."
+    "p8_final_security_closure": "CODE ACCEPTANCE PASS exact 11c19383bc2f61091be742939415c1437326514b: 12/12 GitHub check runs all success; genuine WP/WC/MariaDB six invalid CSV headers fail before private stage/queued action and real UTF-8 BOM one-row import succeeds; all T001–T008 existing security/checkout/upgrade/benchmark matrix green. Final T009 docs/state head requires new exact-head CI before merging phase PR. No independent pen certification.",
+    "p9_canonical_readmes": "SUCCESS exact P9 source SHA 4ebc305311d7ad1b104df9fecca01e5eb41be6cb, 12/12 Green: real Foundation/docs mutation/Playground and native MariaDB 44836580709/44836589937, Chromium LTR/RTL 44836580825, 4 WC/PHP cells 44836580630, in-place WC dual HPOS/classic 44836580786, 1k/10k/50k benchmark 44836580725. Official online WP.org readme validator NOT VERIFIED; no contributors invented."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -126,8 +127,8 @@
     "free_is_independent"
   ],
   "phase": "P9",
-  "active_task_id": "WBM-P9-T001",
-  "next_action": "Implement source-driven Free WordPress.org readme and separate Free/Pro READMEs under P9, enforce offline WordPress readme grammar, verified feature-only copy, tested version/header/stable-tag alignment and docs drift via real CI. Record independent official online validator only if actually accessible, and do not fabricate contributor usernames, screenshots or release authorization. Then accept P9-T001 at exact-head CI.",
+  "active_task_id": "WBM-P9-T002",
+  "next_action": "Prepare accurate WooCommerce Marketplace Pro reviewer/evidence package: inspect Section16C official current marketplace/QIT requirements and actual repository runtime, document verified Free+Pro dependency/HPos/Classic checkout and BACS evidence, install/license/API/UX/fallback flows and freemium two-submission compliance, prepare honest QIT matrix with real run status. Add source-backed docs consistency tests; never claim partner account, managed QIT, license service, listings or seller approvals exist. Separate actual QIT run P9-T010. Do not submit or publish.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -217,8 +218,9 @@
     "WBM-P8-T006",
     "WBM-P8-T007",
     "WBM-P8-T008",
-    "WBM-P8-T009"
+    "WBM-P8-T009",
+    "WBM-P9-T001"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "320911c79a0557cb883d17c11ab6a564fade63df"
+  "last_verified_remote_milestone": "4ebc305311d7ad1b104df9fecca01e5eb41be6cb"
 }

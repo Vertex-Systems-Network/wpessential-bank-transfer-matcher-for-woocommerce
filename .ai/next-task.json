@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P9-T001",
+  "id": "WBM-P9-T002",
   "phase": "P9",
-  "title": "generate WordPress.org `readme.txt` + Free/Pro `README.md` from canonical metadata; run documentation drift and readme validator checks (Section 16D).",
+  "title": "complete WooCommerce Marketplace Pro submission evidence, QIT test matrix, reviewer instructions, business/UX compliance, install/license/API docs and fallback behavior (Section 16C).",
   "owner": "Release engineering",
   "paths": "docs/release/; scripts/",
   "depends_on": [
-    "WBM-P8-T009"
+    "WBM-P9-T001"
   ],
-  "verification": "VERIFY-P9-T001",
+  "verification": "VERIFY-P9-T002",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Implement source-driven Free WordPress.org readme and separate Free/Pro READMEs under P9, enforce offline WordPress readme grammar, verified feature-only copy, tested version/header/stable-tag alignment and docs drift via real CI. Record independent official online validator only if actually accessible, and do not fabricate contributor usernames, screenshots or release authorization. Then accept P9-T001 at exact-head CI."
+  "next_action": "Prepare accurate WooCommerce Marketplace Pro reviewer/evidence package: inspect Section16C official current marketplace/QIT requirements and actual repository runtime, document verified Free+Pro dependency/HPos/Classic checkout and BACS evidence, install/license/API/UX/fallback flows and freemium two-submission compliance, prepare honest QIT matrix with real run status. Add source-backed docs consistency tests; never claim partner account, managed QIT, license service, listings or seller approvals exist. Separate actual QIT run P9-T010. Do not submit or publish."
 }
