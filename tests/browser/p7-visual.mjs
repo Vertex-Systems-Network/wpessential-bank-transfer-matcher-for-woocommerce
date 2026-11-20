@@ -37,7 +37,7 @@ const specs = [
   { ui: 'UI-009', key: 'pro-case-workspace', route: url('wpessential-wbm-pro-review-queue') + '&case_id=' + caseId, text: 'Bank evidence', admin: true },
   { ui: 'UI-010', key: 'pro-finance-allocations', route: url('wpessential-wbm-pro-allocations'), text: 'Bank allocation ledger', admin: true },
   { ui: 'UI-011', key: 'pro-finance-reports', route: url('wpessential-wbm-pro-finance-reports'), text: 'Finance reports', admin: true },
-  { ui: 'UI-012', key: 'free-audit-timeline', route: reconcile, text: 'Audit', admin: true },
+  { ui: 'UI-012', key: 'free-audit-timeline', route: reconcile, text: 'Recent reconciliation activity', admin: true },
   { ui: 'UI-013', key: 'free-settings', route: url('wpessential-bank-transfer-matcher') + '&wbm_view=settings', text: 'Settings', admin: true },
   { ui: 'UI-013', key: 'pro-mapping-profiles', route: url('wpessential-wbm-pro-mapping-profiles'), text: 'Statement mappings', admin: true },
   { ui: 'UI-013', key: 'pro-retention-settings', route: url('wpessential-wbm-pro-retention'), text: 'Bank data retention', admin: true },
@@ -69,7 +69,7 @@ try {
           throw new Error('WordPress returned HTTP ' + (response ? response.status() : 'none'));
         }
         const observed = await page.evaluate(() => ({
-          body: document.body?.innerText?.slice(0, 18000) ?? '',
+          body: (document.querySelector('#wpbody-content')?.innerText ?? document.body?.innerText ?? '').slice(0, 35000),
           direction: getComputedStyle(document.documentElement).direction,
           bodyRTL: document.body?.classList.contains('rtl') ?? false,
           htmlDir: document.documentElement.getAttribute('dir') || '',
