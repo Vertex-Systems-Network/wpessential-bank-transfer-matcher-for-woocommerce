@@ -1,9 +1,9 @@
 {
   "project": "WPEssential Bank Transfer Matcher for WooCommerce",
   "schema_version": 1,
-  "current_branch": "development/autonomous-release-track",
+  "current_branch": "development/p6-reports-operations-20261120",
   "last_verified_base_commit": "939b9c6c7ecd1882340af9dcd55fe932d4207251",
-  "last_checkpoint_utc": "2026-11-19",
+  "last_checkpoint_utc": "2026-11-20",
   "execution_status": "in_progress",
   "tests": {
     "php_unit": "not_run",
@@ -83,10 +83,18 @@
     "pro_cross_edition_races": "passed: GitHub Actions 44642819046 — Free manual writer blocked throughout Pro named source/order lock and no double credit",
     "pro_cross_process_split_races": "passed: GitHub Actions 44642819046 — atomic 2-recipient split reviewer, second recipient lock vs Free writer, independent paid completion with exact source conservation",
     "report_definitions": "passed: GitHub Actions 44643672874 and 44643662149 full foundation, Playground and native, canonical strict finance report scope/exact per-currency totals",
-    "report_queries_initial": "pending: native scoped allocation and import batch read-only queries",
-    "order_funding_reports": "pending: native WooCommerce CRUD classic+HPOS outstanding BACS/partial exact-money, account and cursor scoping",
-    "unmatched_credit_reports": "pending: native unmatched vs ambiguous completed imported bank source, exact-money totals, duplicate fingerprint and allocated exclusion",
-    "exception_aging_reports": "pending: native 3-source exception ledger aging, UTC dates, virtual-id cursor, counts not bank funds"
+    "report_queries_initial": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit.",
+    "order_funding_reports": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit.",
+    "unmatched_credit_reports": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit.",
+    "exception_aging_reports": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit.",
+    "report_csv_exports": "passed: full exact-code SHA 13bbbee GitHub Actions 44653642849; safe six-report CSV, finance-only POST/nonce, whitelist+formula neutralization, 3/minute audit",
+    "queued_finance_export": "passed: full GitHub Actions 44653642849; native 106 synthetic batches across 100-row pages, private actor-only status/download, 2-job/3-start quotas, same audit download throttle, expiry, cancellation and fail-closed checks; per-job lock/monotonic cursor",
+    "finance_notifications": "passed: native MariaDB + Playground + PHP/static/unit full GitHub Actions 44656913883 and 44656906701 at exact SHA 6318c3e. Synthetic pre_wp_mail intercept, no real messages; opt-in, nonce, capability selection, 2/24h quota, delivery audit, opt-out, template privacy verified.",
+    "finance_dashboard": "passed: exact SHA 93b1a3a full GitHub Actions 44658437248 and 44658430001, PHP/static/unit + native WordPress/WooCommerce MariaDB classic HPOS + Playground. 21 USD/1 EUR synthetic batches, page/cursor, finance auth and safe rendering, source-backed KPIs only.",
+    "finance_operations": "passed: exact T006 SHA 9e0c9befd162dd5f18ecf4f476ed1cbd236e1953 full GitHub Actions 44661739149 and 44661731639; native source-hash guarded import retry, owner-bound fresh export requeue, nonce/dedup/anon defense, audited redacted diagnostics 3/hour, pure CSV privacy/formula fixture and Playground.",
+    "finance_retention": "passed: exact T007 source SHA 3ca9a4914a0f9ad665e08aedb6c5e761ede9afe9 full GitHub Actions 44663096422 and 44663089250; synthetic private source age+hash cleanup with consent, 2h export CSV wipe, bounded metadata audit, default OFF, schema rights, periodic opt-out, Backup ADR-0018.",
+    "p6_docs": "passed: complete GitHub Actions 44663971319 and 44663964390 exact b2311ce6ffbf1ca5a3bbfbe4699245193c8b27cf; docs guide, incident runbooks, phase acceptance and docs-content regression, native finance/security+Playground. Final phase-state commit itself requires new exact SHA CI.",
+    "p6_phase_gate": "P6-T001–T008 all completed with exact intermediate source SHA CI. Final phase head after task/state update must pass BOTH full CI checks before phase merge. Branch protection may only be enforced by GitHub; no reviews currently submitted."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -99,9 +107,9 @@
     "allocations_are_idempotent",
     "free_is_independent"
   ],
-  "phase": "P6",
-  "active_task_id": "WBM-P6-T002",
-  "next_action": "Verify all P6-T002 report sources in native+Playground CI: WooCommerce BACS outstanding/partial, imported unmatched/ambiguous, exception aging, allocation audit and import summaries. Then mark P6-T002 done only if complete CI green.",
+  "phase": "P7",
+  "active_task_id": "WBM-P7-T001",
+  "next_action": "On dedicated P7 branch AFTER P6 phase PR merge, audit documented screen schema UI-001–UI-014 against actual current WordPress Free/Pro admin components and route fields; enumerate missing screens/states, WC classic+HPOS and accessibility/RTL requirements without fabricating screenshots.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -167,8 +175,15 @@
     "WBM-P5-T009",
     "WBM-P5-T010",
     "WBM-P5-T011",
-    "WBM-P6-T001"
+    "WBM-P6-T001",
+    "WBM-P6-T002",
+    "WBM-P6-T003",
+    "WBM-P6-T004",
+    "WBM-P6-T005",
+    "WBM-P6-T006",
+    "WBM-P6-T007",
+    "WBM-P6-T008"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"
+  "last_verified_remote_milestone": "b2311ce6ffbf1ca5a3bbfbe4699245193c8b27cf"
 }

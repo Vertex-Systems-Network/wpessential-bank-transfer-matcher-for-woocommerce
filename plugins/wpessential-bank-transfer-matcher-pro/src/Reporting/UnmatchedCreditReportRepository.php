@@ -64,17 +64,20 @@ final class UnmatchedCreditReportRepository {
 			if ( '' !== $row['error_code'] ) continue;
 			$entry = json_decode( (string) $row['canonical_json'], true );
 			if ( ! is_array( $entry ) ||
-				! is_int( $entry['amount_minor'] ?? null ) || $entry['amount_minor'] < 1 ||
+				! is_int( $entry['amount_minor'] ?? null ) || 0 === $entry['amount_minor'] ||
 				! is_int( $entry['exponent'] ?? null ) ||
 				$entry['exponent'] < 0 || $entry['exponent'] > 3 ||
 				! is_string( $entry['currency'] ?? null ) ||
 				1 !== preg_match( '/\A[A-Z]{3}\z/', $entry['currency'] ) ||
 				! is_string( $entry['posted_date'] ?? null ) ||
 				1 !== preg_match( '/\A\d{4}-\d{2}-\d{2}\z/', $entry['posted_date'] ) ||
-				! is_string( $entry['reference'] ?? null ) || '' === trim( $entry['reference'] ) ||
+				! is_string( $entry['reference'] ?? null ) ||
 				1 !== preg_match( '/\A[a-f0-9]{64}\z/', (string) $row['identity_fingerprint'] ) ) {
 				throw new InvalidArgumentException( 'Unparseable imported money is not reportable as credit.' );
 			}
+			// Imported bank statements can contain valid outgoing debits. They
+			// are not incoming credits and must not abort this report.
+			if ( $entry['amount_minor'] < 0 ) continue;
 			$date = DateTimeImmutable::createFromFormat(
 				'!Y-m-d', $entry['posted_date'], new DateTimeZone( 'UTC' )
 			);
@@ -109,7 +112,8 @@ final class UnmatchedCreditReportRepository {
 				$account, $row['identity_fingerprint']
 			) );
 			$this->check_db();
-			$ambiguous = 1 !== $duplicates || '' !== $row['warning_code'] ||
+			$ambiguous = '' === trim( $entry['reference'] ) ||
+				1 !== $duplicates || '' !== $row['warning_code'] ||
 				'active' !== $row['account_status'] ||
 				$entry['currency'] !== $row['account_currency'] ||
 				$entry['currency'] !== $row['batch_currency'];

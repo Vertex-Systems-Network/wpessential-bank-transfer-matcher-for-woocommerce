@@ -28,7 +28,7 @@ $batches = new ImportBatchRepository( $wpdb );
 $batch = $batches->create( $account, $profile,
 	hash( 'sha256', 'unmatched-report-' . wp_generate_uuid4() ), 100, $admin->ID );
 $batches->transition( $batch, 'pending', 'processing' );
-$batches->transition( $batch, 'processing', 'completed', 4 );
+$batches->transition( $batch, 'processing', 'completed', 6 );
 $rows = $wpdb->prefix . 'wbm_pro_import_rows';
 $ledger = $wpdb->prefix . 'wbm_pro_allocations';
 $source_ids = [];
@@ -40,6 +40,8 @@ try {
 		[ 'duplicate_a', 2100, '', $duplicate ],
 		[ 'duplicate_b', 2100, 'possible_duplicate', $duplicate ],
 		[ 'allocated', 3700, '', hash( 'sha256', 'allocated-source-' . $batch ) ],
+		[ 'missing_reference', 500, '', hash( 'sha256', 'no-ref-source-' . $batch ) ],
+		[ 'debit', -900, '', hash( 'sha256', 'outgoing-debit-' . $batch ) ],
 	] as $i => $item ) {
 		[ $tag, $minor, $warning, $hash ] = $item;
 		if ( 1 !== $wpdb->insert( $rows, [
@@ -47,7 +49,8 @@ try {
 			'canonical_json' => wp_json_encode( [
 				'posted_date' => gmdate( 'Y-m-d' ), 'amount_minor' => $minor,
 				'exponent' => 2, 'currency' => 'USD',
-				'reference' => 'SYN-' . $tag, 'transaction_id' => 'REPORT-' . $i,
+				'reference' => 'missing_reference' === $tag ? '' : 'SYN-' . $tag,
+				'transaction_id' => 'REPORT-' . $i,
 			] ),
 			'error_code' => '', 'warning_code' => $warning,
 			'identity_fingerprint' => $hash,
@@ -76,12 +79,21 @@ try {
 	$ambiguous = $reader->run( ReportDefinition::from_array( array_replace(
 		$scope, [ 'state' => 'ambiguous' ]
 	) ) );
-	if ( count( $all['rows'] ) !== 3 || count( $clean['rows'] ) !== 1 ||
+	if ( count( $all['rows'] ) !== 4 || count( $clean['rows'] ) !== 1 ||
 		$clean['rows'][0]['amount_minor'] !== 1900 ||
-		count( $ambiguous['rows'] ) !== 2 ||
-		$ambiguous['page_totals']['USD/2/ambiguous']['amount_minor'] !== 4200 ||
+		count( $ambiguous['rows'] ) !== 3 ||
+		$ambiguous['page_totals']['USD/2/ambiguous']['amount_minor'] !== 4700 ||
 		$all['payment_authorized'] || $all['ledger_mutated'] ) {
 		throw new RuntimeException( 'Bank report mixed duplicate, allocated, unreviewed or cleared credits.' );
+	}
+ 	if ( in_array( $source_ids['debit'], array_column( $all['rows'], 'source_id' ), true ) ) {
+		throw new RuntimeException( 'Outgoing bank debit was reported as an unmatched credit.' );
+	}
+	$missing_ref = array_values( array_filter( $all['rows'],
+		static fn ( array $item ): bool => $item['source_id'] === $source_ids['missing_reference']
+	) );
+	if ( count( $missing_ref ) !== 1 || $missing_ref[0]['state'] !== 'ambiguous' ) {
+		throw new RuntimeException( 'Missing-reference bank credit was not held as ambiguous.' );
 	}
 	foreach ( $all['rows'] as $row ) {
 		if ( isset( $row['reference'] ) || isset( $row['account_number'] ) ||

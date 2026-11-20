@@ -64,6 +64,21 @@ try {
 	$reader = new ReportQueryRepository( $wpdb );
 	$scope = [ 'report' => 'outstanding_orders', 'from' => gmdate( 'Y-m-d' ),
 		'to' => gmdate( 'Y-m-d' ), 'currency' => 'USD', 'bank_account_id' => $usd ];
+	$report_queries_seen = 0;
+	$report_query_guard = static function ( array $args ) use ( &$report_queries_seen, $scope ): array {
+		if ( ( $args['status'] ?? null ) !== [ 'pending', 'on-hold' ] ) return $args;
+		++$report_queries_seen;
+		// This filter fires on WooCommerce order queries under classic and HPOS.
+		// The production scan bound must apply only after gateway/date pruning.
+		$start = strtotime( $scope['from'] . ' 00:00:00 UTC' );
+		$end = strtotime( $scope['to'] . ' 00:00:00 UTC' ) + DAY_IN_SECONDS - 1;
+		if ( ( $args['payment_method'] ?? null ) !== 'bacs' ||
+			( $args['date_created'] ?? null ) !== $start . '...' . $end ) {
+			throw new RuntimeException( 'BACS report scanned unrelated or outside-window orders.' );
+		}
+		return $args;
+	};
+	add_filter( 'woocommerce_order_query_args', $report_query_guard, 20 );
 	$full = $reader->run( ReportDefinition::from_array( $scope ) );
 	if ( count( $full['rows'] ) !== 2 ||
 		$full['page_totals']['USD/2/on-hold']['amount_minor'] !== 11000 ||
@@ -101,6 +116,9 @@ try {
 		$first['rows'][0]['id'] === $next['rows'][0]['id'] ) {
 		throw new RuntimeException( 'WooCommerce order report keyset pagination repeated financial orders.' );
 	}
+	if ( $report_queries_seen < 4 ) {
+		throw new RuntimeException( 'Expected scoped order queries were not intercepted.' );
+	}
 	foreach ( $orders as $order ) {
 		if ( wc_get_order( $order->get_id() )->is_paid() ) {
 			throw new RuntimeException( 'A read-only report changed a WooCommerce payment.' );
@@ -109,6 +127,7 @@ try {
 	echo "PASS native " . ( wc_get_container()->get( \Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled() ? 'HPOS' : 'classic' ) .
 		" BACS outstanding/partial funding, scoped account, exact money and safe pagination\n";
 } finally {
+	if ( isset( $report_query_guard ) ) remove_filter( 'woocommerce_order_query_args', $report_query_guard, 20 );
 	wp_set_current_user( $admin->ID );
 	foreach ( $orders as $order ) {
 		$wpdb->delete( $wpdb->prefix . 'wbm_manual_allocations',

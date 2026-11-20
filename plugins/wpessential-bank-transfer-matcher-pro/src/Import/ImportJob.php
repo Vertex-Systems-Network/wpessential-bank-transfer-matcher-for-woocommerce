@@ -40,7 +40,12 @@ final class ImportJob {
 			$batch = ( new ImportBatchRepository( $this->db ) )->create( $account_id, $profile, $hash, $size, $actor_id );
 			$result = $this->db->query( $this->db->prepare( "INSERT INTO `{$this->jobs_table()}` (batch_id, source_path, byte_offset, next_row, updated_at) VALUES (%d, %s, 0, 1, UTC_TIMESTAMP())", $batch, $destination ) );
 			if ( 1 !== $result ) throw new RuntimeException( 'Could not create import checkpoint.' );
-			as_enqueue_async_action( self::HOOK, array( $batch ), 'wpessential-wbm-import', true );
+			$first_action = as_enqueue_async_action(
+				self::HOOK, array( $batch ), 'wpessential-wbm-import', true
+			);
+			if ( ! is_int( $first_action ) || $first_action < 1 ) {
+				throw new RuntimeException( 'Could not queue the private statement import.' );
+			}
 			return $batch;
 		} catch ( \Throwable $error ) {
 			if ( isset( $batch ) ) ( new ImportBatchRepository( $this->db ) )->transition( $batch, 'pending', 'failed' );
@@ -101,7 +106,18 @@ final class ImportJob {
 				1 !== $this->db->query( $this->db->prepare( "UPDATE `{$this->db->prefix}wbm_pro_import_batches` SET status = %s, valid_count = %d, error_count = %d, warning_count = %d, updated_at = UTC_TIMESTAMP() WHERE id = %d AND status IN ('pending', 'processing')", $status, $valid, $errors, $warnings, $batch_id ) ) ) throw new RuntimeException( 'Could not checkpoint import progress.' );
 			if ( false === $this->db->query( 'COMMIT' ) ) throw new RuntimeException( 'Could not commit import chunk.' );
 			$committed = true;
-			if ( ! $finished ) as_enqueue_async_action( self::HOOK, array( $batch_id ), 'wpessential-wbm-import', true );
+			if ( ! $finished ) {
+				// Action Scheduler may still consider the current chunk pending;
+				// unique=true silently returns 0, leaving a partial import stuck.
+				// Row-checkpoint transactions, unique (batch,row) and status CAS
+				// make a duplicate callback safe.
+				$next_action = as_enqueue_async_action(
+					self::HOOK, array( $batch_id ), 'wpessential-wbm-import', false
+				);
+				if ( ! is_int( $next_action ) || $next_action < 1 ) {
+					throw new RuntimeException( 'Could not enqueue the next import chunk; manual recovery required.' );
+				}
+			}
 		} catch ( \Throwable $error ) {
 			if ( ! $committed ) $this->db->query( 'ROLLBACK' );
 			$this->db->query( $this->db->prepare( "UPDATE `{$this->db->prefix}wbm_pro_import_batches` SET status = 'failed', updated_at = UTC_TIMESTAMP() WHERE id = %d AND status IN ('pending', 'processing')", $batch_id ) );
@@ -116,7 +132,17 @@ final class ImportJob {
 		$job = $this->db->get_row( $this->db->prepare( "SELECT j.source_path, b.file_sha256, b.valid_count, b.error_count, b.warning_count FROM `{$this->jobs_table()}` j JOIN `{$this->db->prefix}wbm_pro_import_batches` b ON b.id = j.batch_id WHERE j.batch_id = %d AND b.status = 'failed'", $batch_id ), ARRAY_A );
 		if ( ! is_array( $job ) || ! is_file( $job['source_path'] ) || ! hash_equals( $job['file_sha256'], hash_file( 'sha256', $job['source_path'] ) ?: '' ) ) throw new RuntimeException( 'The failed import source is missing or changed.' );
 		( new ImportBatchRepository( $this->db ) )->transition( $batch_id, 'failed', 'processing', (int) $job['valid_count'], (int) $job['error_count'], (int) $job['warning_count'] );
-		as_enqueue_async_action( self::HOOK, array( $batch_id ), 'wpessential-wbm-import', true );
+		$retry_action = as_enqueue_async_action(
+			self::HOOK, array( $batch_id ), 'wpessential-wbm-import', false
+		);
+		if ( ! is_int( $retry_action ) || $retry_action < 1 ) {
+			( new ImportBatchRepository( $this->db ) )->transition(
+				$batch_id, 'processing', 'failed',
+				(int) $job['valid_count'], (int) $job['error_count'],
+				(int) $job['warning_count']
+			);
+			throw new RuntimeException( 'Could not enqueue a verified import retry.' );
+		}
 	}
 
 	/** Cancel a batch that has not completed and remove its private source file. */

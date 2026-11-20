@@ -15,8 +15,16 @@ use WPEssential\BankTransferMatcherPro\Admin\MappingProfilesPage;
 use WPEssential\BankTransferMatcherPro\Admin\ReviewQueuePage;
 use WPEssential\BankTransferMatcherPro\Admin\AllocationReviewPage;
 use WPEssential\BankTransferMatcherPro\Admin\AllocationAdminActions;
+use WPEssential\BankTransferMatcherPro\Admin\ReportExportsPage;
 use WPEssential\BankTransferMatcherPro\Api\ReviewCaseController;
 use WPEssential\BankTransferMatcherPro\Import\ImportJob;
+use WPEssential\BankTransferMatcherPro\Reporting\AsyncReportExportJob;
+use WPEssential\BankTransferMatcherPro\Notifications\FinanceNotificationService;
+use WPEssential\BankTransferMatcherPro\Admin\FinanceNotificationsPage;
+use WPEssential\BankTransferMatcherPro\Admin\FinanceDashboardPage;
+use WPEssential\BankTransferMatcherPro\Admin\FinanceOperationsPage;
+use WPEssential\BankTransferMatcherPro\Admin\FinanceRetentionPage;
+use WPEssential\BankTransferMatcherPro\Privacy\FinanceRetentionService;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -30,8 +38,16 @@ final class Plugin {
 		ReviewQueuePage::register();
 		AllocationReviewPage::register();
 		AllocationAdminActions::register();
+		ReportExportsPage::register();
 		ReviewCaseController::register();
 		ImportJob::register();
+		AsyncReportExportJob::register();
+		FinanceNotificationService::register();
+		FinanceNotificationsPage::register();
+		FinanceDashboardPage::register();
+		FinanceOperationsPage::register();
+		FinanceRetentionPage::register();
+		FinanceRetentionService::register();
 		do_action( 'wpessential_bank_transfer_matcher_pro_ready' );
 	}
 }

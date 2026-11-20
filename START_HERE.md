@@ -2,13 +2,14 @@
 
 Build independent Free and Pro WooCommerce plugins for local bank transfer reconciliation. Resume from `.ai/state.json`, `.ai/next-task.json`, and `BACKLOG.md`; the master prompt's Section 23 defines completion.
 
-## Current checkpoint — 2026-11-19
+## Current checkpoint — 2026-11-20
 
-Branch: `development/autonomous-release-track`  
-Base: `main` at `939b9c6c7ecd1882340af9dcd55fe932d4207251`  
-Active task: `WBM-P6-T002` — outstanding BACS, unmatched/partial bank credits, exception aging and import summaries (initial allocation/import native CI pending).
+Phase branch: `development/p6-reports-operations-20261120` (base `main`, carrying merged PR #10/#11 fixes).  
+Phase: **P7 — Complete UI/UX, Visual System, Responsiveness** (after P6 phase PR merges). Tasks P6-T002–T003 are verified via GitHub Actions 44647473663 and 44653642849. P6-T004 also verified at exact SHA 6318c3e by full GitHub Actions 44656913883 and 44656906701. P6-T005 passed full GitHub Actions 44658437248 and 44658430001 at SHA 93b1a3a. P6-T006 also fully passed at SHA 9e0c9be (GitHub Actions 44661739149 and 44661731639). P6-T007 fully passed at exact SHA 3ca9a491 with GitHub Actions 44663096422 and 44663089250. P6-T008 operating guide and incident runbooks passed full GitHub Actions 44663971319 and 44663964390 at b2311ce6. All **eight P6 tasks are verified**, but final P6 task/state commit requires fresh exact-HEAD CI before draft PR #12 is merged to main. Next task P7-T001 (on a dedicated P7 branch once phase PR is merged): audit UI-001–UI-014 schemas and real screen fields. Read `.ai/state.json` and `.ai/next-task.json` for the *live* task after every commit.
 
-This is an unmerged development branch. Continue through every unblocked task while the runner is active. Do not pause for a routine “start/continue?” prompt. Never claim background work after the runner ends. Do not merge, publish, submit WordPress.org/Woo Marketplace, or transmit financial data externally. Fixtures must be synthetic.
+**Owner-authorized phase merges:** Follow [`.ai/phase-merge-policy.md`](.ai/phase-merge-policy.md). Once **all** tasks and safety acceptance criteria of a phase pass against the exact current PR head SHA, merge that phase PR to `main` automatically without routine re-approval while the execution runner is active. Do not merge incomplete phases or bypass failing tests/branch protection. The authorization does not cover marketplace publication, release distribution, bank transfers, refunds or production deployment.
+
+Continue through every unblocked task while the runner is active. Do not pause for a routine “start/continue?” prompt or claim background work after the runner ends. All financial fixtures must be synthetic. Issue #7 stays open until Section 23 is fully verified.
 
 ## Plan integrity
 
