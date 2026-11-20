@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - development/p7-ui-ux-schemas-20261120
+      - development/p7-navigation-role-gates-20261120
   workflow_dispatch:
 
 permissions:
@@ -48,6 +49,9 @@ jobs:
           password="$(openssl rand -hex 24)"
           echo "::add-mask::$password"
           echo "P7_BROWSER_ADMIN_PASSWORD=$password" >> "$GITHUB_ENV"
+          finance_password="$(openssl rand -hex 24)"
+          echo "::add-mask::$finance_password"
+          echo "P7_USABILITY_FINANCE_PASSWORD=$finance_password" >> "$GITHUB_ENV"
       - name: Build exact in-branch Free and Pro ZIPs
         run: |
           bash scripts/package-plugin.sh free
@@ -70,6 +74,9 @@ jobs:
             --activate --path="$site"
           wp plugin install "$GITHUB_WORKSPACE/dist/wpessential-bank-transfer-matcher-pro.zip" \
             --activate --path="$site"
+          # WooCommerce installs a new store in Coming Soon mode; make only
+          # this disposable localhost fixture public for genuine guest checkout QA.
+          wp option update woocommerce_coming_soon no --path="$site"
           wp option update woocommerce_custom_orders_table_enabled no --path="$site"
           wp option update woocommerce_custom_orders_table_data_sync_enabled no --path="$site"
           wp option update woocommerce_bacs_settings \
@@ -104,11 +111,20 @@ jobs:
         env:
           P7_BROWSER_MODE: ltr
         run: node tests/browser/p7-visual.mjs
+      - name: Verify real LTR WooCommerce menu destinations and keyboard/mobile navigation
+        env:
+          P7_BROWSER_MODE: ltr
+        run: node tests/browser/p7-navigation.mjs
+      - name: Real LTR owner / finance / guest usability walkthrough (read-only)
+        env:
+          P7_BROWSER_MODE: ltr
+        run: node tests/browser/p7-usability.mjs
       - name: Install actual Arabic WordPress locale and assert RTL server direction
         run: |
           set -euo pipefail
           wp language core install ar --activate --path="$P7_BROWSER_WP_PATH"
           wp user meta update wbm_ci locale ar --path="$P7_BROWSER_WP_PATH"
+          wp user meta update wbm_finance_ci locale ar --path="$P7_BROWSER_WP_PATH"
           result="$(wp eval 'echo is_rtl() ? "rtl" : "ltr";' --path="$P7_BROWSER_WP_PATH")"
           if [[ "$result" != rtl ]]; then
             echo 'Actual WordPress Arabic RTL locale could not be activated.' >&2
@@ -118,6 +134,16 @@ jobs:
         env:
           P7_BROWSER_MODE: rtl
         run: node tests/browser/p7-visual.mjs
+      - name: Verify real Arabic RTL WooCommerce menu destinations and keyboard/mobile navigation
+        env:
+          P7_BROWSER_MODE: rtl
+        run: node tests/browser/p7-navigation.mjs
+      - name: Real Arabic RTL owner / finance / guest usability walkthrough (read-only)
+        env:
+          P7_BROWSER_MODE: rtl
+        run: node tests/browser/p7-usability.mjs
+      - name: Verify synthetic BACS orders remain unpaid and guest claim unsubmitted
+        run: wp eval-file "$GITHUB_WORKSPACE/tests/browser/p7-usability-integrity.php" --path="$P7_BROWSER_WP_PATH"
       - name: Upload real screenshot/report artifacts even if visual checks fail
         if: always()
         uses: actions/upload-artifact@v4

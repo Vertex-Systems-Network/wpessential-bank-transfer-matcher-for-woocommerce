@@ -15,8 +15,28 @@ final class CustomerClaims {
 	private const ACTION = 'wpessential_wbm_submit_claim';
 
 	public static function register(): void {
+		add_action( 'wp_enqueue_scripts', array( self::class, 'enqueue_styles' ) );
 		add_action( 'admin_post_' . self::ACTION, array( self::class, 'submit' ) );
 		add_action( 'admin_post_nopriv_' . self::ACTION, array( self::class, 'submit' ) );
+	}
+
+	/**
+	 * Frontend styles are strictly limited to WooCommerce order-received and
+	 * My Account pages where the customer claim component can be displayed.
+	 */
+	public static function enqueue_styles(): void {
+		$received = function_exists( 'is_order_received_page' ) && is_order_received_page();
+		$account = function_exists( 'is_account_page' ) && is_account_page();
+		if ( ! $received && ! $account ) {
+			return;
+		}
+		$plugin = dirname( __DIR__, 2 ) . '/wpessential-bank-transfer-matcher.php';
+		wp_enqueue_style(
+			'wpessential-wbm-customer-claims',
+			plugins_url( 'assets/customer-claims.css', $plugin ),
+			array(),
+			'0.1.0'
+		);
 	}
 
 	public static function submit(): void {

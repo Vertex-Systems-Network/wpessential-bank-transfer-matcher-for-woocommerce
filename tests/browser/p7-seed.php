@@ -103,6 +103,44 @@ $case_id = ( new ReviewCaseRepository( $wpdb ) )->create(
 	),
 	$user->ID
 );
+// A separate unpaid, *unclaimed* BACS order makes the actual customer form
+// visible. The existing first order retains the synthetic unverified claim.
+$customer_order = wc_create_order( [ 'status' => 'on-hold' ] );
+if ( ! $customer_order || is_wp_error( $customer_order ) ) {
+	throw new RuntimeException( 'Synthetic guest BACS order cannot be created.' );
+}
+$customer_order->set_payment_method( 'bacs' );
+$customer_order->set_customer_id( 0 ); // Genuine guest; do not inherit WP-CLI admin actor.
+$customer_order->set_status( 'on-hold' );
+$customer_order->set_currency( 'USD' );
+$customer_order->set_billing_first_name( 'Synthetic' );
+$customer_order->set_billing_last_name( 'Guest' );
+$customer_order->set_billing_email( 'p7-guest-fixture@example.test' );
+$customer_order->set_total( '37.00' );
+$customer_order->save();
+( new ReferenceIssuer( new ReferenceRepository( $wpdb ) ) )
+	->issue( new EntityId( (int) $customer_order->get_id() ) );
+
+// Separate synthetic finance operator: shop manager can review/import but
+// cannot manage bank accounts/retention. CI generates and masks the password.
+$finance_password = getenv( 'P7_USABILITY_FINANCE_PASSWORD' );
+if ( ! is_string( $finance_password ) || strlen( $finance_password ) < 24 ) {
+	throw new RuntimeException( 'A masked CI-only finance fixture password is required.' );
+}
+$finance_id = wp_create_user( 'wbm_finance_ci', $finance_password, 'p7-finance-fixture@example.test' );
+if ( is_wp_error( $finance_id ) ) {
+	throw new RuntimeException( 'Could not create synthetic finance operator.' );
+}
+( new WP_User( (int) $finance_id ) )->set_role( 'shop_manager' );
+foreach ( [ 'wbm_view', 'wbm_review_claim', 'wbm_approve', 'wbm_import' ] as $permission ) {
+	if ( ! user_can( (int) $finance_id, $permission ) ) {
+		throw new RuntimeException( 'Synthetic finance role lacks real installed permission: ' . $permission );
+	}
+}
+if ( user_can( (int) $finance_id, 'wbm_manage_bank_accounts' ) ) {
+	throw new RuntimeException( 'Synthetic finance operator must not have bank-account manager permission.' );
+}
+
 $fixture = [
 	'version' => 1,
 	'disposable' => true,
@@ -111,6 +149,9 @@ $fixture = [
 	'batch_id' => $batch_id,
 	'case_id' => $case_id,
 	'checkout_received_url' => $order->get_checkout_order_received_url(),
+	'unclaimed_order_id' => (int) $customer_order->get_id(),
+	'unclaimed_checkout_received_url' => $customer_order->get_checkout_order_received_url(),
+	'finance_login' => 'wbm_finance_ci',
 	'site_url' => site_url(),
 ];
 $json = wp_json_encode( $fixture, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );

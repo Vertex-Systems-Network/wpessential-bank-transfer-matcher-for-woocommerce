@@ -46,6 +46,10 @@ final class FinanceDashboardPage {
 	}
 
 	public static function menu(): void {
+		if ( ! current_user_can( ProCaps::IMPORT ) || ! current_user_can( FreeCaps::APPROVE ) ) {
+			return;
+		}
+
 		add_submenu_page( 'woocommerce', __( 'Bank finance dashboard', self::DOMAIN ),
 			__( 'Bank finance dashboard', self::DOMAIN ), ProCaps::IMPORT,
 			self::SLUG, [ self::class, 'render' ] );

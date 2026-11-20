@@ -35,6 +35,11 @@ final class FinanceNotificationsPage {
 	}
 
 	public static function menu(): void {
+		if ( ! current_user_can( ProCaps::MANAGE_ACCOUNTS ) ||
+			! current_user_can( ProCaps::IMPORT ) || ! current_user_can( FreeCaps::APPROVE ) ) {
+			return;
+		}
+
 		add_submenu_page( 'woocommerce', __( 'Finance notifications', self::DOMAIN ),
 			__( 'Finance notifications', self::DOMAIN ),
 			ProCaps::MANAGE_ACCOUNTS, self::SLUG, [ self::class, 'render' ] );

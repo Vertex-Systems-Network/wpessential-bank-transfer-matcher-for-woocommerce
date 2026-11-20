@@ -58,6 +58,13 @@ try {
   await page.locator('#user_pass').fill(password);
   await page.locator('#wp-submit').click();
   await page.waitForURL(u => u.pathname.startsWith('/wp-admin/'), { timeout: 45000 });
+  await page.waitForLoadState('load');
+  // WordPress/WooCommerce may initially land on a dashboard or onboarding
+  // interstitial. Enter the real matcher wp-admin route before inspecting
+  // navigation, rather than treating the transient post-login page as UI.
+  await page.goto(base + '/wp-admin/admin.php?page=wpessential-bank-transfer-matcher',
+    { waitUntil: 'load', timeout: 45000 });
+  await page.locator('#adminmenu').waitFor({ state: 'attached', timeout: 15000 });
   for (const size of sizes) {
     await page.setViewportSize(size);
     for (const spec of specs) {
@@ -159,6 +166,33 @@ try {
             throw new Error('Tab focus trapped in scrollable finance table');
           }
           entry.keyboard_region_tested = true;
+          // Tab intentionally moves focus to the row action at the far end
+          // of a wide ledger. Restore the logical start before taking the
+          // visual baseline; otherwise the screenshot appears to clip the
+          // first columns even though the real table is horizontally scrollable.
+          const restored = await region.evaluate(node => {
+            // Scroll coordinates differ between RTL browser engines. Rather
+            // than assume scrollLeft===0, expose the actual first table
+            // column after the focus-to-Tab probe and measure visibility.
+            if (document.activeElement instanceof HTMLElement) {
+              document.activeElement.blur();
+            }
+            const first = node.querySelector('thead th:first-child');
+            if (!first) return { visible: false, reason: 'missing-first-header' };
+            first.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'start' });
+            const viewport = node.getBoundingClientRect();
+            const box = first.getBoundingClientRect();
+            const overlap = Math.max(0,
+              Math.min(viewport.right, box.right) - Math.max(viewport.left, box.left));
+            const fraction = box.width > 0 ? overlap / box.width : 0;
+            return { visible: fraction >= 0.85, fraction,
+              scrollLeft: node.scrollLeft, direction: getComputedStyle(node).direction };
+          });
+          if (!restored.visible) {
+            throw new Error('First ledger column still clipped after keyboard QA: ' +
+              JSON.stringify(restored));
+          }
+          entry.table_first_column_visible_for_screenshot = true;
         }
         const filename = mode + '-' + spec.ui + '-' + spec.key + '-' + size.width + '.png';
         await page.screenshot({ path: join(output, filename), fullPage: true,

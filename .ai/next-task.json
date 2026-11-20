@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P7-T006",
-  "phase": "P7",
-  "title": "ensure Free/Pro integration works without duplicated/stale navigation.",
-  "owner": "UX and QA",
-  "paths": "docs/ux/; plugins/",
+  "id": "WBM-P8-T001",
+  "phase": "P8",
+  "title": "threat model verification and auth/capability matrix tests.",
+  "owner": "Security and QA",
+  "paths": "docs/security/; plugins/",
   "depends_on": [
-    "WBM-P7-T005"
+    "WBM-P7-T008"
   ],
-  "verification": "VERIFY-P7-T006",
+  "verification": "VERIFY-P8-T001",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify Free-only/Pro-enabled/Pro-without-Free native WooCommerce navigation, active menu state and role-gated links using actual WP menus; remove duplicate/stale destinations and ensure no feature-links to nonimplemented forms. Build disposable classic+HPOS WP/WC menu tests, native 1440/375 and RTL browser checks and exact latest-head full CI. Then T007 evidence rubric and T008 role usability. Keep P7 PR #13 draft/unmerged."
+  "next_action": "Open dedicated P8 security branch after verified P7 phase PR gate. Audit actual trust boundaries and source-backed WordPress REST/admin-post capabilities, nonce and object-level checks against synthetic anonymous/viewer/importer/approver/manager roles. Add fail-closed auth matrix in disposable native WP/WC/MariaDB; verify threat-model assets/risk/mitigation/residuals and exact-source CI; avoid authorized finance mutations. Continue P8-T002 only once evidence is verifiable."
 }

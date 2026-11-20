@@ -10,6 +10,7 @@
     "vendor/composer/installed.json",
     "readme.txt",
     "assets/admin.css",
+    "assets/customer-claims.css",
     "src/Bootstrap/Plugin.php"
   ],
   "source_roots": [

@@ -19,9 +19,11 @@ fi
 
 wp_test plugin install "$woo_archive" --activate
 wp_test plugin install "$root/dist/$pro.zip"
+wp_test eval-file "$root/tests/integration/p7-menu-role-matrix.php" no-free
 wp_test eval-file "$root/tests/integration/order-storage.php" pro-missing-free
 
 wp_test plugin install "$root/dist/$free.zip" --activate
+wp_test eval-file "$root/tests/integration/p7-menu-role-matrix.php" free-only
 wp_test option update woocommerce_custom_orders_table_data_sync_enabled no
 wp_test option update woocommerce_custom_orders_table_enabled yes
 wp_test eval-file "$root/tests/integration/order-storage.php" hpos
@@ -33,6 +35,7 @@ wp_test option update woocommerce_custom_orders_table_enabled no
 wp_test eval-file "$root/tests/integration/order-storage.php" classic
 
 wp_test plugin install "$root/dist/$pro.zip" --force --activate
+wp_test eval-file "$root/tests/integration/p7-menu-role-matrix.php" paired
 wp_test eval-file "$root/tests/integration/order-storage.php" paired
 
 wp_test plugin install "$root/dist/$free.zip" --force --activate

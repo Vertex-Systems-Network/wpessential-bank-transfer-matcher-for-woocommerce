@@ -32,6 +32,10 @@ final class ReportExportsPage {
 	}
 
 	public static function menu(): void {
+		if ( ! current_user_can( ProCaps::IMPORT ) || ! current_user_can( FreeCaps::APPROVE ) ) {
+			return;
+		}
+
 		add_submenu_page( 'woocommerce', __( 'Finance reports', self::DOMAIN ),
 			__( 'Finance reports', self::DOMAIN ), ProCaps::IMPORT,
 			self::SLUG, [ self::class, 'render' ] );

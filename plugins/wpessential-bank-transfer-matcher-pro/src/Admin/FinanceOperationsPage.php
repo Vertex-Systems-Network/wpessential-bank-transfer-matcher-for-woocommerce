@@ -33,6 +33,11 @@ final class FinanceOperationsPage {
 	}
 
 	public static function menu(): void {
+		if ( ! current_user_can( ProCaps::MANAGE_ACCOUNTS ) ||
+			! current_user_can( ProCaps::IMPORT ) || ! current_user_can( FreeCaps::APPROVE ) ) {
+			return;
+		}
+
 		add_submenu_page( 'woocommerce', __( 'Bank operations diagnostics', self::DOMAIN ),
 			__( 'Bank operations', self::DOMAIN ), ProCaps::MANAGE_ACCOUNTS,
 			self::SLUG, [ self::class, 'render' ] );
