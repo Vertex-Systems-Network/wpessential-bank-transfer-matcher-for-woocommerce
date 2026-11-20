@@ -58,7 +58,7 @@ $cleanup=static function(int $id) use($wpdb):void {
         "SELECT source_path FROM $jobs WHERE batch_id=%d",$id
     ));
     if (is_string($source)&&is_file($source)) @unlink($source);
-    foreach(['wbm_pro_import_rows','wbm_pro_import_jobs','wbm_pro_import_batches'] as $suffix) {
+    foreach(['wbm_pro_import_rows','wbm_pro_import_jobs'] as $suffix) {
         $wpdb->delete($wpdb->prefix.$suffix,['batch_id'=>$id],['%d']);
     }
     // Import batch table's primary key is id, not batch_id.
