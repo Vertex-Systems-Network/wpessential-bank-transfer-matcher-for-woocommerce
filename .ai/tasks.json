@@ -994,8 +994,8 @@
       "WBM-P7-T003"
     ],
     "verification": "VERIFY-P7-T004",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Real, not simulated, Chromium browser on CI-only WordPress 7.0.8/WooCommerce 11.3.0, actual installed Free+Pro with BACS synthetic order+claim+import+review. Exact SHA 483a7e49caf80067361ae6a2619a0a8215213cb9, separate browser Actions 44672577045 SUCCESS, both Foundation/native actions 44672584525 + 44672576959 SUCCESS. Artifact ID 14600897788: 111 actual PNG files (LTR 54 + Arabic RTL 54 across 14 source UI IDs at 1440/1024/375 + forced-colors 3), two JSON reports 0 issues, 16 actual mobile table focus/Tab checks, RTL computed direction rtl, all 14 UI IDs covered. Manual per-screen visual polish remains P7-T005/T007 and WCAG human usability P7-T008.",
     "next_action": "Create real browser evidence (not PHP/CSS simulated screenshots) against disposable WordPress/WooCommerce Free+Pro with synthetic finance records; capture 1440/1024/375 real routes, keyboard focus, forced/high contrast and an actual RTL locale; attach machine-readable visual evidence and screenshot artifacts, inspect actual failures/clipping; only then mark T004 verified. Do not invent screenshots; if CI browser execution is unavailable, keep task blocked with precise evidence."
   },
   {
@@ -1008,8 +1008,9 @@
       "WBM-P7-T004"
     ],
     "verification": "VERIFY-P7-T005",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Inspect actual 111 Chromium screenshot artifacts, especially 375 and Arabic RTL, against native WP/WC hierarchy; fix real clipping/misalignment/overlong labels/status contrast and broken filters/pagination without inventing backend behaviors. Add visible UI/focus/overflow regressions with real browser screenshots; verify exact full Foundation/Playground/native and browser CI at code SHA, record before/after evidence. Then P7-T006 Free/Pro nav integration."
   },
   {
     "id": "WBM-P7-T006",
