@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "phase": "P9-T002",
+  "edition": "wpessential-bank-transfer-matcher-pro",
+  "development_version": "0.1.0",
+  "source_commit": "a515d8f6ac98a2fe94ebedb35b3f2e70b9164501",
+  "official_vendor_approval": "not_verified",
+  "note": "Local native evidence is NOT Woo QIT evidence; all actual official QIT suites unrun until P9-T010.",
+  "suites": [
+    {
+      "id": "activation",
+      "official_qit_status": "not_run",
+      "official_run_id": null,
+      "official_report_url": null,
+      "native_evidence": "docs/security/p8-t008-upgrade-coexistence-verification.md",
+      "remaining_gate": "WBM-P9-T010"
+    },
+    {
+      "id": "woo_api",
+      "official_qit_status": "not_run",
+      "official_run_id": null,
+      "official_report_url": null,
+      "native_evidence": "docs/api/access.md",
+      "remaining_gate": "WBM-P9-T010"
+    },
+    {
+      "id": "end_to_end",
+      "official_qit_status": "not_run",
+      "official_run_id": null,
+      "official_report_url": null,
+      "native_evidence": "docs/security/p8-t006-checkout-compatibility.md",
+      "remaining_gate": "WBM-P9-T010"
+    },
+    {
+      "id": "security",
+      "official_qit_status": "not_run",
+      "official_run_id": null,
+      "official_report_url": null,
+      "native_evidence": "docs/security/p8-t003-adversarial-verification.md",
+      "remaining_gate": "WBM-P9-T010"
+    },
+    {
+      "id": "malware",
+      "official_qit_status": "not_run",
+      "official_run_id": null,
+      "official_report_url": null,
+      "native_evidence": "docs/security/p8-t009-final-security-closure.md",
+      "remaining_gate": "WBM-P9-T010"
+    },
+    {
+      "id": "php_compatibility",
+      "official_qit_status": "not_run",
+      "official_run_id": null,
+      "official_report_url": null,
+      "native_evidence": "docs/security/p8-t006-checkout-compatibility.md",
+      "remaining_gate": "WBM-P9-T010"
+    },
+    {
+      "id": "validation",
+      "official_qit_status": "not_run",
+      "official_run_id": null,
+      "official_report_url": null,
+      "native_evidence": "docs/release/p9-t001-readme-validation.md",
+      "remaining_gate": "WBM-P9-T010"
+    }
+  ]
+}

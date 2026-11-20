@@ -15,3 +15,13 @@ Reviewed on 2026-11-17. The runtime compatibility matrix remains open.
 | WordPress.org validation | [Plugin Check](https://developer.wordpress.org/plugins/developer-tools/helper-plugins/) · [Readme validation](https://developer.wordpress.org/plugins/wordpress-org/how-your-readme-txt-works/) | Run both checks on the final Free package. |
 | Woo Marketplace | [Woo review and QIT](https://developer.woocommerce.com/2025/03/26/getting-to-know-the-woo-marketplace-tools-we-use-and-what-we-look-for/) | Record QIT evidence from actual runs. |
 | Playground | [Blueprints](https://developer.wordpress.org/playground/blueprints/) · [Blueprint bundles](https://wordpress.github.io/wordpress-playground/blueprints/using-blueprints/) | Keep base, Free and Pro scenarios reproducible. |
+
+## 2026-11-21 — P9-T002 Woo Marketplace reviewer policy check
+
+| Requirement | Official source | Interpretation |
+| --- | --- | --- |
+| Two submissions for freemium and pre-submission gates | https://developer.woocommerce.com/docs/woo-marketplace/submitting-your-product | Free and paid models are submitted separately; business, UX, source, QIT and validation still need actual vendor review. |
+| Partnership, business and support | https://developer.woocommerce.com/docs/woo-marketplace/getting-started | Without verified vendor authorization, no approved submission claims. |
+| Monetization for standalone extensions | https://developer.woocommerce.com/docs/woo-marketplace/monetization-expectations | Confirm publisher pricing, billing and support before listing. |
+| Plugin headers | https://developer.woocommerce.com/docs/extensions/getting-started-extensions/how-to-design-a-simple-extension | Do not manually add Woo Marketplace `Woo` header outside accepted deployment. |
+| QIT suites and native CI distinction | https://developer.woocommerce.com/docs/extensions/getting-started-extensions/ | Native GitHub Actions tests do not equal managed QIT. |

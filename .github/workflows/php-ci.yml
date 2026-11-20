@@ -26,6 +26,7 @@ jobs:
           npm run docs:check
           npm run docs:readme-validate
           python3 tests/docs_generation.py
+          python3 tests/marketplace_evidence.py
       - name: Validate and build independent Composer packages
         run: |
           bash scripts/package-plugin.sh free
