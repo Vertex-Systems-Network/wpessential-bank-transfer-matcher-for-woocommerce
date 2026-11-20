@@ -47,6 +47,24 @@ final class ReportCsvExportService {
 		];
 	}
 
+	/**
+	 * Re-authorize and rate-limit the final private queued download.
+	 * The scheduler's preparation does not count as a user download.
+	 */
+	public function audit_queued_download(
+		ReportDefinition $scope, int $actor_id, int $rows, int $bytes, string $sha256
+	): void {
+		if ( $actor_id < 1 || get_current_user_id() !== $actor_id ||
+			! current_user_can( ProCaps::IMPORT ) ||
+			! current_user_can( FreeCaps::APPROVE ) ||
+			$rows < 0 || $rows > 1000 || $bytes < 1 ||
+			$bytes > 5242880 || ! preg_match( '/\A[a-f0-9]{64}\z/', $sha256 ) ) {
+			throw new RuntimeException( 'Invalid or unauthorized queued finance download.' );
+		}
+		$this->install();
+		$this->audit( $scope, $actor_id, $rows, $bytes, $sha256 );
+	}
+
 	/** Shared audit schema for synchronous pages and authorized queued downloads. */
 	public function install_audit_schema(): void {
 		$this->install();
