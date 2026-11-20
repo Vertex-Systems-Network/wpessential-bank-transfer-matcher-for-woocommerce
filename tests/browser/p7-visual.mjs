@@ -38,7 +38,7 @@ const specs = [
   { ui: 'UI-010', key: 'pro-finance-allocations', route: url('wpessential-wbm-pro-allocations'), text: 'Bank allocation ledger', admin: true },
   { ui: 'UI-011', key: 'pro-finance-reports', route: url('wpessential-wbm-pro-finance-reports'), text: 'Finance reports', admin: true },
   { ui: 'UI-012', key: 'free-audit-timeline', route: reconcile, text: 'Recent reconciliation activity', admin: true },
-  { ui: 'UI-013', key: 'free-settings', route: url('wpessential-bank-transfer-matcher') + '&wbm_view=settings', text: 'Settings', admin: true },
+  { ui: 'UI-013', key: 'free-settings', route: url('wpessential-bank-transfer-matcher') + '&wbm_view=settings', text: 'Bank Transfer Matcher settings', admin: true },
   { ui: 'UI-013', key: 'pro-mapping-profiles', route: url('wpessential-wbm-pro-mapping-profiles'), text: 'Statement mappings', admin: true },
   { ui: 'UI-013', key: 'pro-retention-settings', route: url('wpessential-wbm-pro-retention'), text: 'Bank data retention', admin: true },
   { ui: 'UI-014', key: 'pro-ops-diagnostics', route: url('wpessential-wbm-pro-operations'), text: 'Bank operations diagnostics', admin: true },
