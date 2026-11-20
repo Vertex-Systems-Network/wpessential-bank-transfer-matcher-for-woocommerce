@@ -96,7 +96,8 @@
     "p6_docs": "passed: complete GitHub Actions 44663971319 and 44663964390 exact b2311ce6ffbf1ca5a3bbfbe4699245193c8b27cf; docs guide, incident runbooks, phase acceptance and docs-content regression, native finance/security+Playground. Final phase-state commit itself requires new exact SHA CI.",
     "p6_phase_gate": "P6-T001–T008 all completed with exact intermediate source SHA CI. Final phase head after task/state update must pass BOTH full CI checks before phase merge. Branch protection may only be enforced by GitHub; no reviews currently submitted.",
     "p6_phase_merge": "verified main SHA 51c34bd75f3936bddfc86911c99722c834465e1a from fully green Phase PR #12, exact P6 head 2b50907 with GitHub Actions 44664553928+44664548348 SUCCESS.",
-    "p7_screen_contracts": "passed: exact SHA a396837e4eee4b6e54062f22c58ec3cb3d217e62 both full runs 44665899783, 44665892900. 14 renderer maps, Free/Pro roles/nonce, source-backed states, missing features explicitly documented, PHP Foundation + Playground and native WooCommerce/MariaDB."
+    "p7_screen_contracts": "passed: exact SHA a396837e4eee4b6e54062f22c58ec3cb3d217e62 both full runs 44665899783, 44665892900. 14 renderer maps, Free/Pro roles/nonce, source-backed states, missing features explicitly documented, PHP Foundation + Playground and native WooCommerce/MariaDB.",
+    "p7_native_ui": "passed: exact SHA d08802c9a009c0153365703983675caaa0eb9ad6, full runs 44668451481 and 44668445322 green; scoped WordPress Free/Pro native CSS, 11 Pro menu hooks, labeled real filters, keyboard-scrolling financial source tables, 13 mapping fields, native WordPress/WooCommerce/MariaDB/Playground."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -110,8 +111,8 @@
     "free_is_independent"
   ],
   "phase": "P7",
-  "active_task_id": "WBM-P7-T002",
-  "next_action": "Implement WordPress/WooCommerce-native consistent admin spacing, type hierarchy, accessible form/filters/tables and bounded responsive states in existing actual Free and Pro admin pages; ensure screen-specific enqueue, no decorative controls, scoped styles, keyboard focus and RTL support. Add PHP/native integration and static CSS contract tests; exact-head full CI.",
+  "active_task_id": "WBM-P7-T003",
+  "next_action": "Build and execute source-backed complete UI-001–UI-014 control-to-handler/method/capability/nonce/validation coverage and deny fake or unauthenticated actions; check actual native WP/WooCommerce Free/Pro menu hooks, public/private REST/admin routes, financial action invariants and report permissions in pure + native CI. Record unimplemented advanced filters without pretending actions exist. Only mark done after both full latest-code CI workflows pass.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -185,8 +186,9 @@
     "WBM-P6-T006",
     "WBM-P6-T007",
     "WBM-P6-T008",
-    "WBM-P7-T001"
+    "WBM-P7-T001",
+    "WBM-P7-T002"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "a396837e4eee4b6e54062f22c58ec3cb3d217e62"
+  "last_verified_remote_milestone": "d08802c9a009c0153365703983675caaa0eb9ad6"
 }

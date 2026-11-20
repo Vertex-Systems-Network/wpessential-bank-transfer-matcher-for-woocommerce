@@ -1,6 +1,6 @@
 # P7-T002 — native WordPress/WooCommerce Free + Pro layout implementation
 
-Status: implemented on draft P7 PR #13; latest full source-head CI and browser visual checks must be independently confirmed. This is **real WordPress PHP render output and scoped CSS**, not a Figma mockup or claim that all 14 screens passed visual QA.
+Status: **P7-T002 verified** at exact code SHA `d08802c9a009c0153365703983675caaa0eb9ad6`, both full GitHub Actions runs **44668451481** and **44668445322 SUCCESS** (Foundation/Playground, native WordPress/WooCommerce/MariaDB). Browser visual checks remain pending P7-T004. This is **real WordPress PHP render output and scoped CSS**, not a Figma mockup or claim that all 14 screens passed visual QA.
 
 ## Screen ownership and design strategy
 

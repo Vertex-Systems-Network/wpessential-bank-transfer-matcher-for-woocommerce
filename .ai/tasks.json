@@ -966,8 +966,8 @@
       "WBM-P7-T001"
     ],
     "verification": "VERIFY-P7-T002",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "All T002 native WP Free+Pro CSS/admin markup changes and true WP/WC integration passed at exact code SHA d08802c9a009c0153365703983675caaa0eb9ad6; full GitHub Actions Foundation/static/unit/packaging/Playground + native MariaDB/WooCommerce classic+HPOS runs 44668451481 and 44668445322 SUCCESS. Includes 11 exact scoped Pro stylesheet hooks; source-backed Free/Pro native forms/tables, live financial audit/review screens, 13 labeled mapping controls, keyboard-scrolling table regions, mobile/forced-colors CSS and tests. Browser screenshot/keyboard/RTL not yet evidenced (P7-T004 onward).",
     "next_action": "Implement WordPress/WooCommerce-native consistent admin spacing, type hierarchy, accessible form/filters/tables and bounded responsive states in existing actual Free and Pro admin pages; ensure screen-specific enqueue, no decorative controls, scoped styles, keyboard focus and RTL support. Add PHP/native integration and static CSS contract tests; exact-head full CI."
   },
   {
@@ -980,8 +980,9 @@
       "WBM-P7-T002"
     ],
     "verification": "VERIFY-P7-T003",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Build and execute source-backed complete UI-001–UI-014 control-to-handler/method/capability/nonce/validation coverage and deny fake or unauthenticated actions; check actual native WP/WooCommerce Free/Pro menu hooks, public/private REST/admin routes, financial action invariants and report permissions in pure + native CI. Record unimplemented advanced filters without pretending actions exist. Only mark done after both full latest-code CI workflows pass."
   },
   {
     "id": "WBM-P7-T004",
