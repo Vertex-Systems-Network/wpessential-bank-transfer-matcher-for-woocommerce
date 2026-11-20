@@ -124,6 +124,8 @@ jobs:
         run: wp eval-file "$GITHUB_WORKSPACE/tests/browser/p8-private-http-fixture.php" --path="$P7_BROWSER_WP_PATH"
       - name: Probe real unauthenticated and invalid-nonce receipt/statement HTTP endpoints
         run: node tests/browser/p8-private-http.mjs
+      - name: Deny authentic-cookie invalid-nonce admin and REST financial CSRF requests
+        run: node tests/browser/p8-csrf-http.mjs
       - name: Install actual Arabic WordPress locale and assert RTL server direction
         run: |
           set -euo pipefail
