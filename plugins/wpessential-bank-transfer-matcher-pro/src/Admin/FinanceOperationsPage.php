@@ -83,7 +83,7 @@ final class FinanceOperationsPage {
 				echo '<p>' . esc_html__( 'No recorded jobs in this source.', self::DOMAIN ) . '</p>';
 				continue;
 			}
-			echo '<table class="wp-list-table widefat fixed striped"><thead><tr>';
+			echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr( $title ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr>';
 			foreach ( [ 'Job', 'Status', 'Age', 'Processed rows',
 				'Invalid rows', 'Warnings', 'Recovery' ] as $heading ) {
 				echo '<th scope="col">' . esc_html( $heading ) . '</th>';
@@ -105,7 +105,7 @@ final class FinanceOperationsPage {
 				}
 				echo '</td></tr>';
 			}
-			echo '</tbody></table>';
+			echo '</tbody></table></div>';
 		}
 	}
 
