@@ -64,6 +64,16 @@ final class AsyncReportExportJob {
 				$actor_id
 			) );
 			$this->check_db();
+			$recent = $this->db->get_var( $this->db->prepare(
+				"SELECT COUNT(*) FROM $table WHERE actor_id = %d
+				 AND created_at > UTC_TIMESTAMP() - INTERVAL 1 MINUTE",
+				$actor_id
+			) );
+			$this->check_db();
+			if ( null === $recent || ! ctype_digit( (string) $recent ) ||
+				(int) $recent >= 3 ) {
+				throw new RuntimeException( 'At most three finance export jobs may be queued per minute.' );
+			}
 			if ( null === $active || ! ctype_digit( (string) $active ) ||
 				(int) $active >= self::MAX_LIVE_JOBS ) {
 				throw new RuntimeException( 'Only two active or downloadable export jobs per finance actor.' );
@@ -88,8 +98,12 @@ final class AsyncReportExportJob {
 				) );
 				throw new RuntimeException( 'Could not enqueue report export.' );
 			}
-			as_schedule_single_action( time() + self::RETAIN_SECONDS,
+			$expiry = as_schedule_single_action( time() + self::RETAIN_SECONDS,
 				self::EXPIRY_HOOK, [ $job_id ], self::GROUP, true );
+			if ( ! is_int( $expiry ) || $expiry < 1 ) {
+				$this->fail_row( $job_id );
+				throw new RuntimeException( 'Could not schedule private export expiry.' );
+			}
 			return $job_id;
 		} finally {
 			$this->release_lock( $lock );
@@ -223,15 +237,20 @@ final class AsyncReportExportJob {
 				hash( 'sha256', (string) $row['csv_data'] ) ) ) {
 			throw new RuntimeException( 'Export not ready, expired, or changed.' );
 		}
-		$this->db->query( $this->db->prepare(
-			"INSERT INTO {$this->db->prefix}wbm_pro_report_exports
-			(actor_id, report_key, scope_sha256, csv_sha256, row_count, byte_count, created_at)
-			 VALUES (%d,%s,%s,%s,%d,%d,UTC_TIMESTAMP())",
-			$actor_id, (string) ( json_decode( $row['scope_json'], true )['report'] ?? '' ),
-			hash( 'sha256', (string) $row['scope_json'] ),
-			(string) $row['csv_sha256'], (int) $row['row_count'], (int) $row['byte_count']
-		) );
-		$this->check_db();
+		// Download authorization and shared 3/minute finance audit are
+		// required anew; the scheduled worker never authorizes retrieval.
+		$filters = json_decode( (string) $row['scope_json'], true );
+		if ( ! is_array( $filters ) || ( $filters['version'] ?? null ) !== 1 ||
+			(int) $row['row_count'] > self::PAGES * self::PAGE_SIZE ||
+			(int) $row['byte_count'] !== strlen( (string) $row['csv_data'] ) ) {
+			throw new RuntimeException( 'Invalid stored finance export.' );
+		}
+		unset( $filters['version'] );
+		$scope = ReportDefinition::from_array( $filters );
+		( new ReportCsvExportService( $this->db ) )->audit_queued_download(
+			$scope, $actor_id, (int) $row['row_count'], (int) $row['byte_count'],
+			(string) $row['csv_sha256']
+		);
 		return [
 			'filename' => 'wbm-private-export-' . $job_id . '.csv',
 			'csv' => (string) $row['csv_data'],
