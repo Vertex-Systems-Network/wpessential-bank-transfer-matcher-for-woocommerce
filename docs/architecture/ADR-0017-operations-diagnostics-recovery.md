@@ -1,6 +1,6 @@
 # ADR-0017 — Redacted operational diagnostics and deliberate failed-job recovery (P6-T006)
 
-Status: implemented on P6 draft branch; exact-head Foundation/Playground/native WordPress/WooCommerce/MariaDB evidence pending.
+Status: implemented and verified at exact T006 code SHA `9e0c9be`; full GitHub Actions 44661739149 and 44661731639 SUCCESS.
 
 ## Scope and authorization
 
@@ -26,7 +26,7 @@ Failed report export recovery does **not** resurrect or mutate original job/cont
 
 `tests/integration/pro-finance-operations.php` uses a disposable WordPress/WooCommerce/MariaDB fixture: tampered private bank CSV fails recovery, restored SHA256 permits explicit retry, a synthetic failed private export yields a *new* job, duplicate requeue and forged nonce fail, missing roles deny, the native admin page is privacy-safe, and three redacted CSV exports pass with the fourth blocked. It deletes the synthetic jobs, scheduled actions, recovery and export audit records after each run. All test sources are synthetic; no real finance email, credit, payment action or production store are contacted.
 
-`tests/integration/pro-finance-admin-security.php` separately checks that the authenticated admin_post hooks exist, nopriv hooks do not, and a forged nonce is denied before the service is called. Native classic and HPOS tests plus PHP/static/unit and packaged Playground **at the exact latest phase branch SHA** are prerequisites to P6-T006 completion. Browser/manual UI validation is P7/P8 scope.
+`tests/integration/pro-finance-admin-security.php` separately checks that the authenticated admin_post hooks exist, nopriv hooks do not, and a forged nonce is denied before the service is called. Native classic and HPOS tests plus PHP/static/unit and packaged Playground **at the exact latest phase branch SHA** **passed at exact SHA `9e0c9be` in runs 44661739149 and 44661731639**; P6-T006 is verified. Browser/manual UI validation is P7/P8 scope.
 
 ## Follow-on obligations
 

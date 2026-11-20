@@ -910,8 +910,8 @@
       "WBM-P6-T005"
     ],
     "verification": "VERIFY-P6-T006",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Full GitHub Actions runs 44661739149 and 44661731639 SUCCESS at exact T006 source SHA 9e0c9befd162dd5f18ecf4f476ed1cbd236e1953. Foundation PHP/static/unit + Playground and native WordPress/WooCommerce/MariaDB. Manager-gated 20-per-source diagnostics, fixed <=128KiB redacted CSV with PII and formula-injection tests, actor audit+3/hour; explicit audited source hash-verified failed import retry, original-owner-only new bounded export requeue, malformed nonce/anonymous/dedup denial, source-independent financial status unchanged. Native output PASS private source-hashed import retry... & pure CSV regression.",
     "next_action": "Implement read-only, redacted, finance-manager-authorized diagnostics for import/export/mail job health plus verified bounded failed-job recovery. Add native classic/HPOS and PHP tests for authorization, corruption, retry/cancel, privacy and no financial changes. Do not restart failed jobs without source integrity proof."
   },
   {
@@ -924,8 +924,9 @@
       "WBM-P6-T006"
     ],
     "verification": "VERIFY-P6-T007",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Finish default-off merchant retention settings, safe bounded TTL cleanup of private CSV bytes and explicitly consented old operational metadata/completed private source files; no financial-ledger/claim deletion. Native disposable WooCommerce and privacy/backup policy tests + full latest-SHA CI. Then P6-T008 admin docs."
   },
   {
     "id": "WBM-P6-T008",

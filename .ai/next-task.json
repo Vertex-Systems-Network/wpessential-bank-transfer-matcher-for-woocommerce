@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P6-T006",
+  "id": "WBM-P6-T007",
   "phase": "P6",
-  "title": "tools diagnostics, failed-job recovery, redacted diagnostics export.",
+  "title": "policies for retention, privacy, backup migration and cleanup.",
   "owner": "Pro engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
   "depends_on": [
-    "WBM-P6-T005"
+    "WBM-P6-T006"
   ],
-  "verification": "VERIFY-P6-T006",
+  "verification": "VERIFY-P6-T007",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Implement read-only, redacted, finance-manager-authorized diagnostics for import/export/mail job health plus verified bounded failed-job recovery. Add native classic/HPOS and PHP tests for authorization, corruption, retry/cancel, privacy and no financial changes. Do not restart failed jobs without source integrity proof."
+  "next_action": "Finish default-off merchant retention settings, safe bounded TTL cleanup of private CSV bytes and explicitly consented old operational metadata/completed private source files; no financial-ledger/claim deletion. Native disposable WooCommerce and privacy/backup policy tests + full latest-SHA CI. Then P6-T008 admin docs."
 }

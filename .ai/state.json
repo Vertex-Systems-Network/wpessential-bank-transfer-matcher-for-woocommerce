@@ -90,7 +90,8 @@
     "report_csv_exports": "passed: full exact-code SHA 13bbbee GitHub Actions 44653642849; safe six-report CSV, finance-only POST/nonce, whitelist+formula neutralization, 3/minute audit",
     "queued_finance_export": "passed: full GitHub Actions 44653642849; native 106 synthetic batches across 100-row pages, private actor-only status/download, 2-job/3-start quotas, same audit download throttle, expiry, cancellation and fail-closed checks; per-job lock/monotonic cursor",
     "finance_notifications": "passed: native MariaDB + Playground + PHP/static/unit full GitHub Actions 44656913883 and 44656906701 at exact SHA 6318c3e. Synthetic pre_wp_mail intercept, no real messages; opt-in, nonce, capability selection, 2/24h quota, delivery audit, opt-out, template privacy verified.",
-    "finance_dashboard": "passed: exact SHA 93b1a3a full GitHub Actions 44658437248 and 44658430001, PHP/static/unit + native WordPress/WooCommerce MariaDB classic HPOS + Playground. 21 USD/1 EUR synthetic batches, page/cursor, finance auth and safe rendering, source-backed KPIs only."
+    "finance_dashboard": "passed: exact SHA 93b1a3a full GitHub Actions 44658437248 and 44658430001, PHP/static/unit + native WordPress/WooCommerce MariaDB classic HPOS + Playground. 21 USD/1 EUR synthetic batches, page/cursor, finance auth and safe rendering, source-backed KPIs only.",
+    "finance_operations": "passed: exact T006 SHA 9e0c9befd162dd5f18ecf4f476ed1cbd236e1953 full GitHub Actions 44661739149 and 44661731639; native source-hash guarded import retry, owner-bound fresh export requeue, nonce/dedup/anon defense, audited redacted diagnostics 3/hour, pure CSV privacy/formula fixture and Playground."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -104,8 +105,8 @@
     "free_is_independent"
   ],
   "phase": "P6",
-  "active_task_id": "WBM-P6-T006",
-  "next_action": "Implement read-only, redacted, finance-manager-authorized diagnostics for import/export/mail job health plus verified bounded failed-job recovery. Add native classic/HPOS and PHP tests for authorization, corruption, retry/cancel, privacy and no financial changes. Do not restart failed jobs without source integrity proof.",
+  "active_task_id": "WBM-P6-T007",
+  "next_action": "Finish default-off merchant retention settings, safe bounded TTL cleanup of private CSV bytes and explicitly consented old operational metadata/completed private source files; no financial-ledger/claim deletion. Native disposable WooCommerce and privacy/backup policy tests + full latest-SHA CI. Then P6-T008 admin docs.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -175,8 +176,9 @@
     "WBM-P6-T002",
     "WBM-P6-T003",
     "WBM-P6-T004",
-    "WBM-P6-T005"
+    "WBM-P6-T005",
+    "WBM-P6-T006"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "93b1a3a97eb6d14d01bf66e9ec68358598b25894"
+  "last_verified_remote_milestone": "9e0c9befd162dd5f18ecf4f476ed1cbd236e1953"
 }
