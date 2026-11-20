@@ -22,6 +22,7 @@ use WPEssential\BankTransferMatcherPro\Reporting\AsyncReportExportJob;
 use WPEssential\BankTransferMatcherPro\Notifications\FinanceNotificationService;
 use WPEssential\BankTransferMatcherPro\Admin\FinanceNotificationsPage;
 use WPEssential\BankTransferMatcherPro\Admin\FinanceDashboardPage;
+use WPEssential\BankTransferMatcherPro\Admin\FinanceOperationsPage;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -42,6 +43,7 @@ final class Plugin {
 		FinanceNotificationService::register();
 		FinanceNotificationsPage::register();
 		FinanceDashboardPage::register();
+		FinanceOperationsPage::register();
 		do_action( 'wpessential_bank_transfer_matcher_pro_ready' );
 	}
 }
