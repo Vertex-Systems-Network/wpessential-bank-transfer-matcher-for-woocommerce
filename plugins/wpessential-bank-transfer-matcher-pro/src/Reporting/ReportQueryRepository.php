@@ -29,6 +29,9 @@ final class ReportQueryRepository {
 		if ( in_array( $definition->report, [ 'outstanding_orders', 'partial_funding' ], true ) ) {
 			return ( new OrderFundingReportRepository( $this->db ) )->run( $definition );
 		}
+		if ( 'unmatched_credits' === $definition->report ) {
+			return ( new UnmatchedCreditReportRepository( $this->db ) )->run( $definition );
+		}
 		$from = $definition->from . ' 00:00:00';
 		$end = ( new DateTimeImmutable( $definition->to . ' 00:00:00', new DateTimeZone( 'UTC' ) ) )
 			->modify( '+1 day' )->format( 'Y-m-d H:i:s' );

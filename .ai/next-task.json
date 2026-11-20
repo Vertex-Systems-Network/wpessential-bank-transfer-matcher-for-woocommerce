@@ -10,5 +10,5 @@
   "verification": "VERIFY-P6-T002",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify initial allocation/import and newly added HPOS-safe outstanding/partial WooCommerce BACS reports in native CI, then add unmatched bank credits and exception aging."
+  "next_action": "Verify native HPOS BACS outstanding/partial funding and unmatched/ambiguous imported bank reports, then add exception-aging summaries."
 }

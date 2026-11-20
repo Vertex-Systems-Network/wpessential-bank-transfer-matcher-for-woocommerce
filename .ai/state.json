@@ -84,7 +84,8 @@
     "pro_cross_process_split_races": "passed: GitHub Actions 44642819046 — atomic 2-recipient split reviewer, second recipient lock vs Free writer, independent paid completion with exact source conservation",
     "report_definitions": "passed: GitHub Actions 44643672874 and 44643662149 full foundation, Playground and native, canonical strict finance report scope/exact per-currency totals",
     "report_queries_initial": "pending: native scoped allocation and import batch read-only queries",
-    "order_funding_reports": "pending: native WooCommerce CRUD classic+HPOS outstanding BACS/partial exact-money, account and cursor scoping"
+    "order_funding_reports": "pending: native WooCommerce CRUD classic+HPOS outstanding BACS/partial exact-money, account and cursor scoping",
+    "unmatched_credit_reports": "pending: native unmatched vs ambiguous completed imported bank source, exact-money totals, duplicate fingerprint and allocated exclusion"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -99,7 +100,7 @@
   ],
   "phase": "P6",
   "active_task_id": "WBM-P6-T002",
-  "next_action": "Verify initial allocation/import and newly added HPOS-safe outstanding/partial WooCommerce BACS reports in native CI, then add unmatched bank credits and exception aging.",
+  "next_action": "Verify native HPOS BACS outstanding/partial funding and unmatched/ambiguous imported bank reports, then add exception-aging summaries.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
