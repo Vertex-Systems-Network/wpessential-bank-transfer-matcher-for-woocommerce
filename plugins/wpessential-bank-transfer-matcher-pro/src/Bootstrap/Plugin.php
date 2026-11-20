@@ -23,6 +23,8 @@ use WPEssential\BankTransferMatcherPro\Notifications\FinanceNotificationService;
 use WPEssential\BankTransferMatcherPro\Admin\FinanceNotificationsPage;
 use WPEssential\BankTransferMatcherPro\Admin\FinanceDashboardPage;
 use WPEssential\BankTransferMatcherPro\Admin\FinanceOperationsPage;
+use WPEssential\BankTransferMatcherPro\Admin\FinanceRetentionPage;
+use WPEssential\BankTransferMatcherPro\Privacy\FinanceRetentionService;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -44,6 +46,8 @@ final class Plugin {
 		FinanceNotificationsPage::register();
 		FinanceDashboardPage::register();
 		FinanceOperationsPage::register();
+		FinanceRetentionPage::register();
+		FinanceRetentionService::register();
 		do_action( 'wpessential_bank_transfer_matcher_pro_ready' );
 	}
 }
