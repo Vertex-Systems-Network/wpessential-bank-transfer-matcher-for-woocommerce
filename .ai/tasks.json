@@ -1148,8 +1148,8 @@
       "WBM-P8-T006"
     ],
     "verification": "VERIFY-P8-T007",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "VERIFIED exact SHA d0b5143ed64bb66eaf86779fa651358961b08481: 10/10 GitHub checks SUCCESS: 1k/10k/50k real MariaDB benchmark 44831039401 artifact 14675449713, two Foundation/Playground/native WP/WC MariaDB runs 44831039373/44831053993, four WC10.8/11.3 × PHP8.3/8.4 version checks 44831039366, real Chromium LTR/Arabic RTL checkout/privacy/CSRF 44831039387. Measured synthetic 1k: 398.02ms/46,925 B, 10k: 3,670ms/488,926 B, 50k rejected pre-stage: 21.21ms/2,488,926 B; peak PHP allocated 133.81 MiB, NOT process RSS. Streamed preflight in ImportJob::start rejects >CsvParser::MAX_ROWS 10000 before bank source copy/queue/batch, SQL proves 50k rejection does not change job/row/batch counts, real 1k/10k imports complete correct row counts. CI budget 12s/60s/5s, peak allocated <=256 MiB. docs/security/p8-t007-synthetic-load-benchmarks.md. Single-run synthetic CI timings, no 50k successful import/production SLA claim.",
     "next_action": "Measure 1,000/10,000 synthetic CSV data rows via genuine import/preview and record wall-clock times, peak memory, file size, per-chunk processing and any DB index/performance issues on disposable WP/WC/MariaDB. The existing CsvParser::MAX_ROWS=10000 must be honored; 50,000-row fixture must produce bounded, verified rejection without exceeding private data/memory quotas rather than being claimed supported. Add reproducible benchmark JSON artifacts, thresholds plus exact-HEAD CI. Never create real paid Woo orders or import real statements; document verified hardware context."
   },
   {
@@ -1162,8 +1162,9 @@
       "WBM-P8-T007"
     ],
     "verification": "VERIFY-P8-T008",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Run actual packaged Free/Pro with a benign third-party plugin (coexistence), verify Pro cannot activate without Free, Free/Pro deactivation and reactivation, in-place WooCommerce 10.8.0→11.3.0 upgrade and Free/Pro ZIP reinstallation on same disposable WP/WC/MariaDB store; assert same unpaid BACS order, immutable payment reference and unverified claim evidence survive, schema migration idempotent and no paid transition. Capture exact-head native/Playground CI; no production funds/merchant deployments."
   },
   {
     "id": "WBM-P8-T009",
