@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P9-T002",
+  "id": "WBM-P9-T003",
   "phase": "P9",
-  "title": "complete WooCommerce Marketplace Pro submission evidence, QIT test matrix, reviewer instructions, business/UX compliance, install/license/API docs and fallback behavior (Section 16C).",
+  "title": "generate screenshots from verified production code, guides and examples.",
   "owner": "Release engineering",
   "paths": "docs/release/; scripts/",
   "depends_on": [
-    "WBM-P9-T001"
+    "WBM-P9-T002"
   ],
-  "verification": "VERIFY-P9-T002",
+  "verification": "VERIFY-P9-T003",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Prepare accurate WooCommerce Marketplace Pro reviewer/evidence package: inspect Section16C official current marketplace/QIT requirements and actual repository runtime, document verified Free+Pro dependency/HPos/Classic checkout and BACS evidence, install/license/API/UX/fallback flows and freemium two-submission compliance, prepare honest QIT matrix with real run status. Add source-backed docs consistency tests; never claim partner account, managed QIT, license service, listings or seller approvals exist. Separate actual QIT run P9-T010. Do not submit or publish."
+  "next_action": "Complete P9-T003 using source-backed real WordPress browser capture: review draft PR #18 `development/p9-t003-source-browser-screenshots-20261121`, verify exact-head browser CI produces 5 Free, 6 Pro, 2 RTL/mobile original PNG files and manifest (source run, SHA256, no mocks/PII); visually inspect screenshots and then merge subordinate PR into P9 only after checks pass. Update screenshot guide and task evidence. Do not mark screenshots Marketplace-approved."
 }

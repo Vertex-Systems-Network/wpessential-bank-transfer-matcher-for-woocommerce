@@ -1204,8 +1204,8 @@
       "WBM-P9-T001"
     ],
     "verification": "VERIFY-P9-T002",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "VERIFIED exact source SHA 3321f3dedfc56edd8e703c6470ab6c0eee203e75: original 12/12 P9 phase GitHub checks all SUCCESS (Foundation+native WooCommerce/MariaDB/Playground runs 44838818831 and 44838827796; Chromium real BACS guest checkout/Arabic RTL/privacy/CSRF 44838818789 artifact 14680835046; four-cell PHP/WC matrix 44838818794; HPOS/classic in-place upgrade 44838818801; 1k/10k/50k bounded import benchmark 44838818783). P9 reviewer preflight, official Woo policy sources, separate Free+Pro installation/permissions/UX/API/fallback/retention evidence, and 7-suite machine-readable fail-closed QIT matrix with honest official status not_run; tests/marketplace_evidence.py negative mutation tests passed in Foundation. Subordinate PR #17 merged into P9 as SHA 3321f3d. This completes source-backed reviewer documentation and *QIT preparation only*, NOT actual QIT, vendor business approval, subscription/license service or publication; those remain P9-T010 and publisher gates.",
     "next_action": "Prepare accurate WooCommerce Marketplace Pro reviewer/evidence package: inspect Section16C official current marketplace/QIT requirements and actual repository runtime, document verified Free+Pro dependency/HPos/Classic checkout and BACS evidence, install/license/API/UX/fallback flows and freemium two-submission compliance, prepare honest QIT matrix with real run status. Add source-backed docs consistency tests; never claim partner account, managed QIT, license service, listings or seller approvals exist. Separate actual QIT run P9-T010. Do not submit or publish."
   },
   {
@@ -1218,8 +1218,9 @@
       "WBM-P9-T002"
     ],
     "verification": "VERIFY-P9-T003",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Complete P9-T003 using source-backed real WordPress browser capture: review draft PR #18 `development/p9-t003-source-browser-screenshots-20261121`, verify exact-head browser CI produces 5 Free, 6 Pro, 2 RTL/mobile original PNG files and manifest (source run, SHA256, no mocks/PII); visually inspect screenshots and then merge subordinate PR into P9 only after checks pass. Update screenshot guide and task evidence. Do not mark screenshots Marketplace-approved."
   },
   {
     "id": "WBM-P9-T004",

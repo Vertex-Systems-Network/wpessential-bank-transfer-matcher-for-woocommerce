@@ -1,5 +1,11 @@
 # Start here
 
+## P9-T002 source-backed Marketplace evidence VERIFIED; P9-T003 screenshots active — 2026-11-21
+
+P9 reviewer evidence was accepted at exact source `3321f3dedfc56edd8e703c6470ab6c0eee203e75` after **12/12 original P9 checks SUCCESS**, including Foundation/native WooCommerce/MariaDB/Playground [44838818831](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44838818831) and [44838827796](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44838827796), real WordPress/Chromium guest BACS + Arabic RTL/privacy/CSRF [44838818789](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44838818789) (artifact **14680835046**), PHP/WC matrix [44838818794](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44838818794), HPOS/classic upgrade [44838818801](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44838818801), and import benchmark [44838818783](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44838818783). Subordinate [PR #17](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/17) merged into the development P9 branch. **91/103 tasks done, P9-T003 active**.
+
+Source-backed reviewer walkthrough and a seven-suite honest QIT matrix are committed; official Woo managed QIT, Marketplace vendor approval and publishing remain **NOT RUN / NOT AUTHORIZED**. Next: review the [P9-T003 screenshot candidate PR #18](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/18), run its genuine browser screenshot generator, inspect exact-source Free/Pro/RTL/mobile PNGs, then record evidence. Do not merge P9 phase PR #16 into main until all phase tasks and final exact-head CI pass. Current release remains version 0.1.0 development preview.
+
 Build independent Free and Pro WooCommerce plugins for local bank transfer reconciliation. Resume from `.ai/state.json`, `.ai/next-task.json`, and `BACKLOG.md`; the master prompt's Section 23 defines completion.
 
 ## P8 merged; P9-T001 verified; P9-T002 active — 2026-11-21
