@@ -9,3 +9,10 @@ Allocation-audit report rows expose only validated order/source/account IDs, exa
 The initial native disposable database fixture verifies filtered audit/statement rows, per-account and per-currency isolation, proposed vs approved segregation, descending cursor pagination, accurate import progress counts and denial to an unauthenticated actor.
 
 P6-T002 remains incomplete until all outstanding BACS orders, unmatched bank rows, partial-funding and exception aging report families are available and verified through native WC CRUD/Pro data. Never wire report queries to a customer route, action hooks, refund or live bank connection.
+
+
+## HPOS-safe order funding reports (CI pending)
+
+Outstanding BACS and partial-funding reports use WooCommerce CRUD, not \`wp_posts\` or the HPOS-specific order SQL tables. They read exact WooCommerce order totals in minor units and subtract only Free manual allocations and Pro allocations in approved/committed state. Unreviewed proposed money does not count as funded. Each order's expected total, ISO currency and decimal precision are rechecked against all existing funding rows; stale/overdrawn order snapshots or invalid/overflowing database integers fail closed. Unconfirmed receiving-bank bindings are displayed as unconfirmed; a bank-account filter includes only explicit matching bindings.
+
+These are **unpaid** BACS order statuses, with UTC order creation bounds; the query excludes COD and paid orders. Pagination is by immutable order ID and totals are per returned page, not a total financial ledger. A hard 3,000-order WooCommerce CRUD scan limit forces a narrower query on large stores rather than misrepresenting an incomplete result as complete. The native fixture exercises classic storage and HPOS separately, including $50 outstanding and $60 outstanding on a $100 order with $40 manual credit; no financial action is triggered.

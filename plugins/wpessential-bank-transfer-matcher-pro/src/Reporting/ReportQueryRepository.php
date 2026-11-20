@@ -26,6 +26,9 @@ final class ReportQueryRepository {
 			! current_user_can( FreeCaps::APPROVE ) ) {
 			throw new RuntimeException( 'Financial reports require explicit finance permissions.' );
 		}
+		if ( in_array( $definition->report, [ 'outstanding_orders', 'partial_funding' ], true ) ) {
+			return ( new OrderFundingReportRepository( $this->db ) )->run( $definition );
+		}
 		$from = $definition->from . ' 00:00:00';
 		$end = ( new DateTimeImmutable( $definition->to . ' 00:00:00', new DateTimeZone( 'UTC' ) ) )
 			->modify( '+1 day' )->format( 'Y-m-d H:i:s' );

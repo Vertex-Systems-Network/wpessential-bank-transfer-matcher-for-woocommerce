@@ -61,6 +61,11 @@ wp_test eval-file "$root/tests/integration/pro-many-credits.php"
 wp_test eval-file "$root/tests/integration/pro-split-credit.php"
 wp_test eval-file "$root/tests/integration/pro-allocation-ui.php"
 wp_test eval-file "$root/tests/integration/pro-report-queries.php"
+wp_test option update woocommerce_custom_orders_table_enabled no
+wp_test eval-file "$root/tests/integration/pro-report-order-balances.php"
+wp_test option update woocommerce_custom_orders_table_enabled yes
+wp_test eval-file "$root/tests/integration/pro-report-order-balances.php"
+wp_test option update woocommerce_custom_orders_table_enabled no
 wp_test eval-file "$root/tests/integration/pro-finance-admin-security.php"
 # Exercise actual payment completion and audit recovery under both WooCommerce storage modes.
 wp_test option update woocommerce_custom_orders_table_enabled no
