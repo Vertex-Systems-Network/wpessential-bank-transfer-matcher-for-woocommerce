@@ -238,7 +238,7 @@ if ( str_ends_with( $stage, '_hold' ) ) {
 		return $sql;
 	}, 999 );
 }
-if ( str_starts_with( $stage, 'split_' ) ) {
+if ( str_starts_with( $stage, 'split_' ) || str_starts_with( $stage, 'verify_split_' ) ) {
 	$split = $fixture['split'] ?? null;
 	if ( ! is_array( $split ) ) throw new RuntimeException( 'Split race fixture missing.' );
 	$first = (int) $split['order_ids'][0];
