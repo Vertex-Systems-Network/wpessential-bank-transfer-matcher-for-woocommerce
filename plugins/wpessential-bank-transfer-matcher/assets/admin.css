@@ -125,3 +125,48 @@
 .wbm-admin .wbm-form-message { margin: 0; }
 .wbm-admin .wbm-form-message.is-success { color: #008a20; }
 .wbm-admin .wbm-form-message.is-error { color: #b32d2e; }
+
+
+/* P7: native Free admin layout; logical properties respect RTL without
+ * leaking to Pro, other WooCommerce screens or the public storefront. */
+.wbm-admin .wbm-orders-filter { flex-wrap: wrap; }
+.wbm-admin .wbm-table-scroll {
+  max-inline-size: 100%;
+  border: 1px solid #dcdcde;
+  background: #fff;
+  -webkit-overflow-scrolling: touch;
+}
+.wbm-admin .wbm-table-scroll:focus-visible,
+.wbm-admin :is(a,button,input,select,textarea):focus-visible,
+.wbm-order-panel :is(a,button,input,select,textarea):focus-visible {
+  outline: 2px solid #2271b1;
+  outline-offset: 2px;
+}
+.wbm-admin .wbm-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+.wbm-admin .wbm-pagination .page-numbers[aria-current="page"] {
+  font-weight: 700;
+  border-color: #2271b1;
+}
+@media (max-width: 782px) {
+  .wbm-admin .wbm-panel { padding: 0.85rem; max-inline-size: 100%; }
+  .wbm-admin .wbm-orders-filter { align-items: stretch; }
+  .wbm-admin .wbm-orders-filter :is(select,button) {
+    min-block-size: 40px;
+    max-inline-size: 100%;
+  }
+  .wbm-admin .wbm-kpis {
+    grid-template-columns: repeat(auto-fit,minmax(min(100%,170px),1fr));
+  }
+  .wbm-admin .wbm-details { grid-template-columns: minmax(0,1fr); }
+  .wbm-admin .wbm-details dd { margin-block-end: 0.65rem; }
+}
+@media (forced-colors: active) {
+  .wbm-admin :is(.wbm-panel,.wbm-kpi,.wbm-table-scroll) {
+    border: 1px solid CanvasText;
+  }
+}

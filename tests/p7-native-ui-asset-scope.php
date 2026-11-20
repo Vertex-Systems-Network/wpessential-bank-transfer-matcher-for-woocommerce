@@ -52,4 +52,13 @@ if ( ! is_string( $css ) || strlen( $css ) < 4500 ||
 	str_contains( $css, 'display: none' ) ) {
 	throw new RuntimeException( 'Native Pro UI CSS is missing required scope, focus, horizontal scroll or accessible breakpoints.' );
 }
+$free_css = $root_css = dirname( __DIR__ ) .
+	'/plugins/wpessential-bank-transfer-matcher/assets/admin.css';
+$free_source = is_file( $free_css ) ? file_get_contents( $free_css ) : false;
+if ( ! is_string( $free_source ) ||
+	! str_contains( $free_source, '.wbm-admin .wbm-table-scroll:focus-visible' ) ||
+	! str_contains( $free_source, '@media (max-width: 782px)' ) ||
+	! str_contains( $free_source, '@media (forced-colors: active)' ) ) {
+	throw new RuntimeException( 'Free native responsive/focus styles missing or unscoped.' );
+}
 echo "PASS exact WooCommerce Pro submenu stylesheet allowlist, Free/front-end isolation, focus, RTL-logical and mobile CSS contracts\n";

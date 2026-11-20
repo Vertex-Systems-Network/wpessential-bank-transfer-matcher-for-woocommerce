@@ -49,7 +49,7 @@ final class OrdersPage {
 		if ( ! $results->orders ) {
 			printf( '<p role="status">%s</p>', esc_html__( 'No bank transfer orders match this status.', 'wpessential-bank-transfer-matcher' ) );
 		} else {
-			echo '<div class="wbm-table-scroll"><table class="wp-list-table widefat fixed striped"><thead><tr>';
+			echo '<div class="wbm-table-scroll" role="region" tabindex="0" aria-label="Bank transfer orders table"><table class="wp-list-table widefat fixed striped"><thead><tr>';
 			foreach ( [ __( 'Order', 'wpessential-bank-transfer-matcher' ), __( 'Date', 'wpessential-bank-transfer-matcher' ), __( 'Customer', 'wpessential-bank-transfer-matcher' ), __( 'Payment reference', 'wpessential-bank-transfer-matcher' ), __( 'Total', 'wpessential-bank-transfer-matcher' ), __( 'Allocated', 'wpessential-bank-transfer-matcher' ), __( 'Outstanding', 'wpessential-bank-transfer-matcher' ), __( 'Claim', 'wpessential-bank-transfer-matcher' ), __( 'Reconciliation', 'wpessential-bank-transfer-matcher' ), __( 'Actions', 'wpessential-bank-transfer-matcher' ) ] as $heading ) {
 				printf( '<th scope="col">%s</th>', esc_html( $heading ) );
 			}
