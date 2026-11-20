@@ -64,10 +64,13 @@ $block_id = wp_insert_post( [
 if ( is_wp_error( $block_id ) || ! $block_id ) {
 	throw new RuntimeException( 'Could not seed real WooCommerce Checkout Block page.' );
 }
-$block_html = do_blocks( (string) get_post_field( 'post_content', $block_id ) );
-if ( ! str_contains( $block_html, 'wc-block-checkout' ) &&
-	! str_contains( $block_html, 'wp-block-woocommerce-checkout' ) ) {
-	throw new RuntimeException( 'Installed WooCommerce did not register Checkout Blocks.' );
+// WP-CLI lacks the frontend request context required by dynamic Woo Blocks;
+// a CLI do_blocks() HTML check would give false negatives. Verify the genuine
+// serialized block here; Chromium separately asserts browser-rendered markup.
+$parsed = parse_blocks( (string) get_post_field( 'post_content', $block_id ) );
+if ( count( $parsed ) !== 1 ||
+	( $parsed[0]['blockName'] ?? '' ) !== 'woocommerce/checkout' ) {
+	throw new RuntimeException( 'Could not persist a genuine WooCommerce Checkout Block.' );
 }
 $fixture = [
 	'version' => 1,
