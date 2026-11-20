@@ -58,7 +58,12 @@ try {
   await page.locator('#user_pass').fill(password);
   await page.locator('#wp-submit').click();
   await page.waitForURL(u => u.pathname.startsWith('/wp-admin/'), { timeout: 45000 });
-  await page.waitForLoadState('domcontentloaded');
+  await page.waitForLoadState('load');
+  // WordPress/WooCommerce may initially land on a dashboard or onboarding
+  // interstitial. Enter the real matcher wp-admin route before inspecting
+  // navigation, rather than treating the transient post-login page as UI.
+  await page.goto(base + '/wp-admin/admin.php?page=wpessential-bank-transfer-matcher',
+    { waitUntil: 'load', timeout: 45000 });
   await page.locator('#adminmenu').waitFor({ state: 'attached', timeout: 15000 });
   for (const size of sizes) {
     await page.setViewportSize(size);
