@@ -3,6 +3,7 @@ use WPEssential\BankTransferMatcherPro\Admin\AllocationAdminActions;
 use WPEssential\BankTransferMatcherPro\Admin\AllocationReviewPage;
 use WPEssential\BankTransferMatcherPro\Admin\ReportExportsPage;
 use WPEssential\BankTransferMatcherPro\Admin\FinanceNotificationsPage;
+use WPEssential\BankTransferMatcherPro\Admin\FinanceOperationsPage;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
 	throw new RuntimeException( 'Use disposable wbm_ci for finance admin security tests only.' );
@@ -32,6 +33,13 @@ if ( false === has_action( 'admin_post_wbm_pro_save_finance_notifications' ) ||
 	false !== has_action( 'admin_post_nopriv_wbm_pro_test_finance_notification' ) ||
 	false === has_action( 'admin_menu', [ FinanceNotificationsPage::class, 'menu' ] ) ) {
 	throw new RuntimeException( 'Opt-in finance notifications need authenticated admin settings and explicit tests.' );
+}
+if ( false === has_action( 'admin_post_wbm_pro_ops_diagnostics_export' ) ||
+	false === has_action( 'admin_post_wbm_pro_ops_recovery' ) ||
+	false !== has_action( 'admin_post_nopriv_wbm_pro_ops_diagnostics_export' ) ||
+	false !== has_action( 'admin_post_nopriv_wbm_pro_ops_recovery' ) ||
+	false === has_action( 'admin_menu', [ FinanceOperationsPage::class, 'menu' ] ) ) {
+	throw new RuntimeException( 'Operational support diagnostics and recovery must require authenticated admin POST.' );
 }
 if ( false === has_action( 'admin_menu', [ AllocationReviewPage::class, 'menu' ] ) ) {
 	throw new RuntimeException( 'Finance review queue was not registered as WordPress menu.' );
@@ -135,6 +143,22 @@ try {
 			try {
 				FinanceNotificationsPage::$handler();
 				throw new RuntimeException( 'Invalid nonce executed notification action.' );
+			} catch ( RuntimeException $expected ) {
+				if ( 'Finance nonce rejected before business operation.' !== $expected->getMessage() ) {
+					throw $expected;
+				}
+			}
+		}
+		foreach ( [
+			'wbm_pro_ops_diagnostics_export' => 'download_diagnostics',
+			'wbm_pro_ops_recovery' => 'recover',
+		] as $action => $handler ) {
+			$_POST = [ 'action' => $action, '_wpnonce' => 'invalid-finance-nonce',
+				'operation' => 'retry_import', 'source_id' => '1',
+				'reason' => 'Explicit synthetic guarded operation.' ];
+			try {
+				FinanceOperationsPage::$handler();
+				throw new RuntimeException( 'Forged nonce executed a finance operations action.' );
 			} catch ( RuntimeException $expected ) {
 				if ( 'Finance nonce rejected before business operation.' !== $expected->getMessage() ) {
 					throw $expected;
