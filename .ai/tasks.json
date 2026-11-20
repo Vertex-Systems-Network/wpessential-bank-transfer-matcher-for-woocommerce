@@ -868,8 +868,8 @@
       "WBM-P6-T002"
     ],
     "verification": "VERIFY-P6-T003",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Exact code SHA 13bbbee13d685c58836a251042c1f0fc3567f4fe passed full GitHub Actions run 44653642849 SUCCESS: Foundation PHP lint/static/unit and packaged Playground + native disposable WordPress/WooCommerce/MariaDB integration. Immediate six-report allowlisted 500-row/1-MiB CSV with formula neutralization, finance capabilities+nonces, private audit+3/minute. Actor-bound Action Scheduler async 100-row/page, max 10 pages/1000 rows/5MiB, max 2 live jobs, 3 creations/min, 2h expiry, cancellation, audited per-user private download; synthetic 106-row/two-page/single-header fixture, forged-nonce and anonymous denial pass. Fixed real multi-page unique-action scheduling failure found in runs 44653254349/44653246116. Phase P6 remaining tasks T004–T008 and security/ops QA gates not yet done.",
     "next_action": "Implement secure bounded finance CSV export (redaction, spreadsheet-injection defense, finance capability and audit), verify native/Playground tests, then async/export limits."
   },
   {
@@ -882,8 +882,9 @@
       "WBM-P6-T003"
     ],
     "verification": "VERIFY-P6-T004",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Implement opt-in exception/review-digest notifications with previewable safe templates, explicitly configured finance-role recipients, independent per-recipient rate limits, scheduler safety and native synthetic tests; never send test emails automatically."
   },
   {
     "id": "WBM-P6-T005",

@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P6-T003",
+  "id": "WBM-P6-T004",
   "phase": "P6",
-  "title": "safe CSV export, async job limits, audit export permissions.",
+  "title": "notification templates, previews, rate limits and correct recipient controls.",
   "owner": "Pro engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
   "depends_on": [
-    "WBM-P6-T002"
+    "WBM-P6-T003"
   ],
-  "verification": "VERIFY-P6-T003",
+  "verification": "VERIFY-P6-T004",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Implement secure bounded finance CSV export (redaction, spreadsheet-injection defense, finance capability and audit), verify native/Playground tests, then async/export limits."
+  "next_action": "Implement opt-in exception/review-digest notifications with previewable safe templates, explicitly configured finance-role recipients, independent per-recipient rate limits, scheduler safety and native synthetic tests; never send test emails automatically."
 }

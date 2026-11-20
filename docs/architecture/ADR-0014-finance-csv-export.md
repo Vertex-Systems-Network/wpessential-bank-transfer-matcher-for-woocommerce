@@ -26,10 +26,9 @@ No export file or temporary public upload URL is created. Only the fixed-allowli
 
 Report pages are **not an atomic all-time ledger snapshot**: intermediate bank/order changes during paging may affect rows, and jobs fail rather than claim completeness when their scan limit is exhausted. A future snapshot export would require an explicitly versioned accounting read model.
 
-## Gates still open
+## Verified P6-T003 evidence and remaining downstream gates
 
-- Run full PHP unit/static/Playground plus disposable WordPress/WooCommerce/MariaDB export fixtures and the forged-nonce admin adapter checks at the latest branch SHA. Record actual results, not older jobs.
-- Verify the newly implemented Action Scheduler private 10-page/1,000-row contract, expiry/cancellation/actor revocation, retry behavior, and cap enforcement in native/Playground at the latest branch SHA. Full-pipeline CI remains the source of truth; a code commit is not test evidence.
-- Verify exact export audit pagination/role behavior, concurrency and failure modes; document operational user guidance. Mark P6-T003 done **only after** task scope and required integration evidence are complete.
-
-Phase P6 cannot be merged into `main` until *all* P6 tasks T001–T008, export/redaction and no-oversend notification phase gates have passed; see `.ai/phase-merge-policy.md`.
+- **P6-T003 implemented and native+Playground verified** at exact development code commit `13bbbee13d685c58836a251042c1f0fc3567f4fe`: [GitHub Actions 44653642849](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44653642849), foundation PHP/static/unit+Playground and disposable WooCommerce/MariaDB fully SUCCESS.
+- The synthetic native tests cover all six allowlisted schemas, CSV formula injection/PII exclusion, nonce/finance authorization, one-page audit throttling, 106-row/two-page queued export, ready-only download, no extra headers, user-bound access, 3 queued downloads/minute, 2 live jobs, 3 enqueues/minute, cancellation, expiry and duplicate-worker safety. The `unique=true` continuation bug was **discovered in actual failing CI** 44653254349/44653246116 and fixed at `13bbbee`, not papered over.
+- **Follow-on P6-T006**: improve operational failed-job detection, explicit restart/repair guidance, and redacted diagnostics. **P6-T007**: define retention/privacy/backup cleanup. **P7/P8**: end-to-end UI screenshots, capability-revocation and manual browser/RTL QA. These are downstream tasks, not grounds to claim release readiness today.
+- **P6 remains incomplete** until P6-T004 notifications, T005 dashboard, T006 diagnostics/recovery, T007 privacy, T008 full operational docs and the exact *phase gate* pass. Phase PR #12 is still draft and must not be merged yet.

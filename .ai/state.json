@@ -86,7 +86,9 @@
     "report_queries_initial": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit.",
     "order_funding_reports": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit.",
     "unmatched_credit_reports": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit.",
-    "exception_aging_reports": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit."
+    "exception_aging_reports": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit.",
+    "report_csv_exports": "passed: full exact-code SHA 13bbbee GitHub Actions 44653642849; safe six-report CSV, finance-only POST/nonce, whitelist+formula neutralization, 3/minute audit",
+    "queued_finance_export": "passed: full GitHub Actions 44653642849; native 106 synthetic batches across 100-row pages, private actor-only status/download, 2-job/3-start quotas, same audit download throttle, expiry, cancellation and fail-closed checks; per-job lock/monotonic cursor"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -100,8 +102,8 @@
     "free_is_independent"
   ],
   "phase": "P6",
-  "active_task_id": "WBM-P6-T003",
-  "next_action": "Implement secure bounded finance CSV export (redaction, spreadsheet-injection defense, finance capability and audit), verify native/Playground tests, then async/export limits.",
+  "active_task_id": "WBM-P6-T004",
+  "next_action": "Implement opt-in exception/review-digest notifications with previewable safe templates, explicitly configured finance-role recipients, independent per-recipient rate limits, scheduler safety and native synthetic tests; never send test emails automatically.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -168,8 +170,9 @@
     "WBM-P5-T010",
     "WBM-P5-T011",
     "WBM-P6-T001",
-    "WBM-P6-T002"
+    "WBM-P6-T002",
+    "WBM-P6-T003"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "5164ed3f9ab0181d55ce1c640157e638055c9788"
+  "last_verified_remote_milestone": "13bbbee13d685c58836a251042c1f0fc3567f4fe"
 }
