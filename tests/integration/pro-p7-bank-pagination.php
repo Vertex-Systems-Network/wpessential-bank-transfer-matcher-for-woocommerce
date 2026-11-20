@@ -66,7 +66,8 @@ try {
 	if ( str_contains( $twenty, '>Next</a>' ) ||
 		! str_contains( $twenty, 'Imported statement rows' ) ||
 		! str_contains( $twenty, 'role="region"' ) ||
-		! str_contains( $twenty, 'SYNTH-' ) === false ) {
+		str_contains( $twenty, 'SYNTH-20-' ) ||
+		! str_contains( $twenty, '••••' ) ) {
 		throw new RuntimeException( 'Exact 20-row imported bank page had phantom Next or inaccessible source table.' );
 	}
 	$first = $render( $batch_ids[21], 1 );
