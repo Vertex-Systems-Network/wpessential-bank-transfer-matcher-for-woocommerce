@@ -1,6 +1,9 @@
 === WPEssential Bank Transfer Matcher for WooCommerce ===
 Requires at least: 7.0
+Tested up to: 7.0
 Requires PHP: 8.3
+WC requires at least: 10.8
+WC tested up to: 11.3.0
 Stable tag: 0.1.0
 License: GPL-2.0-or-later
 

@@ -5,6 +5,8 @@
  * Version: 0.1.0
  * Requires at least: 7.0
  * Requires PHP: 8.3
+ * Tested up to: 7.0
+ * WC tested up to: 11.3.0
  * WC requires at least: 10.8
  * Requires Plugins: woocommerce
  * Author: WPEssential
@@ -15,6 +17,22 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+// Declare WooCommerce HPOS compatibility from the main plugin file in both
+// admin and frontend requests. Actual Free+Pro classic/HPOS workflows are
+// exercised by disposable WooCommerce/MariaDB integration tests.
+add_action(
+	'before_woocommerce_init',
+	static function (): void {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+				'custom_order_tables',
+				__FILE__,
+				true
+			);
+		}
+	}
+);
 
 register_deactivation_hook( __FILE__, static function (): void {
 	wp_clear_scheduled_hook( 'wpessential_wbm_purge_claim_receipts' );

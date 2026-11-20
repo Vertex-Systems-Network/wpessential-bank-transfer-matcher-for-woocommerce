@@ -26,5 +26,7 @@
   "requires_wc": "10.8",
   "repository": "https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce",
   "author": "WPEssential",
-  "wordpress_org_contributors": []
+  "wordpress_org_contributors": [],
+  "tested_wp": "7.0",
+  "tested_wc": "11.3.0"
 }
