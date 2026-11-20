@@ -81,7 +81,7 @@
       "capability": "order owner or order-key+email",
       "nonce": "wpessential_wbm_submit_claim:<order_id>",
       "method": "POST",
-      "guest": false,
+      "guest": true,
       "form_source": "plugins/wpessential-bank-transfer-matcher/src/Claims/CustomerClaims.php"
     },
     {
