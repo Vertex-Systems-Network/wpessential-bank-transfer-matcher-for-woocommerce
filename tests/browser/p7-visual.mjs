@@ -113,7 +113,8 @@ try {
             const form = document.querySelector('form.wbm-pro-toolbar');
             const region = document.querySelector('.wbm-pro-table-scroll');
             const hint = document.querySelector('.wbm-pro-scroll-hint');
-            if (!form || !region || !hint) return { missing: true };
+            const empty = document.querySelector('.wbm-pro-empty');
+            if (!form || (!region && !empty) || (region && !hint)) return { missing: true };
             const bounds = form.getBoundingClientRect();
             const labels = [...form.querySelectorAll(':scope > label.wbm-pro-field')];
             const submit = form.querySelector(':scope > .submit');
@@ -128,10 +129,11 @@ try {
                 control.getBoundingClientRect().top > boxes[boxes.length - 1].bottom - 2),
               tooWideButton: !!(control &&
                 control.getBoundingClientRect().width > bounds.width + 1),
-              scrollable: region.scrollWidth > region.clientWidth + 10,
-              overflow: getComputedStyle(region).overflowX,
-              hintVisible: hint.getBoundingClientRect().height > 0,
-              hintText: (hint.innerText || '').trim().length,
+              scrollable: !region || region.scrollWidth > region.clientWidth + 10,
+              overflow: region ? getComputedStyle(region).overflowX : 'auto',
+              hintVisible: !region || hint.getBoundingClientRect().height > 0,
+              hintText: !region ? 100 : (hint.innerText || '').trim().length,
+              emptyIsReal: !region && !!empty,
             };
           });
           if (geometry.missing || geometry.fields < 2 ||
