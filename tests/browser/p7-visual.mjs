@@ -174,6 +174,60 @@ try {
       }
     }
   }
+
+  // Exercise actual GET forms, not decorative filters or mocked API handlers.
+  // Never submit a financial POST, allocation, claim or approval in visual QA.
+  await page.setViewportSize({ width: 375, height: 812 });
+  const checkFilter = async (name, route, apply, verify) => {
+    try {
+      const response = await page.goto(base + route, { waitUntil: 'domcontentloaded' });
+      if (!response || response.status() !== 200) {
+        throw new Error('Actual WordPress screen unavailable for filter test');
+      }
+      await apply();
+      await page.waitForLoadState('domcontentloaded');
+      await verify();
+      const filename = mode + '-functional-' + name + '-375.png';
+      await page.screenshot({ path: join(output, filename), fullPage: true });
+      report.screens.push({ ui: name === 'review-filter-empty' ? 'UI-009' : 'UI-008',
+        name, width: 375, mode, screenshot: filename, live_get_filter: true });
+    } catch (error) {
+      report.issues.push({ mode, page: name, width: 375, issue:
+        'Native filter or persistence failed: ' + String(error?.message || error).slice(0, 220) });
+    }
+  };
+  await checkFilter('review-filter-empty',
+    url('wpessential-wbm-pro-review-queue'),
+    async () => {
+      await page.locator('form.wbm-pro-toolbar select[name="status"]').selectOption('resolved');
+      await page.locator('form.wbm-pro-toolbar input[type="submit"]').click();
+    },
+    async () => {
+      const query = new URL(page.url()).searchParams;
+      if (query.get('status') !== 'resolved' ||
+          query.get('page') !== 'wpessential-wbm-pro-review-queue' ||
+          !(await page.locator('.wbm-pro-empty').innerText()).includes('No review cases match')) {
+        throw new Error('Case-state GET filter did not persist or return source-backed empty state');
+      }
+    });
+  await checkFilter('bank-source-page-size',
+    url('wpessential-wbm-pro-bank-transactions') + '&batch=' + fixture.batch_id,
+    async () => {
+      await page.locator('form.wbm-pro-toolbar select[name="per_page"]').selectOption('20');
+      await page.locator('form.wbm-pro-toolbar input[type="submit"]').click();
+    },
+    async () => {
+      const query = new URL(page.url()).searchParams;
+      const view = await page.locator('#wpbody-content').innerText();
+      if (query.get('batch') !== String(fixture.batch_id) ||
+          query.get('per_page') !== '20' ||
+          query.get('page') !== 'wpessential-wbm-pro-bank-transactions' ||
+          !view.includes('Credit') || view.includes('SYNTHETIC-CREDIT') ||
+          await page.locator('.wbm-pro-table-scroll').count() !== 1) {
+        throw new Error('Imported-source filter lost batch selection, masking, or bounded page size');
+      }
+    });
+
   if (mode === 'ltr') {
     for (const key of ['pro-review-queue', 'pro-finance-allocations', 'pro-bank-transactions']) {
       const spec = specs.find(x => x.key === key);
