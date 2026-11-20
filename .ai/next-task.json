@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P5-T011",
-  "phase": "P5",
-  "title": "simultaneous approval/race condition and complex fixture tests.",
-  "owner": "Reconciliation engineering",
-  "paths": "plugins/",
+  "id": "WBM-P6-T001",
+  "phase": "P6",
+  "title": "report definitions with per-currency totals and reproducible filters.",
+  "owner": "Pro engineering",
+  "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
   "depends_on": [
-    "WBM-P5-T010"
+    "WBM-P5-T011"
   ],
-  "verification": "VERIFY-P5-T011",
+  "verification": "VERIFY-P6-T001",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify true separate-WP-CLI split group approver locks and Pro finalization vs Free manual writer on a second recipient; ensure no partial group approval, no double spend and separate WC paid replay."
+  "next_action": "Implement P6 report definition contracts with strictly bounded UTC filters, deterministic canonical filter fingerprints and overflow-safe per-currency/precision/status totals; verify pure PHP unit and CI before native report query consumers."
 }

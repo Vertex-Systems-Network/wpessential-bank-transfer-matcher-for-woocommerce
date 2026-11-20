@@ -79,9 +79,10 @@
     "allocation_review_ui": "passed: GitHub Actions 44639405880 and 44639399125 native loaded queue/split/correction audit, exact-money summary and filtered workspace",
     "finance_admin_actions": "passed: GitHub Actions 44639405880 and 44639399125 nonce-gated admin POST adapters, capability checks and manual maker/checker/correction review",
     "finance_dialogs": "passed: GitHub Actions 44639405880 and 44639399125 Node syntax, Pro asset manifest inclusion and WordPress scoped enqueue",
-    "pro_cross_process_races": "pending native: three true overlapping WP-CLI requests using live source/order advisory locks, unique source allocation and exactly one payment hook",
-    "pro_cross_edition_races": "pending native: Free manual writer vs Pro proposal/checker/finalizer from genuinely distinct WordPress CLI processes, same source and order",
-    "pro_cross_process_split_races": "pending: real two-WP-process shared-source split approval and finalization vs Free writer on other recipient, no partial paid status"
+    "pro_cross_process_races": "passed: GitHub Actions 44642819046 all jobs; sibling 44642809909 native — three overlapping independent WordPress CLI maker/checker/finalizer requests, exactly one WC paid hook",
+    "pro_cross_edition_races": "passed: GitHub Actions 44642819046 — Free manual writer blocked throughout Pro named source/order lock and no double credit",
+    "pro_cross_process_split_races": "passed: GitHub Actions 44642819046 — atomic 2-recipient split reviewer, second recipient lock vs Free writer, independent paid completion with exact source conservation",
+    "report_definitions": "pending: P6-T001 canonical UTC filter/report definition and per-currency exact-money totals"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -94,9 +95,9 @@
     "allocations_are_idempotent",
     "free_is_independent"
   ],
-  "phase": "P5",
-  "active_task_id": "WBM-P5-T011",
-  "next_action": "Verify true separate-WP-CLI split group approver locks and Pro finalization vs Free manual writer on a second recipient; ensure no partial group approval, no double spend and separate WC paid replay.",
+  "phase": "P6",
+  "active_task_id": "WBM-P6-T001",
+  "next_action": "Implement P6 report definition contracts with strictly bounded UTC filters, deterministic canonical filter fingerprints and overflow-safe per-currency/precision/status totals; verify pure PHP unit and CI before native report query consumers.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -160,7 +161,8 @@
     "WBM-P5-T007",
     "WBM-P5-T008",
     "WBM-P5-T009",
-    "WBM-P5-T010"
+    "WBM-P5-T010",
+    "WBM-P5-T011"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"

@@ -829,8 +829,8 @@
       "WBM-P5-T010"
     ],
     "verification": "VERIFY-P5-T011",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44642819046 completed SUCCESS for latest cross-process fixture a926c66, including foundation PHP syntax/static/unit, WordPress Playground package/bootstraps and native WooCommerce/MariaDB. Sibling 44642809909 native MariaDB success. Real simultaneous separate WP-CLI processes challenged Pro maker source proposal, independent checker approval and explicit paid intent vs another Pro request AND a Free manual writer, plus source split to two recipients and a Free writer targeting the second recipient during first order finalization. Verified exactly one allocation/audit transition, bank source conservation, atomic split approval, no partial payment and idempotent WooCommerce payment hook."
   },
   {
     "id": "WBM-P6-T001",
@@ -842,7 +842,7 @@
       "WBM-P5-T011"
     ],
     "verification": "VERIFY-P6-T001",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {
