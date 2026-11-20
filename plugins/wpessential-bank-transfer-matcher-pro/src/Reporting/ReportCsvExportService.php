@@ -47,6 +47,11 @@ final class ReportCsvExportService {
 		];
 	}
 
+	/** Shared audit schema for synchronous pages and authorized queued downloads. */
+	public function install_audit_schema(): void {
+		$this->install();
+	}
+
 	private function install(): void {
 		( new MigrationRunner( $this->db, self::VERSION ) )->upgrade( [
 			static function ( wpdb $db ): bool {
