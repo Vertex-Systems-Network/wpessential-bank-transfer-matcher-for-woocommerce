@@ -1008,8 +1008,8 @@
       "WBM-P7-T004"
     ],
     "verification": "VERIFY-P7-T005",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Actual T005 screenshot inspect (baseline artifact 14601346876 / 111 real PNGs) + source-backed WordPress UI fixes: mobile full-width LTR/Arabic RTL bank/review/allocation filters, unwrapped WP submit button alignment, discoverable horizontally scrollable masked audit tables, semantically readable states, 20/21 exact-page pagination guard and 10000-page cap. Updated real WP7/WC Chromium artifact 14605361910: 115 screenshots, LTR59/RTL56, 14 UI IDs, 0 issues, 6 mobile filter geometry validations, 4 real GET filter submit checks with masked sources and no financial POST. Exact SHA 27e2c46bf7e26e983a5b908fdab4a57f91c29c85: GitHub Actions browser 44682670860 + Foundation/Playground/native WordPress/WooCommerce/MariaDB 44682670864 and 44682677458 all SUCCESS. Automated visual checks don't replace full manual WCAG: P7-T007–T008 pending.",
     "next_action": "Inspect actual 111 Chromium screenshot artifacts, especially 375 and Arabic RTL, against native WP/WC hierarchy; fix real clipping/misalignment/overlong labels/status contrast and broken filters/pagination without inventing backend behaviors. Add visible UI/focus/overflow regressions with real browser screenshots; verify exact full Foundation/Playground/native and browser CI at code SHA, record before/after evidence. Then P7-T006 Free/Pro nav integration."
   },
   {
@@ -1022,8 +1022,9 @@
       "WBM-P7-T005"
     ],
     "verification": "VERIFY-P7-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Verify Free-only/Pro-enabled/Pro-without-Free native WooCommerce navigation, active menu state and role-gated links using actual WP menus; remove duplicate/stale destinations and ensure no feature-links to nonimplemented forms. Build disposable classic+HPOS WP/WC menu tests, native 1440/375 and RTL browser checks and exact latest-head full CI. Then T007 evidence rubric and T008 role usability. Keep P7 PR #13 draft/unmerged."
   },
   {
     "id": "WBM-P7-T007",
