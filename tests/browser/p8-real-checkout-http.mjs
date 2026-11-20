@@ -121,11 +121,19 @@ try {
     { waitUntil: 'domcontentloaded', timeout: 45000 });
   assert.equal(blockResponse?.status(), 200);
   const blockRoot = blockPage.locator('.wp-block-woocommerce-checkout, .wc-block-checkout').first();
-  await blockRoot.waitFor({ state: 'attached', timeout: 30000 });
+  const blockRendered = await blockRoot.waitFor({ state: 'attached', timeout: 15000 })
+    .then(() => true, () => false);
+  const blockMarkup = await blockPage.evaluate(() => ({
+    title: document.title.slice(0, 120),
+    body_class: document.body.className.slice(0, 160),
+    checkout_block_candidates: document.querySelectorAll('[class*="wc-block-checkout"], [class*="woocommerce-checkout"]').length,
+  }));
   await blockPage.screenshot({ path: join(dir, 'p8-t006-blocks-render.png'),
     fullPage: true, animations: 'disabled', timeout: 45000 });
-  recorded('real_checkout_block_page_rendered', { http_status: blockResponse.status(),
-    wc_checkout_block: true });
+  recorded('real_checkout_block_page_probe', { http_status: blockResponse.status(),
+    wc_checkout_block: blockRendered, dom: blockMarkup });
+  if (!blockRendered) report.issues.push({ kind: 'checkout_block_not_rendered',
+    path: new URL(blockPage.url()).pathname, dom: blockMarkup });
   await blockContext.close();
 
   // Actual Store API HTTP represents the Checkout Blocks transaction path,
