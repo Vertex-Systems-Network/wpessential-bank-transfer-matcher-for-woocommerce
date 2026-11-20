@@ -82,8 +82,8 @@
     "pro_cross_process_races": "passed: GitHub Actions 44642819046 all jobs; sibling 44642809909 native — three overlapping independent WordPress CLI maker/checker/finalizer requests, exactly one WC paid hook",
     "pro_cross_edition_races": "passed: GitHub Actions 44642819046 — Free manual writer blocked throughout Pro named source/order lock and no double credit",
     "pro_cross_process_split_races": "passed: GitHub Actions 44642819046 — atomic 2-recipient split reviewer, second recipient lock vs Free writer, independent paid completion with exact source conservation",
-    "report_definitions": "pending: pure PHP canonical report type/date/currency/account filters and overflow-safe per-currency/precision/state grouping",
-    "report_queries_initial": "pending: native source-backed allocation-audit and import-batch query report, scoped account/currency/state filters, cursor pagination and zero payment writes"
+    "report_definitions": "passed: GitHub Actions 44643672874 and 44643662149 full foundation, Playground and native, canonical strict finance report scope/exact per-currency totals",
+    "report_queries_initial": "pending: native scoped allocation and import batch read-only queries"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -97,8 +97,8 @@
     "free_is_independent"
   ],
   "phase": "P6",
-  "active_task_id": "WBM-P6-T001",
-  "next_action": "Verify canonical report definitions and initial allocation/import read-only providers in CI; continue P6-T002 outstanding BACS, unmatched credit, partial funding and exception-aging queries.",
+  "active_task_id": "WBM-P6-T002",
+  "next_action": "Verify first finance-only native allocation/import queries, then add remaining P6-T002 bounded WooCommerce BACS outstanding, partial funding, unmatched imported bank credits and exception-aging report sources.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -163,7 +163,8 @@
     "WBM-P5-T008",
     "WBM-P5-T009",
     "WBM-P5-T010",
-    "WBM-P5-T011"
+    "WBM-P5-T011",
+    "WBM-P6-T001"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"

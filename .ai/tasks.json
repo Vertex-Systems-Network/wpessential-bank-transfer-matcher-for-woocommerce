@@ -842,8 +842,8 @@
       "WBM-P5-T011"
     ],
     "verification": "VERIFY-P6-T001",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions runs 44643672874 and 44643662149 both completed SUCCESS for P6-T001 canonical report definitions: Foundation PHP lint/PHPStan/unit and Playground, native WordPress/WooCommerce/MariaDB. Strict six report IDs and state vocabularies, bounded exact ISO dates, account/currency/limit/keyset filters, canonical SHA-256 scope, exact per-currency/exponent/state minor-unit totals, overflow/float/SQL-like input rejection. Pure read-only; no accounting authorization."
   },
   {
     "id": "WBM-P6-T002",
@@ -855,7 +855,7 @@
       "WBM-P6-T001"
     ],
     "verification": "VERIFY-P6-T002",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {

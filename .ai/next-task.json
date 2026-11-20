@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P6-T001",
+  "id": "WBM-P6-T002",
   "phase": "P6",
-  "title": "report definitions with per-currency totals and reproducible filters.",
+  "title": "outstanding, unmatched, partial, exception-aging and import summaries.",
   "owner": "Pro engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
   "depends_on": [
-    "WBM-P5-T011"
+    "WBM-P6-T001"
   ],
-  "verification": "VERIFY-P6-T001",
+  "verification": "VERIFY-P6-T002",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify canonical report definitions and initial allocation/import read-only providers in CI; continue P6-T002 outstanding BACS, unmatched credit, partial funding and exception-aging queries."
+  "next_action": "Verify first finance-only native allocation/import queries, then add remaining P6-T002 bounded WooCommerce BACS outstanding, partial funding, unmatched imported bank credits and exception-aging report sources."
 }

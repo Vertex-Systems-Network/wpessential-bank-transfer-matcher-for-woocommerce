@@ -1,6 +1,6 @@
 # ADR-0012 — P6-T001 reproducible reporting definitions and safe totals
 
-Status: implementation committed, full CI pending.
+Status: verified in full GitHub Actions runs 44643672874 and 44643662149 (Foundation, Playground and native).
 
 A report definition is a **read-only query contract** rather than an authorization, a materialized report, a payment assertion, or evidence of bank clearance. The Pro reporting phase defines six report IDs: outstanding BACS orders, unmatched imported credits, partial order funding, financial exception aging, import batches and allocation audit. Each type has an explicit allowed state vocabulary. Unknown keys or unsupported states fail closed.
 
