@@ -1,6 +1,6 @@
 # ADR-0018 — Explicit merchant retention, privacy boundaries, bounded cleanup and safe backups (P6-T007)
 
-Status: implementation on P6 draft branch; exact-source native/Playground CI verification required before marking T007 done.
+Status: implemented and verified at exact T007 source SHA `3ca9a4914a0f9ad665e08aedb6c5e761ede9afe9` by full GitHub Actions 44663096422 and 44663089250 SUCCESS.
 
 ## Consent and preservation boundaries
 
@@ -46,6 +46,6 @@ The Free plugin provides WordPress personal-data export/erase of customer paymen
 
 ### Validation and phase gate
 
-Pure fixture `tests/finance-retention-policy.php` rejects unknown/incomplete/unsafe policy windows, confirms automatic cleanup OFF and private source retain default. Native disposable fixture `tests/integration/pro-finance-retention.php` verifies explicit consent, missing/forged nonce denial, automatic worker no-op while disabled, old source untouched at default 0 days, explicitly approved 30-day terminal source cleanup, preserved import batch status, expired private export CSV erasure, bounded old support-audit cleanup, idempotency and scheduling opt-out. Admin forged nonce and nopriv hook checks are in `tests/integration/pro-finance-admin-security.php`. **Only exact-head full Foundation/static/Playground + native classic/HPOS MariaDB success allows marking T007 done.**
+Pure fixture `tests/finance-retention-policy.php` rejects unknown/incomplete/unsafe policy windows, confirms automatic cleanup OFF and private source retain default. Native disposable fixture `tests/integration/pro-finance-retention.php` verifies explicit consent, missing/forged nonce denial, automatic worker no-op while disabled, old source untouched at default 0 days, explicitly approved 30-day terminal source cleanup, preserved import batch status, expired private export CSV erasure, bounded old support-audit cleanup, idempotency and scheduling opt-out. Admin forged nonce and nopriv hook checks are in `tests/integration/pro-finance-admin-security.php`. **Full Foundation/static/Playground + native classic/HPOS MariaDB passed** for T007 code at SHA `3ca9a4914a0f9ad665e08aedb6c5e761ede9afe9`, workflows 44663096422 and 44663089250; subsequent T008 docs and final phase head require separate verification.
 
 P6-T008 requires plain-language operator steps, support examples and troubleshooting guides. Phase PR #12 merges automatically under the owner's stored policy **only** after all P6 tasks, security/no-oversend gate, complete latest SHA CI and branch protections pass. No production cleanup, deployment, marketplace publication or bank transaction is executed by this development work.

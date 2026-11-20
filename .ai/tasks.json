@@ -924,8 +924,8 @@
       "WBM-P6-T006"
     ],
     "verification": "VERIFY-P6-T007",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Full GitHub Actions 44663096422 and 44663089250 SUCCESS at exact T007 code SHA 3ca9a4914a0f9ad665e08aedb6c5e761ede9afe9 (PHP/static/unit, native WordPress/WooCommerce/MariaDB including classic/HPOS, Playground). Default-off auto retention and private import source 'never' default, mandatory manager consents/nonce, exact 48-hex private basename + external-root realpath + original file SHA256 check for opted-in completed/cancelled source cleanup, 25/source bounded metadata cleanup, audited CSV expiry 2h + audit execution, no financial ledger/order/claim deletion, idempotent native synthetic files and scheduler opt-out. ADR-0018 encrypted paired DB + private sources backup/restore runbook.",
     "next_action": "Finish default-off merchant retention settings, safe bounded TTL cleanup of private CSV bytes and explicitly consented old operational metadata/completed private source files; no financial-ledger/claim deletion. Native disposable WooCommerce and privacy/backup policy tests + full latest-SHA CI. Then P6-T008 admin docs."
   },
   {
@@ -938,8 +938,9 @@
       "WBM-P6-T007"
     ],
     "verification": "VERIFY-P6-T008",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Complete full operational Pro finance admin guide and incident response examples, add content drift/acceptance docs test, verify latest exact-head Foundation PHP/static/unit, native WooCommerce/MariaDB and Playground CI, inspect P6 whole-phase money/PII/no-over-send checks, then review branch protections and auto-merge only if every gate is green."
   },
   {
     "id": "WBM-P7-T001",

@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P6-T007",
+  "id": "WBM-P6-T008",
   "phase": "P6",
-  "title": "policies for retention, privacy, backup migration and cleanup.",
+  "title": "full operational admin docs and examples.",
   "owner": "Pro engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
   "depends_on": [
-    "WBM-P6-T006"
+    "WBM-P6-T007"
   ],
-  "verification": "VERIFY-P6-T007",
+  "verification": "VERIFY-P6-T008",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Finish default-off merchant retention settings, safe bounded TTL cleanup of private CSV bytes and explicitly consented old operational metadata/completed private source files; no financial-ledger/claim deletion. Native disposable WooCommerce and privacy/backup policy tests + full latest-SHA CI. Then P6-T008 admin docs."
+  "next_action": "Complete full operational Pro finance admin guide and incident response examples, add content drift/acceptance docs test, verify latest exact-head Foundation PHP/static/unit, native WooCommerce/MariaDB and Playground CI, inspect P6 whole-phase money/PII/no-over-send checks, then review branch protections and auto-merge only if every gate is green."
 }
