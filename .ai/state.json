@@ -82,7 +82,8 @@
     "pro_cross_process_races": "passed: GitHub Actions 44642819046 all jobs; sibling 44642809909 native — three overlapping independent WordPress CLI maker/checker/finalizer requests, exactly one WC paid hook",
     "pro_cross_edition_races": "passed: GitHub Actions 44642819046 — Free manual writer blocked throughout Pro named source/order lock and no double credit",
     "pro_cross_process_split_races": "passed: GitHub Actions 44642819046 — atomic 2-recipient split reviewer, second recipient lock vs Free writer, independent paid completion with exact source conservation",
-    "report_definitions": "pending: pure PHP canonical report type/date/currency/account filters and overflow-safe per-currency/precision/state grouping"
+    "report_definitions": "pending: pure PHP canonical report type/date/currency/account filters and overflow-safe per-currency/precision/state grouping",
+    "report_queries_initial": "pending: native source-backed allocation-audit and import-batch query report, scoped account/currency/state filters, cursor pagination and zero payment writes"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -97,7 +98,7 @@
   ],
   "phase": "P6",
   "active_task_id": "WBM-P6-T001",
-  "next_action": "Verify report definitions and exact totals in foundation CI, then connect P6-T002 source-backed read-only reports with bounded queries and capability checks.",
+  "next_action": "Verify canonical report definitions and initial allocation/import read-only providers in CI; continue P6-T002 outstanding BACS, unmatched credit, partial funding and exception-aging queries.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

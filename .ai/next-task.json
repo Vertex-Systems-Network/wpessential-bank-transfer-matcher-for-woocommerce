@@ -10,5 +10,5 @@
   "verification": "VERIFY-P6-T001",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify report definitions and exact totals in foundation CI, then connect P6-T002 source-backed read-only reports with bounded queries and capability checks."
+  "next_action": "Verify canonical report definitions and initial allocation/import read-only providers in CI; continue P6-T002 outstanding BACS, unmatched credit, partial funding and exception-aging queries."
 }
