@@ -22,4 +22,4 @@ Owner approval authorizes merging **verified development phase PRs to `main`**. 
 
 ## Phase P6 current status
 
-P6-T001 reporting contracts complete. P6-T002 providers implemented; cumulative dev-branch CI/merge verification required before status promotion. P6-T003–T008 remain outstanding. The P6 PR is **not** merge-eligible before all eight tasks and the full P6 gate pass.
+All eight P6 tasks T001–T008 were implemented and each passed full exact-source GitHub Actions CI at its implementation checkpoint (T008: 44663971319 + 44663964390 at `b2311ce6`). Code/docs scope includes six source-backed reports, currency/financial-state segregated exact money, safe sync/async CSV+audit, opt-in role recipients and 2/24h notification limits, read-only dashboard, hashed-source recovery, explicit consented bounded privacy cleanup and Pro runbooks. The *final P6 task/state/evidence commit* changes the branch SHA and therefore **requires new full exact-head CI** before PR #12 is eligible to merge. Confirm no unresolved required review or GitHub merge protection gate; do not claim P6 is merged until main actually shows the merge.

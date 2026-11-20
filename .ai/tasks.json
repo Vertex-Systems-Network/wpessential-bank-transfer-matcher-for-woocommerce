@@ -938,8 +938,8 @@
       "WBM-P6-T007"
     ],
     "verification": "VERIFY-P6-T008",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Exact P6-T008 code/documentation checkpoint b2311ce6ffbf1ca5a3bbfbe4699245193c8b27cf passed full GitHub Actions runs 44663971319 and 44663964390 (PHP/static/unit/Foundation with content check tests/pro-operations-docs.php, native WooCommerce/MariaDB/HPOS+classic, packaged Playground). Complete Pro operating guide with synthetic USD 125.00 BACS partial/duplicate example; incident recovery and HPOS migration runbooks; Phase P6 safety acceptance checklist; ADR-0014/15/16/17/18 privacy/finance details. No marketplace publication/real finance actions. Complete P6 phase PR still requires NEW exact-head CI including this graph/state commit and GitHub enforceable merge gates.",
     "next_action": "Complete full operational Pro finance admin guide and incident response examples, add content drift/acceptance docs test, verify latest exact-head Foundation PHP/static/unit, native WooCommerce/MariaDB and Playground CI, inspect P6 whole-phase money/PII/no-over-send checks, then review branch protections and auto-merge only if every gate is green."
   },
   {
@@ -952,8 +952,9 @@
       "WBM-P6-T008"
     ],
     "verification": "VERIFY-P7-T001",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "On dedicated P7 branch AFTER P6 phase PR merge, audit documented screen schema UI-001–UI-014 against actual current WordPress Free/Pro admin components and route fields; enumerate missing screens/states, WC classic+HPOS and accessibility/RTL requirements without fabricating screenshots."
   },
   {
     "id": "WBM-P7-T002",

@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P6-T008",
-  "phase": "P6",
-  "title": "full operational admin docs and examples.",
-  "owner": "Pro engineering",
-  "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
+  "id": "WBM-P7-T001",
+  "phase": "P7",
+  "title": "finalize all screen schemas UI-001–UI-014 and component states.",
+  "owner": "UX and QA",
+  "paths": "docs/ux/; plugins/",
   "depends_on": [
-    "WBM-P6-T007"
+    "WBM-P6-T008"
   ],
-  "verification": "VERIFY-P6-T008",
+  "verification": "VERIFY-P7-T001",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Complete full operational Pro finance admin guide and incident response examples, add content drift/acceptance docs test, verify latest exact-head Foundation PHP/static/unit, native WooCommerce/MariaDB and Playground CI, inspect P6 whole-phase money/PII/no-over-send checks, then review branch protections and auto-merge only if every gate is green."
+  "next_action": "On dedicated P7 branch AFTER P6 phase PR merge, audit documented screen schema UI-001–UI-014 against actual current WordPress Free/Pro admin components and route fields; enumerate missing screens/states, WC classic+HPOS and accessibility/RTL requirements without fabricating screenshots."
 }
