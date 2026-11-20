@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P8-T006",
+  "id": "WBM-P8-T007",
   "phase": "P8",
-  "title": "checkout Blocks/classic behavior and supported WC/PHP versions matrix.",
+  "title": "1k/10k/50k file performance/load test with measured memory/time.",
   "owner": "Security and QA",
   "paths": "docs/security/; plugins/",
   "depends_on": [
-    "WBM-P8-T005"
+    "WBM-P8-T006"
   ],
-  "verification": "VERIFY-P8-T006",
+  "verification": "VERIFY-P8-T007",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify real Classic shortcode and WooCommerce Checkout Block guest BACS checkout via actual WP/Woo Store API and native receipt/claim pages, no auto-paid transition; test pinned WC 11.3.0/PHP8.3 and declared lower-bound WC10.8 and supported PHP in honest CI version matrix. Fix any genuine missing Block hooks, do not rely on mock do_action. Document exact HEAD results before marking done."
+  "next_action": "Measure 1,000/10,000 synthetic CSV data rows via genuine import/preview and record wall-clock times, peak memory, file size, per-chunk processing and any DB index/performance issues on disposable WP/WC/MariaDB. The existing CsvParser::MAX_ROWS=10000 must be honored; 50,000-row fixture must produce bounded, verified rejection without exceeding private data/memory quotas rather than being claimed supported. Add reproducible benchmark JSON artifacts, thresholds plus exact-HEAD CI. Never create real paid Woo orders or import real statements; document verified hardware context."
 }
