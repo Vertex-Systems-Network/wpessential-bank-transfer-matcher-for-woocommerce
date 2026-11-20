@@ -48,6 +48,7 @@ jobs:
           php tests/overpayment-review.php
           php tests/mismatch-review.php
           php tests/payment-readiness.php
+          php tests/report-definitions.php
           php tests/secondary-hints.php
           php tests/conflict-cases.php
           php tests/camt053.php
