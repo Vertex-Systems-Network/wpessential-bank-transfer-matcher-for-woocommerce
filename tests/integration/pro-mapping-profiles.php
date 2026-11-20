@@ -34,6 +34,14 @@ try {
 	if ( 1 !== count( $stored ) || $profile->id !== $stored[0]->id ) throw new RuntimeException( 'Mapping profile persistence round trip failed.' );
 	ob_start(); MappingProfilesPage::render(); $html = ob_get_clean();
 	if ( ! str_contains( $html, 'EU fixture' ) || ! str_contains( $html, 'wbm_pro_save_mapping_profile' ) || ! str_contains( $html, 'rejected instead of guessed' ) ) throw new RuntimeException( 'Mapping editor does not expose the saved profile and strict behavior.' );
+	foreach ( [ 'wbm-pro-table-scroll', 'role="region"', 'Statement mapping profiles',
+		'aria-label="Profile name"', 'aria-label="CSV delimiter"',
+		'aria-label="Date column name"', 'aria-label="Date format"',
+		'aria-label="Decimal separator"', 'aria-label="Thousands separator"',
+		'aria-label="Minor unit exponent"', 'aria-label="Fixed ISO currency"',
+		'aria-label="Bank transaction ID column name (optional)"' ] as $token ) {
+		if ( ! str_contains( $html, $token ) ) throw new RuntimeException( 'Mapping editor is missing a genuine visible or accessible field/table: ' . $token );
+	}
 	wp_set_current_user( 0 );
 	$forbidden = MappingProfilesPage::process_create( [] );
 	if ( ! is_wp_error( $forbidden ) || 403 !== $forbidden->get_error_data() ) throw new RuntimeException( 'Anonymous mapping profile creation was accepted.' );
