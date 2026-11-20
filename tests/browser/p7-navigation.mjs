@@ -82,9 +82,33 @@ try {
         // WordPress's built-in responsive menu toggle, not a simulated UI.
         const toggle = page.locator('#wp-admin-bar-menu-toggle a').first();
         assert(await toggle.isVisible(), 'WordPress mobile navigation toggle is missing');
-        await toggle.click();
-        assert(await page.locator('#adminmenuwrap').isVisible(),
-          'Actual WordPress responsive menu does not open at 375px');
+        const wasOpen = await page.locator('#wpwrap').evaluate(node =>
+          node.classList.contains('wp-responsive-open'));
+        if (!wasOpen) await toggle.click();
+        try {
+          await page.waitForFunction(() =>
+            document.querySelector('#wpwrap')?.classList.contains('wp-responsive-open'),
+            null, { timeout: 5000 });
+        } catch {
+          const diagnostics = await page.evaluate(() => ({
+            wrapperClasses: document.querySelector('#wpwrap')?.className,
+            bodyClasses: document.body?.className,
+            menuDisplay: getComputedStyle(document.querySelector('#adminmenuwrap')).display,
+            toggleExpanded: document.querySelector('#wp-admin-bar-menu-toggle a')?.getAttribute('aria-expanded'),
+          }));
+          throw new Error('WordPress mobile menu toggle failed to open: ' +
+            JSON.stringify(diagnostics));
+        }
+        const menuVisible = await page.locator('#adminmenu').isVisible();
+        if (!menuVisible) {
+          const diagnostics = await page.evaluate(() => ({
+            menuRect: document.querySelector('#adminmenu')?.getBoundingClientRect().toJSON(),
+            menuDisplay: getComputedStyle(document.querySelector('#adminmenu')).display,
+            wrapperClasses: document.querySelector('#wpwrap')?.className,
+          }));
+          throw new Error('Responsive WordPress menu is not usable: ' +
+            JSON.stringify(diagnostics));
+        }
       }
       const shot = 'p7-nav-' + mode + '-' + width + '.png';
       await page.screenshot({ path: join(dir, shot), fullPage: true });
