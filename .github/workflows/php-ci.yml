@@ -34,6 +34,7 @@ jobs:
           node --check plugins/wpessential-bank-transfer-matcher-pro/assets/js/finance-dialogs.js
           node --check tests/browser/p8-private-http.mjs
           node --check tests/browser/p8-csrf-http.mjs
+          node --check tests/browser/p8-real-checkout-http.mjs
       - name: Check PHP syntax
         run: find plugins playground/tests tests -name vendor -prune -o -name '*.php' -print0 | xargs -0 -n 1 php -l
       - name: Analyze reconciliation domain types
