@@ -81,15 +81,18 @@ final class FinanceNotificationsPage {
 		echo '<p class="description">' .
 			esc_html__( 'Only users with both bank approval and import permissions can receive finance digests. No arbitrary email addresses are accepted. The recipient list is always checked again at delivery.', self::DOMAIN ) .
 			'</p><fieldset>';
-		// Query eligible users before the 200-row UI cap, rather than
-		// exhausting the page with ordinary customers. Always preserve saved
-		// recipients even when a large store exceeds the visible selection cap.
-		$candidates = get_users( [ 'capability' => [ FreeCaps::APPROVE, ProCaps::IMPORT ],
+		// WordPress user queries do not consistently resolve capabilities
+		// granted through role registration (as opposed to direct usermeta).
+		// Prefer standard finance roles, also retain selected recipients and
+		// the current authorized manager even on sites with custom role maps.
+		// The live user_can() checks below are still mandatory for EVERY entry.
+		$candidates = get_users( [ 'role__in' => [ 'administrator', 'shop_manager' ],
 			'number' => 200, 'orderby' => 'display_name', 'order' => 'ASC' ] );
 		$selected = $config['recipient_ids']
 			? get_users( [ 'include' => $config['recipient_ids'] ] ) : [];
+		$actor = get_userdata( get_current_user_id() );
 		$by_id = [];
-		foreach ( array_merge( $candidates, $selected ) as $candidate ) {
+		foreach ( array_merge( $candidates, $selected, $actor ? [ $actor ] : [] ) as $candidate ) {
 			$by_id[ (int) $candidate->ID ] = $candidate;
 		}
 		$found = 0;
