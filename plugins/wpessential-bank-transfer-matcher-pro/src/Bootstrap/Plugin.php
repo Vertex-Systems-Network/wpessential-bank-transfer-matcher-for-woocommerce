@@ -15,6 +15,7 @@ use WPEssential\BankTransferMatcherPro\Admin\MappingProfilesPage;
 use WPEssential\BankTransferMatcherPro\Admin\ReviewQueuePage;
 use WPEssential\BankTransferMatcherPro\Admin\AllocationReviewPage;
 use WPEssential\BankTransferMatcherPro\Admin\AllocationAdminActions;
+use WPEssential\BankTransferMatcherPro\Admin\ReportExportsPage;
 use WPEssential\BankTransferMatcherPro\Api\ReviewCaseController;
 use WPEssential\BankTransferMatcherPro\Import\ImportJob;
 
@@ -30,6 +31,7 @@ final class Plugin {
 		ReviewQueuePage::register();
 		AllocationReviewPage::register();
 		AllocationAdminActions::register();
+		ReportExportsPage::register();
 		ReviewCaseController::register();
 		ImportJob::register();
 		do_action( 'wpessential_bank_transfer_matcher_pro_ready' );
