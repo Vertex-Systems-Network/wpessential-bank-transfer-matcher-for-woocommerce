@@ -178,16 +178,6 @@ final class FinanceRetentionService {
 		$jobs = $this->db->prefix . 'wbm_pro_import_jobs';
 		$batches = $this->db->prefix . 'wbm_pro_import_batches';
 		if ( ! $this->exists( $jobs ) || ! $this->exists( $batches ) ) return 0;
-		$directory = defined( 'WBM_PRIVATE_IMPORT_DIR' ) ?
-			WBM_PRIVATE_IMPORT_DIR : dirname( rtrim( ABSPATH, '/\\' ) ) . '/wbm-private-imports';
-		$root = realpath( $directory );
-		$web = realpath( $_SERVER['DOCUMENT_ROOT'] ?? ABSPATH );
-		$wp = realpath( ABSPATH );
-		if ( false === $root || ! is_dir( $root ) ||
-			( false !== $web && str_starts_with( $root . '/', rtrim( $web, '/' ) . '/' ) ) ||
-			( false !== $wp && str_starts_with( $root . '/', rtrim( $wp, '/' ) . '/' ) ) ) {
-			throw new RuntimeException( 'Private staging directory cannot be safely validated.' );
-		}
 		$threshold = gmdate( 'Y-m-d H:i:s', time() - $days * DAY_IN_SECONDS );
 		$rows = $this->db->get_results( $this->db->prepare(
 			"SELECT j.batch_id,j.source_path,b.file_sha256
@@ -199,6 +189,17 @@ final class FinanceRetentionService {
 		), ARRAY_A );
 		$this->check_db();
 		if ( ! is_array( $rows ) ) throw new RuntimeException( 'Could not inspect private source retention.' );
+		if ( [] === $rows ) return 0; // No staged files: do not require a directory.
+		$directory = defined( 'WBM_PRIVATE_IMPORT_DIR' ) ?
+			WBM_PRIVATE_IMPORT_DIR : dirname( rtrim( ABSPATH, '/\\' ) ) . '/wbm-private-imports';
+		$root = realpath( $directory );
+		$web = realpath( $_SERVER['DOCUMENT_ROOT'] ?? ABSPATH );
+		$wp = realpath( ABSPATH );
+		if ( false === $root || ! is_dir( $root ) ||
+			( false !== $web && str_starts_with( $root . '/', rtrim( $web, '/' ) . '/' ) ) ||
+			( false !== $wp && str_starts_with( $root . '/', rtrim( $wp, '/' ) . '/' ) ) ) {
+			throw new RuntimeException( 'Private staging directory cannot be safely validated.' );
+		}
 		$count = 0;
 		foreach ( $rows as $row ) {
 			$path = (string) $row['source_path'];
