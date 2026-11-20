@@ -139,6 +139,8 @@ jobs:
         env:
           P7_BROWSER_MODE: rtl
         run: node tests/browser/p7-usability.mjs
+      - name: Verify synthetic BACS orders remain unpaid and guest claim unsubmitted
+        run: wp eval-file "$GITHUB_WORKSPACE/tests/browser/p7-usability-integrity.php" --path="$P7_BROWSER_WP_PATH"
       - name: Upload real screenshot/report artifacts even if visual checks fail
         if: always()
         uses: actions/upload-artifact@v4
