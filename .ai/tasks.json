@@ -1036,8 +1036,8 @@
       "WBM-P7-T006"
     ],
     "verification": "VERIFY-P7-T007",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Verified actual WordPress 7.0.8/WooCommerce 11.3.0+Free/Pro QA at exact SHA 3b0341ffa7999cea882402ebed45ecf1acd849ea: Foundation/native MariaDB/Playground runs 44708991058 and 44708998653 SUCCESS; Playwright LTR/Arabic RTL run 44708991135 SUCCESS, artifact 14617205750 (59 LTR+56 RTL screenshots, 14 UI IDs at 1440/1024/375, forced-colors and 0 reported automated issues, 16 keyboard checks + 16 first-header viewport geometry checks). Inspect actual before artifact 14614998226 versus after 14617205750: source-backed review queue 375 LTR/RTL initial first column visible after keyboard Tab, without hiding horizontal table action columns. Desktop 18-variant + 375 finance/import/report screenshot rubric recorded docs/ux/p7-t007-real-screenshot-rubric.md. Manual WCAG screen reader, formal contrast and plugin Arabic strings NOT certified.",
     "next_action": "Complete visual QA rubric with actual LTR and Arabic RTL screenshot artifact 14614998226, inspecting 1440/1024/375 screen hierarchy, horizontal table initial scroll, status labels, keyboard and forced-colors; validate new browser scroll-reset capture in CI at updated SHA. Record before/after evidence and unresolved Arabic plugin translations/real screen-reader WCAG limitations. Then P7-T008 actual synthetic store-owner, finance operator and customer walkthrough."
   },
   {
@@ -1050,8 +1050,9 @@
       "WBM-P7-T007"
     ],
     "verification": "VERIFY-P7-T008",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Run real disposable WP/WC Free+Pro three-persona browser usability: store owner admin order/reconciliation/dashboard, finance operator real review/statement source and restricted manager menu, unauthenticated guest BACS unclaimed order reference+claim form without POST. Capture LTR/Arabic RTL 1440/375 browser evidence, no money mutation, latest-head Foundation/Playground/native/MariaDB+Chromium success. Document findings/gaps and gate P8."
   },
   {
     "id": "WBM-P8-T001",

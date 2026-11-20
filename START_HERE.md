@@ -2,9 +2,9 @@
 
 Build independent Free and Pro WooCommerce plugins for local bank transfer reconciliation. Resume from `.ai/state.json`, `.ai/next-task.json`, and `BACKLOG.md`; the master prompt's Section 23 defines completion.
 
-## Verified P7-T006 / active P7-T007 — 2026-11-20
+## Verified P7-T006/T007 / active P7-T008 — 2026-11-20
 
-Main `772016945838faf60635b816c48343d23e355240` merged P7 PR #13 while T006–T008 were incomplete. Corrective draft [PR #14](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/14) holds the actual role-gated menu repair. **P7-T006 now verified** at exact code SHA `3854e7ac`: two complete Foundation/native MariaDB/Playground GitHub Actions 44706953686/44706960483 SUCCESS plus actual LTR/Arabic RTL/mobile/keyboard browser 44706953731 SUCCESS, artifact 14614998226. The current dedicated branch is `development/p7-navigation-role-gates-20261120`. **P7-T007 active**: assess actual captured screenshots, repair first-column screenshot artifact caused by keyboard-focus-induced scroll, log visual rubric and before/after evidence; then synthetic-role P7-T008 usability. No premature P8/release or phase merge. Read `.ai/next-task.json` after every commit; Issue #7 remains open.
+Draft [PR #14](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/14) contains the corrected real Pro role gates. **P7-T007 VERIFIED** at exact source `3b0341ffa7999cea882402ebed45ecf1acd849ea`: actual screenshots compared before artifact 14614998226 vs after 14617205750, 1440/1024/375 LTR/Arabic RTL screenshots, keyboard/forced-colors/menu, 0 browser issues, browser 44708991135 and two Foundation/native MariaDB/Playground 44708991058/44708998653 all SUCCESS. Full visual rubric in `docs/ux/p7-t007-real-screenshot-rubric.md`. **P7-T008 active:** test synthetic store-owner/finance/customer task completion in actual WordPress browser; do not submit financial POST or claim, or simulate a real bank approval. Arabic plugin strings/AA screen-reader remain uncertified. P8/P9 and release gates not yet passed; Issue #7 open.
 
 ## Historical checkpoint — 2026-11-20
 

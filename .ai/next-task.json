@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P7-T007",
+  "id": "WBM-P7-T008",
   "phase": "P7",
-  "title": "run visual QA rubric, log before/after evidence.",
+  "title": "usability walkthrough for store owner, finance operator and customer with synthetic tasks.",
   "owner": "UX and QA",
   "paths": "docs/ux/; plugins/",
   "depends_on": [
-    "WBM-P7-T006"
+    "WBM-P7-T007"
   ],
-  "verification": "VERIFY-P7-T007",
+  "verification": "VERIFY-P7-T008",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Complete visual QA rubric with actual LTR and Arabic RTL screenshot artifact 14614998226, inspecting 1440/1024/375 screen hierarchy, horizontal table initial scroll, status labels, keyboard and forced-colors; validate new browser scroll-reset capture in CI at updated SHA. Record before/after evidence and unresolved Arabic plugin translations/real screen-reader WCAG limitations. Then P7-T008 actual synthetic store-owner, finance operator and customer walkthrough."
+  "next_action": "Run real disposable WP/WC Free+Pro three-persona browser usability: store owner admin order/reconciliation/dashboard, finance operator real review/statement source and restricted manager menu, unauthenticated guest BACS unclaimed order reference+claim form without POST. Capture LTR/Arabic RTL 1440/375 browser evidence, no money mutation, latest-head Foundation/Playground/native/MariaDB+Chromium success. Document findings/gaps and gate P8."
 }
