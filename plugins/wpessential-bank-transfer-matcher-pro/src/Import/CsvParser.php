@@ -22,12 +22,39 @@ final class CsvParser {
 		finally { fclose( $stream ); }
 	}
 
+	/**
+	 * Use the exact same fail-closed header checks for dry-run parsing,
+	 * private-import preflight and resumable queued import workers.
+	 *
+	 * @param array<int, null|string>|false $values
+	 * @return list<string>
+	 */
+	public static function validated_headers( array|false $values ): array {
+		if ( false === $values || [] === $values || count( $values ) > self::MAX_COLUMNS ) {
+			throw new InvalidArgumentException( 'CSV headers are missing or too numerous.' );
+		}
+		$headers = array();
+		foreach ( $values as $index => $value ) {
+			$header = (string) $value;
+			if ( 0 === $index ) {
+				$header = preg_replace( '/^\\xEF\\xBB\\xBF/', '', $header ) ?? $header;
+			}
+			$header = trim( $header );
+			if ( '' === $header || strlen( $header ) > self::MAX_CELL_BYTES ||
+				str_contains( $header, "\0" ) || 1 !== preg_match( '//u', $header ) ) {
+				throw new InvalidArgumentException( 'CSV headers contain an invalid or oversized field.' );
+			}
+			$headers[] = $header;
+		}
+		if ( count( $headers ) !== count( array_unique( $headers ) ) ) {
+			throw new InvalidArgumentException( 'CSV headers must be non-empty and unique.' );
+		}
+		return $headers;
+	}
+
 	/** @param resource $stream @return list<RawStatementRow> */
 	private function read( $stream, string $delimiter ): array {
-		$headers = fgetcsv( $stream, null, $delimiter, '"', '' );
-		if ( false === $headers || [] === $headers || count( $headers ) > self::MAX_COLUMNS ) throw new InvalidArgumentException( 'The CSV header is missing or has too many columns.' );
-		$headers = array_map( static fn ( $value ): string => trim( (string) $value ), $headers );
-		if ( in_array( '', $headers, true ) || count( array_unique( $headers ) ) !== count( $headers ) ) throw new InvalidArgumentException( 'CSV headers must be non-empty and unique.' );
+		$headers = self::validated_headers( fgetcsv( $stream, null, $delimiter, '"', '' ) );
 		$rows = array(); $line = 1;
 		while ( false !== ( $values = fgetcsv( $stream, null, $delimiter, '"', '' ) ) ) {
 			++$line;
