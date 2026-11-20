@@ -94,6 +94,8 @@ jobs:
           php-version: '8.3'
           extensions: mysqli
           tools: composer:v2, wp-cli
+      - name: Verify or bootstrap checksum-pinned WP-CLI for real MariaDB tests
+        run: bash scripts/ensure-wp-cli-ci.sh
       - name: Install Free runtime autoloader
         run: composer --working-dir=plugins/wpessential-bank-transfer-matcher install --no-dev --no-interaction
       - name: Exercise migrations against WordPress and MariaDB
