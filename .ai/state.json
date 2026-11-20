@@ -96,7 +96,7 @@
     "p6_docs": "passed: complete GitHub Actions 44663971319 and 44663964390 exact b2311ce6ffbf1ca5a3bbfbe4699245193c8b27cf; docs guide, incident runbooks, phase acceptance and docs-content regression, native finance/security+Playground. Final phase-state commit itself requires new exact SHA CI.",
     "p6_phase_gate": "P6-T001–T008 all completed with exact intermediate source SHA CI. Final phase head after task/state update must pass BOTH full CI checks before phase merge. Branch protection may only be enforced by GitHub; no reviews currently submitted.",
     "p6_phase_merge": "verified main SHA 51c34bd75f3936bddfc86911c99722c834465e1a from fully green Phase PR #12, exact P6 head 2b50907 with GitHub Actions 44664553928+44664548348 SUCCESS.",
-    "p7_screen_contracts": "source-backed UI-001–UI-014 schema and implementation-gap audit committed at 613d3b6; awaiting current P7 exact-head CI and manual next-phase QA"
+    "p7_screen_contracts": "passed: exact SHA a396837e4eee4b6e54062f22c58ec3cb3d217e62 both full runs 44665899783, 44665892900. 14 renderer maps, Free/Pro roles/nonce, source-backed states, missing features explicitly documented, PHP Foundation + Playground and native WooCommerce/MariaDB."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -110,8 +110,8 @@
     "free_is_independent"
   ],
   "phase": "P7",
-  "active_task_id": "WBM-P7-T001",
-  "next_action": "Audit UI-001 to UI-014 in docs/ux/p7-source-backed-screen-contracts.md against existing Free/Pro renderers; verify 14-screen source mapping in CI, then record exact-head native+Playground proof before marking T001 complete. P7 T002–T005/browser+RTL gates remain pending.",
+  "active_task_id": "WBM-P7-T002",
+  "next_action": "Implement WordPress/WooCommerce-native consistent admin spacing, type hierarchy, accessible form/filters/tables and bounded responsive states in existing actual Free and Pro admin pages; ensure screen-specific enqueue, no decorative controls, scoped styles, keyboard focus and RTL support. Add PHP/native integration and static CSS contract tests; exact-head full CI.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -184,8 +184,9 @@
     "WBM-P6-T005",
     "WBM-P6-T006",
     "WBM-P6-T007",
-    "WBM-P6-T008"
+    "WBM-P6-T008",
+    "WBM-P7-T001"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "b2311ce6ffbf1ca5a3bbfbe4699245193c8b27cf"
+  "last_verified_remote_milestone": "a396837e4eee4b6e54062f22c58ec3cb3d217e62"
 }

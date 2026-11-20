@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P7-T001",
+  "id": "WBM-P7-T002",
   "phase": "P7",
-  "title": "finalize all screen schemas UI-001–UI-014 and component states.",
+  "title": "implement native WP spacing, typography, tables, filters, forms, detail drawers.",
   "owner": "UX and QA",
   "paths": "docs/ux/; plugins/",
   "depends_on": [
-    "WBM-P6-T008"
+    "WBM-P7-T001"
   ],
-  "verification": "VERIFY-P7-T001",
+  "verification": "VERIFY-P7-T002",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify 14-screen source-backed schema audit, all real Free/Pro renderer paths, capability/action/state inventory and explicit unimplemented gaps in PHP Foundation CI; then mark P7-T001 done with exact-head full native/Playground evidence before P7-T002."
+  "next_action": "Implement WordPress/WooCommerce-native consistent admin spacing, type hierarchy, accessible form/filters/tables and bounded responsive states in existing actual Free and Pro admin pages; ensure screen-specific enqueue, no decorative controls, scoped styles, keyboard focus and RTL support. Add PHP/native integration and static CSS contract tests; exact-head full CI."
 }
