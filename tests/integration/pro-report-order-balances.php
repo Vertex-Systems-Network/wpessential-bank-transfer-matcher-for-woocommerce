@@ -23,10 +23,11 @@ $usd = ( new BankAccountRepository( $wpdb ) )->create(
 $manual_id = 0;
 try {
 	foreach ( [
-		[ 'bacs', '50.00', 'USD' ],
-		[ 'bacs', '100.00', 'USD' ],
-		[ 'cod', '100.00', 'USD' ],
-	] as [ $method, $total, $currency ] ) {
+		[ 'bacs', '50.00', 'USD', true ],
+		[ 'bacs', '100.00', 'USD', true ],
+		[ 'cod', '100.00', 'USD', false ],
+		[ 'bacs', '15.00', 'USD', false ],
+	] as [ $method, $total, $currency, $confirmed_bank ] ) {
 		$order = wc_create_order();
 		$order->set_payment_method( $method );
 		$order->set_currency( $currency );
@@ -39,10 +40,12 @@ try {
 			( new ReferenceRepository( $wpdb ) )->reserve(
 				new EntityId( $order->get_id() ), $reference
 			);
-			( new OrderReceivingAccountRepository( $wpdb ) )->confirm(
-				$order->get_id(), $usd, $admin->ID,
-				'Merchant confirmed the USD receiving account for read-only reporting.'
-			);
+			if ( $confirmed_bank ) {
+				( new OrderReceivingAccountRepository( $wpdb ) )->confirm(
+					$order->get_id(), $usd, $admin->ID,
+					'Merchant confirmed the USD receiving account for read-only reporting.'
+				);
+			}
 			if ( $total === '100.00' ) {
 				$manual = ( new EvidenceRepository( $wpdb ) )->record(
 					$order->get_id(), $admin->ID, gmdate( 'Y-m-d' ),
@@ -66,6 +69,18 @@ try {
 		$full['page_totals']['USD/2/on-hold']['amount_minor'] !== 11000 ||
 		$full['payment_authorized'] || $full['ledger_mutated'] ) {
 		throw new RuntimeException( 'Outstanding BACS report did not preserve exact unpaid order balances.' );
+	}
+	$without_account_filter = $reader->run( ReportDefinition::from_array(
+		array_replace( $scope, [ 'bank_account_id' => 0 ] )
+	) );
+	$unbound = array_values( array_filter( $without_account_filter['rows'],
+		static fn ( array $row ): bool => !$row['receiving_account_confirmed']
+	) );
+	if ( count( $unbound ) !== 1 ||
+		$unbound[0]['order_id'] !== $orders[3]->get_id() ||
+		$unbound[0]['bank_account_id'] !== 0 ||
+		$without_account_filter['page_totals']['USD/2/on-hold']['amount_minor'] !== 12500 ) {
+		throw new RuntimeException( 'Unknown receiving bank was silently inferred from an imported source.' );
 	}
 	$partial = $reader->run( ReportDefinition::from_array( array_replace( $scope, [
 		'report' => 'partial_funding',
