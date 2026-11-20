@@ -529,9 +529,13 @@
         "source_id",
         "request_key",
         "reason",
-        "cleared_confirmed"
+        "cleared_confirmed",
+        "allocation_id",
+        "split_group_key",
+        "case_type",
+        "review_decision"
       ],
-      "note": "State/order filters and guarded original maker/checker finance forms"
+      "note": "State/order filters and guarded original maker/checker finance forms; Real permitted allocation/correction approval parameters"
     },
     {
       "screen": "UI-011",
@@ -564,9 +568,13 @@
         "automatic_cleanup",
         "private_source_days",
         "confirm",
-        "consent_auto"
+        "consent_auto",
+        "diagnostic_audit_days",
+        "notification_audit_days",
+        "recovery_audit_days",
+        "finance_export_audit_days"
       ],
-      "note": "Explicit consent and manual sweep confirmation"
+      "note": "Explicit consent and manual sweep confirmation; Explicit merchant consent for bounded operational metadata cleanup"
     },
     {
       "screen": "UI-014",
@@ -577,6 +585,55 @@
         "reason"
       ],
       "note": "Failed-job recovery; redacted download uses server POST"
+    },
+    {
+      "screen": "UI-001",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceDashboardPage.php",
+      "names": [
+        "from",
+        "to",
+        "currency",
+        "bank_account_id",
+        "focus_report",
+        "focus_state",
+        "limit",
+        "before_id"
+      ],
+      "note": "Exact source-backed bounded report scopes; read-only"
+    },
+    {
+      "screen": "UI-007",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ImportStatementsPage.php",
+      "names": [
+        "account_id",
+        "profile_id",
+        "statement",
+        "draft_token",
+        "batch_id"
+      ],
+      "note": "Actual private CSV preview/commit and failed state-specific retry/cancel"
+    },
+    {
+      "screen": "UI-013",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/BankAccountsPage.php",
+      "names": [
+        "nickname",
+        "bank_name",
+        "currency",
+        "identifier_last4",
+        "account_id"
+      ],
+      "note": "Masked safe account metadata only"
+    },
+    {
+      "screen": "UI-013",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceNotificationsPage.php",
+      "names": [
+        "enabled_types",
+        "recipient_ids",
+        "notification_type"
+      ],
+      "note": "Opt-in authorized recipients and bounded tests"
     }
   ],
   "forbidden_fabrications": [
