@@ -45,13 +45,15 @@ final class FinanceNotificationService {
 
 	public function save( array $input, int $actor_id, string $nonce ): array {
 		$this->authorize( $actor_id, $nonce, 'wbm_pro_save_finance_notifications' );
+		if ( ! current_user_can( ProCaps::MANAGE_ACCOUNTS ) ) throw new RuntimeException( 'Only bank-account managers can change finance email recipients.' );
 		$settings = FinanceNotificationPreferences::normalize( $input );
 		foreach ( $settings['recipient_ids'] as $user_id ) {
 			if ( null === $this->validated_recipient( $user_id ) ) {
 				throw new InvalidArgumentException( 'Choose only users with both finance capabilities and a valid email.' );
 			}
 		}
-		if ( $settings['enabled_types'] && ! function_exists( 'as_schedule_recurring_action' ) ) {
+		if ( $settings['enabled_types'] && ( ! function_exists( 'as_schedule_recurring_action' ) ||
+			! function_exists( 'as_has_scheduled_action' ) ) ) {
 			throw new RuntimeException( 'Cannot enable email digests without Action Scheduler.' );
 		}
 		$previous = $this->settings();
@@ -90,6 +92,7 @@ final class FinanceNotificationService {
 	 */
 	public function send_test( string $type, int $actor_id, string $nonce ): array {
 		$this->authorize( $actor_id, $nonce, 'wbm_pro_test_finance_notification' );
+		if ( ! current_user_can( ProCaps::MANAGE_ACCOUNTS ) ) throw new RuntimeException( 'Only bank-account managers can send finance test emails.' );
 		if ( ! in_array( $type, FinanceNotificationTemplate::types(), true ) ) {
 			throw new InvalidArgumentException( 'Unknown finance notification type.' );
 		}
