@@ -59,7 +59,7 @@ final class FinanceDashboardPage {
 				'', [ 'response' => 403 ] );
 		}
 		echo '<div class="wrap"><h1>' . esc_html__( 'Bank finance dashboard', self::DOMAIN ) . '</h1>';
-		echo '<p>' . esc_html__( 'Read-only, source-backed finance report pages. Figures below are not full-ledger totals, bank-cleared balances or proof of payment. Currency/exponent and financial state remain separate. No imported claim can mark an order paid.', self::DOMAIN ) . '</p>';
+		echo '<p>' . esc_html__( 'Read-only, source-backed finance report pages. Figures below are not full-ledger totals, bank-cleared balances or proof of payment. Exact amounts use minor units; currency/exponent and financial state remain separate. No imported claim can mark an order paid.', self::DOMAIN ) . '</p>';
 		try {
 			$filters = self::filters();
 			$data = ( new FinanceDashboardSnapshot( $GLOBALS['wpdb'] ) )->read( $filters );
