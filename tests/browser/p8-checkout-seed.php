@@ -11,9 +11,26 @@ $path = getenv( 'P8_CHECKOUT_FIXTURE_FILE' );
 if ( ! is_string( $path ) || ! str_starts_with( $path, sys_get_temp_dir() . '/' ) ) {
 	throw new RuntimeException( 'Cannot write a checkout fixture outside the CI temp folder.' );
 }
+// WooCommerce 11.x installs the Checkout Block by default. Reuse the
+// existing real shortcode page only if one exists; otherwise publish a
+// distinct synthetic classic page WITHOUT changing global checkout settings.
+// Keeping the actual configured checkout page preserves P7 guest receipts.
 $checkout_id = wc_get_page_id( 'checkout' );
-if ( $checkout_id < 1 || ! has_shortcode( (string) get_post_field( 'post_content', $checkout_id ), 'woocommerce_checkout' ) ) {
-	throw new RuntimeException( 'P7 created shortcode checkout page not available.' );
+if ( $checkout_id < 1 ||
+	! has_shortcode( (string) get_post_field( 'post_content', $checkout_id ), 'woocommerce_checkout' ) ) {
+	$checkout_id = wp_insert_post( [
+		'post_type' => 'page',
+		'post_status' => 'publish',
+		'post_name' => 'p8-disposable-classic-checkout',
+		'post_title' => 'P8 synthetic classic shortcode checkout',
+		'post_content' => '[woocommerce_checkout]',
+	], true );
+	if ( is_wp_error( $checkout_id ) || ! $checkout_id ) {
+		throw new RuntimeException( 'Cannot create separate classic shortcode checkout page.' );
+	}
+}
+if ( ! has_shortcode( (string) get_post_field( 'post_content', $checkout_id ), 'woocommerce_checkout' ) ) {
+	throw new RuntimeException( 'Classic shortcode did not persist in synthetic page.' );
 }
 update_option( 'woocommerce_enable_guest_checkout', 'yes' );
 update_option( 'woocommerce_enable_signup_and_login_from_checkout', 'no' );
