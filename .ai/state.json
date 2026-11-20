@@ -110,7 +110,8 @@
     "p8_ledger_invalidation": "PASSED exact sha 258ef616263400999c74dd7ba424432e921ccfcf: 5 GitHub checks success in 44819128262/44819139195 Foundations native+Playground, Chromium 44819128256, artifact 14671287140. Two-MariaDB-session source lock, cancel/restore on-hold, stale source tamper/duplicate, request/reviewer replay, no Woo paid transition. Not statistical multi-process load test.",
     "p8_hpos_classic": "PASSED at 6ffc566738e24c3fb0083763493319823a3f2271: 5/5 checks green in Foundation 44820665254/44820655490 and browser 44820655390; official FeaturesUtil HPOS declaration both editions, real WooCommerce HPOS/classic CRUD, WP7.0.8/PHP8.3/WC11.3.0. Other WC/PHP versions and Blocks checkout unverified till T006.",
     "p8_checkout_matrix": "PASSED at exact SHA ce5d78392d8b0f0cd8042aa4a55e4b45ce3bf50a: 9/9 checks green in native/Playground runs 44829621364/44829632822, Chromium 44829621375 artifact 14673854609, matrix 44829621415 PHP8.3+8.4 × WC10.8.0+11.3.0. Actual classic guest UI and Store API BACS two on-hold/unpaid orders, separate references/claim forms. Block frontend rendered; Block Pay button not clicked. No production payment.",
-    "p8_import_benchmarks": "PASSED at exact d0b5143ed64bb66eaf86779fa651358961b08481: 10/10 GHA checks green; 44831039401 real benchmark artifact 14675449713, 1k 398.02ms, 10k 3670ms, 50k rejected pre-staging 21.21ms, PHP allocated peak 133.81MiB. SQL confirms unchanged rows/jobs/batches for 50k. Foundations 44831039373/44831053993, WC/PHP matrix 44831039366, Chromium 44831039387 all success. Not process RSS/production SLA."
+    "p8_import_benchmarks": "PASSED at exact d0b5143ed64bb66eaf86779fa651358961b08481: 10/10 GHA checks green; 44831039401 real benchmark artifact 14675449713, 1k 398.02ms, 10k 3670ms, 50k rejected pre-staging 21.21ms, PHP allocated peak 133.81MiB. SQL confirms unchanged rows/jobs/batches for 50k. Foundations 44831039373/44831053993, WC/PHP matrix 44831039366, Chromium 44831039387 all success. Not process RSS/production SLA.",
+    "p8_upgrade_coexistence": "VERIFIED code 680602d833018fda5ebfaaa62bd0f1c95e1bb355: all 12 GitHub checks success, actual real HPOS+classic Woo 10.8.0->11.3.0 upgrade and Free+Pro dependency/reinstall with synthetic companion, ref/claim/bank rows intact; upgrade 44832609979, Foundation/native 44832609976+44832619094, browser 44832609830, PHP/WC matrix 44832609858, benchmark 44832610042. No production upgrade certification."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -124,8 +125,8 @@
     "free_is_independent"
   ],
   "phase": "P8",
-  "active_task_id": "WBM-P8-T008",
-  "next_action": "Run actual packaged Free/Pro with a benign third-party plugin (coexistence), verify Pro cannot activate without Free, Free/Pro deactivation and reactivation, in-place WooCommerce 10.8.0→11.3.0 upgrade and Free/Pro ZIP reinstallation on same disposable WP/WC/MariaDB store; assert same unpaid BACS order, immutable payment reference and unverified claim evidence survive, schema migration idempotent and no paid transition. Capture exact-head native/Playground CI; no production funds/merchant deployments.",
+  "active_task_id": "WBM-P8-T009",
+  "next_action": "Perform final source-backed risk/defect review against P8 threat model and verified tasks, inspect CSV/XML/untrusted headers, import state/checkpoints, receipt/privacy/capability/nonce paths and Woo payment guard. Add adversarial native negative regressions for any discovered fail-open/correctness issues, fix confirmed defects with exact-head CI (all Foundation/MariaDB/Playground, real Chromium, 4-cell matrix, 1k/10k/50k benchmark, HPOS/classic WC upgrade). Document explicit residual risks, zero unresolved known critical/high release blockers if justified; do not claim external penetration or marketplace compliance. Only then mark P8 complete and merge its phase PR if actual branch reviews/protection/required checks permit.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -213,8 +214,9 @@
     "WBM-P8-T004",
     "WBM-P8-T005",
     "WBM-P8-T006",
-    "WBM-P8-T007"
+    "WBM-P8-T007",
+    "WBM-P8-T008"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "d0b5143ed64bb66eaf86779fa651358961b08481"
+  "last_verified_remote_milestone": "680602d833018fda5ebfaaa62bd0f1c95e1bb355"
 }

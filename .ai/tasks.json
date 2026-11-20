@@ -1162,8 +1162,8 @@
       "WBM-P8-T007"
     ],
     "verification": "VERIFY-P8-T008",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "VERIFIED exact SHA 680602d833018fda5ebfaaa62bd0f1c95e1bb355: 12/12 GitHub checks success. Same-store real WC10.8.0->11.3.0 upgrade in HPOS and classic, real WordPress missing Free dependency, Pro deactivate/reactivate, two edition ZIP force reinstalls, benign independent CI custom-order-number plugin, synthetic on-hold/unpaid BACS order immutable reference, submitted but unverified claim and masked bank account persist without duplicate evidence; CI 44832609979 success, HPOS artifact 14676258401 and classic 14676621621. 2 Foundation/Playground + 2 MariaDB 44832609976/44832619094, browser LTR/RTL+real BACS checkout/privacy/CSRF 44832609830 artifact 14676089619, 4-cell PHP/WC 44832609858, benchmark 44832610042 all SUCCESS. docs/security/p8-t008-upgrade-coexistence-verification.md. Scope: one synthetic harmless third-party fixture, not universal merchant plugin compatibility.",
     "next_action": "Run actual packaged Free/Pro with a benign third-party plugin (coexistence), verify Pro cannot activate without Free, Free/Pro deactivation and reactivation, in-place WooCommerce 10.8.0→11.3.0 upgrade and Free/Pro ZIP reinstallation on same disposable WP/WC/MariaDB store; assert same unpaid BACS order, immutable payment reference and unverified claim evidence survive, schema migration idempotent and no paid transition. Capture exact-head native/Playground CI; no production funds/merchant deployments."
   },
   {
@@ -1176,8 +1176,9 @@
       "WBM-P8-T008"
     ],
     "verification": "VERIFY-P8-T009",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Perform final source-backed risk/defect review against P8 threat model and verified tasks, inspect CSV/XML/untrusted headers, import state/checkpoints, receipt/privacy/capability/nonce paths and Woo payment guard. Add adversarial native negative regressions for any discovered fail-open/correctness issues, fix confirmed defects with exact-head CI (all Foundation/MariaDB/Playground, real Chromium, 4-cell matrix, 1k/10k/50k benchmark, HPOS/classic WC upgrade). Document explicit residual risks, zero unresolved known critical/high release blockers if justified; do not claim external penetration or marketplace compliance. Only then mark P8 complete and merge its phase PR if actual branch reviews/protection/required checks permit."
   },
   {
     "id": "WBM-P9-T001",
