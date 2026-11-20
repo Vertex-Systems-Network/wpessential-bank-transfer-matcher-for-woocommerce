@@ -1,0 +1,97 @@
+name: P8 measured synthetic import throughput and row-cap rejection
+
+on:
+  push:
+    branches:
+      - development/p8-threat-model-access-matrix-20261120
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  measured-mariadb:
+    name: Real WP/WC/MariaDB synthetic 1k 10k 50k CSV
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_DATABASE: wbm_ci
+          MARIADB_USER: wbm_ci
+          MARIADB_PASSWORD: wbm-ci-test-only
+          MARIADB_RANDOM_ROOT_PASSWORD: '1'
+        ports:
+          - 3306/tcp
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      P8_PERF_REPORT_FILE: /tmp/p8-synthetic-import-measurements.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mysqli, mbstring, dom, fileinfo
+          tools: composer:v2, wp-cli
+      - name: Verify official pinned WP-CLI executable
+        run: bash scripts/ensure-wp-cli-ci.sh
+      - name: PHP syntax and independent exact-SHA plugin packages
+        run: |
+          php -l tests/integration/p8-import-performance.php
+          php -l plugins/wpessential-bank-transfer-matcher-pro/src/Import/ImportJob.php
+          bash scripts/package-plugin.sh free
+          bash scripts/package-plugin.sh pro
+      - name: Install disposable actual WordPress WooCommerce and Free plus Pro
+        env:
+          WBM_DB_PORT: ${{ job.services.mariadb.ports['3306'] }}
+        run: |
+          set -euo pipefail
+          site="$RUNNER_TEMP/p8-performance-wp"
+          echo "P8_PERF_WP_PATH=$site" >> "$GITHUB_ENV"
+          wp core download --path="$site" --version=7.0.8
+          wp config create --path="$site" --dbname=wbm_ci --dbuser=wbm_ci \
+            --dbpass=wbm-ci-test-only --dbhost="127.0.0.1:$WBM_DB_PORT"
+          wp core install --path="$site" --url=http://p8-performance.test \
+            --title="Synthetic WBM performance CI" --admin_user=wbm_ci \
+            --admin_email=performance-ci@example.test --skip-email
+          wp plugin install https://downloads.wordpress.org/plugin/woocommerce.11.3.0.zip \
+            --activate --path="$site"
+          wp plugin install "$GITHUB_WORKSPACE/dist/wpessential-bank-transfer-matcher.zip" \
+            --activate --path="$site"
+          wp plugin install "$GITHUB_WORKSPACE/dist/wpessential-bank-transfer-matcher-pro.zip" \
+            --activate --path="$site"
+      - name: Measure 1k 10k native import and reject 50k before queueing
+        run: |
+          set -euo pipefail
+          wp eval-file "$GITHUB_WORKSPACE/tests/integration/p8-import-performance.php" \
+            --path="$P8_PERF_WP_PATH"
+          python3 - <<'PY'
+          import json, os
+          path=os.environ['P8_PERF_REPORT_FILE']
+          data=json.load(open(path,encoding='utf-8'))
+          assert data['synthetic'] and data['max_supported_csv_rows']==10000
+          samples=data['samples']
+          assert len(samples)==3
+          assert [row['rows'] for row in samples]==[1000,10000,50000]
+          assert [row['outcome'] for row in samples]==[
+              'completed','completed','rejected_before_staging'
+          ]
+          for s in samples:
+              assert s['total_ms']>=0 and s['php_peak_mb']>0
+              print(f"MEASURE P8 {s['rows']} rows: {s['outcome']}; "
+                    f"total={s['total_ms']}ms; peak_php={s['php_peak_mb']}MiB; "
+                    f"csv={s['csv_bytes']} bytes")
+          PY
+      - name: Archive measured synthetic row-count/time/memory data even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p8-import-synthetic-benchmark
+          path: /tmp/p8-synthetic-import-measurements.json
+          if-no-files-found: warn
+          retention-days: 30
