@@ -112,6 +112,15 @@ try {
         $batches=array_values(array_diff($batches,[$batch]));
     }
     $count=50000;$source=$make_file($count);
+    // A rejected file must not even create an import batch or any staged row.
+    $rows_table=$wpdb->prefix.'wbm_pro_import_rows';
+    $batches_table=$wpdb->prefix.'wbm_pro_import_batches';
+    $jobs_table=$wpdb->prefix.'wbm_pro_import_jobs';
+    $before_counts=[
+        (int)$wpdb->get_var("SELECT COUNT(*) FROM $rows_table"),
+        (int)$wpdb->get_var("SELECT COUNT(*) FROM $batches_table"),
+        (int)$wpdb->get_var("SELECT COUNT(*) FROM $jobs_table"),
+    ];
     if(function_exists('memory_reset_peak_usage')) memory_reset_peak_usage();
     $t0=$ms();$unexpected=0;$reject='';
     try {
@@ -126,6 +135,14 @@ try {
         throw new RuntimeException('A 50k-row CSV was enqueued although the cap is 10k.');
     }
     if($reject==='') throw new RuntimeException('A 50k-row file was not rejected with a validation error.');
+    $after_counts=[
+        (int)$wpdb->get_var("SELECT COUNT(*) FROM $rows_table"),
+        (int)$wpdb->get_var("SELECT COUNT(*) FROM $batches_table"),
+        (int)$wpdb->get_var("SELECT COUNT(*) FROM $jobs_table"),
+    ];
+    if($before_counts!==$after_counts) {
+        throw new RuntimeException('Rejected 50k CSV altered import batches, jobs, or staged row counts.');
+    }
     $report['samples'][]=[
         'rows'=>50000,'outcome'=>'rejected_before_staging',
         'csv_bytes'=>filesize($source),'staged_rows'=>0,
