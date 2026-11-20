@@ -153,6 +153,7 @@ final class FinanceDashboardPage {
 
 	private static function render_cards( array $groups, array $scope ): void {
 		echo '<h2>' . esc_html__( 'Source-backed report pages', self::DOMAIN ) . '</h2>';
+		echo '<p class="description">' . esc_html__( 'Every card summarizes only its own bounded source page. The focused card follows your state/cursor; other cards show their first page under the shared date, currency and account filters. Report families may overlap (outstanding includes partially funded orders): never add card totals together.', self::DOMAIN ) . '</p>';
 		echo '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px">';
 		foreach ( self::LABELS as $type => $label ) {
 			$group = $groups[$type];
