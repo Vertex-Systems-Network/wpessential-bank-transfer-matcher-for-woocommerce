@@ -1,6 +1,6 @@
 # P7-T007 — Source-backed visual QA rubric and actual screenshot inspection
 
-Status: **IN PROGRESS**; real before images inspected, after-scroll-reset screenshot and exact-head CI remain pending. Not an assertion of complete WCAG 2.2 AA compliance.
+Status: **VERIFIED** for the P7-T007 visual QA rubric at exact source SHA `3b0341ffa7999cea882402ebed45ecf1acd849ea`: WordPress/WooCommerce/MariaDB/Playground Actions [44708991058](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44708991058) and [44708998653](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44708998653) both SUCCESS; genuine LTR/Arabic RTL Chromium [44708991135](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44708991135) SUCCESS, screenshot artifact **14617205750**. Human screen-reader certification/complete Arabic string translations **not claimed**.
 
 ## Reproducible evidence, not mockups
 
@@ -27,13 +27,10 @@ Status: **IN PROGRESS**; real before images inspected, after-scroll-reset screen
 
 **Before (real) [44706953731](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44706953731), artifact 14614998226**: `ltr-UI-009-pro-review-queue-375.png` and `rtl-UI-009-pro-review-queue-375.png` show the *last* horizontal table columns after keyboard focus. The existing UI scroll region itself remains usable.
 
-**After source change**: `tests/browser/p7-visual.mjs` restores `scrollLeft=0` before screenshot while preserving successful keyboard-to-Tab exercise. The resulting live browser artifact, image comparison, and exact HEAD full green CI are **PENDING**. Do not claim the after artifact is verified until fetched and visually inspected.
+**After VERIFIED**: `tests/browser/p7-visual.mjs` blurs the focused table control then scrolls the **actual first header into view**, checking measured ≥85% intersection with the scroll viewport in both LTR and RTL (not relying on RTL-specific `scrollLeft=0`). Re-captured genuine `ltr-UI-009-pro-review-queue-375.png` and `rtl-UI-009-pro-review-queue-375.png` in artifact **14617205750** visually show the logical first headers (Case / Type / Priority, mirrored in RTL); both before images artifact 14614998226 showed last action columns due to keyboard focus. Side-by-side image inspection also covered bank transactions 375 LTR/RTL and 18 source-backed 1440 LTR variants. Both `p7-report-*.json` have 14 UI IDs, 0 issues, 8 successful first-header visibility probes per locale and 8 keyboard probes per locale. Both `p7-navigation-*.json` have 2 views/24 safe route visits, 0 issues. 59 LTR + 56 RTL evidence images and 4 real navigation screenshots were captured; 3 real forced-colors screenshots. Screenshot horizontal scroll was a capture artifact, **not** an alleged PHP financial bug.
 
-## Residual acceptance requirements
+## Residual acceptance boundaries
 
-1. Complete after-screenshot comparison in 375px LTR and RTL, plus sample 1440 and 1024 layouts; confirm first-column screenshot baseline restored without hiding table features.
-2. Obtain exact-final-head successful browser and Foundation/native/Playground CI.
-3. Record any remaining visible issues as concrete scoped P8/P9 release gates. Plugin Arabic content translation, assistive screen-reader reading order, and formal per-color WCAG 2.2 AA contrast tests remain **unverified**; a 0-issue screenshot script does not certify accessibility.
-4. Run P7-T008 store-owner, finance-operator and customer task-based usability on synthetic flows before phase completion.
+The visual baseline and required first-header comparison are verified at exact SHA `3b0341ff`. This is not a human screen-reader audit, a per-color contrast-ratio measurement, native translation of English plugin content into Arabic, or an end-to-end customer/finance interaction. Those limitations remain explicit release-accessibility/localization review items and must not be represented as passed. **P7-T008 is the next blocked-on-this-task usability walkthrough** for store-owner, finance operator and customer synthetic roles; P8/P9 remain unstarted until its evidence is valid.
 
 **Safety invariant:** No receipt/claim/statement alone marks paid; no real financial mutation was executed during visual QA.
