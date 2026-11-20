@@ -14,6 +14,7 @@ use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneApproval;
 use WPEssential\BankTransferMatcherPro\Reconciliation\OneToOneProposal;
 use WPEssential\BankTransferMatcherPro\Reconciliation\OrderReceivingAccountRepository;
 use WPEssential\BankTransferMatcherPro\Reconciliation\ProPaymentFinalizer;
+use WPEssential\BankTransferMatcherPro\Reconciliation\SplitCreditAllocation;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
 	throw new RuntimeException( 'Disposable wbm_ci database required for concurrency tests.' );
@@ -123,6 +124,25 @@ if ( 'cleanup' === $stage ) {
 	$wpdb->delete( $wpdb->prefix . 'wbm_manual_allocations', [ 'order_id' => $order_id ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence',
 		[ 'id' => $fixture['manual_evidence_id'] ], [ '%d' ] );
+	if ( is_array( $fixture['split'] ?? null ) ) {
+		$split = $fixture['split'];
+		$split_ids = $wpdb->get_col( $wpdb->prepare(
+			"SELECT id FROM $alloc_table WHERE transaction_row_id = %d", (int) $split['source_id']
+		) );
+		foreach ( $split_ids as $id ) {
+			$wpdb->delete( $events_table, [ 'allocation_id' => (int) $id ], [ '%d' ] );
+		}
+		$wpdb->delete( $alloc_table, [ 'transaction_row_id' => (int) $split['source_id'] ], [ '%d' ] );
+		foreach ( $split['order_ids'] as $split_order ) {
+			$wpdb->delete( $intent_table, [ 'order_id' => $split_order ], [ '%d' ] );
+			$wpdb->delete( $wpdb->prefix . 'wbm_manual_allocations', [ 'order_id' => $split_order ], [ '%d' ] );
+			$wpdb->delete( $wpdb->prefix . 'wbm_bank_evidence', [ 'order_id' => $split_order ], [ '%d' ] );
+			$wpdb->delete( $wpdb->prefix . 'wbm_pro_order_bank_events', [ 'order_id' => $split_order ], [ '%d' ] );
+			$wpdb->delete( $wpdb->prefix . 'wbm_pro_order_receiving_accounts', [ 'order_id' => $split_order ], [ '%d' ] );
+			$split_wc = wc_get_order( $split_order );
+			if ( $split_wc ) $split_wc->delete( true );
+		}
+	}
 	$wpdb->delete( $intent_table, [ 'order_id' => $order_id ], [ '%d' ] );
 	$wpdb->delete( $alloc_table, [ 'order_id' => $order_id ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_rows', [ 'batch_id' => $fixture['batch_id'] ], [ '%d' ] );
@@ -144,6 +164,63 @@ $row = $wpdb->get_row( $wpdb->prepare(
 	 WHERE transaction_row_id = %d AND order_id = %d", $source_id, $order_id
 ), ARRAY_A );
 $allocation_id = is_array( $row ) ? (int) $row['id'] : 0;
+if ( 'split_setup' === $stage ) {
+	wp_set_current_user( $maker_id );
+	if ( isset( $fixture['split'] ) ) throw new RuntimeException( 'Split race already initialized.' );
+	$recipients = [];
+	$refs = [];
+	foreach ( [ '60.00', '40.00' ] as $total ) {
+		$recipient = wc_create_order();
+		$recipient->set_payment_method( 'bacs' );
+		$recipient->set_currency( 'USD' );
+		$recipient->set_total( $total );
+		$recipient->set_status( 'on-hold' );
+		$recipient->save();
+		$recipients[] = $recipient->get_id();
+		$ref = PaymentReference::issue();
+		( new ReferenceRepository( $wpdb ) )->reserve( new EntityId( $recipient->get_id() ), $ref );
+		$refs[] = $ref->value;
+		( new OrderReceivingAccountRepository( $wpdb ) )->confirm(
+			$recipient->get_id(), (int) $fixture['account_id'], $maker_id,
+			'Merchant confirmed the expected bank account for a split-recipient race.'
+		);
+	}
+	if ( 1 !== $wpdb->insert( $wpdb->prefix . 'wbm_pro_import_rows', [
+		'batch_id' => $fixture['batch_id'], 'source_row' => 3,
+		'canonical_json' => wp_json_encode( [
+			'source_row' => 3, 'posted_date' => gmdate( 'Y-m-d' ),
+			'amount_minor' => 10000, 'currency' => 'USD', 'exponent' => 2,
+			'reference' => $refs[0], 'description' => 'Distinct cleared split credit',
+			'transaction_id' => 'RACE-SPLIT-' . $recipients[0],
+		] ),
+		'error_code' => '', 'warning_code' => '',
+		'identity_fingerprint' => hash( 'sha256', 'cross-process-split/' . $recipients[0] ),
+	] ) ) throw new RuntimeException( 'Could not import synthetic split credit.' );
+	$split_source = (int) $wpdb->insert_id;
+	$split_key = hash( 'sha256', 'cross-process/split/' . $split_source );
+	$proposal = ( new SplitCreditAllocation( $wpdb ) )->propose(
+		$split_source, [
+			[ 'order_id' => $recipients[0], 'amount_minor' => 6000 ],
+			[ 'order_id' => $recipients[1], 'amount_minor' => 4000 ],
+		], $maker_id, $split_key,
+		'The merchant assigned one distinct cleared bank source to both verified BACS recipients.'
+	);
+	if ( 'proposed' !== $proposal['status'] || count( $proposal['allocation_ids'] ) !== 2 ) {
+		throw new RuntimeException( 'Split setup failed to create two atomic proposals.' );
+	}
+	$evidence = ( new EvidenceRepository( $wpdb ) )->record(
+		$recipients[1], $maker_id, gmdate( 'Y-m-d' ),
+		new Money( 4000, 'USD', 2 ), $refs[1],
+		'Manual receipt competes with the approved split and cannot duplicate its amount.'
+	);
+	$fixture['split'] = [
+		'source_id' => $split_source, 'key' => $split_key, 'order_ids' => $recipients,
+		'manual_evidence_id' => (int) $evidence['id'],
+	];
+	update_option( $option_key, $fixture, false );
+	echo "PASS staged one imported bank credit split between two unpaid BACS recipients\n";
+	return;
+}
 if ( str_ends_with( $stage, '_hold' ) ) {
 	$signal = $args[1] ?? null;
 	if ( ! is_string( $signal ) || ! str_starts_with( $signal, '/tmp/wbm-pro-race-' ) ) {
@@ -160,6 +237,129 @@ if ( str_ends_with( $stage, '_hold' ) ) {
 		}
 		return $sql;
 	}, 999 );
+}
+if ( str_starts_with( $stage, 'split_' ) ) {
+	$split = $fixture['split'] ?? null;
+	if ( ! is_array( $split ) ) throw new RuntimeException( 'Split race fixture missing.' );
+	$first = (int) $split['order_ids'][0];
+	$second = (int) $split['order_ids'][1];
+	$group = (string) $split['key'];
+	$split_review = 'I independently confirmed the cleared shared credit and both split recipient balances.';
+	$split_pay = 'I explicitly confirmed this split credit is cleared with verified recipients and audit.';
+	if ( 'split_approve_hold' === $stage || 'split_approve_contender' === $stage ) {
+		wp_set_current_user( $checker_id );
+		try {
+			$result = ( new SplitCreditAllocation( $wpdb ) )->approve(
+				$group, $checker_id, true, $split_review
+			);
+			if ( 'split_approve_contender' === $stage ) {
+				throw new RuntimeException( 'Overlapping split checker bypassed named locks.' );
+			}
+			if ( 'approved' !== $result['status'] ) {
+				throw new RuntimeException( 'First split checker did not approve the group.' );
+			}
+		} catch ( RuntimeException $expected ) {
+			if ( 'split_approve_contender' !== $stage ||
+				! str_contains( $expected->getMessage(), 'under concurrent reconciliation' ) ) {
+				throw $expected;
+			}
+		}
+		echo "PASS $stage atomic multi-recipient review under independent WP-CLI locks\n";
+		return;
+	}
+	if ( 'split_finalize_contender' === $stage ) {
+		wp_set_current_user( $maker_id );
+		try {
+			( new AllocationRepository( $wpdb ) )->allocate(
+				$second, (int) $split['manual_evidence_id'], $maker_id,
+				new Money( 4000, 'USD', 2 ), new Money( 4000, 'USD', 2 ),
+				'An unrelated Free manual claim cannot spend the already reviewed split recipient.'
+			);
+			throw new RuntimeException( 'Manual writer bypassed second split recipient lock.' );
+		} catch ( RuntimeException $expected ) {
+			if ( ! str_contains( $expected->getMessage(), 'Order is being reconciled' ) ) throw $expected;
+		}
+		echo "PASS Free writer blocked on other split recipient while Pro finalizes first\n";
+		return;
+	}
+	if ( 'split_finalize_hold' === $stage ) {
+		wp_set_current_user( $checker_id );
+		$result = ( new ProPaymentFinalizer( $wpdb ) )->complete(
+			$first, $checker_id, hash( 'sha256', 'cross-process/first-split/' . $first ),
+			true, $split_pay
+		);
+		if ( 'completed' !== $result['status'] || ! $result['order_payment_changed'] ) {
+			throw new RuntimeException( 'First split recipient did not complete under held locks.' );
+		}
+		echo "PASS first split recipient completed while locking all other source recipients\n";
+		return;
+	}
+	if ( 'verify_split_approve' === $stage || 'verify_split_finalize' === $stage ||
+		'split_finish' === $stage ) {
+		$rows = $wpdb->get_results( $wpdb->prepare(
+			"SELECT id, order_id, state, approved_by FROM $alloc_table
+			 WHERE transaction_row_id = %d ORDER BY order_id", (int) $split['source_id']
+		), ARRAY_A );
+		if ( ! is_array( $rows ) || count( $rows ) !== 2 ) {
+			throw new RuntimeException( 'Shared bank source did not produce two distinct recipients.' );
+		}
+		$approved = 0;
+		$committed = 0;
+		$event_count = 0;
+		foreach ( $rows as $allocation ) {
+			if ( (int) $allocation['approved_by'] !== $checker_id ) {
+				throw new RuntimeException( 'Split approval has missing independent reviewer.' );
+			}
+			if ( 'approved' === $allocation['state'] ) ++$approved;
+			if ( 'committed' === $allocation['state'] ) ++$committed;
+			$event_count += (int) $wpdb->get_var( $wpdb->prepare(
+				"SELECT COUNT(*) FROM $events_table WHERE allocation_id = %d", $allocation['id']
+			) );
+		}
+		$free_count = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->prefix}wbm_manual_allocations WHERE order_id = %d", $second
+		) );
+		if ( $free_count !== 0 ) throw new RuntimeException( 'Manual evidence double-funded a split recipient.' );
+		$first_order = wc_get_order( $first );
+		$second_order = wc_get_order( $second );
+		if ( ! $first_order || ! $second_order ) throw new RuntimeException( 'Split recipient order vanished.' );
+		if ( 'verify_split_approve' === $stage &&
+			( $approved !== 2 || $committed !== 0 || $event_count !== 4 ||
+				$first_order->is_paid() || $second_order->is_paid() ) ) {
+			throw new RuntimeException( 'Parallel split approval partially committed or paid a recipient.' );
+		}
+		if ( 'verify_split_finalize' === $stage &&
+			( $approved !== 1 || $committed !== 1 || $event_count !== 5 ||
+				! $first_order->is_paid() || $second_order->is_paid() ) ) {
+			throw new RuntimeException( 'Split finalization did not preserve independent order states.' );
+		}
+		if ( 'split_finish' === $stage ) {
+			wp_set_current_user( $checker_id );
+			$result = ( new ProPaymentFinalizer( $wpdb ) )->complete(
+				$second, $checker_id, hash( 'sha256', 'cross-process/second-split/' . $second ),
+				true, $split_pay
+			);
+			$replay = ( new ProPaymentFinalizer( $wpdb ) )->complete(
+				$first, $checker_id, hash( 'sha256', 'cross-process/first-split/' . $first ),
+				true, $split_pay
+			);
+			if ( 'completed' !== $result['status'] || ! $result['order_payment_changed'] ||
+				'already_completed' !== $replay['status'] || $replay['order_payment_changed'] ||
+				! wc_get_order( $first )->is_paid() || ! wc_get_order( $second )->is_paid() ) {
+				throw new RuntimeException( 'Split recipients failed independent paid-intent replay.' );
+			}
+			$count = (int) $wpdb->get_var( $wpdb->prepare(
+				"SELECT COUNT(*) FROM $alloc_table
+				 WHERE transaction_row_id = %d AND state = 'committed'", (int) $split['source_id']
+			) );
+			if ( $count !== 2 ) throw new RuntimeException( 'One split recipient was not committed.' );
+			echo "PASS shared credit finalized once per recipient with exact source conservation\n";
+		} else {
+			echo "PASS $stage guarded two-recipient source and financial audit\n";
+		}
+		return;
+	}
+	throw new InvalidArgumentException( 'Unknown split cross-process stage.' );
 }
 if ( 'free_contender' === $stage ) {
 	wp_set_current_user( $maker_id );

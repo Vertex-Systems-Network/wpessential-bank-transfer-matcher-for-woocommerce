@@ -44,12 +44,16 @@ race_phase() {
     echo "Primary worker never signaled held named locks" >&2; cat "$primary" >&2; exit 1
   fi
   local free_log="$scratch/$1.free.log"
-  wp_race free_contender >"$free_log" 2>&1 &
-  free_pid=$!
+  if [[ "$stage" == propose || "$stage" == approve || "$stage" == complete ]]; then
+    wp_race free_contender >"$free_log" 2>&1 &
+    free_pid=$!
+  fi
   if ! wp_race "$stage"_contender >"$contender" 2>&1; then cat "$contender" >&2; exit 1; fi
-  if ! wait "$free_pid"; then cat "$free_log" >&2; exit 1; fi
-  free_pid=""
-  cat "$free_log"
+  if [[ -n "$free_pid" ]]; then
+    if ! wait "$free_pid"; then cat "$free_log" >&2; exit 1; fi
+    free_pid=""
+    cat "$free_log"
+  fi
   cat "$contender"
   if ! wait "$primary_pid"; then cat "$primary" >&2; exit 1; fi
   primary_pid=""
@@ -59,4 +63,8 @@ race_phase() {
 race_phase propose
 race_phase approve
 race_phase complete
-echo "PASS real simultaneous WP-CLI proposal, independent approval and payment finalization"
+wp_race split_setup
+race_phase split_approve
+race_phase split_finalize
+wp_race split_finish
+echo "PASS real simultaneous WooCommerce maker, checker, split recipient and paid-intent races"

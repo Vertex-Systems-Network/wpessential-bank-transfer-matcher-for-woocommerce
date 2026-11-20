@@ -80,7 +80,8 @@
     "finance_admin_actions": "passed: GitHub Actions 44639405880 and 44639399125 nonce-gated admin POST adapters, capability checks and manual maker/checker/correction review",
     "finance_dialogs": "passed: GitHub Actions 44639405880 and 44639399125 Node syntax, Pro asset manifest inclusion and WordPress scoped enqueue",
     "pro_cross_process_races": "pending native: three true overlapping WP-CLI requests using live source/order advisory locks, unique source allocation and exactly one payment hook",
-    "pro_cross_edition_races": "pending native: Free manual writer vs Pro proposal/checker/finalizer from genuinely distinct WordPress CLI processes, same source and order"
+    "pro_cross_edition_races": "pending native: Free manual writer vs Pro proposal/checker/finalizer from genuinely distinct WordPress CLI processes, same source and order",
+    "pro_cross_process_split_races": "pending: real two-WP-process shared-source split approval and finalization vs Free writer on other recipient, no partial paid status"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -95,7 +96,7 @@
   ],
   "phase": "P5",
   "active_task_id": "WBM-P5-T011",
-  "next_action": "Verify three real simultaneous WP-CLI Pro and Free writers per stage, with exact one-time source conservation and no duplicate payment or audit.",
+  "next_action": "Verify true separate-WP-CLI split group approver locks and Pro finalization vs Free manual writer on a second recipient; ensure no partial group approval, no double spend and separate WC paid replay.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
