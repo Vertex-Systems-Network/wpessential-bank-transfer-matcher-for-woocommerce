@@ -2,13 +2,14 @@
 
 Build independent Free and Pro WooCommerce plugins for local bank transfer reconciliation. Resume from `.ai/state.json`, `.ai/next-task.json`, and `BACKLOG.md`; the master prompt's Section 23 defines completion.
 
-## Current checkpoint — 2026-11-19
+## Current checkpoint — 2026-11-20
 
-Branch: `development/autonomous-release-track`  
-Base: `main` at `939b9c6c7ecd1882340af9dcd55fe932d4207251`  
-Active task: `WBM-P6-T002` — outstanding BACS, unmatched/partial bank credits, exception aging and import summaries (initial allocation/import native CI pending).
+Phase branch: `development/p6-reports-operations-20261120` (base `main`, carrying merged PR #10/#11 fixes).  
+Phase: **P6 — Reports, Notifications, Operations**. Task `WBM-P6-T002` is awaiting cumulative branch-CI evidence; next is P6-T003 (secure CSV exports). Read `.ai/state.json` and `.ai/next-task.json` for the *live* task after every commit.
 
-This is an unmerged development branch. Continue through every unblocked task while the runner is active. Do not pause for a routine “start/continue?” prompt. Never claim background work after the runner ends. Do not merge, publish, submit WordPress.org/Woo Marketplace, or transmit financial data externally. Fixtures must be synthetic.
+**Owner-authorized phase merges:** Follow [`.ai/phase-merge-policy.md`](.ai/phase-merge-policy.md). Once **all** tasks and safety acceptance criteria of a phase pass against the exact current PR head SHA, merge that phase PR to `main` automatically without routine re-approval while the execution runner is active. Do not merge incomplete phases or bypass failing tests/branch protection. The authorization does not cover marketplace publication, release distribution, bank transfers, refunds or production deployment.
+
+Continue through every unblocked task while the runner is active. Do not pause for a routine “start/continue?” prompt or claim background work after the runner ends. All financial fixtures must be synthetic. Issue #7 stays open until Section 23 is fully verified.
 
 ## Plan integrity
 
