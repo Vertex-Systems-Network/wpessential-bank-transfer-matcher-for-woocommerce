@@ -1120,8 +1120,8 @@
       "WBM-P8-T004"
     ],
     "verification": "VERIFY-P8-T005",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Verified exact SHA 6ffc566738e24c3fb0083763493319823a3f2271: 5/5 GitHub checks SUCCESS, Foundation/Playground/native WP7.0.8/WC11.3.0/PHP8.3/MariaDB in runs 44820665254 and 44820655490, real LTR+RTL Chromium in 44820655390 artifact 14671987232. Both installed Free+Pro editions declare Woo FeaturesUtil custom_order_tables HPOS from before_woocommerce_init, public API get_compatible_features_for_plugin confirms both. Source-backed test p8-hpos-plugin-compat.php passes real WooCommerce order CRUD and metadata in both HPOS/classic, on-hold/unpaid. Plugin version headers/release metadata and generated Free readme align WP Tested 7.0, WC tested 11.3.0; minimum WC10.8 remains to be independently checked at T006, not claimed verified. docs/security/p8-t005-hpos-compatibility.md.",
     "next_action": "Audit actual WooCommerce HPOS and classic order storage switch and plugin declarations (WC tested/required headers, HPOS compatibility declarations, version matrix), execute genuine Free/Pro reconciliation integration under both modes, add source-backed positive/negative tests that detect direct post/postmeta CRUD and read stale caches. Capture exact-head native/Playground CI and honest compatibility scope before P8-T006."
   },
   {
@@ -1134,8 +1134,9 @@
       "WBM-P8-T005"
     ],
     "verification": "VERIFY-P8-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Verify real Classic shortcode and WooCommerce Checkout Block guest BACS checkout via actual WP/Woo Store API and native receipt/claim pages, no auto-paid transition; test pinned WC 11.3.0/PHP8.3 and declared lower-bound WC10.8 and supported PHP in honest CI version matrix. Fix any genuine missing Block hooks, do not rely on mock do_action. Document exact HEAD results before marking done."
   },
   {
     "id": "WBM-P8-T007",

@@ -2,11 +2,11 @@
 
 Build independent Free and Pro WooCommerce plugins for local bank transfer reconciliation. Resume from `.ai/state.json`, `.ai/next-task.json`, and `BACKLOG.md`; the master prompt's Section 23 defines completion.
 
-## P8-T001–T004 verified; P8-T005 active — 2026-11-21
+## P8-T001–T005 verified; P8-T006 active — 2026-11-21
 
-P7 corrective PR #14 merged to main at `4aa10da38e73ac5effc27280efbc05ccd719fb8d`. P8 draft [PR #15](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/15) remains open and unmerged. T001 role/REST (9 personas, 100 probes), T002 private statements/receipts (real six HTTP negative checks), T003 SQL/XSS/CSRF/XXE/CSV (20 native checks plus six actual HTTP CSRF denials) all source-verified. **T004 real ledger cancellation/duplicates/stale/lock/replay verified** at exact code `258ef616263400999c74dd7ba424432e921ccfcf` with two Foundation/Playground/native Woo/MariaDB runs [44819128262](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44819128262), [44819139195](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44819139195) and LTR/Arabic RTL Chromium [44819128256](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44819128256), all SUCCESS (5 green checks), artifact **14671287140**. Source-backed documentation: `docs/security/p8-t004-concurrency-ledger-verification.md`.
+P7 PR #14 merged to main at `4aa10da38e73ac5effc27280efbc05ccd719fb8d`. P8 [draft PR #15](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/15) remains unmerged. T001 roles/REST, T002 private HTTP, T003 SQL/XSS/CSRF/XXE/CSV, T004 SQL advisory locks/stale bank sources are source-verified. **T005** independently packaged Free+Pro official Woo HPOS declarations and tested-version headers **VERIFIED** at exact source `6ffc566738e24c3fb0083763493319823a3f2271`: 5/5 checks green; Foundation/native MariaDB/Playground runs 44820665254/44820655490 and LTR/Arabic RTL browser 44820655390, evidence artifact 14671987232. Real WooCommerce 11.3.0 HPOS and classic data stores both pass order CRUD and no-paid-state assertions. Docs `docs/security/p8-t005-hpos-compatibility.md`. No generalized Woo 10.8/PHP version or Blocks support claim.
 
-**P8-T005 active:** validate truthful WC HPOS/classic order storage compatibility and declarations against exact installed WC; P8-T006–T009 and P9 pending. No live merchant money activity, plugin publication, full pen-test or WCAG certification. Master Issue #7 open.
+**P8-T006 active:** real Checkout Blocks vs classic BACS checkout flow and WC/PHP version matrix. T007–T009 and P9 pending; no live merchant payments, repository release or plugin publication. Issue #7 stays open.
 
 ## Historical checkpoint — 2026-11-20
 
