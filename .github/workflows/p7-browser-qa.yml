@@ -1,10 +1,11 @@
-name: P7 real-browser WordPress visual evidence
+name: P7/P8 real-browser WordPress visual and privacy evidence
 
 on:
   push:
     branches:
       - development/p7-ui-ux-schemas-20261120
       - development/p7-navigation-role-gates-20261120
+      - development/p8-threat-model-access-matrix-20261120
   workflow_dispatch:
 
 permissions:
@@ -119,6 +120,10 @@ jobs:
         env:
           P7_BROWSER_MODE: ltr
         run: node tests/browser/p7-usability.mjs
+      - name: Verify synthetic statement outside public WordPress web root
+        run: wp eval-file "$GITHUB_WORKSPACE/tests/browser/p8-private-http-fixture.php" --path="$P7_BROWSER_WP_PATH"
+      - name: Probe real unauthenticated and invalid-nonce receipt/statement HTTP endpoints
+        run: node tests/browser/p8-private-http.mjs
       - name: Install actual Arabic WordPress locale and assert RTL server direction
         run: |
           set -euo pipefail
