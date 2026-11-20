@@ -132,9 +132,12 @@ outputs.set('docs/release/metadata-sync-report.json', JSON.stringify({
   checked_headers: editions.map((edition) => metadata[edition].slug),
   verified_preview_features: visibleFeatures.map(({ id, edition, test_id, evidence }) => ({ id, edition, test_id, evidence })),
   generated_files: [...outputs.keys()],
+  wordpress_org_tags: metadata.wordpress_org_tags,
+  official_online_readme_validator: 'NOT VERIFIED',
+  contributor_usernames_verification: metadata.wordpress_org_contributors.length ? 'PENDING EXTERNAL VERIFICATION' : 'NOT VERIFIED',
   release_checks_pending: [
-    'Official WordPress.org readme validator',
-    'Verified WordPress.org contributor usernames and tested-version metadata',
+    'Official online WordPress.org readme validator and verified contributor usernames',
+    'Official WordPress Plugin Check and WooCommerce QIT results',
     'Marketplace, screenshots, and production package validation',
   ],
 }, null, 2) + '\n');

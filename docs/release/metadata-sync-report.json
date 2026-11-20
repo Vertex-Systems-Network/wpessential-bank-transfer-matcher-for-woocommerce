@@ -57,9 +57,17 @@
     "docs/submission/woocommerce-marketplace/listing-copy.generated.md",
     "README.md"
   ],
+  "wordpress_org_tags": [
+    "woocommerce",
+    "bank transfer",
+    "payment reference",
+    "offline payments"
+  ],
+  "official_online_readme_validator": "NOT VERIFIED",
+  "contributor_usernames_verification": "NOT VERIFIED",
   "release_checks_pending": [
-    "Official WordPress.org readme validator",
-    "Verified WordPress.org contributor usernames and tested-version metadata",
+    "Official online WordPress.org readme validator and verified contributor usernames",
+    "Official WordPress Plugin Check and WooCommerce QIT results",
     "Marketplace, screenshots, and production package validation"
   ]
 }
