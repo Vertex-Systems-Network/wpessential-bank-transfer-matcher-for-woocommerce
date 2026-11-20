@@ -10,5 +10,5 @@
   "verification": "VERIFY-P7-T006",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify Free-only/Pro-enabled/Pro-without-Free native WooCommerce navigation, active menu state and role-gated links using actual WP menus; remove duplicate/stale destinations and ensure no feature-links to nonimplemented forms. Build disposable classic+HPOS WP/WC menu tests, native 1440/375 and RTL browser checks and exact latest-head full CI. Then T007 evidence rubric and T008 role usability. Keep P7 PR #13 draft/unmerged."
+  "next_action": "P7 PR #13 merged while P7-T006 remained in progress. On development/p7-navigation-role-gates-20261120 verify actual Free-only/no-Free/paired WP/WC role navigation against exact-head CI; repair failures. Next capture real browser Arabic RTL/mobile/keyboard menu evidence, then T007 visual QA rubric and T008 role-based walkthrough. Preserve original tasks, keep issue #7 open, no premature P8 or release/merge."
 }
