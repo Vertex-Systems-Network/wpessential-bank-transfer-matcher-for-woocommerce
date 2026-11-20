@@ -217,8 +217,8 @@ final class ReportExportsPage {
 		self::require_post();
 		self::authorize();
 		check_admin_referer( self::QUEUED_CANCEL );
-		$id = self::posted_job_id();
 		try {
+			$id = self::posted_job_id();
 			( new AsyncReportExportJob( $GLOBALS['wpdb'] ) )
 				->cancel( $id, get_current_user_id(), self::posted_nonce() );
 		} catch ( InvalidArgumentException|RuntimeException $error ) {
