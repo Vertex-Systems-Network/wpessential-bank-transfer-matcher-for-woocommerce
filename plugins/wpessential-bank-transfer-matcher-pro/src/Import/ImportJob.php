@@ -67,9 +67,9 @@ final class ImportJob {
 		$stream = fopen( $source, 'rb' );
 		if ( false === $stream ) throw new RuntimeException( 'Cannot read the CSV source.' );
 		try {
-			if ( false === fgetcsv( $stream, null, $delimiter, '"', '' ) ) {
-				throw new InvalidArgumentException( 'CSV header is missing.' );
-			}
+			// Refuse malformed header bytes before copying a private file,
+			// creating an import batch, or enqueueing asynchronous work.
+			CsvParser::validated_headers( fgetcsv( $stream, null, $delimiter, '"', '' ) );
 			$rows = 0;
 			while ( false !== ( $values = fgetcsv( $stream, null, $delimiter, '"', '' ) ) ) {
 				if ( array( null ) === $values ||
@@ -102,11 +102,9 @@ final class ImportJob {
 			$stream = fopen( $path, 'rb' );
 			if ( false === $stream ) throw new RuntimeException( 'Could not open staged statement.' );
 			try {
-				$headers = fgetcsv( $stream, null, $profile->delimiter, '"', '' );
-				if ( false === $headers || count( $headers ) > CsvParser::MAX_COLUMNS ) throw new InvalidArgumentException( 'CSV headers are invalid.' );
-				$headers = array_map( static fn ( $value ): string => trim( (string) $value ), $headers );
-				$headers[0] = preg_replace( '/^\xEF\xBB\xBF/', '', $headers[0] );
-				if ( in_array( '', $headers, true ) || count( array_unique( $headers ) ) !== count( $headers ) ) throw new InvalidArgumentException( 'CSV headers must be unique.' );
+				$headers = CsvParser::validated_headers(
+					fgetcsv( $stream, null, $profile->delimiter, '"', '' )
+				);
 				if ( (int) $job['byte_offset'] > 0 && -1 === fseek( $stream, (int) $job['byte_offset'] ) ) throw new RuntimeException( 'Could not resume statement.' );
 				$valid = (int) $job['valid_count']; $errors = (int) $job['error_count']; $warnings = (int) $job['warning_count']; $row_number = (int) $job['next_row']; $read = 0;
 				while ( $read < self::CHUNK && false !== ( $values = fgetcsv( $stream, null, $profile->delimiter, '"', '' ) ) ) {
