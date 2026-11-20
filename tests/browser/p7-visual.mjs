@@ -58,6 +58,8 @@ try {
   await page.locator('#user_pass').fill(password);
   await page.locator('#wp-submit').click();
   await page.waitForURL(u => u.pathname.startsWith('/wp-admin/'), { timeout: 45000 });
+  await page.waitForLoadState('domcontentloaded');
+  await page.locator('#adminmenu').waitFor({ state: 'attached', timeout: 15000 });
   for (const size of sizes) {
     await page.setViewportSize(size);
     for (const spec of specs) {
