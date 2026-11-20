@@ -152,7 +152,7 @@ final class AllocationReviewPage {
 				esc_html( self::money( $amount, (int) $precision ) . ' ' . $currency ) .
 				'</strong> <small>' . esc_html( $state ) . '</small></span>';
 		}
-		echo '</p><div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Allocation ledger by currency and approval state', self::DOMAIN ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr>';
+		echo '</p><p class="description wbm-pro-scroll-hint">' . esc_html__( 'Scroll sideways to inspect all ledger columns. Proposed and approved amounts are not a payment confirmation.', self::DOMAIN ) . '</p><div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Allocation ledger by currency and approval state', self::DOMAIN ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr>';
 		foreach ( [ 'Allocation', 'WooCommerce order', 'Imported source', 'Allocated amount',
 			'Source credit', 'Order expected', 'State', 'Bank account', 'Split group', 'Reviewer', 'Evidence' ] as $label ) {
 			echo '<th>' . esc_html( $label ) . '</th>';

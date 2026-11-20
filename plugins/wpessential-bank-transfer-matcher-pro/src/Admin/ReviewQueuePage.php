@@ -58,6 +58,7 @@ final class ReviewQueuePage {
 			}
 			return;
 		}
+		echo '<p class="description wbm-pro-scroll-hint">' . esc_html__( 'Scroll sideways to view all review-case columns. Case priorities and states are labels, not proof of payment.', 'wpessential-bank-transfer-matcher-pro' ) . '</p>';
 		echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Bank review case results', 'wpessential-bank-transfer-matcher-pro' ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr><th>' . esc_html__( 'Case', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Type', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Priority', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'State', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Transaction', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Order', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Assignee', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th></th></tr></thead><tbody>';
 		foreach ( $rows as $row ) {
 			$url = add_query_arg( [ 'page' => self::SLUG, 'case_id' => (int) $row['id'] ], admin_url( 'admin.php' ) );
