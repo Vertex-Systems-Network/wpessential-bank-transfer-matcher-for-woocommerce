@@ -30,7 +30,11 @@ jobs:
           bash scripts/package-plugin.sh free
           bash scripts/package-plugin.sh pro
       - name: Check finance dialog JavaScript syntax
-        run: node --check plugins/wpessential-bank-transfer-matcher-pro/assets/js/finance-dialogs.js
+        run: |
+          node --check plugins/wpessential-bank-transfer-matcher-pro/assets/js/finance-dialogs.js
+          node --check tests/browser/p8-private-http.mjs
+          node --check tests/browser/p8-csrf-http.mjs
+          node --check tests/browser/p8-real-checkout-http.mjs
       - name: Check PHP syntax
         run: find plugins playground/tests tests -name vendor -prune -o -name '*.php' -print0 | xargs -0 -n 1 php -l
       - name: Analyze reconciliation domain types
@@ -91,6 +95,8 @@ jobs:
           php-version: '8.3'
           extensions: mysqli
           tools: composer:v2, wp-cli
+      - name: Verify or bootstrap checksum-pinned WP-CLI for real MariaDB tests
+        run: bash scripts/ensure-wp-cli-ci.sh
       - name: Install Free runtime autoloader
         run: composer --working-dir=plugins/wpessential-bank-transfer-matcher install --no-dev --no-interaction
       - name: Exercise migrations against WordPress and MariaDB

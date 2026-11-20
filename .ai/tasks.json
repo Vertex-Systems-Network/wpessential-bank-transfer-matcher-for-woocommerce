@@ -1064,8 +1064,8 @@
       "WBM-P7-T008"
     ],
     "verification": "VERIFY-P8-T001",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Verified source SHA cb6f22d77ec1df5a053f15b4815ab9e729086a13: Foundation/Playground/native WooCommerce 11.3.0/WordPress 7.0.8 + disposable MariaDB GitHub Actions 44717249254 SUCCESS (both jobs). Native output PASS: nine real synthetic personas, ten exact registered REST routes, 100 permission/read-only API probes, 24 real WordPress public/private admin-post registration checks; reviewer-only verified-claim callback explicitly denied; no authorized finance POST, payment/status mutation or real bank data. Source-backed threat model: docs/security/threat-model.md; tests/integration/p8-route-capability-matrix.php; append-only .ai/sessions/2026-11-20-p8-t001-role-matrix-verified.md. Full phase P8 T002–T009 remains pending and no general security certification is claimed.",
     "next_action": "Open dedicated P8 security branch after verified P7 phase PR gate. Audit actual trust boundaries and source-backed WordPress REST/admin-post capabilities, nonce and object-level checks against synthetic anonymous/viewer/importer/approver/manager roles. Add fail-closed auth matrix in disposable native WP/WC/MariaDB; verify threat-model assets/risk/mitigation/residuals and exact-source CI; avoid authorized finance mutations. Continue P8-T002 only once evidence is verifiable."
   },
   {
@@ -1078,8 +1078,9 @@
       "WBM-P8-T001"
     ],
     "verification": "VERIFY-P8-T002",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "VERIFIED at exact SHA bafae85cff093bad371742654735ca77f2acfc4f: two Foundation/Playground/native MariaDB Actions 44719809919, 44719800103 SUCCESS; real HTTP and LTR/RTL browser 44719800023 SUCCESS, artifact 14621347905. 6 synthetic guest/admin HTTP statement and receipt bad-nonce probes, no bank/receipt data exposure. Native genuine WP/WC reviewer nonce and wrong-order checks, viewer/guest denied, expired receipt bytes purged, Pro CSV 0600/0700 storage outside WP root, SHA256 matching. No financial POST/payment mutation. 200 generic HTML fallback distinguished from real CSV response. See docs/security/p8-t002-private-receipt-statement-audit.md; real CDN proxy and multipart penetration coverage unverified.",
+    "next_action": "Audit actual private receipt and bank statement file access under disposable WP/WC: order-specific receipt nonces and role restrictions, no anonymous finance/file access over real HTTP, encrypted/opaque private source paths outside document root, tampered path/symlink/expired bytes behavior, no raw data in logs. Capture negative-HTTP and native DB evidence; verify full exact-head CI and record limitations. Do not perform live payment or authorized finance POST."
   },
   {
     "id": "WBM-P8-T003",
@@ -1091,8 +1092,9 @@
       "WBM-P8-T002"
     ],
     "verification": "VERIFY-P8-T003",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "VERIFIED exact source SHA 44f569439ecbf9c1969111357d356dfb14180d46: two Foundation/Playground/native WP7/WC11/MariaDB runs 44817993455 and 44817986338 SUCCESS, real Chromium 44817986325 SUCCESS, screenshot/report artifact 14670457940 (5 checks all green). Native tests/integration/p8-adversarial-inputs.php 20 checks: SQL literal/repository integrity, stored HTML escaping, formula-prefixed CSV neutralization/redaction, NUL/UTF8/size rejection, CAMT.053 XXE denial, malicious receipt MIME rejection. Real tests/browser/p8-csrf-http.mjs six actual authenticated wrong/missing-nonce admin-post/REST financial denial checks; no authorized finance POST; post-browser BACS orders remain unpaid. GH runner WP-CLI missing-tool issue fixed via CI-only official WP-CLI 2.12.0 pinned SHA256 fallback. docs/security/p8-t003-adversarial-verification.md. Not exhaustive pen-test/security certification.",
+    "next_action": "Run source-backed SQL/XSS/CSRF/XXE/CSV formula-injection negative checks in isolated real WordPress/WooCommerce/MariaDB; distinguish payload from actual execution and enforce denial/escape; no authorized finance POST/payment mutation. Fix actual vulnerabilities, record exact-head CI evidence then progress to P8-T004."
   },
   {
     "id": "WBM-P8-T004",
@@ -1104,8 +1106,9 @@
       "WBM-P8-T003"
     ],
     "verification": "VERIFY-P8-T004",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Verified exact code SHA 258ef616263400999c74dd7ba424432e921ccfcf: both Foundation/Playground/native MariaDB Actions 44819128262 + 44819139195 SUCCESS, real LTR/Arabic RTL Chromium Actions 44819128256 SUCCESS, artifact 14671287140. New tests/integration/p8-stale-ledger-invalidation.php PASS: cancelled Woo BACS after proposal denied at approval; imported source warning, changed amount and duplicate fingerprint denied; independent second MariaDB source-lock denies concurrently; idempotent proposal and independent reviewer approval/replay preserve exactly 2 audit rows and no Woo paid state. Existing pro-approval-locks.php, pro-many-credits.php, pro-split-credit.php, pro-payment-finalizer.php and overpayment tests cover additional contention/drift. Docs docs/security/p8-t004-concurrency-ledger-verification.md. Not a multi-process load-test/real bank-clearance certification.",
+    "next_action": "Verify against actual native MariaDB two independent SQL connection locks, Pro unique source/idempotency and duplicate fingerprint/overallocation guards, Woo order cancellation/refund/total drift between proposal and approval, correction hold/invalidation, no partial ledger writes and idempotent payment hook replay. Add missing synthetic negative tests and exact-head CI without real financial movement. Record evidence before P8-T005."
   },
   {
     "id": "WBM-P8-T005",
@@ -1117,8 +1120,9 @@
       "WBM-P8-T004"
     ],
     "verification": "VERIFY-P8-T005",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Verified exact SHA 6ffc566738e24c3fb0083763493319823a3f2271: 5/5 GitHub checks SUCCESS, Foundation/Playground/native WP7.0.8/WC11.3.0/PHP8.3/MariaDB in runs 44820665254 and 44820655490, real LTR+RTL Chromium in 44820655390 artifact 14671987232. Both installed Free+Pro editions declare Woo FeaturesUtil custom_order_tables HPOS from before_woocommerce_init, public API get_compatible_features_for_plugin confirms both. Source-backed test p8-hpos-plugin-compat.php passes real WooCommerce order CRUD and metadata in both HPOS/classic, on-hold/unpaid. Plugin version headers/release metadata and generated Free readme align WP Tested 7.0, WC tested 11.3.0; minimum WC10.8 remains to be independently checked at T006, not claimed verified. docs/security/p8-t005-hpos-compatibility.md.",
+    "next_action": "Audit actual WooCommerce HPOS and classic order storage switch and plugin declarations (WC tested/required headers, HPOS compatibility declarations, version matrix), execute genuine Free/Pro reconciliation integration under both modes, add source-backed positive/negative tests that detect direct post/postmeta CRUD and read stale caches. Capture exact-head native/Playground CI and honest compatibility scope before P8-T006."
   },
   {
     "id": "WBM-P8-T006",
@@ -1130,8 +1134,9 @@
       "WBM-P8-T005"
     ],
     "verification": "VERIFY-P8-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "VERIFIED exact SHA ce5d78392d8b0f0cd8042aa4a55e4b45ce3bf50a: 9/9 checks SUCCESS at head. Foundation/Playground/native WP7.0.8/WC11.3.0/PHP8.3/MariaDB 44829621364 and 44829632822; real Chromium LTR+Arabic RTL 44829621375 artifact 14673854609; 4/4 exact WP7.0.8/PHP8.3+8.4/WC10.8.0+11.3.0 installed Free+Pro HPOS/classic compatibility matrix 44829621415. Real classic browser BACS form click creates order and Checkout Blocks frontend renders canonical page; genuine Cart-Token Woo Store API cart/add-item/checkout creates separate guest BACS order, both order-received ref/claim views visible. Native WC verifies both orders on-hold, unpaid, null paid date, unclaimed, distinct immutable reference; no real settlement. Block Pay button UI itself NOT clicked, full guest transaction via Store API. Docs docs/security/p8-t006-checkout-compatibility.md.",
+    "next_action": "Verify real Classic shortcode and WooCommerce Checkout Block guest BACS checkout via actual WP/Woo Store API and native receipt/claim pages, no auto-paid transition; test pinned WC 11.3.0/PHP8.3 and declared lower-bound WC10.8 and supported PHP in honest CI version matrix. Fix any genuine missing Block hooks, do not rely on mock do_action. Document exact HEAD results before marking done."
   },
   {
     "id": "WBM-P8-T007",
@@ -1143,8 +1148,9 @@
       "WBM-P8-T006"
     ],
     "verification": "VERIFY-P8-T007",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "VERIFIED exact SHA d0b5143ed64bb66eaf86779fa651358961b08481: 10/10 GitHub checks SUCCESS: 1k/10k/50k real MariaDB benchmark 44831039401 artifact 14675449713, two Foundation/Playground/native WP/WC MariaDB runs 44831039373/44831053993, four WC10.8/11.3 × PHP8.3/8.4 version checks 44831039366, real Chromium LTR/Arabic RTL checkout/privacy/CSRF 44831039387. Measured synthetic 1k: 398.02ms/46,925 B, 10k: 3,670ms/488,926 B, 50k rejected pre-stage: 21.21ms/2,488,926 B; peak PHP allocated 133.81 MiB, NOT process RSS. Streamed preflight in ImportJob::start rejects >CsvParser::MAX_ROWS 10000 before bank source copy/queue/batch, SQL proves 50k rejection does not change job/row/batch counts, real 1k/10k imports complete correct row counts. CI budget 12s/60s/5s, peak allocated <=256 MiB. docs/security/p8-t007-synthetic-load-benchmarks.md. Single-run synthetic CI timings, no 50k successful import/production SLA claim.",
+    "next_action": "Measure 1,000/10,000 synthetic CSV data rows via genuine import/preview and record wall-clock times, peak memory, file size, per-chunk processing and any DB index/performance issues on disposable WP/WC/MariaDB. The existing CsvParser::MAX_ROWS=10000 must be honored; 50,000-row fixture must produce bounded, verified rejection without exceeding private data/memory quotas rather than being claimed supported. Add reproducible benchmark JSON artifacts, thresholds plus exact-HEAD CI. Never create real paid Woo orders or import real statements; document verified hardware context."
   },
   {
     "id": "WBM-P8-T008",
@@ -1156,8 +1162,9 @@
       "WBM-P8-T007"
     ],
     "verification": "VERIFY-P8-T008",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "VERIFIED exact SHA 680602d833018fda5ebfaaa62bd0f1c95e1bb355: 12/12 GitHub checks success. Same-store real WC10.8.0->11.3.0 upgrade in HPOS and classic, real WordPress missing Free dependency, Pro deactivate/reactivate, two edition ZIP force reinstalls, benign independent CI custom-order-number plugin, synthetic on-hold/unpaid BACS order immutable reference, submitted but unverified claim and masked bank account persist without duplicate evidence; CI 44832609979 success, HPOS artifact 14676258401 and classic 14676621621. 2 Foundation/Playground + 2 MariaDB 44832609976/44832619094, browser LTR/RTL+real BACS checkout/privacy/CSRF 44832609830 artifact 14676089619, 4-cell PHP/WC 44832609858, benchmark 44832610042 all SUCCESS. docs/security/p8-t008-upgrade-coexistence-verification.md. Scope: one synthetic harmless third-party fixture, not universal merchant plugin compatibility.",
+    "next_action": "Run actual packaged Free/Pro with a benign third-party plugin (coexistence), verify Pro cannot activate without Free, Free/Pro deactivation and reactivation, in-place WooCommerce 10.8.0→11.3.0 upgrade and Free/Pro ZIP reinstallation on same disposable WP/WC/MariaDB store; assert same unpaid BACS order, immutable payment reference and unverified claim evidence survive, schema migration idempotent and no paid transition. Capture exact-head native/Playground CI; no production funds/merchant deployments."
   },
   {
     "id": "WBM-P8-T009",
@@ -1169,8 +1176,9 @@
       "WBM-P8-T008"
     ],
     "verification": "VERIFY-P8-T009",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "VERIFIED source SHA 11c19383bc2f61091be742939415c1437326514b: all 12/12 checks green: Foundation/native WP/WC/MariaDB+Playground runs 44833813362 and 44833824024, Chromium real BACS/RTL/privacy 44833813365 artifact 14678195966, 4 PHP/WC version cells 44833813391, HPOS+classic WC 10.8->11.3 in-place Free/Pro upgrade 44833813316 artifacts 14677588383/14677927906, real 1k/10k/50k benchmark 44833813377 artifact 14678215212. Fixed confirmed CSV malformed-header staging correctness defect by centralized CsvParser::validated_headers in parser, preflight and resumable worker; tests/integration/p8-invalid-csv-header.php rejects six NUL/UTF8/oversized/duplicate/blank/>100-col cases before any row/batch/job/async state and accepts valid BOM one-row native import. No known unresolved confirmed critical/high bugs within tested synthetic P8 scope; external production pen tests, CDN, plugin check/QIT remain P9/external. docs/security/p8-t009-final-security-closure.md.",
+    "next_action": "Perform final source-backed risk/defect review against P8 threat model and verified tasks, inspect CSV/XML/untrusted headers, import state/checkpoints, receipt/privacy/capability/nonce paths and Woo payment guard. Add adversarial native negative regressions for any discovered fail-open/correctness issues, fix confirmed defects with exact-head CI (all Foundation/MariaDB/Playground, real Chromium, 4-cell matrix, 1k/10k/50k benchmark, HPOS/classic WC upgrade). Document explicit residual risks, zero unresolved known critical/high release blockers if justified; do not claim external penetration or marketplace compliance. Only then mark P8 complete and merge its phase PR if actual branch reviews/protection/required checks permit."
   },
   {
     "id": "WBM-P9-T001",
@@ -1182,8 +1190,9 @@
       "WBM-P8-T009"
     ],
     "verification": "VERIFY-P9-T001",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "FIRST verify final P8 T009 task/evidence HEAD succeeds on ALL 12 configured exact-head GitHub checks and PR #15 has no unresolved reviews/protection conflicts; then mark ready and merge verified P8 phase PR into main with expected SHA per owner-authorized .ai/phase-merge-policy.md. Verify main commit/merged status. Create dedicated P9 release engineering branch and only then start true P9-T001: canonically generate WordPress.org readme.txt and separate Free/Pro READMEs, run docs drift/readme validator on actual source; record exact-head CI. No plugin publication."
   },
   {
     "id": "WBM-P9-T002",

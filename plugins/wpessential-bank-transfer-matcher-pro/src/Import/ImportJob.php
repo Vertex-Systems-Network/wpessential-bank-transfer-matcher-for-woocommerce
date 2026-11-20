@@ -28,6 +28,10 @@ final class ImportJob {
 		if ( ! function_exists( 'as_enqueue_async_action' ) ) throw new RuntimeException( 'Action Scheduler is unavailable.' );
 		$size = is_file( $source ) ? filesize( $source ) : false;
 		if ( false === $size || $size < 1 || $size > 20 * 1024 * 1024 || ! is_readable( $source ) ) throw new InvalidArgumentException( 'Invalid statement file.' );
+		// Fail before private copying, batch creation or async enqueue. Without
+		// this guard, a >10k file could stage 10,000 rows then fail in a later
+		// chunk, wasting DB resources and leaving a misleading partial import.
+		self::assert_within_row_cap( $source, $profile->delimiter );
 		$this->ensure_schema();
 		$hash = hash_file( 'sha256', $source );
 		if ( false === $hash ) throw new RuntimeException( 'Could not hash statement file.' );
@@ -54,6 +58,31 @@ final class ImportJob {
 		}
 	}
 
+	/**
+	 * Bounded CSV row preflight. Streaming fgetcsv holds only one source row in
+	 * memory; the existing 20 MiB file-size gate bounds any single row.
+	 * Do not normalize/correct source data before the per-row parser checks.
+	 */
+	private static function assert_within_row_cap( string $source, string $delimiter ): void {
+		$stream = fopen( $source, 'rb' );
+		if ( false === $stream ) throw new RuntimeException( 'Cannot read the CSV source.' );
+		try {
+			// Refuse malformed header bytes before copying a private file,
+			// creating an import batch, or enqueueing asynchronous work.
+			CsvParser::validated_headers( fgetcsv( $stream, null, $delimiter, '"', '' ) );
+			$rows = 0;
+			while ( false !== ( $values = fgetcsv( $stream, null, $delimiter, '"', '' ) ) ) {
+				if ( array( null ) === $values ||
+					( 1 === count( $values ) && '' === $values[0] ) ) continue;
+				if ( ++$rows > CsvParser::MAX_ROWS ) {
+					throw new InvalidArgumentException( 'The CSV row limit was exceeded.' );
+				}
+			}
+		} finally {
+			fclose( $stream );
+		}
+	}
+
 	/** One database transaction per chunk holds the checkpoint and rows together. */
 	public function process( int $batch_id ): void {
 		if ( $batch_id < 1 ) throw new InvalidArgumentException( 'Invalid import batch.' );
@@ -73,11 +102,9 @@ final class ImportJob {
 			$stream = fopen( $path, 'rb' );
 			if ( false === $stream ) throw new RuntimeException( 'Could not open staged statement.' );
 			try {
-				$headers = fgetcsv( $stream, null, $profile->delimiter, '"', '' );
-				if ( false === $headers || count( $headers ) > CsvParser::MAX_COLUMNS ) throw new InvalidArgumentException( 'CSV headers are invalid.' );
-				$headers = array_map( static fn ( $value ): string => trim( (string) $value ), $headers );
-				$headers[0] = preg_replace( '/^\xEF\xBB\xBF/', '', $headers[0] );
-				if ( in_array( '', $headers, true ) || count( array_unique( $headers ) ) !== count( $headers ) ) throw new InvalidArgumentException( 'CSV headers must be unique.' );
+				$headers = CsvParser::validated_headers(
+					fgetcsv( $stream, null, $profile->delimiter, '"', '' )
+				);
 				if ( (int) $job['byte_offset'] > 0 && -1 === fseek( $stream, (int) $job['byte_offset'] ) ) throw new RuntimeException( 'Could not resume statement.' );
 				$valid = (int) $job['valid_count']; $errors = (int) $job['error_count']; $warnings = (int) $job['warning_count']; $row_number = (int) $job['next_row']; $read = 0;
 				while ( $read < self::CHUNK && false !== ( $values = fgetcsv( $stream, null, $profile->delimiter, '"', '' ) ) ) {

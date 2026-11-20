@@ -1,10 +1,11 @@
-name: P7 real-browser WordPress visual evidence
+name: P7/P8 real-browser WordPress visual and privacy evidence
 
 on:
   push:
     branches:
       - development/p7-ui-ux-schemas-20261120
       - development/p7-navigation-role-gates-20261120
+      - development/p8-threat-model-access-matrix-20261120
   workflow_dispatch:
 
 permissions:
@@ -32,6 +33,8 @@ jobs:
     env:
       P7_BROWSER_BASE: http://127.0.0.1:8893
       P7_BROWSER_FIXTURE_FILE: /tmp/p7-browser-fixture.json
+      P8_CHECKOUT_FIXTURE_FILE: /tmp/p8-checkout-fixture.json
+      P8_CHECKOUT_REPORT_FILE: /tmp/p8-checkout-result.json
       P7_BROWSER_EVIDENCE_DIR: /tmp/p7-wbm-evidence
       GITHUB_ACTIONS: "true"
     steps:
@@ -44,6 +47,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Verify or bootstrap checksum-pinned WP-CLI for browser WordPress install
+        run: bash scripts/ensure-wp-cli-ci.sh
       - name: Generate one-off nonproduction WordPress login password
         run: |
           password="$(openssl rand -hex 24)"
@@ -84,6 +89,7 @@ jobs:
             --format=json --path="$site"
           wp rewrite structure '/%postname%/' --path="$site"
           wp eval-file "$GITHUB_WORKSPACE/tests/browser/p7-seed.php" --path="$site"
+          wp eval-file "$GITHUB_WORKSPACE/tests/browser/p8-checkout-seed.php" --path="$site"
       - name: Launch genuine WordPress HTTP server and validate login URL
         run: |
           set -euo pipefail
@@ -119,6 +125,16 @@ jobs:
         env:
           P7_BROWSER_MODE: ltr
         run: node tests/browser/p7-usability.mjs
+      - name: Actual classic browser and Checkout Blocks Store API synthetic guest BACS checkout
+        run: node tests/browser/p8-real-checkout-http.mjs
+      - name: Verify actual checkout orders unpaid and source-referenced in native WooCommerce
+        run: wp eval-file "$GITHUB_WORKSPACE/tests/browser/p8-checkout-integrity.php" --path="$P7_BROWSER_WP_PATH"
+      - name: Verify synthetic statement outside public WordPress web root
+        run: wp eval-file "$GITHUB_WORKSPACE/tests/browser/p8-private-http-fixture.php" --path="$P7_BROWSER_WP_PATH"
+      - name: Probe real unauthenticated and invalid-nonce receipt/statement HTTP endpoints
+        run: node tests/browser/p8-private-http.mjs
+      - name: Deny authentic-cookie invalid-nonce admin and REST financial CSRF requests
+        run: node tests/browser/p8-csrf-http.mjs
       - name: Install actual Arabic WordPress locale and assert RTL server direction
         run: |
           set -euo pipefail

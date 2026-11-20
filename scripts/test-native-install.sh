@@ -41,6 +41,12 @@ wp_test eval-file "$root/tests/integration/order-storage.php" paired
 wp_test plugin install "$root/dist/$free.zip" --force --activate
 wp_test plugin install "$root/dist/$pro.zip" --force --activate
 wp_test eval-file "$root/tests/integration/order-storage.php" paired
+# Verify both edition compatibility declarations via WooCommerce public
+# FeaturesUtil API and actual WordPress order CRUD in BOTH primary stores.
+wp_test option update woocommerce_custom_orders_table_enabled yes
+wp_test eval-file "$root/tests/integration/p8-hpos-plugin-compat.php" hpos
+wp_test option update woocommerce_custom_orders_table_enabled no
+wp_test eval-file "$root/tests/integration/p8-hpos-plugin-compat.php" classic
 printf 'PASS paired ZIP replacement and bootstrap\n'
 wp_test eval-file "$root/tests/integration/pro-bank-accounts.php"
 wp_test eval-file "$root/tests/integration/pro-csv-parser.php"
@@ -72,6 +78,11 @@ wp_test eval-file "$root/tests/integration/pro-finance-notifications.php"
 wp_test eval-file "$root/tests/integration/pro-finance-dashboard.php"
 wp_test eval-file "$root/tests/integration/pro-p7-native-ui.php"
 wp_test eval-file "$root/tests/integration/p7-real-action-routes.php"
+wp_test eval-file "$root/tests/integration/p8-route-capability-matrix.php"
+wp_test eval-file "$root/tests/integration/p8-private-storage-access.php"
+wp_test eval-file "$root/tests/integration/p8-adversarial-inputs.php"
+wp_test eval-file "$root/tests/integration/p8-invalid-csv-header.php"
+wp_test eval-file "$root/tests/integration/p8-stale-ledger-invalidation.php"
 wp_test eval-file "$root/tests/integration/pro-finance-operations.php"
 wp_test eval-file "$root/tests/integration/pro-finance-retention.php"
 wp_test eval-file "$root/tests/integration/pro-report-unmatched-credits.php"

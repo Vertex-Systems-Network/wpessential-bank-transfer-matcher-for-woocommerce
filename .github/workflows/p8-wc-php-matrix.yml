@@ -1,0 +1,93 @@
+name: P8 WooCommerce and PHP exact-version compatibility matrix
+
+on:
+  push:
+    branches:
+      - development/p8-threat-model-access-matrix-20261120
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  installed-compat:
+    name: "WP 7.0.8 / PHP ${{ matrix.php }} / WC ${{ matrix.woocommerce }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4']
+        woocommerce: ['10.8.0', '11.3.0']
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_DATABASE: wbm_ci
+          MARIADB_USER: wbm_ci
+          MARIADB_PASSWORD: wbm-ci-test-only
+          MARIADB_RANDOM_ROOT_PASSWORD: '1'
+        ports:
+          - 3306/tcp
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mysqli, mbstring, dom, fileinfo
+          tools: composer:v2, wp-cli
+      - name: Pin and verify real WP-CLI
+        run: bash scripts/ensure-wp-cli-ci.sh
+      - name: Package independent exact-commit Free and Pro ZIPs
+        run: |
+          bash scripts/package-plugin.sh free
+          bash scripts/package-plugin.sh pro
+      - name: Install actual WordPress and matrix WooCommerce version on disposable MariaDB
+        env:
+          WBM_DB_PORT: ${{ job.services.mariadb.ports['3306'] }}
+          WBM_TEST_WC: ${{ matrix.woocommerce }}
+        run: |
+          set -euo pipefail
+          site="$RUNNER_TEMP/p8-version-matrix-wp"
+          echo "P8_MATRIX_WP_PATH=$site" >> "$GITHUB_ENV"
+          wp core download --path="$site" --version=7.0.8
+          wp config create --path="$site" --dbname=wbm_ci --dbuser=wbm_ci \
+            --dbpass=wbm-ci-test-only --dbhost="127.0.0.1:$WBM_DB_PORT"
+          wp core install --path="$site" --url=http://p8-version-matrix.test \
+            --title="Synthetic version matrix" --admin_user=wbm_ci \
+            --admin_email=matrix-ci@example.test --skip-email
+          wp plugin install "https://downloads.wordpress.org/plugin/woocommerce.${WBM_TEST_WC}.zip" \
+            --activate --path="$site"
+          wp plugin install "$GITHUB_WORKSPACE/dist/wpessential-bank-transfer-matcher.zip" \
+            --activate --path="$site"
+          wp plugin install "$GITHUB_WORKSPACE/dist/wpessential-bank-transfer-matcher-pro.zip" \
+            --activate --path="$site"
+          wp option update woocommerce_custom_orders_table_data_sync_enabled no --path="$site"
+          wp option update woocommerce_bacs_settings \
+            '{"enabled":"yes","instructions":"Synthetic CI only, never remit funds"}' \
+            --format=json --path="$site"
+      - name: Test active packaged Free and Pro HPOS compatibility and actual WooCommerce CRUD twice
+        env:
+          WBM_TEST_WC: ${{ matrix.woocommerce }}
+          WBM_TEST_PHP: ${{ matrix.php }}
+        run: |
+          set -euo pipefail
+          site="$P8_MATRIX_WP_PATH"
+          actual_wc="$(wp eval 'echo WC_VERSION;' --path="$site")"
+          actual_php="$(wp eval 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;' --path="$site")"
+          test "$actual_wc" = "$WBM_TEST_WC"
+          test "$actual_php" = "$WBM_TEST_PHP"
+          wp eval-file "$GITHUB_WORKSPACE/tests/integration/order-storage.php" paired --path="$site"
+          wp option update woocommerce_custom_orders_table_enabled yes --path="$site"
+          wp eval-file "$GITHUB_WORKSPACE/tests/integration/p8-hpos-plugin-compat.php" hpos --path="$site"
+          wp option update woocommerce_custom_orders_table_enabled no --path="$site"
+          wp eval-file "$GITHUB_WORKSPACE/tests/integration/p8-hpos-plugin-compat.php" classic --path="$site"
+          wp eval-file "$GITHUB_WORKSPACE/tests/integration/payment-references.php" --path="$site"
+          wp option update woocommerce_custom_orders_table_enabled yes --path="$site"
+          wp eval-file "$GITHUB_WORKSPACE/tests/integration/payment-references.php" --path="$site"
+          echo "PASS P8-T006 real pinned WordPress 7.0.8 PHP $WBM_TEST_PHP WooCommerce $WBM_TEST_WC, both Free/Pro HPOS/classic CRUD and BACS checkout hook eligibility; no actual funds moved"

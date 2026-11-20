@@ -34,9 +34,24 @@ requireValue(typeof metadata.author === 'string' && metadata.author.trim(), 'Mis
 requireValue(Array.isArray(metadata.wordpress_org_contributors), 'Invalid WordPress.org contributor metadata');
 requireValue(metadata.license === 'GPL-2.0-or-later', 'Invalid product license');
 requireValue(typeof metadata.repository === 'string' && /^https:\/\/github\.com\/[\w-]+\/[\w-]+$/.test(metadata.repository), 'Invalid repository URL');
-for (const field of ['version', 'requires_wp', 'requires_php', 'requires_wc']) {
+for (const field of ['version', 'requires_wp', 'requires_php', 'requires_wc', 'tested_wp', 'tested_wc']) {
   requireValue(validateVersion(metadata[field]), `Invalid version metadata: ${field}`);
 }
+const versionParts = (value: string): number[] => value.split('.').map(Number);
+const versionAtLeast = (actual: string, minimum: string): boolean => {
+  const actualParts = versionParts(actual);
+  const minimumParts = versionParts(minimum);
+  for (let i = 0; i < Math.max(actualParts.length, minimumParts.length); i++) {
+    if ((actualParts[i] ?? 0) > (minimumParts[i] ?? 0)) return true;
+    if ((actualParts[i] ?? 0) < (minimumParts[i] ?? 0)) return false;
+  }
+  return true;
+};
+requireValue(
+  versionAtLeast(metadata.tested_wp, metadata.requires_wp) &&
+  versionAtLeast(metadata.tested_wc, metadata.requires_wc),
+  'Tested WP/WooCommerce versions must not be older than minimum requirements.',
+);
 requireValue(Array.isArray(features), 'Feature catalog must be an array');
 requireValue(new Set(features.map((feature) => feature.id)).size === features.length, 'Duplicate feature ID');
 for (const feature of features) {
@@ -70,7 +85,8 @@ for (const edition of editions) {
   const header = read(`${folder}/${slug}.php`);
   const fields = {
     'Plugin Name': title, Version: metadata.version, 'Requires at least': metadata.requires_wp,
-    'Requires PHP': metadata.requires_php, 'WC requires at least': metadata.requires_wc,
+    'Requires PHP': metadata.requires_php, 'Tested up to': metadata.tested_wp,
+    'WC requires at least': metadata.requires_wc, 'WC tested up to': metadata.tested_wc,
     'Requires Plugins': dependencies.join(', '), Author: metadata.author, License: metadata.license, 'Text Domain': slug,
   };
   for (const [key, value] of Object.entries(fields)) {
@@ -89,7 +105,7 @@ for (const edition of editions) {
   outputs.set(`${folder}/README.md`, `# ${title}\n\n${description}\n\n## Requirements\n\nWordPress ${metadata.requires_wp}+, PHP ${metadata.requires_php}+, and WooCommerce ${metadata.requires_wc}+ are minimum requirements for the development build.\n\n## Development installation\n\n${quickStart}\n\n## Verified preview scope\n\n${scope}\n\n## FAQ\n\n${faq}\n\n## Support and privacy\n\n${support}\n\n## Changelog\n\n### ${metadata.version}\n\n${history}\n\n## Upgrade note\n\n${upgrade}\n`);
   if (edition === 'free') {
     const wpFaq = faq.replace(/^### (.+)$/gm, '= $1 =');
-    outputs.set(`${folder}/readme.txt`, `=== ${title} ===\nRequires at least: ${metadata.requires_wp}\nRequires PHP: ${metadata.requires_php}\nStable tag: ${metadata.version}\nLicense: ${metadata.license}\n\n${description}\n\n== Description ==\n\n${scope}\n\n== Installation ==\n\n${quickStart}\n\n== Frequently Asked Questions ==\n\n${wpFaq}\n\n== Changelog ==\n\n= ${metadata.version} =\n\n${history}\n\n== Upgrade Notice ==\n\n= ${metadata.version} =\n\n${upgrade}\n`);
+    outputs.set(`${folder}/readme.txt`, `=== ${title} ===\nRequires at least: ${metadata.requires_wp}\nTested up to: ${metadata.tested_wp}\nRequires PHP: ${metadata.requires_php}\nWC requires at least: ${metadata.requires_wc}\nWC tested up to: ${metadata.tested_wc}\nStable tag: ${metadata.version}\nLicense: ${metadata.license}\n\n${description}\n\n== Description ==\n\n${scope}\n\n== Installation ==\n\n${quickStart}\n\n== Frequently Asked Questions ==\n\n${wpFaq}\n\n== Changelog ==\n\n= ${metadata.version} =\n\n${history}\n\n== Upgrade Notice ==\n\n= ${metadata.version} =\n\n${upgrade}\n`);
   }
   const channel = edition === 'free' ? 'wordpress-org' : 'woocommerce-marketplace';
   outputs.set(`docs/submission/${channel}/listing-copy.generated.md`, `# ${title}\n\nDevelopment draft. Submission and publication are pending release verification.\n\n${description}\n\n${scope}\n\n${quickStart}\n`);
