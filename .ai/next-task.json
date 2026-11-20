@@ -10,5 +10,5 @@
   "verification": "VERIFY-P6-T002",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify native HPOS BACS outstanding/partial funding and unmatched/ambiguous imported bank reports, then add exception-aging summaries."
+  "next_action": "Verify all P6-T002 report sources in native+Playground CI: WooCommerce BACS outstanding/partial, imported unmatched/ambiguous, exception aging, allocation audit and import summaries. Then mark P6-T002 done only if complete CI green."
 }

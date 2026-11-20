@@ -21,3 +21,10 @@ These are **unpaid** BACS order statuses, with UTC order creation bounds; the qu
 ## Unmatched completed imported bank rows (native CI pending)
 
 The read-only unmatched report excludes approved or committed bank credits and splits other completed imported credit rows into clean unique \`unmatched\`, duplicate/warned/account-conflict \`ambiguous\`, or \`reviewed\` (only an unapproved proposal awaiting a separate checker). All three states remain **unverified bank clearance**, and none can mark an order paid. The report returns no raw bank reference, transaction ID, description, bank number, or account number. Posting-calendar dates are strict ISO days, separate from WooCommerce UTC order creation. Results use a hard 3,000-row scan bound; wide historical import searches fail closed with instructions to narrow account/cursor rather than silently hide records. Native synthetic fixture covers duplicate fingerprints, warnings, already allocated exclusion, exact-money totals and pagination.
+
+
+## Exception aging as non-additive case exposure (CI pending)
+
+A combined view of source-linked overpayment, mismatch and correction cases reports finance investigations with their immutable UTC creation date, age in whole days, case type, account, order, currency, state and disputed minor-unit **exposure**, not raw bank/reference/claim details. One bank credit can be named in several investigation cases; therefore the additive totals count cases and intentionally sum **zero money**, while the disputed amount is explicitly marked \`disputed_minor_non_additive\`. No case review or bank reversal changes funds from this report.
+
+The three case tables share no global ID sequence. To provide deterministic combined keyset paging, the reader uses an overflow-checked synthetic ID \`case_id * 4 + table_slot\` and filters each source ledger before merging. It fetches at most \`limit + 1\` from each source and returns at most \`limit\` cases. Query bounds use prepared SQL on UTC creation timestamp, finance status, account and ISO currency. Native tests cover all three categories, review status, aged cases, zero additive funds and cursor conservation.

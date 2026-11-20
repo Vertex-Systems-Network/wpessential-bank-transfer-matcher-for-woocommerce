@@ -32,6 +32,9 @@ final class ReportQueryRepository {
 		if ( 'unmatched_credits' === $definition->report ) {
 			return ( new UnmatchedCreditReportRepository( $this->db ) )->run( $definition );
 		}
+		if ( 'exception_aging' === $definition->report ) {
+			return ( new ExceptionAgingReportRepository( $this->db ) )->run( $definition );
+		}
 		$from = $definition->from . ' 00:00:00';
 		$end = ( new DateTimeImmutable( $definition->to . ' 00:00:00', new DateTimeZone( 'UTC' ) ) )
 			->modify( '+1 day' )->format( 'Y-m-d H:i:s' );
