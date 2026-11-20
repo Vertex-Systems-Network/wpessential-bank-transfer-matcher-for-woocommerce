@@ -86,10 +86,18 @@ try {
 		'wpessential-wbm-pro-retention',
 	];
 	foreach ( $cases as $name => $granted ) {
-		foreach ( $grantable as $capability ) {
-			$user->add_cap( $capability, in_array( $capability, $granted, true ) );
-		}
 		wp_set_current_user( (int) $user_id );
+		$active_actor = wp_get_current_user();
+		foreach ( $grantable as $capability ) {
+			$active_actor->add_cap( $capability, in_array( $capability, $granted, true ) );
+		}
+		foreach ( $grantable as $capability ) {
+			$should_have = in_array( $capability, $granted, true );
+			if ( current_user_can( $capability ) !== $should_have ) {
+				throw new RuntimeException( 'Test actor capability mismatch in ' .
+					$mode . '/' . $name . ': ' . $capability );
+			}
+		}
 		// Invoke the registered admin_menu callbacks against genuine WordPress
 		// add_submenu_page() with isolated admin globals.
 		global $submenu, $menu, $_registered_pages, $_parent_pages, $admin_page_hooks;
