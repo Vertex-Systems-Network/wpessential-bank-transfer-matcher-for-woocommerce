@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P7-T008",
-  "phase": "P7",
-  "title": "usability walkthrough for store owner, finance operator and customer with synthetic tasks.",
-  "owner": "UX and QA",
-  "paths": "docs/ux/; plugins/",
+  "id": "WBM-P8-T001",
+  "phase": "P8",
+  "title": "threat model verification and auth/capability matrix tests.",
+  "owner": "Security and QA",
+  "paths": "docs/security/; plugins/",
   "depends_on": [
-    "WBM-P7-T007"
+    "WBM-P7-T008"
   ],
-  "verification": "VERIFY-P7-T008",
+  "verification": "VERIFY-P8-T001",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Run real disposable WP/WC Free+Pro three-persona browser usability: store owner admin order/reconciliation/dashboard, finance operator real review/statement source and restricted manager menu, unauthenticated guest BACS unclaimed order reference+claim form without POST. Capture LTR/Arabic RTL 1440/375 browser evidence, no money mutation, latest-head Foundation/Playground/native/MariaDB+Chromium success. Document findings/gaps and gate P8."
+  "next_action": "Open dedicated P8 security branch after verified P7 phase PR gate. Audit actual trust boundaries and source-backed WordPress REST/admin-post capabilities, nonce and object-level checks against synthetic anonymous/viewer/importer/approver/manager roles. Add fail-closed auth matrix in disposable native WP/WC/MariaDB; verify threat-model assets/risk/mitigation/residuals and exact-source CI; avoid authorized finance mutations. Continue P8-T002 only once evidence is verifiable."
 }
