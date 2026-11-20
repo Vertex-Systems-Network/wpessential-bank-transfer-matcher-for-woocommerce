@@ -66,7 +66,7 @@ try {
 
 	// Native unresolved case, aged 72 hours, exercises real schedule source
 	// gating. It has no real bank or customer data; no financial mutation.
-	( new ReviewCaseRepository( $wpdb ) )->queue();
+	( new ReviewCaseRepository( $wpdb ) )->queue( '', '', 0, 1, 20 );
 	$table = $wpdb->prefix . 'wbm_pro_review_cases';
 	$insert = $wpdb->insert( $table, [
 		'case_type' => 'synthetic_manual_review', 'transaction_id' => 987654321,
