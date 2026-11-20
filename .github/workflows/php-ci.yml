@@ -56,6 +56,7 @@ jobs:
           php tests/pro-operations-docs.php
           php tests/p7-screen-contracts.php
           php tests/p7-native-ui-asset-scope.php
+          php tests/p7-real-action-route-contracts.php
           php tests/secondary-hints.php
           php tests/conflict-cases.php
           php tests/camt053.php
