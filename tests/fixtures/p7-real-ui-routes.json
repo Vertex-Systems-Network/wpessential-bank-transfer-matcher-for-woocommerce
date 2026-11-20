@@ -1,0 +1,591 @@
+{
+  "schema_version": 1,
+  "policy": "Only implemented controls; no fake UI routes. Authenticated WordPress REST uses its usual cookie/nonce authentication; admin_post actions separately nonce protected. No financial settlement without independent check.",
+  "screens": {
+    "UI-001": {
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Admin/Overview.php",
+      "mode": "read",
+      "contract": "Source-backed overview; not a bank ledger"
+    },
+    "UI-002": {
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Admin/OrdersPage.php",
+      "mode": "GET filter",
+      "contract": "Unpaid BACS status/pagination via WC CRUD, not all-gateway full search"
+    },
+    "UI-003": {
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Admin/OrderPanel.php",
+      "mode": "read",
+      "contract": "WC order context plus explicit reconciliation links"
+    },
+    "UI-004": {
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Claims/CustomerClaims.php",
+      "mode": "guest/owner POST and reviewer REST",
+      "contract": "Claim is unverified; reviewer does not mark WC paid"
+    },
+    "UI-005": {
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Admin/ReconciliationPage.php",
+      "mode": "REST guarded finance",
+      "contract": "Explicit independent evidence/allocation/finalization"
+    },
+    "UI-006": {
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Orders/ReferencePresentation.php",
+      "mode": "WC native hooks",
+      "contract": "Owner/guest protected reference and BACS checkout, no public ID scan"
+    },
+    "UI-007": {
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ImportStatementsPage.php",
+      "mode": "manager POST",
+      "contract": "CSV preview+commit+failed retry+cancel; no bank clearance"
+    },
+    "UI-008": {
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/BankTransactionsPage.php",
+      "mode": "GET filter",
+      "contract": "Source batch and page-size filter; masking, no bank-to-order approval"
+    },
+    "UI-009": {
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReviewQueuePage.php",
+      "mode": "GET and REST",
+      "contract": "Case queue filters + case REST; no money allocations"
+    },
+    "UI-010": {
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/AllocationReviewPage.php",
+      "mode": "GET and finance POST",
+      "contract": "Maker/checker reason and nonce; no automatic paid/refund"
+    },
+    "UI-011": {
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReportExportsPage.php",
+      "mode": "finance POST",
+      "contract": "Bounded reports; no Saved Views or unbounded CSV"
+    },
+    "UI-012": {
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Admin/AuditTimeline.php",
+      "mode": "read",
+      "contract": "Order-scoped audit only; no global edit control"
+    },
+    "UI-013": {
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Admin/SettingsPage.php",
+      "mode": "settings + Pro metadata POST",
+      "contract": "Actual Free settings and separate real Pro settings submenus"
+    },
+    "UI-014": {
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceOperationsPage.php",
+      "mode": "finance POST",
+      "contract": "Redacted diagnostic CSV and explicit audited failure recovery"
+    }
+  },
+  "admin_post": [
+    {
+      "name": "wpessential_wbm_submit_claim",
+      "screen": "UI-004",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Claims/CustomerClaims.php",
+      "capability": "order owner or order-key+email",
+      "nonce": "wpessential_wbm_submit_claim:<order_id>",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher/src/Claims/CustomerClaims.php"
+    },
+    {
+      "name": "wpessential_wbm_download_receipt",
+      "screen": "UI-004",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Claims/AttachmentDownloads.php",
+      "capability": "wbm_review_claim",
+      "nonce": "wpessential_wbm_download_receipt:<order_id>",
+      "method": "GET",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher/src/Claims/AttachmentDownloads.php"
+    },
+    {
+      "name": "wbm_save_free_settings",
+      "screen": "UI-013",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Admin/SettingsPage.php",
+      "capability": "manage_options",
+      "nonce": "wbm_save_free_settings",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher/src/Admin/SettingsPage.php"
+    },
+    {
+      "name": "wbm_pro_save_bank_account",
+      "screen": "UI-013",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/BankAccountsPage.php",
+      "capability": "wbm_manage_bank_accounts",
+      "nonce": "wbm_pro_save_bank_account",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/BankAccountsPage.php"
+    },
+    {
+      "name": "wbm_pro_archive_bank_account",
+      "screen": "UI-013",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/BankAccountsPage.php",
+      "capability": "wbm_manage_bank_accounts",
+      "nonce": "wbm_pro_archive_bank_account",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/BankAccountsPage.php"
+    },
+    {
+      "name": "wbm_pro_save_mapping_profile",
+      "screen": "UI-007",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/MappingProfilesPage.php",
+      "capability": "wbm_import",
+      "nonce": "wbm_pro_save_mapping_profile",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/MappingProfilesPage.php"
+    },
+    {
+      "name": "wbm_pro_preview_statement",
+      "screen": "UI-007",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ImportStatementsPage.php",
+      "capability": "wbm_import",
+      "nonce": "wbm_pro_preview_statement",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ImportStatementsPage.php"
+    },
+    {
+      "name": "wbm_pro_commit_statement",
+      "screen": "UI-007",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ImportStatementsPage.php",
+      "capability": "wbm_import",
+      "nonce": "wbm_pro_commit_statement",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ImportStatementsPage.php"
+    },
+    {
+      "name": "wbm_pro_retry_import",
+      "screen": "UI-007",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ImportStatementsPage.php",
+      "capability": "wbm_import",
+      "nonce": "wbm_pro_retry_import",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ImportStatementsPage.php"
+    },
+    {
+      "name": "wbm_pro_cancel_import",
+      "screen": "UI-007",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ImportStatementsPage.php",
+      "capability": "wbm_import",
+      "nonce": "wbm_pro_cancel_import",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ImportStatementsPage.php"
+    },
+    {
+      "name": "wbm_pro_allocation_propose",
+      "screen": "UI-010",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/AllocationAdminActions.php",
+      "capability": "wbm_import+wbm_approve",
+      "nonce": "wbm_pro_allocation_propose",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/AllocationReviewPage.php"
+    },
+    {
+      "name": "wbm_pro_allocation_approve",
+      "screen": "UI-010",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/AllocationAdminActions.php",
+      "capability": "wbm_import+wbm_approve",
+      "nonce": "wbm_pro_allocation_approve",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/AllocationReviewPage.php"
+    },
+    {
+      "name": "wbm_pro_correction_raise",
+      "screen": "UI-010",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/AllocationAdminActions.php",
+      "capability": "wbm_import+wbm_approve",
+      "nonce": "wbm_pro_correction_raise",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/AllocationReviewPage.php"
+    },
+    {
+      "name": "wbm_pro_correction_review",
+      "screen": "UI-010",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/AllocationAdminActions.php",
+      "capability": "wbm_import+wbm_approve",
+      "nonce": "wbm_pro_correction_review",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/AllocationReviewPage.php"
+    },
+    {
+      "name": "wbm_pro_export_report",
+      "screen": "UI-011",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReportExportsPage.php",
+      "capability": "wbm_import+wbm_approve",
+      "nonce": "wbm_pro_export_report",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReportExportsPage.php"
+    },
+    {
+      "name": "wbm_pro_schedule_report_export",
+      "screen": "UI-011",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReportExportsPage.php",
+      "capability": "wbm_import+wbm_approve",
+      "nonce": "wbm_pro_export_report",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReportExportsPage.php"
+    },
+    {
+      "name": "wbm_pro_download_queued_export",
+      "screen": "UI-011",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReportExportsPage.php",
+      "capability": "wbm_import+wbm_approve",
+      "nonce": "wbm_pro_download_queued_export",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReportExportsPage.php"
+    },
+    {
+      "name": "wbm_pro_cancel_queued_export",
+      "screen": "UI-011",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReportExportsPage.php",
+      "capability": "wbm_import+wbm_approve",
+      "nonce": "wbm_pro_cancel_queued_export",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReportExportsPage.php"
+    },
+    {
+      "name": "wbm_pro_save_finance_notifications",
+      "screen": "UI-013",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceNotificationsPage.php",
+      "capability": "wbm_approve+wbm_import+wbm_manage_bank_accounts",
+      "nonce": "wbm_pro_save_finance_notifications",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceNotificationsPage.php"
+    },
+    {
+      "name": "wbm_pro_test_finance_notification",
+      "screen": "UI-013",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceNotificationsPage.php",
+      "capability": "wbm_approve+wbm_import+wbm_manage_bank_accounts",
+      "nonce": "wbm_pro_test_finance_notification",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceNotificationsPage.php"
+    },
+    {
+      "name": "wbm_pro_ops_diagnostics_export",
+      "screen": "UI-014",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceOperationsPage.php",
+      "capability": "wbm_approve+wbm_import+wbm_manage_bank_accounts",
+      "nonce": "wbm_pro_ops_diagnostics_export",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceOperationsPage.php"
+    },
+    {
+      "name": "wbm_pro_ops_recovery",
+      "screen": "UI-014",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceOperationsPage.php",
+      "capability": "wbm_approve+wbm_import+wbm_manage_bank_accounts",
+      "nonce": "wbm_pro_ops_recovery",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceOperationsPage.php"
+    },
+    {
+      "name": "wbm_pro_retention_save",
+      "screen": "UI-013",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceRetentionPage.php",
+      "capability": "wbm_approve+wbm_import+wbm_manage_bank_accounts",
+      "nonce": "wbm_pro_retention_save",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceRetentionPage.php"
+    },
+    {
+      "name": "wbm_pro_retention_sweep",
+      "screen": "UI-013",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceRetentionPage.php",
+      "capability": "wbm_approve+wbm_import+wbm_manage_bank_accounts",
+      "nonce": "wbm_pro_retention_sweep",
+      "method": "POST",
+      "guest": false,
+      "form_source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceRetentionPage.php"
+    }
+  ],
+  "rest": [
+    {
+      "route": "/wpessential-wbm/v1/capabilities",
+      "screen": "UI-001",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Rest/AccessController.php",
+      "method": "GET",
+      "capability": "wbm_view",
+      "required_fields": [],
+      "anonymous_probe": "/wpessential-wbm/v1/capabilities"
+    },
+    {
+      "route": "/wpessential-wbm/v1/orders/(?P<order_id>\\d+)/claim/review",
+      "screen": "UI-004",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Claims/ClaimReviews.php",
+      "method": "POST",
+      "capability": "wbm_review_claim, and wbm_approve for verified",
+      "required_fields": [
+        "order_id",
+        "status",
+        "comment"
+      ],
+      "anonymous_probe": "/wpessential-wbm/v1/orders/999999/claim/review"
+    },
+    {
+      "route": "/wpessential-wbm/v1/orders/(?P<order_id>\\d+)/claim/notifications/(?P<event_id>\\d+)/retry",
+      "screen": "UI-004",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Claims/ClaimReviews.php",
+      "method": "POST",
+      "capability": "wbm_review_claim",
+      "required_fields": [
+        "order_id",
+        "event_id"
+      ],
+      "anonymous_probe": "/wpessential-wbm/v1/orders/999999/claim/notifications/999999/retry"
+    },
+    {
+      "route": "/wpessential-wbm/v1/orders/(?P<order_id>\\d+)/bank-evidence",
+      "screen": "UI-005",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Evidence/BankEvidence.php",
+      "method": "POST",
+      "capability": "wbm_review_claim",
+      "required_fields": [
+        "order_id",
+        "date",
+        "amount",
+        "reference"
+      ],
+      "anonymous_probe": "/wpessential-wbm/v1/orders/999999/bank-evidence"
+    },
+    {
+      "route": "/wpessential-wbm/v1/orders/(?P<order_id>\\d+)/allocations",
+      "screen": "UI-005",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Evidence/ManualAllocations.php",
+      "method": "POST",
+      "capability": "wbm_approve",
+      "required_fields": [
+        "order_id",
+        "evidence_id",
+        "amount",
+        "acknowledged",
+        "reason"
+      ],
+      "anonymous_probe": "/wpessential-wbm/v1/orders/999999/allocations"
+    },
+    {
+      "route": "/wpessential-wbm/v1/orders/(?P<order_id>\\d+)/finalize-payment",
+      "screen": "UI-005",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Evidence/ManualAllocations.php",
+      "method": "POST",
+      "capability": "wbm_approve",
+      "required_fields": [
+        "order_id",
+        "acknowledged"
+      ],
+      "anonymous_probe": "/wpessential-wbm/v1/orders/999999/finalize-payment"
+    },
+    {
+      "route": "/wpessential-wbm/v1/review-cases/(?P<id>[1-9][0-9]*)/transition",
+      "screen": "UI-009",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Api/ReviewCaseController.php",
+      "method": "POST",
+      "capability": "wbm_review_claim",
+      "required_fields": [
+        "id",
+        "from",
+        "to",
+        "reason_code"
+      ],
+      "anonymous_probe": "/wpessential-wbm/v1/review-cases/999999/transition"
+    },
+    {
+      "route": "/wpessential-wbm/v1/review-cases/(?P<id>[1-9][0-9]*)/assign",
+      "screen": "UI-009",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Api/ReviewCaseController.php",
+      "method": "POST",
+      "capability": "wbm_review_claim",
+      "required_fields": [
+        "id",
+        "assignee_id"
+      ],
+      "anonymous_probe": "/wpessential-wbm/v1/review-cases/999999/assign"
+    },
+    {
+      "route": "/wpessential-wbm/v1/review-cases/(?P<id>[1-9][0-9]*)/priority",
+      "screen": "UI-009",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Api/ReviewCaseController.php",
+      "method": "POST",
+      "capability": "wbm_review_claim",
+      "required_fields": [
+        "id",
+        "priority"
+      ],
+      "anonymous_probe": "/wpessential-wbm/v1/review-cases/999999/priority"
+    },
+    {
+      "route": "/wpessential-wbm/v1/review-cases/(?P<id>[1-9][0-9]*)/comments",
+      "screen": "UI-009",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Api/ReviewCaseController.php",
+      "method": "POST",
+      "capability": "wbm_review_claim",
+      "required_fields": [
+        "id",
+        "comment"
+      ],
+      "anonymous_probe": "/wpessential-wbm/v1/review-cases/999999/comments"
+    }
+  ],
+  "form_fields": [
+    {
+      "screen": "UI-002",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Admin/OrdersPage.php",
+      "names": [
+        "wbm_status"
+      ],
+      "note": "Only eligible,on-hold,pending; 20 rows via real WC pagination"
+    },
+    {
+      "screen": "UI-004",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Claims/CustomerClaims.php",
+      "names": [
+        "transfer_date",
+        "transfer_amount",
+        "transfer_reference",
+        "sender_name",
+        "customer_note",
+        "acknowledged"
+      ],
+      "note": "Guest email + order key scoped; no automatic payment"
+    },
+    {
+      "screen": "UI-005",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Admin/ReconciliationPage.php",
+      "names": [
+        "status",
+        "comment",
+        "date",
+        "amount",
+        "reference",
+        "note",
+        "evidence_id",
+        "acknowledged"
+      ],
+      "note": "REST request fields for actual finance actions; not a fake GUI"
+    },
+    {
+      "screen": "UI-007",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/MappingProfilesPage.php",
+      "names": [
+        "name",
+        "delimiter",
+        "date_header",
+        "date_format",
+        "amount_header",
+        "decimal_separator",
+        "thousands_separator",
+        "exponent",
+        "currency_header",
+        "fixed_currency",
+        "reference_header",
+        "description_header",
+        "transaction_id_header"
+      ],
+      "note": "13 real CSV mapping controls, no CAMT format control"
+    },
+    {
+      "screen": "UI-008",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/BankTransactionsPage.php",
+      "names": [
+        "batch",
+        "per_page"
+      ],
+      "note": "Only source batch and page-size; no broad search"
+    },
+    {
+      "screen": "UI-009",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReviewQueuePage.php",
+      "names": [
+        "status",
+        "priority",
+        "assignee",
+        "per_page"
+      ],
+      "note": "Real queue filters, POST REST for case mutations"
+    },
+    {
+      "screen": "UI-010",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/AllocationReviewPage.php",
+      "names": [
+        "state",
+        "order_id",
+        "per_page",
+        "source_id",
+        "request_key",
+        "reason",
+        "cleared_confirmed"
+      ],
+      "note": "State/order filters and guarded original maker/checker finance forms"
+    },
+    {
+      "screen": "UI-011",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/ReportExportsPage.php",
+      "names": [
+        "report",
+        "from",
+        "to",
+        "currency",
+        "bank_account_id",
+        "limit",
+        "before_id",
+        "state"
+      ],
+      "note": "Bounded reports, separate nonce for actor-owned private downloads"
+    },
+    {
+      "screen": "UI-013",
+      "source": "plugins/wpessential-bank-transfer-matcher/src/Admin/SettingsPage.php",
+      "names": [
+        "wbm_claim_uploads",
+        "wbm_shop_caps"
+      ],
+      "note": "Free manager-option settings only, no imaginary all-in-one tab"
+    },
+    {
+      "screen": "UI-013",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceRetentionPage.php",
+      "names": [
+        "automatic_cleanup",
+        "private_source_days",
+        "confirm",
+        "consent_auto"
+      ],
+      "note": "Explicit consent and manual sweep confirmation"
+    },
+    {
+      "screen": "UI-014",
+      "source": "plugins/wpessential-bank-transfer-matcher-pro/src/Admin/FinanceOperationsPage.php",
+      "names": [
+        "operation",
+        "source_id",
+        "reason"
+      ],
+      "note": "Failed-job recovery; redacted download uses server POST"
+    }
+  ],
+  "forbidden_fabrications": [
+    "Saved Views",
+    "one-click automatic payment",
+    "bulk refund from import",
+    "unbounded report export",
+    "global searchable claim inbox",
+    "automatic matched-order settlement",
+    "full bank credentials fields"
+  ]
+}
