@@ -66,6 +66,7 @@ wp_test eval-file "$root/tests/integration/pro-report-async-export.php"
 wp_test eval-file "$root/tests/integration/pro-finance-notifications.php"
 wp_test eval-file "$root/tests/integration/pro-finance-dashboard.php"
 wp_test eval-file "$root/tests/integration/pro-finance-operations.php"
+wp_test eval-file "$root/tests/integration/pro-finance-retention.php"
 wp_test eval-file "$root/tests/integration/pro-report-unmatched-credits.php"
 wp_test eval-file "$root/tests/integration/pro-report-exception-aging.php"
 wp_test option update woocommerce_custom_orders_table_enabled no
