@@ -207,8 +207,9 @@ try {
       { waitUntil: 'domcontentloaded', timeout: 45000 });
     assert.equal(response?.status(), 200, 'Anonymous BACS received page unavailable');
     const text = await page.locator('body').innerText();
+    const guestHeadings = await page.locator('h1,h2').allTextContents();
     assert(!page.url().includes('/wp-login.php') && text.includes('Payment reference'),
-      'Guest cannot see the scoped BACS payment reference');
+      'Guest scoped BACS reference unavailable; headings: ' + guestHeadings.slice(0, 8).join(' | '));
     assert(text.includes('does not verify payment'),
       'Customer does not see unverified-claim disclosure');
     const form = page.locator('form.wbm-payment-claim');
