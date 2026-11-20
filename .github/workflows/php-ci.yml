@@ -53,6 +53,7 @@ jobs:
           php tests/finance-notification-templates.php
           php tests/finance-operations-redacted-csv.php
           php tests/finance-retention-policy.php
+          php tests/pro-operations-docs.php
           php tests/secondary-hints.php
           php tests/conflict-cases.php
           php tests/camt053.php
