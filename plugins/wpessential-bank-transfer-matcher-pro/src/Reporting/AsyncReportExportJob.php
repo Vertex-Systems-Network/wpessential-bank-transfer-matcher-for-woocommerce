@@ -231,30 +231,36 @@ final class AsyncReportExportJob {
 	public function download( int $job_id, int $actor_id, string $nonce ): array {
 		$this->require_actor( $actor_id, $nonce, 'wbm_pro_download_queued_export' );
 		$this->install();
-		$row = $this->owned( $job_id, $actor_id );
-		if ( $this->expired( $row ) || 'ready' !== $row['status'] ||
-			! hash_equals( (string) $row['csv_sha256'],
-				hash( 'sha256', (string) $row['csv_data'] ) ) ) {
-			throw new RuntimeException( 'Export not ready, expired, or changed.' );
+		$lock = $this->job_lock( $job_id );
+		$this->take_lock( $lock, 3 );
+		try {
+			$row = $this->owned( $job_id, $actor_id );
+			if ( $this->expired( $row ) || 'ready' !== $row['status'] ||
+				! hash_equals( (string) $row['csv_sha256'],
+					hash( 'sha256', (string) $row['csv_data'] ) ) ) {
+				throw new RuntimeException( 'Export not ready, expired, or changed.' );
+			}
+			// Re-authorize every private download and record it in the same
+			// per-actor audit/rate limit as immediate export page downloads.
+			$filters = json_decode( (string) $row['scope_json'], true );
+			if ( ! is_array( $filters ) || ( $filters['version'] ?? null ) !== 1 ||
+				(int) $row['row_count'] > self::PAGES * self::PAGE_SIZE ||
+				(int) $row['byte_count'] !== strlen( (string) $row['csv_data'] ) ) {
+				throw new RuntimeException( 'Invalid stored finance export.' );
+			}
+			unset( $filters['version'] );
+			$scope = ReportDefinition::from_array( $filters );
+			( new ReportCsvExportService( $this->db ) )->audit_queued_download(
+				$scope, $actor_id, (int) $row['row_count'], (int) $row['byte_count'],
+				(string) $row['csv_sha256']
+			);
+			return [
+				'filename' => 'wbm-private-export-' . $job_id . '.csv',
+				'csv' => (string) $row['csv_data'],
+			];
+		} finally {
+			$this->release_lock( $lock );
 		}
-		// Download authorization and shared 3/minute finance audit are
-		// required anew; the scheduled worker never authorizes retrieval.
-		$filters = json_decode( (string) $row['scope_json'], true );
-		if ( ! is_array( $filters ) || ( $filters['version'] ?? null ) !== 1 ||
-			(int) $row['row_count'] > self::PAGES * self::PAGE_SIZE ||
-			(int) $row['byte_count'] !== strlen( (string) $row['csv_data'] ) ) {
-			throw new RuntimeException( 'Invalid stored finance export.' );
-		}
-		unset( $filters['version'] );
-		$scope = ReportDefinition::from_array( $filters );
-		( new ReportCsvExportService( $this->db ) )->audit_queued_download(
-			$scope, $actor_id, (int) $row['row_count'], (int) $row['byte_count'],
-			(string) $row['csv_sha256']
-		);
-		return [
-			'filename' => 'wbm-private-export-' . $job_id . '.csv',
-			'csv' => (string) $row['csv_data'],
-		];
 	}
 
 	public function cancel( int $job_id, int $actor_id, string $nonce ): void {
