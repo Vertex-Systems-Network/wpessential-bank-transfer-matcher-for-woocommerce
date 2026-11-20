@@ -114,7 +114,8 @@
     "p8_upgrade_coexistence": "VERIFIED code 680602d833018fda5ebfaaa62bd0f1c95e1bb355: all 12 GitHub checks success, actual real HPOS+classic Woo 10.8.0->11.3.0 upgrade and Free+Pro dependency/reinstall with synthetic companion, ref/claim/bank rows intact; upgrade 44832609979, Foundation/native 44832609976+44832619094, browser 44832609830, PHP/WC matrix 44832609858, benchmark 44832610042. No production upgrade certification.",
     "p8_final_security_closure": "CODE ACCEPTANCE PASS exact 11c19383bc2f61091be742939415c1437326514b: 12/12 GitHub check runs all success; genuine WP/WC/MariaDB six invalid CSV headers fail before private stage/queued action and real UTF-8 BOM one-row import succeeds; all T001–T008 existing security/checkout/upgrade/benchmark matrix green. Final T009 docs/state head requires new exact-head CI before merging phase PR. No independent pen certification.",
     "p9_canonical_readmes": "SUCCESS exact P9 source SHA 4ebc305311d7ad1b104df9fecca01e5eb41be6cb, 12/12 Green: real Foundation/docs mutation/Playground and native MariaDB 44836580709/44836589937, Chromium LTR/RTL 44836580825, 4 WC/PHP cells 44836580630, in-place WC dual HPOS/classic 44836580786, 1k/10k/50k benchmark 44836580725. Official online WP.org readme validator NOT VERIFIED; no contributors invented.",
-    "p9_t002_marketplace": "VERIFIED source SHA 3321f3dedfc56edd8e703c6470ab6c0eee203e75: 12/12 original GitHub checks green. Source-backed Woo reviewer preflight and QIT matrix validated by native Foundation; managed Woo QIT not run, partner business/license approvals pending."
+    "p9_t002_marketplace": "VERIFIED source SHA 3321f3dedfc56edd8e703c6470ab6c0eee203e75: 12/12 original GitHub checks green. Source-backed Woo reviewer preflight and QIT matrix validated by native Foundation; managed Woo QIT not run, partner business/license approvals pending.",
+    "p9_t003_source_screens": "Verified five exact-source GitHub Actions checks at f933bbd, raw screenshot artifact 14680471253 and release screenshot artifact 14679654169; 13 original PNG SHA256 hashes independently checked."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -128,8 +129,8 @@
     "free_is_independent"
   ],
   "phase": "P9",
-  "active_task_id": "WBM-P9-T003",
-  "next_action": "Complete P9-T003 using source-backed real WordPress browser capture: review draft PR #18 `development/p9-t003-source-browser-screenshots-20261121`, verify exact-head browser CI produces 5 Free, 6 Pro, 2 RTL/mobile original PNG files and manifest (source run, SHA256, no mocks/PII); visually inspect screenshots and then merge subordinate PR into P9 only after checks pass. Update screenshot guide and task evidence. Do not mark screenshots Marketplace-approved.",
+  "active_task_id": "WBM-P9-T004",
+  "next_action": "Complete P9-T004 via draft PR #19: independently packaged Free and Pro GPL LICENSE notices, deterministic second rebuild SHA256, optimized Composer production autoload, actual ZIP/lockfile/license scan and native install. Mark done only after verified exact-head CI; avoid public release.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -221,7 +222,8 @@
     "WBM-P8-T008",
     "WBM-P8-T009",
     "WBM-P9-T001",
-    "WBM-P9-T002"
+    "WBM-P9-T002",
+    "WBM-P9-T003"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "4ebc305311d7ad1b104df9fecca01e5eb41be6cb"
