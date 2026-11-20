@@ -70,13 +70,13 @@ final class BankAccountsPage {
 		if ( isset( $_GET['updated'] ) && '1' === sanitize_key( wp_unslash( $_GET['updated'] ) ) ) echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Bank account metadata updated.', 'wpessential-bank-transfer-matcher-pro' ) . '</p></div>';
 		if ( ! $accounts ) echo '<p>' . esc_html__( 'No import bank accounts have been configured.', 'wpessential-bank-transfer-matcher-pro' ) . '</p>';
 		else {
-			echo '<table class="wp-list-table widefat fixed striped"><thead><tr><th>' . esc_html__( 'Nickname', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Bank', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Currency', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Safe identifier', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Status', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Actions', 'wpessential-bank-transfer-matcher-pro' ) . '</th></tr></thead><tbody>';
+			echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Bank account metadata', 'wpessential-bank-transfer-matcher-pro' ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr><th>' . esc_html__( 'Nickname', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Bank', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Currency', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Safe identifier', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Status', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Actions', 'wpessential-bank-transfer-matcher-pro' ) . '</th></tr></thead><tbody>';
 			foreach ( $accounts as $account ) {
 				printf( '<tr><td>%s</td><td>%s</td><td>%s</td><td>•••• %s</td><td>%s</td><td>', esc_html( $account['nickname'] ), esc_html( $account['bank_name'] ), esc_html( $account['currency'] ), esc_html( $account['identifier_last4'] ), esc_html( $account['status'] ) );
 				if ( $manage && 'active' === $account['status'] ) { echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="wbm_pro_archive_bank_account"><input type="hidden" name="account_id" value="' . (int) $account['id'] . '">'; wp_nonce_field( 'wbm_pro_archive_bank_account' ); submit_button( __( 'Archive', 'wpessential-bank-transfer-matcher-pro' ), 'small', 'submit', false ); echo '</form>'; }
 				echo '</td></tr>';
 			}
-			echo '</tbody></table>';
+			echo '</tbody></table></div>';
 		}
 		if ( $manage ) {
 			echo '<h2>' . esc_html__( 'Add safe bank account metadata', 'wpessential-bank-transfer-matcher-pro' ) . '</h2><form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="wbm_pro_save_bank_account">'; wp_nonce_field( 'wbm_pro_save_bank_account' );

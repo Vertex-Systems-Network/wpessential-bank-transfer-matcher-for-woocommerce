@@ -1,0 +1,383 @@
+/*
+ * WordPress/WooCommerce native finance screens. Loaded only for exact
+ * allowlisted Pro WooCommerce submenus; scoped to the matching body class.
+ * No fabricated controls, no full-screen SaaS dashboard, no global styles.
+ */
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wrap {
+  box-sizing: border-box;
+  max-inline-size: 100%;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wrap > h1 {
+  line-height: 1.3;
+  margin-block-end: 0.65rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wrap > p {
+  max-inline-size: 90ch;
+  line-height: 1.55;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .form-table {
+  max-inline-size: 64rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .form-table th {
+  inline-size: 15rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] :is(input:not([type="checkbox"]),select,textarea) {
+  box-sizing: border-box;
+  max-inline-size: min(100%, 38rem);
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] :is(button,.button,input,select,textarea,a,[role="region"]):focus-visible {
+  outline: 2px solid #2271b1;
+  outline-offset: 2px;
+}
+/* Preserve real columns on narrow screens; never hide financial state data. */
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-table-scroll {
+  max-inline-size: 100%;
+  overflow-x: auto;
+  border: 1px solid #dcdcde;
+  background: #fff;
+  margin-block: 0.75rem;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-table-scroll .wp-list-table {
+  border: 0;
+  margin: 0;
+  min-inline-size: 46rem;
+  table-layout: auto;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-table-scroll .wp-list-table :is(th,td) {
+  overflow-wrap: anywhere;
+  min-inline-size: 5rem;
+  vertical-align: top;
+  padding-block: 0.75rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-table-scroll .wp-list-table th {
+  color: #1d2327;
+  font-weight: 600;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-table-scroll:focus-visible {
+  outline: 3px solid #2271b1;
+  outline-offset: 2px;
+}
+/* Bounded GET filters: labels are visible and actions keep real handlers. */
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 0.65rem 0.85rem;
+  padding-block: 0.5rem 0.85rem;
+  margin-block: 0.5rem 0.75rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar .wbm-pro-field {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+  min-inline-size: 8rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar :is(input,select) {
+  min-block-size: 34px;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar .submit {
+  margin: 0;
+  padding: 0;
+  align-self: end;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-filter-panel {
+  background: #fff;
+  border: 1px solid #dcdcde;
+  padding: 0.75rem 1.25rem;
+  margin-block: 1rem 1.5rem;
+  max-inline-size: 72rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-filter-panel .form-table {
+  margin-block-start: 0;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-filter-panel .submit {
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,15rem),1fr));
+  gap: 0.75rem;
+  margin-block: 0.85rem 1.5rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-card {
+  padding: 0.85rem 1rem;
+  margin: 0;
+  min-inline-size: 0;
+  box-shadow: none;
+  border-color: #dcdcde;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-card h3 {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-card p {
+  overflow-wrap: anywhere;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-empty {
+  padding: 0.85rem 1rem;
+  background: #fff;
+  border-inline-start: 3px solid #787c82;
+  max-inline-size: 75ch;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-pagination {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block: 0.8rem 1.2rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-pagination .button {
+  margin: 0;
+}
+/* Case-detail three-column workspace with native WC card borders. */
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-review-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 0.8rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-review-card {
+  min-inline-size: 0;
+  padding: 0.9rem 1rem;
+  background: #fff;
+  border: 1px solid #dcdcde;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-review-card h3 {
+  margin: 0 0 0.7rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-review-card dt {
+  font-weight: 600;
+  margin-block-start: 0.65rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-review-card dd {
+  margin: 0.2rem 0 0;
+  overflow-wrap: anywhere;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-review-card .wbm-review-action {
+  display: grid;
+  gap: 0.5rem;
+  border-block-start: 1px solid #dcdcde;
+  padding-block: 0.65rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-review-action label {
+  display: grid;
+  gap: 0.3rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-review-action textarea {
+  min-block-size: 5rem;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] #wbm-review-action-status:not(:empty) {
+  padding: 0.5rem;
+  border-inline-start: 3px solid #2271b1;
+  background: #f6f7f7;
+}
+@media (max-width: 1100px) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-review-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 782px) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wrap { margin-inline: 0.75rem; }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .form-table th { inline-size: auto; }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-filter-panel { padding: 0.75rem; }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar { align-items: stretch; }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar .wbm-pro-field { min-inline-size: min(100%,14rem); }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar .submit { align-self: stretch; }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-table-scroll .wp-list-table { min-inline-size: 40rem; }
+}
+@media (forced-colors: active) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] :is(.wbm-pro-card,.wbm-review-card,.wbm-pro-table-scroll,.wbm-pro-filter-panel) { border: 1px solid CanvasText; }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-empty { border-inline-start: 3px solid CanvasText; }
+}
+
+/* Existing explicit finance allocation dialogs; styles no longer inline.
+ * Modal JS, original POST nonce and approval/hold semantics are unchanged. */
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-dialog {
+  width: min(680px,calc(100% - 40px));
+  max-height: 85vh;
+  overflow: auto;
+  border: 1px solid #c3c4c7;
+  border-radius: 6px;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 14px 45px rgb(0 0 0 / 22%);
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-dialog::backdrop {
+  background: rgb(0 0 0 / 48%);
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-block-end: 1px solid #dcdcde;
+  margin-block-end: 14px;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-dialog-launch {
+  margin: 10px 12px 10px 0;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 16px;
+  margin-block: 16px;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-card {
+  min-inline-size: 0;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #c3c4c7;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-card dt {
+  font-weight: 600;
+  margin-block-start: 9px;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-card dd {
+  margin: 2px 0 8px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 900px) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-finance-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (forced-colors: active) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] :is(.wbm-finance-dialog,.wbm-finance-card) {
+    border: 1px solid CanvasText;
+    box-shadow: none;
+  }
+}
+
+
+/* P7-T005 screenshot review: keep decision states legible without color-only
+ * badges; right-to-left labels, filters and pagination remain native. */
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-state {
+  display: inline-flex;
+  align-items: center;
+  max-inline-size: 100%;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid #a7aaad;
+  border-inline-start-width: 3px;
+  border-radius: 3px;
+  background: #f6f7f7;
+  color: #1d2327;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  font-weight: 600;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-transform: none;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-state:is([data-priority="high"],[data-priority="critical"],[data-state="reopened"],[data-state="awaiting_approval"]) {
+  border-inline-start-color: #b26200;
+  background: #fcf9ed;
+  color: #352800;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-state:is([data-state="resolved"],[data-state="committed"]) {
+  border-inline-start-color: #008a20;
+  background: #f0f6f1;
+  color: #143721;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-state:is([data-state="dismissed"],[data-state="reversed"]) {
+  border-inline-start-color: #787c82;
+  background: #f6f7f7;
+  color: #1d2327;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-disclosure {
+  margin-block: 1rem;
+  padding: 0.8rem 1rem;
+  background: #fff;
+  border: 1px solid #dcdcde;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-disclosure summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-disclosure summary:focus-visible {
+  outline: 2px solid #2271b1;
+  outline-offset: 3px;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro-field {
+  flex: 0 1 12rem;
+  min-inline-size: min(100%,10rem);
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro-field input {
+  inline-size: 100%;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-pagination:empty {
+  margin-block: 0;
+  min-block-size: 0;
+}
+@media (max-width: 782px) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro-field {
+    flex: 1 1 min(100%,11rem);
+  }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar .submit {
+    min-inline-size: min(100%,8rem);
+  }
+}
+@media (forced-colors: active) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-state,
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-disclosure {
+    color: CanvasText;
+    background: Canvas;
+    border: 1px solid CanvasText;
+    border-inline-start-width: 3px;
+  }
+}
+
+
+/* P7-T005: visual audit of actual LTR/Arabic WP screenshots at 375px.
+ * Keep the complete audit table scrollable with discoverable text guidance.
+ * Do not visually reorder finance form controls in a direction-dependent way. */
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-scroll-hint {
+  margin-block: 0.7rem 0.35rem;
+  max-inline-size: 75ch;
+  line-height: 1.45;
+  color: #50575e;
+  overflow-wrap: anywhere;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-table-scroll {
+  scrollbar-gutter: stable;
+}
+@media (max-width: 782px) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro-field {
+    flex: 1 0 100%;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+  }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro-field :is(input,select) {
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    box-sizing: border-box;
+  }
+  /* submit_button(..., ..., false) returns an unwrapped native input. */
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > :is(input[type="submit"],button[type="submit"]) {
+    flex: 1 0 100%;
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    min-block-size: 40px;
+    box-sizing: border-box;
+  }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .submit {
+    flex: 1 0 100%;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    align-self: stretch;
+  }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .submit :is(button,input[type="submit"]) {
+    inline-size: 100%;
+    min-block-size: 40px;
+  }
+}
+@media (forced-colors: active) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-scroll-hint {
+    color: CanvasText;
+  }
+}

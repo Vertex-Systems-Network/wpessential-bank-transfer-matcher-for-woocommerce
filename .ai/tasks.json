@@ -952,9 +952,9 @@
       "WBM-P6-T008"
     ],
     "verification": "VERIFY-P7-T001",
-    "status": "in_progress",
-    "evidence": "",
-    "next_action": "On dedicated P7 branch AFTER P6 phase PR merge, audit documented screen schema UI-001–UI-014 against actual current WordPress Free/Pro admin components and route fields; enumerate missing screens/states, WC classic+HPOS and accessibility/RTL requirements without fabricating screenshots."
+    "status": "done",
+    "evidence": "Source-backed, unique UI-001–UI-014 Free/Pro WordPress renderer and role/nonce/state/gap audit in docs/ux/p7-source-backed-screen-contracts.md; strict mapped-source PHP regression in tests/p7-screen-contracts.php. Exact HEAD a396837e4eee4b6e54062f22c58ec3cb3d217e62 two full GitHub Actions 44665899783 and 44665892900 SUCCESS: Foundation/static/unit/packaging/Playground and native WordPress/WooCommerce/MariaDB classic+HPOS. Screenshots/RTL/UI parity explicitly still pending P7-T002–T008.",
+    "next_action": "Verify 14-screen source-backed schema audit, all real Free/Pro renderer paths, capability/action/state inventory and explicit unimplemented gaps in PHP Foundation CI; then mark P7-T001 done with exact-head full native/Playground evidence before P7-T002."
   },
   {
     "id": "WBM-P7-T002",
@@ -966,8 +966,9 @@
       "WBM-P7-T001"
     ],
     "verification": "VERIFY-P7-T002",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "All T002 native WP Free+Pro CSS/admin markup changes and true WP/WC integration passed at exact code SHA d08802c9a009c0153365703983675caaa0eb9ad6; full GitHub Actions Foundation/static/unit/packaging/Playground + native MariaDB/WooCommerce classic+HPOS runs 44668451481 and 44668445322 SUCCESS. Includes 11 exact scoped Pro stylesheet hooks; source-backed Free/Pro native forms/tables, live financial audit/review screens, 13 labeled mapping controls, keyboard-scrolling table regions, mobile/forced-colors CSS and tests. Browser screenshot/keyboard/RTL not yet evidenced (P7-T004 onward).",
+    "next_action": "Implement WordPress/WooCommerce-native consistent admin spacing, type hierarchy, accessible form/filters/tables and bounded responsive states in existing actual Free and Pro admin pages; ensure screen-specific enqueue, no decorative controls, scoped styles, keyboard focus and RTL support. Add PHP/native integration and static CSS contract tests; exact-head full CI."
   },
   {
     "id": "WBM-P7-T003",
@@ -979,8 +980,9 @@
       "WBM-P7-T002"
     ],
     "verification": "VERIFY-P7-T003",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "P7 UI-001..014 PHP source + WordPress route/action/field manifest, 24 authenticated WP admin_post controls (only order-key/email/nonce-scoped guest claim), 10 exact registered REST routes with required typed fields and permission callbacks, 15 actual form groups/87 fields, real financial action/nonce safety. PHP Foundation/Playground and native WP/WC/MariaDB classic+HPOS full GitHub Actions 44671126063 and 44671120192 BOTH SUCCESS at exact source SHA 8c71ca4fe5c5f1089012eacd0ebad558adc14e85. Native logs PASS live WordPress 24 admin hooks... and all anonymous permission denials. No authorized money mutations by fixtures. Browser visual/screenshots still P7-T004.",
+    "next_action": "Build and execute source-backed complete UI-001–UI-014 control-to-handler/method/capability/nonce/validation coverage and deny fake or unauthenticated actions; check actual native WP/WooCommerce Free/Pro menu hooks, public/private REST/admin routes, financial action invariants and report permissions in pure + native CI. Record unimplemented advanced filters without pretending actions exist. Only mark done after both full latest-code CI workflows pass."
   },
   {
     "id": "WBM-P7-T004",
@@ -992,8 +994,9 @@
       "WBM-P7-T003"
     ],
     "verification": "VERIFY-P7-T004",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Real, not simulated, Chromium browser on CI-only WordPress 7.0.8/WooCommerce 11.3.0, actual installed Free+Pro with BACS synthetic order+claim+import+review. Exact SHA 483a7e49caf80067361ae6a2619a0a8215213cb9, separate browser Actions 44672577045 SUCCESS, both Foundation/native actions 44672584525 + 44672576959 SUCCESS. Artifact ID 14600897788: 111 actual PNG files (LTR 54 + Arabic RTL 54 across 14 source UI IDs at 1440/1024/375 + forced-colors 3), two JSON reports 0 issues, 16 actual mobile table focus/Tab checks, RTL computed direction rtl, all 14 UI IDs covered. Manual per-screen visual polish remains P7-T005/T007 and WCAG human usability P7-T008.",
+    "next_action": "Create real browser evidence (not PHP/CSS simulated screenshots) against disposable WordPress/WooCommerce Free+Pro with synthetic finance records; capture 1440/1024/375 real routes, keyboard focus, forced/high contrast and an actual RTL locale; attach machine-readable visual evidence and screenshot artifacts, inspect actual failures/clipping; only then mark T004 verified. Do not invent screenshots; if CI browser execution is unavailable, keep task blocked with precise evidence."
   },
   {
     "id": "WBM-P7-T005",
@@ -1005,8 +1008,9 @@
       "WBM-P7-T004"
     ],
     "verification": "VERIFY-P7-T005",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Actual T005 screenshot inspect (baseline artifact 14601346876 / 111 real PNGs) + source-backed WordPress UI fixes: mobile full-width LTR/Arabic RTL bank/review/allocation filters, unwrapped WP submit button alignment, discoverable horizontally scrollable masked audit tables, semantically readable states, 20/21 exact-page pagination guard and 10000-page cap. Updated real WP7/WC Chromium artifact 14605361910: 115 screenshots, LTR59/RTL56, 14 UI IDs, 0 issues, 6 mobile filter geometry validations, 4 real GET filter submit checks with masked sources and no financial POST. Exact SHA 27e2c46bf7e26e983a5b908fdab4a57f91c29c85: GitHub Actions browser 44682670860 + Foundation/Playground/native WordPress/WooCommerce/MariaDB 44682670864 and 44682677458 all SUCCESS. Automated visual checks don't replace full manual WCAG: P7-T007–T008 pending.",
+    "next_action": "Inspect actual 111 Chromium screenshot artifacts, especially 375 and Arabic RTL, against native WP/WC hierarchy; fix real clipping/misalignment/overlong labels/status contrast and broken filters/pagination without inventing backend behaviors. Add visible UI/focus/overflow regressions with real browser screenshots; verify exact full Foundation/Playground/native and browser CI at code SHA, record before/after evidence. Then P7-T006 Free/Pro nav integration."
   },
   {
     "id": "WBM-P7-T006",
@@ -1018,8 +1022,9 @@
       "WBM-P7-T005"
     ],
     "verification": "VERIFY-P7-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Verify Free-only/Pro-enabled/Pro-without-Free native WooCommerce navigation, active menu state and role-gated links using actual WP menus; remove duplicate/stale destinations and ensure no feature-links to nonimplemented forms. Build disposable classic+HPOS WP/WC menu tests, native 1440/375 and RTL browser checks and exact latest-head full CI. Then T007 evidence rubric and T008 role usability. Keep P7 PR #13 draft/unmerged."
   },
   {
     "id": "WBM-P7-T007",

@@ -1,0 +1,128 @@
+name: P7 real-browser WordPress visual evidence
+
+on:
+  push:
+    branches:
+      - development/p7-ui-ux-schemas-20261120
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  chromium-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_DATABASE: wbm_ci
+          MARIADB_USER: wbm_ci
+          MARIADB_PASSWORD: wbm-ci-test-only
+          MARIADB_RANDOM_ROOT_PASSWORD: "1"
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      P7_BROWSER_BASE: http://127.0.0.1:8893
+      P7_BROWSER_FIXTURE_FILE: /tmp/p7-browser-fixture.json
+      P7_BROWSER_EVIDENCE_DIR: /tmp/p7-wbm-evidence
+      GITHUB_ACTIONS: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mysqli, mbstring, dom, fileinfo
+          tools: composer:v2, wp-cli
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Generate one-off nonproduction WordPress login password
+        run: |
+          password="$(openssl rand -hex 24)"
+          echo "::add-mask::$password"
+          echo "P7_BROWSER_ADMIN_PASSWORD=$password" >> "$GITHUB_ENV"
+      - name: Build exact in-branch Free and Pro ZIPs
+        run: |
+          bash scripts/package-plugin.sh free
+          bash scripts/package-plugin.sh pro
+      - name: Install disposable local WordPress/WooCommerce and real plugin packages
+        run: |
+          set -euo pipefail
+          site="$RUNNER_TEMP/wbm-browser-wp"
+          echo "P7_BROWSER_WP_PATH=$site" >> "$GITHUB_ENV"
+          wp core download --path="$site" --version=7.0.8
+          wp config create --path="$site" --dbname=wbm_ci --dbuser=wbm_ci \
+            --dbpass=wbm-ci-test-only --dbhost=127.0.0.1:3306
+          wp core install --path="$site" --url="$P7_BROWSER_BASE" \
+            --title="WPEssential synthetic browser QA" --admin_user=wbm_ci \
+            --admin_password="$P7_BROWSER_ADMIN_PASSWORD" \
+            --admin_email=p7-ci-fixture@example.test --skip-email
+          wp plugin install https://downloads.wordpress.org/plugin/woocommerce.11.3.0.zip \
+            --activate --path="$site"
+          wp plugin install "$GITHUB_WORKSPACE/dist/wpessential-bank-transfer-matcher.zip" \
+            --activate --path="$site"
+          wp plugin install "$GITHUB_WORKSPACE/dist/wpessential-bank-transfer-matcher-pro.zip" \
+            --activate --path="$site"
+          wp option update woocommerce_custom_orders_table_enabled no --path="$site"
+          wp option update woocommerce_custom_orders_table_data_sync_enabled no --path="$site"
+          wp option update woocommerce_bacs_settings \
+            '{"enabled":"yes","instructions":"Synthetic offline test transfers only"}' \
+            --format=json --path="$site"
+          wp rewrite structure '/%postname%/' --path="$site"
+          wp eval-file "$GITHUB_WORKSPACE/tests/browser/p7-seed.php" --path="$site"
+      - name: Launch genuine WordPress HTTP server and validate login URL
+        run: |
+          set -euo pipefail
+          php -S 127.0.0.1:8893 \
+            -t "$P7_BROWSER_WP_PATH" \
+            "$GITHUB_WORKSPACE/tests/browser/wordpress-router.php" \
+            > "$RUNNER_TEMP/p7-php-server.log" 2>&1 &
+          echo "P7_BROWSER_PHP_PID=$!" >> "$GITHUB_ENV"
+          ready=0
+          for i in $(seq 1 50); do
+            if curl --fail --silent --output /dev/null \
+              "$P7_BROWSER_BASE/wp-login.php"; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          test "$ready" = 1
+      - name: Install pinned Chromium browser automation tools
+        run: |
+          npm install --prefix tests/browser --no-audit --no-fund
+          cd tests/browser
+          npx playwright install --with-deps chromium
+      - name: Real 1440/1024/375 LTR and forced-high-contrast screenshots
+        env:
+          P7_BROWSER_MODE: ltr
+        run: node tests/browser/p7-visual.mjs
+      - name: Install actual Arabic WordPress locale and assert RTL server direction
+        run: |
+          set -euo pipefail
+          wp language core install ar --activate --path="$P7_BROWSER_WP_PATH"
+          wp user meta update wbm_ci locale ar --path="$P7_BROWSER_WP_PATH"
+          result="$(wp eval 'echo is_rtl() ? "rtl" : "ltr";' --path="$P7_BROWSER_WP_PATH")"
+          if [[ "$result" != rtl ]]; then
+            echo 'Actual WordPress Arabic RTL locale could not be activated.' >&2
+            exit 1
+          fi
+      - name: Real 1440/1024/375 Arabic RTL browser screenshots
+        env:
+          P7_BROWSER_MODE: rtl
+        run: node tests/browser/p7-visual.mjs
+      - name: Upload real screenshot/report artifacts even if visual checks fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p7-real-wordpress-visual-evidence
+          path: /tmp/p7-wbm-evidence/
+          if-no-files-found: warn
+          retention-days: 14

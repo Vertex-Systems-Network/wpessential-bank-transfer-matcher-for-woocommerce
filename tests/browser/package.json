@@ -1,0 +1,13 @@
+{
+  "name": "wpessential-bank-transfer-matcher-p7-browser-evidence",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Isolated synthetic WP/WC browser UI evidence only; never production",
+  "scripts": {
+    "visual": "node p7-visual.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.65.1"
+  }
+}

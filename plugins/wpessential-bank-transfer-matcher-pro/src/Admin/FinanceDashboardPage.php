@@ -58,7 +58,7 @@ final class FinanceDashboardPage {
 			wp_die( esc_html__( 'Finance reporting permission required.', self::DOMAIN ),
 				'', [ 'response' => 403 ] );
 		}
-		echo '<div class="wrap"><h1>' . esc_html__( 'Bank finance dashboard', self::DOMAIN ) . '</h1>';
+		echo '<div class="wrap wbm-pro-screen"><h1>' . esc_html__( 'Bank finance dashboard', self::DOMAIN ) . '</h1>';
 		echo '<p>' . esc_html__( 'Read-only, source-backed finance report pages. Figures below are not full-ledger totals, bank-cleared balances or proof of payment. Exact amounts use minor units; currency/exponent and financial state remain separate. No imported claim can mark an order paid.', self::DOMAIN ) . '</p>';
 		try {
 			$filters = self::filters();
@@ -100,7 +100,7 @@ final class FinanceDashboardPage {
 	}
 
 	private static function render_filters( array $d ): void {
-		echo '<form method="get" action="' . esc_url( admin_url( 'admin.php' ) ) . '">';
+		echo '<form class="wbm-pro-filter-panel" method="get" action="' . esc_url( admin_url( 'admin.php' ) ) . '">';
 		echo '<input type="hidden" name="page" value="' . esc_attr( self::SLUG ) . '">';
 		echo '<table class="form-table" role="presentation"><tbody>';
 		foreach ( [ 'from' => __( 'From (UTC)', self::DOMAIN ),
@@ -154,11 +154,11 @@ final class FinanceDashboardPage {
 	private static function render_cards( array $groups, array $scope ): void {
 		echo '<h2>' . esc_html__( 'Source-backed report pages', self::DOMAIN ) . '</h2>';
 		echo '<p class="description">' . esc_html__( 'Every card summarizes only its own bounded source page. The focused card follows your state/cursor; other cards show their first page under the shared date, currency and account filters. Report families may overlap (outstanding includes partially funded orders): never add card totals together.', self::DOMAIN ) . '</p>';
-		echo '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px">';
+		echo '<div class="wbm-pro-cards">';
 		foreach ( self::LABELS as $type => $label ) {
 			$group = $groups[$type];
-			echo '<div class="postbox" style="padding:14px;margin:0">';
-			echo '<h3 style="margin-top:0">' . esc_html( $label ) . '</h3>';
+			echo '<section class="postbox wbm-pro-card">';
+			echo '<h3>' . esc_html( $label ) . '</h3>';
 			if ( ! $group['available'] ) {
 				echo '<p>' . esc_html__( 'Source unavailable — not zero.', self::DOMAIN ) . '</p>';
 			} else {
@@ -188,7 +188,7 @@ final class FinanceDashboardPage {
 			echo '<p><a href="' . esc_url( add_query_arg( $query,
 				admin_url( 'admin.php' ) ) ) . '">' .
 				esc_html__( 'View filtered report page', self::DOMAIN ) . '</a></p>';
-			echo '</div>';
+			echo '</section>';
 		}
 		echo '</div>';
 	}
@@ -205,7 +205,7 @@ final class FinanceDashboardPage {
 			return;
 		}
 		$columns = self::COLUMNS[$scope['focus_report']];
-		echo '<table class="wp-list-table widefat fixed striped"><thead><tr>';
+		echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Focused finance report rows', self::DOMAIN ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr>';
 		foreach ( $columns as $key ) echo '<th scope="col">' . esc_html( str_replace( '_', ' ', $key ) ) . '</th>';
 		echo '</tr></thead><tbody>';
 		foreach ( $result['rows'] as $record ) {
@@ -217,7 +217,7 @@ final class FinanceDashboardPage {
 			}
 			echo '</tr>';
 		}
-		echo '</tbody></table>';
+		echo '</tbody></table></div>';
 		echo '<p class="description">' .
 			esc_html__( 'These are exact source-page minor units and states, not verified bank balances. Non-additive exception cases cannot be totaled as money.', self::DOMAIN ) . '</p>';
 		if ( $result['has_more'] && $result['next_before_id'] > 0 ) {

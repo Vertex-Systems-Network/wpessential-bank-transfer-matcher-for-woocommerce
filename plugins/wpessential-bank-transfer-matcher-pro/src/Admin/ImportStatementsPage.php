@@ -162,14 +162,14 @@ final class ImportStatementsPage {
 		echo '<h2>' . esc_html__( '2. Dry-run preview', 'wpessential-bank-transfer-matcher-pro' ) . '</h2>';
 		printf( '<p><strong>%s</strong> %d &nbsp; <strong>%s</strong> %d &nbsp; <strong>%s</strong> %d</p>', esc_html__( 'Valid:', 'wpessential-bank-transfer-matcher-pro' ), $result->valid_count, esc_html__( 'Invalid:', 'wpessential-bank-transfer-matcher-pro' ), $result->error_count, esc_html__( 'Warnings:', 'wpessential-bank-transfer-matcher-pro' ), $result->warning_count );
 		echo '<div class="notice notice-warning"><p>' . esc_html__( 'Importing these records does not confirm customer payments. Review and allocation remain separate authorized actions.', 'wpessential-bank-transfer-matcher-pro' ) . '</p></div>';
-		echo '<table class="wp-list-table widefat fixed striped"><thead><tr><th>' . esc_html__( 'Row', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Date', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Amount', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Reference', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Result', 'wpessential-bank-transfer-matcher-pro' ) . '</th></tr></thead><tbody>';
+		echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Statement preview rows, unverified', 'wpessential-bank-transfer-matcher-pro' ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr><th>' . esc_html__( 'Row', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Date', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Amount', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Reference', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Result', 'wpessential-bank-transfer-matcher-pro' ) . '</th></tr></thead><tbody>';
 		foreach ( array_slice( $result->rows, 0, 100 ) as $row ) {
 			$canonical = $row->canonical;
 			$reference = $canonical ? self::masked_reference( $canonical->reference ) : '—';
 			$outcome = $row->error ?: ( $row->warnings ? implode( ', ', $row->warnings ) : __( 'Ready', 'wpessential-bank-transfer-matcher-pro' ) );
 			printf( '<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row->source_row, esc_html( $canonical?->posted_date ?? '—' ), esc_html( $canonical ? $canonical->amount_minor . ' ' . $canonical->currency : '—' ), esc_html( $reference ), esc_html( $outcome ) );
 		}
-		echo '</tbody></table>';
+		echo '</tbody></table></div>';
 		if ( count( $result->rows ) > 100 ) echo '<p class="description">' . esc_html__( 'Showing the first 100 rows. All rows were validated.', 'wpessential-bank-transfer-matcher-pro' ) . '</p>';
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="wbm_pro_commit_statement"><input type="hidden" name="draft_token" value="' . esc_attr( $preview['token'] ) . '"><input type="hidden" name="account_id" value="' . (int) $preview['account_id'] . '"><input type="hidden" name="profile_id" value="' . esc_attr( $preview['profile']->id ) . '">';
 		wp_nonce_field( 'wbm_pro_commit_statement' );
@@ -180,7 +180,7 @@ final class ImportStatementsPage {
 	private static function render_history( array $history ): void {
 		echo '<h2>' . esc_html__( 'Import history and progress', 'wpessential-bank-transfer-matcher-pro' ) . '</h2>';
 		if ( ! $history ) { echo '<p>' . esc_html__( 'No statements have been imported yet.', 'wpessential-bank-transfer-matcher-pro' ) . '</p>'; return; }
-		echo '<table class="wp-list-table widefat fixed striped"><thead><tr><th>' . esc_html__( 'Batch', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Status', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Account / currency', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Processed', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Updated', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Action', 'wpessential-bank-transfer-matcher-pro' ) . '</th></tr></thead><tbody>';
+		echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Statement import history', 'wpessential-bank-transfer-matcher-pro' ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr><th>' . esc_html__( 'Batch', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Status', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Account / currency', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Processed', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Updated', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Action', 'wpessential-bank-transfer-matcher-pro' ) . '</th></tr></thead><tbody>';
 		foreach ( $history as $batch ) {
 			printf( '<tr><td>#%d</td><td>%s%s</td><td>#%d / %s</td><td>%d valid, %d errors, %d warnings</td><td>%s</td><td>', (int) $batch['id'], esc_html( ucfirst( $batch['status'] ) ), in_array( $batch['status'], array( 'pending', 'processing' ), true ) ? ' <progress aria-label="' . esc_attr__( 'Import in progress', 'wpessential-bank-transfer-matcher-pro' ) . '"></progress>' : '', (int) $batch['account_id'], esc_html( $batch['currency'] ), (int) $batch['valid_count'], (int) $batch['error_count'], (int) $batch['warning_count'], esc_html( $batch['updated_at'] ) );
 			if ( 'failed' === $batch['status'] ) { echo '<form style="display:inline" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="wbm_pro_retry_import"><input type="hidden" name="batch_id" value="' . (int) $batch['id'] . '">'; wp_nonce_field( 'wbm_pro_retry_import' ); submit_button( __( 'Retry', 'wpessential-bank-transfer-matcher-pro' ), 'small', 'submit', false ); echo '</form> '; }
@@ -188,7 +188,7 @@ final class ImportStatementsPage {
 			if ( ! in_array( $batch['status'], array( 'pending', 'processing', 'failed' ), true ) ) echo '—';
 			echo '</td></tr>';
 		}
-		echo '</tbody></table>';
+		echo '</tbody></table></div>';
 	}
 
 	private static function active_account( int $id ): array {

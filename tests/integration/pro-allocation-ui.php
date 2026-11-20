@@ -15,9 +15,21 @@ try {
 	AllocationReviewPage::render();
 	$html = ob_get_clean();
 	foreach ( [ 'Bank allocation ledger', 'All allocation states', 'Filter allocations',
-		'No allocations match these filters', 'Ledger and audit views are read-only' ] as $phrase ) {
+		'No allocations match these filters', 'Ledger and audit views are read-only',
+		'wbm-pro-toolbar', 'role="search"', 'id="wbm-allocation-page-size"', 'for="wbm-allocation-order"' ] as $phrase ) {
 		if ( ! str_contains( $html, $phrase ) ) throw new RuntimeException( 'Allocation list missing: ' . $phrase );
 	}
+	// Even malformed/max-int query page numbers must not create an unbounded
+	// SQL offset or fabricate a Next page for this empty synthetic result.
+	$_GET['paged'] = (string) PHP_INT_MAX;
+	ob_start();
+	AllocationReviewPage::render();
+	$bounded = ob_get_clean();
+	if ( ! str_contains( $bounded, 'No allocations match these filters' ) ||
+		str_contains( $bounded, '>Next</a>' ) ) {
+		throw new RuntimeException( 'Allocation pagination accepted unbounded synthetic page or phantom Next.' );
+	}
+	if ( str_contains( $html, '<style>.wbm-finance-dialog' ) ) throw new RuntimeException( 'Finance detail dialog still emits inline layout CSS instead of scoped native stylesheet.' );
 	if ( ! str_contains( $html, 'data-wbm-finance-dialog' ) ) {
 		throw new RuntimeException( 'Finance proposal must support progressive dialog enhancement.' );
 	}

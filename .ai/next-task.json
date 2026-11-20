@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P7-T001",
+  "id": "WBM-P7-T006",
   "phase": "P7",
-  "title": "finalize all screen schemas UI-001–UI-014 and component states.",
+  "title": "ensure Free/Pro integration works without duplicated/stale navigation.",
   "owner": "UX and QA",
   "paths": "docs/ux/; plugins/",
   "depends_on": [
-    "WBM-P6-T008"
+    "WBM-P7-T005"
   ],
-  "verification": "VERIFY-P7-T001",
+  "verification": "VERIFY-P7-T006",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "On dedicated P7 branch AFTER P6 phase PR merge, audit documented screen schema UI-001–UI-014 against actual current WordPress Free/Pro admin components and route fields; enumerate missing screens/states, WC classic+HPOS and accessibility/RTL requirements without fabricating screenshots."
+  "next_action": "Verify Free-only/Pro-enabled/Pro-without-Free native WooCommerce navigation, active menu state and role-gated links using actual WP menus; remove duplicate/stale destinations and ensure no feature-links to nonimplemented forms. Build disposable classic+HPOS WP/WC menu tests, native 1440/375 and RTL browser checks and exact latest-head full CI. Then T007 evidence rubric and T008 role usability. Keep P7 PR #13 draft/unmerged."
 }
