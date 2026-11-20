@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P8-T004",
+  "id": "WBM-P8-T005",
   "phase": "P8",
-  "title": "allocation concurrency/duplicates/stale order/invalidation tests.",
+  "title": "WC HPOS + classic storage support and honest compatibility declarations.",
   "owner": "Security and QA",
   "paths": "docs/security/; plugins/",
   "depends_on": [
-    "WBM-P8-T003"
+    "WBM-P8-T004"
   ],
-  "verification": "VERIFY-P8-T004",
+  "verification": "VERIFY-P8-T005",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify against actual native MariaDB two independent SQL connection locks, Pro unique source/idempotency and duplicate fingerprint/overallocation guards, Woo order cancellation/refund/total drift between proposal and approval, correction hold/invalidation, no partial ledger writes and idempotent payment hook replay. Add missing synthetic negative tests and exact-head CI without real financial movement. Record evidence before P8-T005."
+  "next_action": "Audit actual WooCommerce HPOS and classic order storage switch and plugin declarations (WC tested/required headers, HPOS compatibility declarations, version matrix), execute genuine Free/Pro reconciliation integration under both modes, add source-backed positive/negative tests that detect direct post/postmeta CRUD and read stale caches. Capture exact-head native/Playground CI and honest compatibility scope before P8-T006."
 }
