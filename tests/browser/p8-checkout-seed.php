@@ -15,7 +15,8 @@ if ( ! is_string( $path ) || ! str_starts_with( $path, sys_get_temp_dir() . '/' 
 // existing real shortcode page only if one exists; otherwise publish a
 // distinct synthetic classic page WITHOUT changing global checkout settings.
 // Keeping the actual configured checkout page preserves P7 guest receipts.
-$checkout_id = wc_get_page_id( 'checkout' );
+$configured_checkout_id = wc_get_page_id( 'checkout' );
+$checkout_id = $configured_checkout_id;
 if ( $checkout_id < 1 ||
 	! has_shortcode( (string) get_post_field( 'post_content', $checkout_id ), 'woocommerce_checkout' ) ) {
 	$checkout_id = wp_insert_post( [
@@ -54,23 +55,29 @@ $product_id = $product->save();
 if ( ! is_int( $product_id ) || $product_id < 1 ) {
 	throw new RuntimeException( 'Could not publish disposable virtual WooCommerce product.' );
 }
-$block_id = wp_insert_post( [
-	'post_type' => 'page',
-	'post_status' => 'publish',
-	'post_title' => 'P8 synthetic Checkout Blocks',
-	'post_content' => '<!-- wp:woocommerce/checkout /-->',
-	'post_name' => 'p8-disposable-block-checkout',
-], true );
-if ( is_wp_error( $block_id ) || ! $block_id ) {
-	throw new RuntimeException( 'Could not seed real WooCommerce Checkout Block page.' );
+// WooCommerce Checkout Blocks must be rendered on the *configured* checkout
+// page in the actual frontend request. Prefer its existing canonical checkout
+// rather than an unrelated page which may not initialize Woo block assets.
+$block_id = $configured_checkout_id > 0 &&
+	has_block( 'woocommerce/checkout', (int) $configured_checkout_id )
+	? (int) $configured_checkout_id : 0;
+if ( ! $block_id ) {
+	// This fallback is for older stores configured with shortcode checkout;
+	// no merchant settings are changed and actual frontend markup is checked
+	// separately by Chromium before claiming Blocks compatibility.
+	$block_id = wp_insert_post( [
+		'post_type' => 'page',
+		'post_status' => 'publish',
+		'post_title' => 'P8 synthetic Checkout Blocks',
+		'post_content' => '<!-- wp:woocommerce/checkout /-->',
+		'post_name' => 'p8-disposable-block-checkout',
+	], true );
+	if ( is_wp_error( $block_id ) || ! $block_id ) {
+		throw new RuntimeException( 'Could not seed a genuine Checkout Block page.' );
+	}
 }
-// WP-CLI lacks the frontend request context required by dynamic Woo Blocks;
-// a CLI do_blocks() HTML check would give false negatives. Verify the genuine
-// serialized block here; Chromium separately asserts browser-rendered markup.
-$parsed = parse_blocks( (string) get_post_field( 'post_content', $block_id ) );
-if ( count( $parsed ) !== 1 ||
-	( $parsed[0]['blockName'] ?? '' ) !== 'woocommerce/checkout' ) {
-	throw new RuntimeException( 'Could not persist a genuine WooCommerce Checkout Block.' );
+if ( ! has_block( 'woocommerce/checkout', (int) $block_id ) ) {
+	throw new RuntimeException( 'Configured WooCommerce Checkout Block was not found.' );
 }
 $fixture = [
 	'version' => 1,
