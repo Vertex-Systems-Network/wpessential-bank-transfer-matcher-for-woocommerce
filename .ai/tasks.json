@@ -855,8 +855,8 @@
       "WBM-P6-T001"
     ],
     "verification": "VERIFY-P6-T002",
-    "status": "in_progress",
-    "evidence": ""
+    "status": "done",
+    "evidence": "Cumulative exact development head 5164ed3f9ab0181d55ce1c640157e638055c9788 passed full GitHub Actions 44647473663 (Foundation PHP/static/unit and packaged Playground + native WooCommerce/MariaDB including classic+HPOS report integration). Source-backed audit/import and exception aging baseline additionally verified at 44646663647; BACS UTC/native query pruning verified at 44646529524; signed debit and empty-reference ambiguous credit guards verified at 44646808318. Five reporting families, exact currency/state page totals, cursor, finance access and no payment/refund mutation. All runs SUCCESS."
   },
   {
     "id": "WBM-P6-T003",
@@ -868,8 +868,9 @@
       "WBM-P6-T002"
     ],
     "verification": "VERIFY-P6-T003",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Implement secure bounded finance CSV export (redaction, spreadsheet-injection defense, finance capability and audit), verify native/Playground tests, then async/export limits."
   },
   {
     "id": "WBM-P6-T004",

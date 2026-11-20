@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P6-T002",
+  "id": "WBM-P6-T003",
   "phase": "P6",
-  "title": "outstanding, unmatched, partial, exception-aging and import summaries.",
+  "title": "safe CSV export, async job limits, audit export permissions.",
   "owner": "Pro engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
   "depends_on": [
-    "WBM-P6-T001"
+    "WBM-P6-T002"
   ],
-  "verification": "VERIFY-P6-T002",
+  "verification": "VERIFY-P6-T003",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Verify all P6-T002 report sources in native+Playground CI: WooCommerce BACS outstanding/partial, imported unmatched/ambiguous, exception aging, allocation audit and import summaries. Then mark P6-T002 done only if complete CI green."
+  "next_action": "Implement secure bounded finance CSV export (redaction, spreadsheet-injection defense, finance capability and audit), verify native/Playground tests, then async/export limits."
 }

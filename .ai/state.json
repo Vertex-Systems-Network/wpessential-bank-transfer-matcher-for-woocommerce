@@ -1,9 +1,9 @@
 {
   "project": "WPEssential Bank Transfer Matcher for WooCommerce",
   "schema_version": 1,
-  "current_branch": "development/autonomous-release-track",
+  "current_branch": "development/p6-reports-operations-20261120",
   "last_verified_base_commit": "939b9c6c7ecd1882340af9dcd55fe932d4207251",
-  "last_checkpoint_utc": "2026-11-19",
+  "last_checkpoint_utc": "2026-11-20",
   "execution_status": "in_progress",
   "tests": {
     "php_unit": "not_run",
@@ -83,10 +83,10 @@
     "pro_cross_edition_races": "passed: GitHub Actions 44642819046 — Free manual writer blocked throughout Pro named source/order lock and no double credit",
     "pro_cross_process_split_races": "passed: GitHub Actions 44642819046 — atomic 2-recipient split reviewer, second recipient lock vs Free writer, independent paid completion with exact source conservation",
     "report_definitions": "passed: GitHub Actions 44643672874 and 44643662149 full foundation, Playground and native, canonical strict finance report scope/exact per-currency totals",
-    "report_queries_initial": "pending: native scoped allocation and import batch read-only queries",
-    "order_funding_reports": "pending: native WooCommerce CRUD classic+HPOS outstanding BACS/partial exact-money, account and cursor scoping",
-    "unmatched_credit_reports": "pending: native unmatched vs ambiguous completed imported bank source, exact-money totals, duplicate fingerprint and allocated exclusion",
-    "exception_aging_reports": "pending: native 3-source exception ledger aging, UTC dates, virtual-id cursor, counts not bank funds"
+    "report_queries_initial": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit.",
+    "order_funding_reports": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit.",
+    "unmatched_credit_reports": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit.",
+    "exception_aging_reports": "passed: full cumulative dev-branch GitHub Actions 44647473663 plus scope-specific CI 44646663647, 44646529524 and 44646808318; native WooCommerce/MariaDB, classic/HPOS, Playground and PHP/static/unit."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -100,8 +100,8 @@
     "free_is_independent"
   ],
   "phase": "P6",
-  "active_task_id": "WBM-P6-T002",
-  "next_action": "Verify all P6-T002 report sources in native+Playground CI: WooCommerce BACS outstanding/partial, imported unmatched/ambiguous, exception aging, allocation audit and import summaries. Then mark P6-T002 done only if complete CI green.",
+  "active_task_id": "WBM-P6-T003",
+  "next_action": "Implement secure bounded finance CSV export (redaction, spreadsheet-injection defense, finance capability and audit), verify native/Playground tests, then async/export limits.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -167,8 +167,9 @@
     "WBM-P5-T009",
     "WBM-P5-T010",
     "WBM-P5-T011",
-    "WBM-P6-T001"
+    "WBM-P6-T001",
+    "WBM-P6-T002"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "7c075237e575cbd67cc1cdbd06a9cf2cfe8e623d"
+  "last_verified_remote_milestone": "5164ed3f9ab0181d55ce1c640157e638055c9788"
 }
