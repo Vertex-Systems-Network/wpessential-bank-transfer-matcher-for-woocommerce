@@ -36,9 +36,14 @@ final class ReviewQueuePage {
 		$status = isset( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : '';
 		$priority = isset( $_GET['priority'] ) ? sanitize_key( wp_unslash( $_GET['priority'] ) ) : '';
 		$assignee = isset( $_GET['assignee'] ) ? absint( $_GET['assignee'] ) : 0;
-		$page = isset( $_GET['paged'] ) ? max( 1, absint( $_GET['paged'] ) ) : 1;
+		$page = isset( $_GET['paged'] ) ? max( 1, min( 10000, absint( $_GET['paged'] ) ) ) : 1;
 		$limit = isset( $_GET['per_page'] ) && in_array( absint( $_GET['per_page'] ), [ 20, 50, 100 ], true ) ? absint( $_GET['per_page'] ) : 20;
-		$rows = ( new ReviewCaseRepository( $GLOBALS['wpdb'] ) )->queue( $status, $priority, $assignee, $page, $limit );
+		$repository = new ReviewCaseRepository( $GLOBALS['wpdb'] );
+		$rows = $repository->queue( $status, $priority, $assignee, $page, $limit );
+		// A full last page is not proof that another page exists. Request the
+		// next bounded filtered page only when necessary, avoiding phantom Next.
+		$has_more = count( $rows ) === $limit && $page < 10000 &&
+			[] !== $repository->queue( $status, $priority, $assignee, $page + 1, $limit );
 		echo '<form class="wbm-pro-toolbar" method="get" role="search" aria-label="' . esc_attr__( 'Bank review case filters', 'wpessential-bank-transfer-matcher-pro' ) . '"><input type="hidden" name="page" value="' . esc_attr( self::SLUG ) . '">';
 		self::select( 'status', __( 'All states', 'wpessential-bank-transfer-matcher-pro' ), [ 'open', 'assigned', 'investigating', 'awaiting_approval', 'resolved', 'dismissed', 'reopened' ], $status );
 		self::select( 'priority', __( 'All priorities', 'wpessential-bank-transfer-matcher-pro' ), [ 'critical', 'high', 'normal' ], $priority );
@@ -48,16 +53,23 @@ final class ReviewQueuePage {
 		echo '</select></label> '; submit_button( __( 'Filter', 'wpessential-bank-transfer-matcher-pro' ), 'secondary', '', false ); echo '</form>';
 		if ( [] === $rows ) {
 			echo '<p role="status" class="wbm-pro-empty">' . esc_html__( 'No review cases match these filters.', 'wpessential-bank-transfer-matcher-pro' ) . '</p>';
+			if ( $page > 1 ) {
+				echo '<p><a class="button" href="' . esc_url( self::page_url( $status, $priority, $assignee, $page - 1, $limit ) ) . '">' . esc_html__( 'Previous source page', 'wpessential-bank-transfer-matcher-pro' ) . '</a></p>';
+			}
 			return;
 		}
 		echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Bank review case results', 'wpessential-bank-transfer-matcher-pro' ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr><th>' . esc_html__( 'Case', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Type', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Priority', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'State', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Transaction', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Order', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Assignee', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th></th></tr></thead><tbody>';
 		foreach ( $rows as $row ) {
 			$url = add_query_arg( [ 'page' => self::SLUG, 'case_id' => (int) $row['id'] ], admin_url( 'admin.php' ) );
-			printf( '<tr><td>#%d</td><td>%s</td><td><strong>%s</strong></td><td>%s</td><td>#%d</td><td>%s</td><td>%s</td><td><a class="button" href="%s">%s</a></td></tr>', (int) $row['id'], esc_html( $row['case_type'] ), esc_html( $row['priority'] ), esc_html( $row['status'] ), (int) $row['transaction_id'], $row['order_id'] ? '#' . (int) $row['order_id'] : '—', $row['assignee_id'] ? '#' . (int) $row['assignee_id'] : esc_html__( 'Unassigned', 'wpessential-bank-transfer-matcher-pro' ), esc_url( $url ), esc_html__( 'Open workspace', 'wpessential-bank-transfer-matcher-pro' ) );
+			$priority_tag = sprintf( '<span class="wbm-pro-state" data-priority="%s">%s</span>',
+				esc_attr( (string) $row['priority'] ), esc_html( (string) $row['priority'] ) );
+			$case_state = sprintf( '<span class="wbm-pro-state" data-state="%s">%s</span>',
+				esc_attr( (string) $row['status'] ), esc_html( (string) $row['status'] ) );
+			printf( '<tr><td>#%d</td><td>%s</td><td>%s</td><td>%s</td><td>#%d</td><td>%s</td><td>%s</td><td><a class="button" href="%s">%s</a></td></tr>', (int) $row['id'], esc_html( $row['case_type'] ), $priority_tag, $case_state, (int) $row['transaction_id'], $row['order_id'] ? '#' . (int) $row['order_id'] : '—', $row['assignee_id'] ? '#' . (int) $row['assignee_id'] : esc_html__( 'Unassigned', 'wpessential-bank-transfer-matcher-pro' ), esc_url( $url ), esc_html__( 'Open workspace', 'wpessential-bank-transfer-matcher-pro' ) );
 		}
 		echo '</tbody></table></div><nav class="wbm-pro-pagination" aria-label="' . esc_attr__( 'Review case result pages', 'wpessential-bank-transfer-matcher-pro' ) . '">';
 		if ( $page > 1 ) echo '<a class="button" href="' . esc_url( self::page_url( $status, $priority, $assignee, $page - 1, $limit ) ) . '">' . esc_html__( 'Previous', 'wpessential-bank-transfer-matcher-pro' ) . '</a> ';
-		if ( count( $rows ) === $limit ) echo '<a class="button" href="' . esc_url( self::page_url( $status, $priority, $assignee, $page + 1, $limit ) ) . '">' . esc_html__( 'Next', 'wpessential-bank-transfer-matcher-pro' ) . '</a>';
+		if ( $has_more ) echo '<a class="button" href="' . esc_url( self::page_url( $status, $priority, $assignee, $page + 1, $limit ) ) . '">' . esc_html__( 'Next', 'wpessential-bank-transfer-matcher-pro' ) . '</a>';
 		echo '</nav>';
 	}
 
