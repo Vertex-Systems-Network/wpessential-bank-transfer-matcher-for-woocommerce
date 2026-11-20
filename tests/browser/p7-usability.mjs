@@ -230,6 +230,29 @@ try {
       'Empty guest form must fail native browser required-field validation');
     await screenshot(page, 'guest-unclaimed-order', 1440);
     await page.setViewportSize({ width: 375, height: 812 });
+    // Real mobile geometry: do not equate form presence with usability.
+    const geometry = await form.evaluate(node => {
+      const shell = node.getBoundingClientRect();
+      const fields = [...node.querySelectorAll('input:not([type="checkbox"]):not([type="hidden"]),textarea')];
+      const rects = fields.map(field => field.getBoundingClientRect());
+      const submit = node.querySelector('button[type="submit"]').getBoundingClientRect();
+      return {
+        fieldCount: fields.length,
+        tooNarrow: rects.some(rect => rect.width < shell.width * 0.85),
+        tooShort: rects.some(rect => rect.height < 43),
+        outside: rects.some(rect => rect.left < shell.left - 1 || rect.right > shell.right + 1),
+        submitWidth: submit.width,
+        submitHeight: submit.height,
+        formWidth: shell.width,
+        scopedCSS: [...document.querySelectorAll('link[rel="stylesheet"]')]
+          .some(link => link.href.includes('assets/customer-claims.css')),
+      };
+    });
+    assert(geometry.scopedCSS && geometry.fieldCount >= 3 &&
+      !geometry.tooNarrow && !geometry.tooShort && !geometry.outside &&
+      geometry.submitHeight >= 43 && geometry.submitWidth >= geometry.formWidth * 0.85,
+      'Real 375px claim controls are not full-width accessible targets: ' +
+      JSON.stringify(geometry));
     await screenshot(page, 'guest-claim-form', 375);
     step('guest_customer', 'inspect_unpaid_order_reference_and_form_without_submit',
       'Scoped order key and owner email fields required, form invalid if blank, no claim POST');
