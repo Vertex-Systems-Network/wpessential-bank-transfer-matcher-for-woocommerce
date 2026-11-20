@@ -40,7 +40,12 @@ final class ImportJob {
 			$batch = ( new ImportBatchRepository( $this->db ) )->create( $account_id, $profile, $hash, $size, $actor_id );
 			$result = $this->db->query( $this->db->prepare( "INSERT INTO `{$this->jobs_table()}` (batch_id, source_path, byte_offset, next_row, updated_at) VALUES (%d, %s, 0, 1, UTC_TIMESTAMP())", $batch, $destination ) );
 			if ( 1 !== $result ) throw new RuntimeException( 'Could not create import checkpoint.' );
-			as_enqueue_async_action( self::HOOK, array( $batch ), 'wpessential-wbm-import', true );
+			$first_action = as_enqueue_async_action(
+				self::HOOK, array( $batch ), 'wpessential-wbm-import', true
+			);
+			if ( ! is_int( $first_action ) || $first_action < 1 ) {
+				throw new RuntimeException( 'Could not queue the private statement import.' );
+			}
 			return $batch;
 		} catch ( \Throwable $error ) {
 			if ( isset( $batch ) ) ( new ImportBatchRepository( $this->db ) )->transition( $batch, 'pending', 'failed' );
