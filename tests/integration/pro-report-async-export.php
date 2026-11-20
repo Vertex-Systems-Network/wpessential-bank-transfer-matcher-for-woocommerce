@@ -37,6 +37,7 @@ $nonce = wp_create_nonce( 'wbm_pro_export_report' );
 $cancel_nonce = wp_create_nonce( 'wbm_pro_cancel_queued_export' );
 $download_nonce = wp_create_nonce( 'wbm_pro_download_queued_export' );
 $ids = [];
+$extra_batches = [];
 $reject = static function ( callable $call, string $name ): void {
 	try {
 		$call();
@@ -83,8 +84,37 @@ try {
 		throw new RuntimeException( 'Queued cancellation did not clear job.' );
 	}
 	$job->process( $second ); // A cancelled action must remain inactive.
+	// Synthetic 105-row set exercises real keyset pagination and the
+	// single-header multi-page CSV merge, not just a happy one-row job.
+	for ( $n = 0; $n < 105; ++$n ) {
+		$extra_batches[] = ( new ImportBatchRepository( $wpdb ) )->create(
+			$bank, $profile, hash( 'sha256', 'async-csv-page-' . wp_generate_uuid4() ),
+			100, $admin->ID
+		);
+	}
 	$third = $job->start( $scope, $admin->ID, $nonce );
 	$ids[] = $third;
+	$job->process( $third );
+	$partial = $job->status( $third, $admin->ID );
+	if ( $partial['status'] !== 'running' || $partial['pages_done'] !== 1 ||
+		$partial['row_count'] !== 100 || $partial['can_download'] ) {
+		throw new RuntimeException( 'Multi-page job prematurely advertised incomplete CSV.' );
+	}
+	$job->process( $third );
+	$final = $job->status( $third, $admin->ID );
+	if ( $final['status'] !== 'ready' || $final['pages_done'] !== 2 ||
+		$final['row_count'] !== 106 ) {
+		throw new RuntimeException( 'Queued report cursor lost rows across page boundary.' );
+	}
+	$contents = $wpdb->get_var( $wpdb->prepare(
+		"SELECT csv_data FROM {$wpdb->prefix}wbm_pro_report_export_jobs WHERE id=%d",
+		$third
+	) );
+	$all = array_filter( explode( "\n", trim( (string) $contents ) ) );
+	if ( count( $all ) !== 107 ||
+		substr_count( (string) $contents, "id,bank_account_id,currency,state," ) !== 1 ) {
+		throw new RuntimeException( 'Multi-page queued CSV duplicated its header or missed a source row.' );
+	}
 	wp_set_current_user( 0 );
 	$reject( static fn () => $job->status( $first, $admin->ID ),
 		'anonymous queued export status' );
@@ -120,6 +150,10 @@ try {
 	$export_scope = ReportDefinition::from_array( $export_scope );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_report_exports',
 		[ 'scope_sha256' => $export_scope->fingerprint() ], [ '%s' ] );
+	foreach ( $extra_batches as $extra_id ) {
+		$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_batches',
+			[ 'id' => $extra_id ], [ '%d' ] );
+	}
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_batches', [ 'id' => $batch ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_bank_accounts', [ 'id' => $bank ], [ '%d' ] );
 	wp_set_current_user( $prior );
