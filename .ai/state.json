@@ -1,7 +1,7 @@
 {
   "project": "WPEssential Bank Transfer Matcher for WooCommerce",
   "schema_version": 1,
-  "current_branch": "development/p7-ui-ux-schemas-20261120",
+  "current_branch": "development/p7-navigation-role-gates-20261120",
   "last_verified_base_commit": "939b9c6c7ecd1882340af9dcd55fe932d4207251",
   "last_checkpoint_utc": "2026-11-20",
   "execution_status": "in_progress",
@@ -100,7 +100,8 @@
     "p7_native_ui": "passed: exact SHA d08802c9a009c0153365703983675caaa0eb9ad6, full runs 44668451481 and 44668445322 green; scoped WordPress Free/Pro native CSS, 11 Pro menu hooks, labeled real filters, keyboard-scrolling financial source tables, 13 mapping fields, native WordPress/WooCommerce/MariaDB/Playground.",
     "p7_real_route_audit": "passed: exact source SHA 8c71ca4fe5c5f1089012eacd0ebad558adc14e85; full GitHub Actions 44671126063 and 44671120192 SUCCESS. Pure 14 UI / 24 WP admin / 10 REST / 15 forms 87 fields; native WP/WC registered route+field method/capability, only valid guest claim public, all anonymous registered permission callbacks reject, no finance POST dispatched.",
     "p7_real_browser": "passed exact source SHA 483a7e49caf80067361ae6a2619a0a8215213cb9 browser Actions 44672577045 SUCCESS with artifact 14600897788: LTR 54, Arabic RTL 54, forced colors 3 =111 PNGs; 14 IDs at 1440/1024/375, 0 issues both JSON reports, 16 mobile focus checks, RTL direction rtl. Two Foundation/native/Playground runs 44672584525 and 44672576959 SUCCESS.",
-    "p7_mobile_visual_pagination": "passed: exact SHA 27e2c46bf7e26e983a5b908fdab4a57f91c29c85 browser 44682670860 (115 true WordPress screenshot PNGs, 0 issues, 6 LTR/RTL 375px filter geometry and 4 genuine GET interactions) + full Foundation/Playground/native WooCommerce/MariaDB runs 44682670864 and 44682677458; before 111 image artifact 14601346876 / after 115 artifact 14605361910."
+    "p7_mobile_visual_pagination": "passed: exact SHA 27e2c46bf7e26e983a5b908fdab4a57f91c29c85 browser 44682670860 (115 true WordPress screenshot PNGs, 0 issues, 6 LTR/RTL 375px filter geometry and 4 genuine GET interactions) + full Foundation/Playground/native WooCommerce/MariaDB runs 44682670864 and 44682677458; before 111 image artifact 14601346876 / after 115 artifact 14605361910.",
+    "p7_navigation": "in_progress: six Pro composite-capability menu guards and native Free/no-Free/paired matrix committed; full exact-SHA CI, browser/RTL, T007/T008 not yet verified"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
