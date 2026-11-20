@@ -110,6 +110,7 @@ if ( ! $customer_order || is_wp_error( $customer_order ) ) {
 	throw new RuntimeException( 'Synthetic guest BACS order cannot be created.' );
 }
 $customer_order->set_payment_method( 'bacs' );
+$customer_order->set_customer_id( 0 ); // Genuine guest; do not inherit WP-CLI admin actor.
 $customer_order->set_status( 'on-hold' );
 $customer_order->set_currency( 'USD' );
 $customer_order->set_billing_first_name( 'Synthetic' );
