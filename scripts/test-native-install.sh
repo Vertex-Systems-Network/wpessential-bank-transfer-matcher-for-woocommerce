@@ -61,6 +61,7 @@ wp_test eval-file "$root/tests/integration/pro-many-credits.php"
 wp_test eval-file "$root/tests/integration/pro-split-credit.php"
 wp_test eval-file "$root/tests/integration/pro-allocation-ui.php"
 wp_test eval-file "$root/tests/integration/pro-report-queries.php"
+wp_test eval-file "$root/tests/integration/pro-report-csv-export.php"
 wp_test eval-file "$root/tests/integration/pro-report-unmatched-credits.php"
 wp_test eval-file "$root/tests/integration/pro-report-exception-aging.php"
 wp_test option update woocommerce_custom_orders_table_enabled no
