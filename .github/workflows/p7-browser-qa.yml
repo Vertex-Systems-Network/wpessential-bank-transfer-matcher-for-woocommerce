@@ -7,6 +7,7 @@ on:
       - development/p7-navigation-role-gates-20261120
       - development/p8-threat-model-access-matrix-20261120
       - development/p9-release-candidate-docs-20261121
+      - development/p9-t003-source-browser-screenshots-20261121
   workflow_dispatch:
 
 permissions:
@@ -161,6 +162,21 @@ jobs:
         run: node tests/browser/p7-usability.mjs
       - name: Verify synthetic BACS orders remain unpaid and guest claim unsubmitted
         run: wp eval-file "$GITHUB_WORKSPACE/tests/browser/p7-usability-integrity.php" --path="$P7_BROWSER_WP_PATH"
+      - name: Prepare genuine Free/Pro release screenshots after browser and financial-state checks
+        run: |
+          python3 scripts/p9-release-screenshots.py \
+            --source "$P7_BROWSER_EVIDENCE_DIR" \
+            --output /tmp/p9-release-screenshots \
+            --source-sha "$GITHUB_SHA" \
+            --run-id "$GITHUB_RUN_ID"
+      - name: Upload source-backed release screenshot candidates
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-source-verified-release-screenshots
+          path: /tmp/p9-release-screenshots/
+          if-no-files-found: error
+          retention-days: 14
       - name: Upload real screenshot/report artifacts even if visual checks fail
         if: always()
         uses: actions/upload-artifact@v4
