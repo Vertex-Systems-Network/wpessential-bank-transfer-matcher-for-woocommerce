@@ -1,4 +1,6 @@
 === WPEssential Bank Transfer Matcher for WooCommerce ===
+Tags: woocommerce, bank transfer, payment reference, offline payments
+Requires Plugins: woocommerce
 Requires at least: 7.0
 Tested up to: 7.0
 Requires PHP: 8.3

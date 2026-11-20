@@ -28,5 +28,11 @@
   "author": "WPEssential",
   "wordpress_org_contributors": [],
   "tested_wp": "7.0",
-  "tested_wc": "11.3.0"
+  "tested_wc": "11.3.0",
+  "wordpress_org_tags": [
+    "woocommerce",
+    "bank transfer",
+    "payment reference",
+    "offline payments"
+  ]
 }
