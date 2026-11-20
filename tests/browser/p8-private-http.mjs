@@ -34,14 +34,23 @@ try {
   ]) {
     const response = await anon.goto(base + path, { waitUntil: 'domcontentloaded' });
     const status = response?.status() ?? 0;
+    const contentType = (response?.headers()['content-type'] ?? '').toLowerCase();
     const body = await anon.locator('body').innerText().catch(() => '');
-    if (status === 200 || body.includes('SYNTHETIC-CREDIT') ||
-        body.includes('CI-P7-001')) {
+    const kind = path.includes('admin-post') ? 'private_receipt' : 'private_statement';
+    // The disposable WordPress router sometimes returns a generic HTML
+    // theme/onboarding page with HTTP 200 for nonexistent wp-content URLs.
+    // A 200 HTML fallback is not a private CSV leak. Verify *actual bytes*
+    // and MIME type; never accept a CSV/XML/octet-stream response.
+    const privateBytesExposed = body.includes('SYNTHETIC-CREDIT') ||
+      body.includes('CI-P7-001') ||
+      (kind === 'private_statement' && /text\\/csv|application\\/(?:octet-stream|xml)/.test(contentType)) ||
+      (kind === 'private_receipt' && status === 200);
+    if (privateBytesExposed) {
       report.issues.push({ type: 'anonymous_public_file', status,
-        path_kind: path.includes('admin-post') ? 'private_receipt' : 'private_statement' });
+        path_kind: kind, content_type: contentType });
     }
-    report.probes.push({ actor: 'guest', path_kind:
-      path.includes('admin-post') ? 'private_receipt' : 'private_statement', status });
+    report.probes.push({ actor: 'guest', path_kind: kind, status,
+      generic_html_fallback: status === 200 && contentType.includes('text/html') });
   }
   await publicContext.close();
 
