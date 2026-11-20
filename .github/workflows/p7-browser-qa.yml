@@ -74,6 +74,9 @@ jobs:
             --activate --path="$site"
           wp plugin install "$GITHUB_WORKSPACE/dist/wpessential-bank-transfer-matcher-pro.zip" \
             --activate --path="$site"
+          # WooCommerce installs a new store in Coming Soon mode; make only
+          # this disposable localhost fixture public for genuine guest checkout QA.
+          wp option update woocommerce_coming_soon no --path="$site"
           wp option update woocommerce_custom_orders_table_enabled no --path="$site"
           wp option update woocommerce_custom_orders_table_data_sync_enabled no --path="$site"
           wp option update woocommerce_bacs_settings \
