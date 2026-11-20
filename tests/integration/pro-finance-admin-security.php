@@ -17,6 +17,11 @@ foreach ( [
 	}
 }
 if ( false === has_action( 'admin_post_wbm_pro_export_report' ) ||
+	false === has_action( 'admin_post_wbm_pro_schedule_report_export' ) ||
+	false === has_action( 'admin_post_wbm_pro_download_queued_export' ) ||
+	false === has_action( 'admin_post_wbm_pro_cancel_queued_export' ) ||
+	false !== has_action( 'admin_post_nopriv_wbm_pro_export_report' ) ||
+	false !== has_action( 'admin_post_nopriv_wbm_pro_schedule_report_export' ) ||
 	false === has_action( 'admin_menu', [ ReportExportsPage::class, 'menu' ] ) ) {
 	throw new RuntimeException( 'Finance CSV export must be a registered authenticated admin POST only.' );
 }
@@ -44,6 +49,7 @@ try {
 	ReportExportsPage::render();
 	$html = ob_get_clean();
 	if ( ! str_contains( $html, 'name="action" value="wbm_pro_export_report"' ) ||
+		! str_contains( $html, 'name="action" value="wbm_pro_schedule_report_export"' ) ||
 		! str_contains( $html, 'name="_wpnonce"' ) ||
 		! str_contains( $html, 'name="report"' ) ||
 		! str_contains( $html, 'name="before_id"' ) ||
@@ -99,6 +105,23 @@ try {
 		} catch ( RuntimeException $expected ) {
 			if ( 'Finance nonce rejected before business operation.' !== $expected->getMessage() ) {
 				throw $expected;
+			}
+		}
+		foreach ( [
+			'wbm_pro_schedule_report_export' => 'schedule',
+			'wbm_pro_download_queued_export' => 'download_queued',
+			'wbm_pro_cancel_queued_export' => 'cancel_queued',
+		] as $action => $method ) {
+			$_POST = [ 'action' => $action, '_wpnonce' => 'invalid-finance-nonce',
+				'job_id' => '1', 'report' => 'import_batches',
+				'from' => gmdate( 'Y-m-d' ), 'to' => gmdate( 'Y-m-d' ) ];
+			try {
+				ReportExportsPage::$method();
+				throw new RuntimeException( 'Invalid nonce executed queued export action.' );
+			} catch ( RuntimeException $expected ) {
+				if ( 'Finance nonce rejected before business operation.' !== $expected->getMessage() ) {
+					throw $expected;
+				}
 			}
 		}
 	} finally {
