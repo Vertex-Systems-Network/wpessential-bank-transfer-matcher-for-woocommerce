@@ -10,5 +10,5 @@
   "verification": "VERIFY-P9-T001",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "FIRST verify final P8 T009 task/evidence HEAD succeeds on ALL 12 configured exact-head GitHub checks and PR #15 has no unresolved reviews/protection conflicts; then mark ready and merge verified P8 phase PR into main with expected SHA per owner-authorized .ai/phase-merge-policy.md. Verify main commit/merged status. Create dedicated P9 release engineering branch and only then start true P9-T001: canonically generate WordPress.org readme.txt and separate Free/Pro READMEs, run docs drift/readme validator on actual source; record exact-head CI. No plugin publication."
+  "next_action": "Implement source-driven Free WordPress.org readme and separate Free/Pro READMEs under P9, enforce offline WordPress readme grammar, verified feature-only copy, tested version/header/stable-tag alignment and docs drift via real CI. Record independent official online validator only if actually accessible, and do not fabricate contributor usernames, screenshots or release authorization. Then accept P9-T001 at exact-head CI."
 }

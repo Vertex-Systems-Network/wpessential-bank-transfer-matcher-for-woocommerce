@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - development/p8-threat-model-access-matrix-20261120
+      - development/p9-release-candidate-docs-20261121
   workflow_dispatch:
 
 permissions:

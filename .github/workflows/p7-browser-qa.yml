@@ -6,6 +6,7 @@ on:
       - development/p7-ui-ux-schemas-20261120
       - development/p7-navigation-role-gates-20261120
       - development/p8-threat-model-access-matrix-20261120
+      - development/p9-release-candidate-docs-20261121
   workflow_dispatch:
 
 permissions:
