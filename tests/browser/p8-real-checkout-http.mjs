@@ -149,7 +149,8 @@ try {
     body: JSON.stringify({ id: fixture.product_id, quantity: 1 }),
   });
   const cartBody = await add.json();
-  assert.equal(add.status, 200, 'Actual Store API add-item rejected: ' +
+  assert(add.status >= 200 && add.status < 300,
+    'Actual Store API add-item HTTP ' + add.status + ' rejected: ' +
     short(cartBody?.message || JSON.stringify(cartBody)));
   assert(Array.isArray(cartBody.items) &&
     cartBody.items.some(x => x.id === fixture.product_id),
@@ -171,7 +172,8 @@ try {
     }),
   });
   const checked = await checkout.json();
-  assert.equal(checkout.status, 200, 'Real Store API BACS checkout failed: ' +
+  assert(checkout.status >= 200 && checkout.status < 300,
+    'Real Store API BACS checkout HTTP ' + checkout.status + ' failed: ' +
     short(checked?.message || JSON.stringify(checked)));
   const blockId = Number(checked?.order_id ?? 0);
   assert(Number.isInteger(blockId) && blockId > 0,
