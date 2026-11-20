@@ -199,7 +199,11 @@ final class AsyncReportExportJob {
 			$this->release_lock( $lock );
 		}
 		if ( $next ) {
-			$id = as_enqueue_async_action( self::HOOK, [ $job_id ], self::GROUP, true );
+			// The currently-running/pending action is still visible to Action
+			// Scheduler when chaining another page. Unique=true can return 0,
+			// preventing continuation. Per-job DB lock + monotonic cursor
+			// make extra deliveries safe and idempotent.
+			$id = as_enqueue_async_action( self::HOOK, [ $job_id ], self::GROUP, false );
 			if ( ! is_int( $id ) || $id < 1 ) {
 				$this->fail_row( $job_id );
 				throw new RuntimeException( 'Could not queue the next export page.' );
