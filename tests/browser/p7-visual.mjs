@@ -103,6 +103,48 @@ try {
           !observed.styles.some(s => s.includes('wpessential-bank-transfer-matcher/assets/admin.css'))) {
           throw new Error('Real native Free stylesheet not enqueued on actual WC screen');
         }
+        // Real visual layout assertions: the mobile finance filters must not
+        // overlap or truncate their actual controls in LTR or Arabic RTL.
+        // These are DOM geometry assertions on genuine WP-rendered pages,
+        // not assumptions about a simulated screenshot.
+        if (size.width === 375 && ['pro-review-queue','pro-bank-transactions',
+          'pro-finance-allocations'].includes(spec.key)) {
+          const geometry = await page.evaluate(() => {
+            const form = document.querySelector('form.wbm-pro-toolbar');
+            const region = document.querySelector('.wbm-pro-table-scroll');
+            const hint = document.querySelector('.wbm-pro-scroll-hint');
+            if (!form || !region || !hint) return { missing: true };
+            const bounds = form.getBoundingClientRect();
+            const labels = [...form.querySelectorAll(':scope > label.wbm-pro-field')];
+            const submit = form.querySelector(':scope > .submit');
+            const control = submit?.querySelector('input[type="submit"],button');
+            const boxes = labels.map(n => n.getBoundingClientRect());
+            return {
+              missing: false, fields: labels.length,
+              narrowFields: boxes.filter(box => box.width < bounds.width * 0.8).length,
+              outside: boxes.some(box => box.left < bounds.left - 1 || box.right > bounds.right + 1),
+              overlapping: boxes.some((box, i) => i && box.top < boxes[i - 1].bottom - 1),
+              buttonBelow: !!(control && boxes.length &&
+                control.getBoundingClientRect().top > boxes[boxes.length - 1].bottom - 2),
+              tooWideButton: !!(control &&
+                control.getBoundingClientRect().width > bounds.width + 1),
+              scrollable: region.scrollWidth > region.clientWidth + 10,
+              overflow: getComputedStyle(region).overflowX,
+              hintVisible: hint.getBoundingClientRect().height > 0,
+              hintText: (hint.innerText || '').trim().length,
+            };
+          });
+          if (geometry.missing || geometry.fields < 2 ||
+              geometry.narrowFields || geometry.outside ||
+              geometry.overlapping || !geometry.buttonBelow ||
+              geometry.tooWideButton || !geometry.scrollable ||
+              geometry.overflow !== 'auto' ||
+              !geometry.hintVisible || geometry.hintText < 25) {
+            throw new Error('Mobile financial filters/scroll guidance not accessible: ' +
+              JSON.stringify(geometry));
+          }
+          entry.native_filter_geometry = 'passed';
+        }
         if (size.width === 375 && observed.regions > 0) {
           const region = page.locator('[role="region"][tabindex="0"]').first();
           await region.focus();

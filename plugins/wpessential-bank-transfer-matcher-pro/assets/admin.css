@@ -327,3 +327,48 @@ body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-pagination:empty {
     border-inline-start-width: 3px;
   }
 }
+
+
+/* P7-T005: visual audit of actual LTR/Arabic WP screenshots at 375px.
+ * Keep the complete audit table scrollable with discoverable text guidance.
+ * Do not visually reorder finance form controls in a direction-dependent way. */
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-scroll-hint {
+  margin-block: 0.7rem 0.35rem;
+  max-inline-size: 75ch;
+  line-height: 1.45;
+  color: #50575e;
+  overflow-wrap: anywhere;
+}
+body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-table-scroll {
+  scrollbar-gutter: stable;
+}
+@media (max-width: 782px) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro-field {
+    flex: 1 0 100%;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+  }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .wbm-pro-field :is(input,select) {
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    box-sizing: border-box;
+  }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .submit {
+    flex: 1 0 100%;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    align-self: stretch;
+  }
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-toolbar > .submit :is(button,input[type="submit"]) {
+    inline-size: 100%;
+    min-block-size: 40px;
+  }
+}
+@media (forced-colors: active) {
+  body[class*="woocommerce_page_wpessential-wbm-pro-"] .wbm-pro-scroll-hint {
+    color: CanvasText;
+  }
+}
