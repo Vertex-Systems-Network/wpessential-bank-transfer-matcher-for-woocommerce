@@ -75,7 +75,9 @@ final class AllocationReviewPage {
 		if ( '' !== $status ) { $filters[] = 'state = %s'; $params[] = $status; }
 		if ( $order_id > 0 ) { $filters[] = 'order_id = %d'; $params[] = $order_id; }
 		$where = $filters ? ' WHERE ' . implode( ' AND ', $filters ) : '';
-		$params[] = $limit;
+		// Fetch one extra bounded row to avoid a phantom Next link on an
+		// exact-full final page. Never display the lookahead financial row.
+		$params[] = $limit + 1;
 		$params[] = ( $page - 1 ) * $limit;
 		$rows = $db->get_results( $db->prepare(
 			"SELECT id, order_id, transaction_row_id, bank_account_id, amount_minor, credit_minor,
@@ -85,23 +87,25 @@ final class AllocationReviewPage {
 		), ARRAY_A );
 		self::check( $db );
 		if ( ! is_array( $rows ) ) throw new RuntimeException( 'Financial allocation list missing.' );
+		$has_more = count( $rows ) > $limit;
+		if ( $has_more ) array_pop( $rows );
 		echo '<form class="wbm-pro-toolbar" method="get" role="search" aria-label="' . esc_attr__( 'Filter finance allocations', self::DOMAIN ) . '"><input type="hidden" name="page" value="' . esc_attr( self::SLUG ) . '">';
-		echo '<label for="wbm-allocation-status">' . esc_html__( 'Allocation state', self::DOMAIN ) . '</label> ';
+		echo '<label class="wbm-pro-field" for="wbm-allocation-status"><span>' . esc_html__( 'Allocation state', self::DOMAIN ) . '</span>';
 		echo '<select id="wbm-allocation-status" name="state"><option value="">' .
 			esc_html__( 'All allocation states', self::DOMAIN ) . '</option>';
 		foreach ( [ 'proposed', 'approved', 'committed', 'reversed' ] as $option ) {
 			printf( '<option value="%s"%s>%s</option>',
 				esc_attr( $option ), selected( $status, $option, false ), esc_html( $option ) );
 		}
-		echo '</select> <label for="wbm-allocation-order">' .
-			esc_html__( 'Order ID', self::DOMAIN ) . '</label> ';
+		echo '</select></label> <label class="wbm-pro-field" for="wbm-allocation-order"><span>' .
+			esc_html__( 'Order ID', self::DOMAIN ) . '</span>';
 		echo '<input id="wbm-allocation-order" type="number" min="1" name="order_id" value="' .
-			esc_attr( $order_id ?: '' ) . '" style="width:110px"> ';
-		echo '<label for="wbm-allocation-page-size">' . esc_html__( 'Rows per page', self::DOMAIN ) . '</label> <select id="wbm-allocation-page-size" name="per_page">';
+			esc_attr( $order_id ?: '' ) . '"></label> ';
+		echo '<label class="wbm-pro-field" for="wbm-allocation-page-size"><span>' . esc_html__( 'Rows per page', self::DOMAIN ) . '</span><select id="wbm-allocation-page-size" name="per_page">';
 		foreach ( [ 20, 50 ] as $size ) {
 			printf( '<option value="%d"%s>%d</option>', $size, selected( $limit, $size, false ), $size );
 		}
-		echo '</select> ';
+		echo '</select></label> ';
 		submit_button( __( 'Filter allocations', self::DOMAIN ), 'secondary', '', false );
 		echo '</form>';
 		echo '<details data-wbm-finance-dialog style="background:#fff;border:1px solid #c3c4c7;padding:12px 16px;margin:16px 0"><summary><strong>' .
@@ -122,6 +126,9 @@ final class AllocationReviewPage {
 		echo '</form></details>';
 		if ( ! $rows ) {
 			echo '<p role="status" class="wbm-pro-empty">' . esc_html__( 'No allocations match these filters.', self::DOMAIN ) . '</p>';
+			if ( $page > 1 ) {
+				echo '<p><a class="button" href="' . esc_url( self::queue_url( $status, $order_id, $page - 1, $limit ) ) . '">' . esc_html__( 'Previous source page', self::DOMAIN ) . '</a></p>';
+			}
 			return;
 		}
 		// Totals are page-scoped and segregated by currency, precision and
@@ -173,7 +180,7 @@ final class AllocationReviewPage {
 		if ( $page > 1 ) echo '<a class="button" href="' .
 			esc_url( self::queue_url( $status, $order_id, $page - 1, $limit ) ) . '">' .
 			esc_html__( 'Previous', self::DOMAIN ) . '</a> ';
-		if ( count( $rows ) === $limit ) echo '<a class="button" href="' .
+		if ( $has_more ) echo '<a class="button" href="' .
 			esc_url( self::queue_url( $status, $order_id, $page + 1, $limit ) ) . '">' .
 			esc_html__( 'Next', self::DOMAIN ) . '</a>';
 		echo '</nav>';
