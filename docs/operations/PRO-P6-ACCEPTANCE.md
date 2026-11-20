@@ -12,7 +12,7 @@ This checklist is intentionally more conservative than successful source compila
 
 - [ ] Six finance CSV allowlists, raw bank/customer data redaction and formula injection defenses pass; immediate 500-row/1MiB/3-per-minute limitations enforced.
 - [ ] Queued 100-row/page and 10-page/1,000-row/5MiB bounds, private DB storage, 2 live jobs/user, 3 starts/minute, 2-hour expiry, job ownership, nonce and audited download rate; no partial CSV leaks.
-- [ ] Redacted support CSV <escape><=</escape>60 records/128KiB and only safe source/status/age/count columns; 3/hour audit; no IDs, source paths, customer emails, bank references, passwords, original bank source data.
+- [ ] Redacted support CSV ≤60 records/128KiB and only safe source/status/age/count columns; 3/hour audit; no IDs, source paths, customer emails, bank references, passwords, original bank source data.
 
 ## Notifications and recovery
 
