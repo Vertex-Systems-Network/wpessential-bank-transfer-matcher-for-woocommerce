@@ -42,9 +42,9 @@ final class BankTransactionsPage {
 			echo '<p role="status" class="wbm-pro-empty">' . esc_html__( 'No imported bank transactions are available.', 'wpessential-bank-transfer-matcher-pro' ) . ' <a class="button button-primary" href="' . esc_url( add_query_arg( 'page', 'wpessential-wbm-pro-import-statements', admin_url( 'admin.php' ) ) ) . '">' . esc_html__( 'Import statement', 'wpessential-bank-transfer-matcher-pro' ) . '</a></p></div>';
 			return;
 		}
-		echo '<form class="wbm-pro-toolbar" method="get" role="search" aria-label="' . esc_attr__( 'Imported transaction filters', 'wpessential-bank-transfer-matcher-pro' ) . '"><input type="hidden" name="page" value="' . esc_attr( self::SLUG ) . '"><label for="wbm-batch"><strong>' . esc_html__( 'Source batch', 'wpessential-bank-transfer-matcher-pro' ) . '</strong></label> <select id="wbm-batch" name="batch">';
+		echo '<form class="wbm-pro-toolbar" method="get" role="search" aria-label="' . esc_attr__( 'Imported transaction filters', 'wpessential-bank-transfer-matcher-pro' ) . '"><input type="hidden" name="page" value="' . esc_attr( self::SLUG ) . '"><label class="wbm-pro-field" for="wbm-batch"><span>' . esc_html__( 'Source batch', 'wpessential-bank-transfer-matcher-pro' ) . '</span><select id="wbm-batch" name="batch">';
 		foreach ( $history as $batch ) printf( '<option value="%d"%s>#%d — %s — %s</option>', (int) $batch['id'], selected( $batch_id, (int) $batch['id'], false ), (int) $batch['id'], esc_html( $batch['currency'] ), esc_html( $batch['status'] ) );
-		echo '</select> <label class="wbm-pro-field" for="wbm-bank-page-size"><span>' . esc_html__( 'Rows per page', 'wpessential-bank-transfer-matcher-pro' ) . '</span><select id="wbm-bank-page-size" name="per_page">';
+		echo '</select></label> <label class="wbm-pro-field" for="wbm-bank-page-size"><span>' . esc_html__( 'Rows per page', 'wpessential-bank-transfer-matcher-pro' ) . '</span><select id="wbm-bank-page-size" name="per_page">';
 		foreach ( array( 20, 50, 100 ) as $size ) printf( '<option value="%d"%s>%d</option>', $size, selected( $limit, $size, false ), $size );
 		echo '</select></label> '; submit_button( __( 'Apply', 'wpessential-bank-transfer-matcher-pro' ), 'secondary', '', false ); echo '</form>';
 		if ( ! $rows ) {
@@ -53,6 +53,7 @@ final class BankTransactionsPage {
 			echo '</div>';
 			return;
 		}
+		echo '<p class="description wbm-pro-scroll-hint">' . esc_html__( 'Scroll the table sideways to view all imported evidence columns. Amounts and references remain unverified.', 'wpessential-bank-transfer-matcher-pro' ) . '</p>';
 		echo '<div class="wbm-pro-table-scroll" tabindex="0" role="region" aria-label="' . esc_attr__( 'Imported statement rows', 'wpessential-bank-transfer-matcher-pro' ) . '"><table class="wp-list-table widefat fixed striped"><thead><tr><th scope="col">' . esc_html__( 'Source row', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Date', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Debit / credit', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Amount', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Reference', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Bank ID', 'wpessential-bank-transfer-matcher-pro' ) . '</th><th>' . esc_html__( 'Parse state', 'wpessential-bank-transfer-matcher-pro' ) . '</th></tr></thead><tbody>';
 		foreach ( $rows as $row ) {
 			$data = is_string( $row['canonical_json'] ?? null ) ? json_decode( $row['canonical_json'], true ) : null;
