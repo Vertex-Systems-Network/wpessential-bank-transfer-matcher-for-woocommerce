@@ -1,6 +1,6 @@
 # ADR-0015 — Opt-in finance notifications (P6-T004)
 
-Status: implemented on Phase P6 branch; exact-head CI verification pending.
+Status: implemented and verified at code SHA `6318c3e` in full CI 44656913883 and 44656906701.
 
 ## User impact and consent
 
@@ -20,6 +20,6 @@ All delivery attempts use a per-recipient MySQL named lock. A successful first D
 
 ## Verification and remaining QA
 
-Foundation fixture `tests/finance-notification-templates.php` validates all four safe plain-text templates, normalization, preview label, dangerous URL/control rejection and finite options. Disposable native fixture `tests/integration/pro-finance-notifications.php` intercepts `pre_wp_mail` in-process (no real external emails), verifies default-off, opt-in, preview no-send, explicit tests, source-backed pending and aged review digests, 2/day and type deduplication, unexpected recipients and nonce denial, opt-out and append-only audit. Admin security fixture validates nonce forms and nopriv route absence. Exact current-SHA full CI (PHP/static/unit, native WooCommerce/MariaDB, Playground) is mandatory before P6-T004 can be marked done.
+Foundation fixture `tests/finance-notification-templates.php` validates all four safe plain-text templates, normalization, preview label, dangerous URL/control rejection and finite options. Disposable native fixture `tests/integration/pro-finance-notifications.php` intercepts `pre_wp_mail` in-process (no real external emails), verifies default-off, opt-in, preview no-send, explicit tests, source-backed pending and aged review digests, 2/day and type deduplication, unexpected recipients and nonce denial, opt-out and append-only audit. Admin security fixture validates nonce forms and nopriv route absence. Full exact-source CI **verified at `6318c3e`**: runs 44656913883 and 44656906701 passed PHP/static/unit, WordPress/WooCommerce/MariaDB and packaged Playground. Email send tests use intercept; no real messages sent. Later P6 tasks still require their own latest-SHA checks.
 
 Follow-on Phase P6-T006 will cover redacted operational diagnostics and failed-delivery recovery; P6-T007 retention/privacy; P6-T008 full operational admin docs. Phase P6 and PR #12 cannot be merged until T001–T008 and the complete report-export/no-oversend safety gate pass, per `.ai/phase-merge-policy.md`.

@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P6-T004",
+  "id": "WBM-P6-T005",
   "phase": "P6",
-  "title": "notification templates, previews, rate limits and correct recipient controls.",
+  "title": "Pro dashboard KPIs, Saved Views if included, advanced filtering.",
   "owner": "Pro engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
   "depends_on": [
-    "WBM-P6-T003"
+    "WBM-P6-T004"
   ],
-  "verification": "VERIFY-P6-T004",
+  "verification": "VERIFY-P6-T005",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Implement opt-in exception/review-digest notifications with previewable safe templates, explicitly configured finance-role recipients, independent per-recipient rate limits, scheduler safety and native synthetic tests; never send test emails automatically."
+  "next_action": "Build source-backed finance dashboard KPIs with exact currency/amount minor-unit representation, page-scope labels, bounded status and bank filters, native WordPress admin UI, tests in classic and HPOS without mutating payments."
 }

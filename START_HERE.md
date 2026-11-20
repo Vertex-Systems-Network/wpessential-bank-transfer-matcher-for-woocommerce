@@ -5,7 +5,7 @@ Build independent Free and Pro WooCommerce plugins for local bank transfer recon
 ## Current checkpoint — 2026-11-20
 
 Phase branch: `development/p6-reports-operations-20261120` (base `main`, carrying merged PR #10/#11 fixes).  
-Phase: **P6 — Reports, Notifications, Operations**. Tasks P6-T002–T003 are verified via GitHub Actions 44647473663 and 44653642849. Active task is P6-T004 (opt-in notifications, safe templates, role recipients and rate limits). Read `.ai/state.json` and `.ai/next-task.json` for the *live* task after every commit.
+Phase: **P6 — Reports, Notifications, Operations**. Tasks P6-T002–T003 are verified via GitHub Actions 44647473663 and 44653642849. P6-T004 also verified at exact SHA 6318c3e by full GitHub Actions 44656913883 and 44656906701. Active task is P6-T005 — source-backed admin finance dashboard. Read `.ai/state.json` and `.ai/next-task.json` for the *live* task after every commit.
 
 **Owner-authorized phase merges:** Follow [`.ai/phase-merge-policy.md`](.ai/phase-merge-policy.md). Once **all** tasks and safety acceptance criteria of a phase pass against the exact current PR head SHA, merge that phase PR to `main` automatically without routine re-approval while the execution runner is active. Do not merge incomplete phases or bypass failing tests/branch protection. The authorization does not cover marketplace publication, release distribution, bank transfers, refunds or production deployment.
 

@@ -882,8 +882,8 @@
       "WBM-P6-T003"
     ],
     "verification": "VERIFY-P6-T004",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Exact dev HEAD 6318c3e0a825b2bd9672ebaadea6636e69a51cc6 full GitHub Actions 44656913883 and 44656906701 SUCCESS. Native disposable WooCommerce/MariaDB and Playground/Fundamental PHP/static/unit passed. Four fixed privacy-safe plain text digest templates, local previews without sending, default disabled, manager-only nonce-protected opt-in and test, selected live finance role users only, source-backed unresolved events, per-user 2 in rolling 24h and same-type once/day DB-locked reserved-before-send audit, opted-out no scheduler, no account/transaction/customer leakage. Native tests intercept pre_wp_mail so ZERO real messages.",
     "next_action": "Implement opt-in exception/review-digest notifications with previewable safe templates, explicitly configured finance-role recipients, independent per-recipient rate limits, scheduler safety and native synthetic tests; never send test emails automatically."
   },
   {
@@ -896,8 +896,9 @@
       "WBM-P6-T004"
     ],
     "verification": "VERIFY-P6-T005",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Build source-backed finance dashboard KPIs with exact currency/amount minor-unit representation, page-scope labels, bounded status and bank filters, native WordPress admin UI, tests in classic and HPOS without mutating payments."
   },
   {
     "id": "WBM-P6-T006",
