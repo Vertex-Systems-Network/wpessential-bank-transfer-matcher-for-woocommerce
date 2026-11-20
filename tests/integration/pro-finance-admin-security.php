@@ -1,6 +1,7 @@
 <?php
 use WPEssential\BankTransferMatcherPro\Admin\AllocationAdminActions;
 use WPEssential\BankTransferMatcherPro\Admin\AllocationReviewPage;
+use WPEssential\BankTransferMatcherPro\Admin\ReportExportsPage;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
 	throw new RuntimeException( 'Use disposable wbm_ci for finance admin security tests only.' );
@@ -14,6 +15,10 @@ foreach ( [
 	if ( false === has_action( 'admin_post_' . $action ) ) {
 		throw new RuntimeException( 'Missing explicit WordPress finance action: ' . $action );
 	}
+}
+if ( false === has_action( 'admin_post_wbm_pro_export_report' ) ||
+	false === has_action( 'admin_menu', [ ReportExportsPage::class, 'menu' ] ) ) {
+	throw new RuntimeException( 'Finance CSV export must be a registered authenticated admin POST only.' );
 }
 if ( false === has_action( 'admin_menu', [ AllocationReviewPage::class, 'menu' ] ) ) {
 	throw new RuntimeException( 'Finance review queue was not registered as WordPress menu.' );
@@ -35,6 +40,16 @@ try {
 		if ( str_contains( $expected->getMessage(), 'Anonymous actor invoked' ) ) throw $expected;
 	}
 	wp_set_current_user( $admin->ID );
+	ob_start();
+	ReportExportsPage::render();
+	$html = ob_get_clean();
+	if ( ! str_contains( $html, 'name="action" value="wbm_pro_export_report"' ) ||
+		! str_contains( $html, 'name="_wpnonce"' ) ||
+		! str_contains( $html, 'name="report"' ) ||
+		! str_contains( $html, 'name="before_id"' ) ||
+		str_contains( $html, 'bank_account_number' ) ) {
+		throw new RuntimeException( 'Native finance export UI lost guarded form fields or leaked account data.' );
+	}
 	foreach ( [ '0', '1.5', '99999999999999999999999999999' ] as $invalid_id ) {
 		try {
 			AllocationAdminActions::process_proposal( array_replace( $unauth, [ 'order_id' => $invalid_id ] ) );
@@ -73,10 +88,23 @@ try {
 				throw $expected;
 			}
 		}
+		$_POST = [
+			'action' => 'wbm_pro_export_report', '_wpnonce' => 'invalid-finance-nonce',
+			'report' => 'import_batches', 'from' => gmdate( 'Y-m-d' ),
+			'to' => gmdate( 'Y-m-d' ),
+		];
+		try {
+			ReportExportsPage::download();
+			throw new RuntimeException( 'Invalid nonce returned a CSV download.' );
+		} catch ( RuntimeException $expected ) {
+			if ( 'Finance nonce rejected before business operation.' !== $expected->getMessage() ) {
+				throw $expected;
+			}
+		}
 	} finally {
 		remove_filter( 'wp_die_handler', $deny );
 	}
-	echo "PASS native finance admin action registry, anonymous denial, strict IDs, clearance checkbox and nonce rejection\n";
+	echo "PASS native finance admin/CSV POST registry, accessible export form, anonymous denial, strict IDs and nonce rejection\n";
 } finally {
 	wp_set_current_user( $previous_user );
 	$_POST = $old_post;
