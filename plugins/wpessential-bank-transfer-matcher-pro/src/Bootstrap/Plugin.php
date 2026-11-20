@@ -18,6 +18,7 @@ use WPEssential\BankTransferMatcherPro\Admin\AllocationAdminActions;
 use WPEssential\BankTransferMatcherPro\Admin\ReportExportsPage;
 use WPEssential\BankTransferMatcherPro\Api\ReviewCaseController;
 use WPEssential\BankTransferMatcherPro\Import\ImportJob;
+use WPEssential\BankTransferMatcherPro\Reporting\AsyncReportExportJob;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -34,6 +35,7 @@ final class Plugin {
 		ReportExportsPage::register();
 		ReviewCaseController::register();
 		ImportJob::register();
+		AsyncReportExportJob::register();
 		do_action( 'wpessential_bank_transfer_matcher_pro_ready' );
 	}
 }
