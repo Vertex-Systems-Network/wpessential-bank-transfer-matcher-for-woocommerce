@@ -101,7 +101,8 @@
     "p7_real_route_audit": "passed: exact source SHA 8c71ca4fe5c5f1089012eacd0ebad558adc14e85; full GitHub Actions 44671126063 and 44671120192 SUCCESS. Pure 14 UI / 24 WP admin / 10 REST / 15 forms 87 fields; native WP/WC registered route+field method/capability, only valid guest claim public, all anonymous registered permission callbacks reject, no finance POST dispatched.",
     "p7_real_browser": "passed exact source SHA 483a7e49caf80067361ae6a2619a0a8215213cb9 browser Actions 44672577045 SUCCESS with artifact 14600897788: LTR 54, Arabic RTL 54, forced colors 3 =111 PNGs; 14 IDs at 1440/1024/375, 0 issues both JSON reports, 16 mobile focus checks, RTL direction rtl. Two Foundation/native/Playground runs 44672584525 and 44672576959 SUCCESS.",
     "p7_mobile_visual_pagination": "passed: exact SHA 27e2c46bf7e26e983a5b908fdab4a57f91c29c85 browser 44682670860 (115 true WordPress screenshot PNGs, 0 issues, 6 LTR/RTL 375px filter geometry and 4 genuine GET interactions) + full Foundation/Playground/native WooCommerce/MariaDB runs 44682670864 and 44682677458; before 111 image artifact 14601346876 / after 115 artifact 14605361910.",
-    "p7_navigation": "in_progress: six Pro composite-capability menu guards and native Free/no-Free/paired matrix committed; full exact-SHA CI, browser/RTL, T007/T008 not yet verified"
+    "p7_navigation": "passed at exact source SHA 3854e7acbbaf1b6958538233919412560fc14d39: Foundation/native/Playground GitHub Actions 44706953686 and 44706960483 both SUCCESS, real LTR/Arabic RTL Chromium 44706953731 SUCCESS, artifact 14614998226, 12 native menu routes, no-Free/Free-only/paired actor matrix, 0 browser issues.",
+    "p7_visual_rubric": "in_progress: actual artifact 14614998226 inspected; initial review-table screenshot after keyboard Tab showed last columns and clipped start; browser capture scroll reset fix at 0e105a591d49aeb6cf1e6ad695d900066f0ba92c needs exact-head CI/visual verification. Human screen-reader AA, Arabic plugin translations unverified."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -115,8 +116,8 @@
     "free_is_independent"
   ],
   "phase": "P7",
-  "active_task_id": "WBM-P7-T006",
-  "next_action": "Verify Free-only/Pro-enabled/Pro-without-Free native WooCommerce navigation, active menu state and role-gated links using actual WP menus; remove duplicate/stale destinations and ensure no feature-links to nonimplemented forms. Build disposable classic+HPOS WP/WC menu tests, native 1440/375 and RTL browser checks and exact latest-head full CI. Then T007 evidence rubric and T008 role usability. Keep P7 PR #13 draft/unmerged.",
+  "active_task_id": "WBM-P7-T007",
+  "next_action": "Complete visual QA rubric with actual LTR and Arabic RTL screenshot artifact 14614998226, inspecting 1440/1024/375 screen hierarchy, horizontal table initial scroll, status labels, keyboard and forced-colors; validate new browser scroll-reset capture in CI at updated SHA. Record before/after evidence and unresolved Arabic plugin translations/real screen-reader WCAG limitations. Then P7-T008 actual synthetic store-owner, finance operator and customer walkthrough.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -194,8 +195,9 @@
     "WBM-P7-T002",
     "WBM-P7-T003",
     "WBM-P7-T004",
-    "WBM-P7-T005"
+    "WBM-P7-T005",
+    "WBM-P7-T006"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "27e2c46bf7e26e983a5b908fdab4a57f91c29c85"
+  "last_verified_remote_milestone": "3854e7acbbaf1b6958538233919412560fc14d39"
 }

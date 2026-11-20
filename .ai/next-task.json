@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P7-T006",
+  "id": "WBM-P7-T007",
   "phase": "P7",
-  "title": "ensure Free/Pro integration works without duplicated/stale navigation.",
+  "title": "run visual QA rubric, log before/after evidence.",
   "owner": "UX and QA",
   "paths": "docs/ux/; plugins/",
   "depends_on": [
-    "WBM-P7-T005"
+    "WBM-P7-T006"
   ],
-  "verification": "VERIFY-P7-T006",
+  "verification": "VERIFY-P7-T007",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "P7 PR #13 merged while P7-T006 remained in progress. On development/p7-navigation-role-gates-20261120 verify actual Free-only/no-Free/paired WP/WC role navigation against exact-head CI; repair failures. Next capture real browser Arabic RTL/mobile/keyboard menu evidence, then T007 visual QA rubric and T008 role-based walkthrough. Preserve original tasks, keep issue #7 open, no premature P8 or release/merge."
+  "next_action": "Complete visual QA rubric with actual LTR and Arabic RTL screenshot artifact 14614998226, inspecting 1440/1024/375 screen hierarchy, horizontal table initial scroll, status labels, keyboard and forced-colors; validate new browser scroll-reset capture in CI at updated SHA. Record before/after evidence and unresolved Arabic plugin translations/real screen-reader WCAG limitations. Then P7-T008 actual synthetic store-owner, finance operator and customer walkthrough."
 }

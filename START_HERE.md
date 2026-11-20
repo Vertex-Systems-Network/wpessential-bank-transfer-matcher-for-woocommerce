@@ -2,9 +2,9 @@
 
 Build independent Free and Pro WooCommerce plugins for local bank transfer reconciliation. Resume from `.ai/state.json`, `.ai/next-task.json`, and `BACKLOG.md`; the master prompt's Section 23 defines completion.
 
-## Live correction checkpoint — 2026-11-20
+## Verified P7-T006 / active P7-T007 — 2026-11-20
 
-P7 PR #13 was **merged into main** at `772016945838faf60635b816c48343d23e355240`, but the task graph still has **P7-T006 active and T007/T008 planned**. A merged PR is not evidence that those checks passed. The current corrective branch is `development/p7-navigation-role-gates-20261120`; see [P7-T006 navigation role matrix](docs/ux/p7-t006-navigation-role-matrix.md) and `.ai/next-task.json`. Verify actual WordPress/MariaDB CI, browser navigation and role usability before advancing to P8. Do not mark the unfinished P7 tasks complete merely because the earlier phase PR was merged.
+Main `772016945838faf60635b816c48343d23e355240` merged P7 PR #13 while T006–T008 were incomplete. Corrective draft [PR #14](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/14) holds the actual role-gated menu repair. **P7-T006 now verified** at exact code SHA `3854e7ac`: two complete Foundation/native MariaDB/Playground GitHub Actions 44706953686/44706960483 SUCCESS plus actual LTR/Arabic RTL/mobile/keyboard browser 44706953731 SUCCESS, artifact 14614998226. The current dedicated branch is `development/p7-navigation-role-gates-20261120`. **P7-T007 active**: assess actual captured screenshots, repair first-column screenshot artifact caused by keyboard-focus-induced scroll, log visual rubric and before/after evidence; then synthetic-role P7-T008 usability. No premature P8/release or phase merge. Read `.ai/next-task.json` after every commit; Issue #7 remains open.
 
 ## Historical checkpoint — 2026-11-20
 

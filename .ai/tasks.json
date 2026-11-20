@@ -1022,8 +1022,8 @@
       "WBM-P7-T005"
     ],
     "verification": "VERIFY-P7-T006",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Verified exact source SHA 3854e7acbbaf1b6958538233919412560fc14d39: 6 Pro finance submenu menu() gates now match existing full render authorization (import+approve and, for manager-only, manage_accounts). Disposable native WordPress/WooCommerce/MariaDB role matrix tests PASS in Pro-without-Free, Free-only, paired viewer/importer/finance/manager modes; no duplicate, inaccessible or stale menu slugs. Both full Foundation/Playground/native Actions 44706953686 and 44706960483 SUCCESS. Real WordPress 7.0.8/WooCommerce 11.3.0 Chromium Actions 44706953731 SUCCESS, LTR 59 and Arabic RTL 56 source-backed screenshots plus four 1440/375 navigation screenshot artifacts, 12 genuine WC submenu destinations, keyboard Enter and WP mobile menu; both p7-navigation-*.json issues=0. Artifact 14614998226. No financial mutation. Original P7 PR #13 merged early, so correction tracked by draft PR #14; T007 visual rubric and T008 role walkthrough pending.",
     "next_action": "Verify Free-only/Pro-enabled/Pro-without-Free native WooCommerce navigation, active menu state and role-gated links using actual WP menus; remove duplicate/stale destinations and ensure no feature-links to nonimplemented forms. Build disposable classic+HPOS WP/WC menu tests, native 1440/375 and RTL browser checks and exact latest-head full CI. Then T007 evidence rubric and T008 role usability. Keep P7 PR #13 draft/unmerged."
   },
   {
@@ -1036,8 +1036,9 @@
       "WBM-P7-T006"
     ],
     "verification": "VERIFY-P7-T007",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Complete visual QA rubric with actual LTR and Arabic RTL screenshot artifact 14614998226, inspecting 1440/1024/375 screen hierarchy, horizontal table initial scroll, status labels, keyboard and forced-colors; validate new browser scroll-reset capture in CI at updated SHA. Record before/after evidence and unresolved Arabic plugin translations/real screen-reader WCAG limitations. Then P7-T008 actual synthetic store-owner, finance operator and customer walkthrough."
   },
   {
     "id": "WBM-P7-T008",
