@@ -81,8 +81,18 @@ jobs:
           assert [row['outcome'] for row in samples]==[
               'completed','completed','rejected_before_staging'
           ]
+          # Generous CI-only regression budgets; measured baseline on the
+          # initial GitHub-hosted runner was 0.55s / 5.13s / 0.023s,
+          # 133.81 MiB of PHP peak allocated memory, not process RSS.
+          budgets_ms={1000:12000,10000:60000,50000:5000}
           for s in samples:
               assert s['total_ms']>=0 and s['php_peak_mb']>0
+              assert s['total_ms']<=budgets_ms[s['rows']], (
+                  f"Slow import/rejection: {s['rows']} took {s['total_ms']}ms"
+              )
+              assert s['php_peak_mb']<=256, (
+                  f"Exceeded 256MiB PHP benchmark allocation: {s['php_peak_mb']}MiB"
+              )
               print(f"MEASURE P8 {s['rows']} rows: {s['outcome']}; "
                     f"total={s['total_ms']}ms; peak_php={s['php_peak_mb']}MiB; "
                     f"csv={s['csv_bytes']} bytes")
