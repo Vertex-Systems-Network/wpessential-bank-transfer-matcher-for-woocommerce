@@ -980,8 +980,8 @@
       "WBM-P7-T002"
     ],
     "verification": "VERIFY-P7-T003",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "P7 UI-001..014 PHP source + WordPress route/action/field manifest, 24 authenticated WP admin_post controls (only order-key/email/nonce-scoped guest claim), 10 exact registered REST routes with required typed fields and permission callbacks, 15 actual form groups/87 fields, real financial action/nonce safety. PHP Foundation/Playground and native WP/WC/MariaDB classic+HPOS full GitHub Actions 44671126063 and 44671120192 BOTH SUCCESS at exact source SHA 8c71ca4fe5c5f1089012eacd0ebad558adc14e85. Native logs PASS live WordPress 24 admin hooks... and all anonymous permission denials. No authorized money mutations by fixtures. Browser visual/screenshots still P7-T004.",
     "next_action": "Build and execute source-backed complete UI-001–UI-014 control-to-handler/method/capability/nonce/validation coverage and deny fake or unauthenticated actions; check actual native WP/WooCommerce Free/Pro menu hooks, public/private REST/admin routes, financial action invariants and report permissions in pure + native CI. Record unimplemented advanced filters without pretending actions exist. Only mark done after both full latest-code CI workflows pass."
   },
   {
@@ -994,8 +994,9 @@
       "WBM-P7-T003"
     ],
     "verification": "VERIFY-P7-T004",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Create real browser evidence (not PHP/CSS simulated screenshots) against disposable WordPress/WooCommerce Free+Pro with synthetic finance records; capture 1440/1024/375 real routes, keyboard focus, forced/high contrast and an actual RTL locale; attach machine-readable visual evidence and screenshot artifacts, inspect actual failures/clipping; only then mark T004 verified. Do not invent screenshots; if CI browser execution is unavailable, keep task blocked with precise evidence."
   },
   {
     "id": "WBM-P7-T005",

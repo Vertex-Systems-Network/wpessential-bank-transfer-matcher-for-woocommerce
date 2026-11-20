@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P7-T003",
+  "id": "WBM-P7-T004",
   "phase": "P7",
-  "title": "verify each field, action, permission and API route is real.",
+  "title": "screenshot 1440/1024/375, high-contrast/RTL/keyboard tests.",
   "owner": "UX and QA",
   "paths": "docs/ux/; plugins/",
   "depends_on": [
-    "WBM-P7-T002"
+    "WBM-P7-T003"
   ],
-  "verification": "VERIFY-P7-T003",
+  "verification": "VERIFY-P7-T004",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Build and execute source-backed complete UI-001–UI-014 control-to-handler/method/capability/nonce/validation coverage and deny fake or unauthenticated actions; check actual native WP/WooCommerce Free/Pro menu hooks, public/private REST/admin routes, financial action invariants and report permissions in pure + native CI. Record unimplemented advanced filters without pretending actions exist. Only mark done after both full latest-code CI workflows pass."
+  "next_action": "Create real browser evidence (not PHP/CSS simulated screenshots) against disposable WordPress/WooCommerce Free+Pro with synthetic finance records; capture 1440/1024/375 real routes, keyboard focus, forced/high contrast and an actual RTL locale; attach machine-readable visual evidence and screenshot artifacts, inspect actual failures/clipping; only then mark T004 verified. Do not invent screenshots; if CI browser execution is unavailable, keep task blocked with precise evidence."
 }

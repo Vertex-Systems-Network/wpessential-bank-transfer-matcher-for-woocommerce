@@ -1,6 +1,6 @@
 # P7-T003 — Real WordPress UI control/permission/REST audit
 
-Status: implementation and native CI gate pending verification. This is not browser screenshot or RTL evidence.
+Status: **P7-T003 verified at exact SHA `8c71ca4fe5c5f1089012eacd0ebad558adc14e85`** by full Foundation/Playground/native WooCommerce/MariaDB GitHub Actions **44671126063** and **44671120192**, both SUCCESS. This is **not** browser screenshot or RTL evidence.
 
 ## Screen/source map
 
@@ -54,7 +54,7 @@ Only `wpessential_wbm_submit_claim` is a public action, and it requires owner/or
 
 ## Real REST server routes
 
-Every route below must be registered by the WordPress REST server with a callable permission callback, expected request method and typed required fields. Anonymous synthetic route probes must return 401/403. No anonymous route may approve money.
+Every route below must be registered by the WordPress REST server with a callable permission callback, expected request method and typed required fields. Actual registered REST permission callbacks are invoked with anonymous user context and must explicitly return 401/403 errors; only read-only `/capabilities` GET is separately tested through full REST dispatch. No authorized POST finance or bank mutation is dispatched. No anonymous route may approve money.
 
 | UI | Route | Method | Required fields | Capability |
 | --- | --- | --- | --- | --- |

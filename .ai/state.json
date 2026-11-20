@@ -97,7 +97,8 @@
     "p6_phase_gate": "P6-T001–T008 all completed with exact intermediate source SHA CI. Final phase head after task/state update must pass BOTH full CI checks before phase merge. Branch protection may only be enforced by GitHub; no reviews currently submitted.",
     "p6_phase_merge": "verified main SHA 51c34bd75f3936bddfc86911c99722c834465e1a from fully green Phase PR #12, exact P6 head 2b50907 with GitHub Actions 44664553928+44664548348 SUCCESS.",
     "p7_screen_contracts": "passed: exact SHA a396837e4eee4b6e54062f22c58ec3cb3d217e62 both full runs 44665899783, 44665892900. 14 renderer maps, Free/Pro roles/nonce, source-backed states, missing features explicitly documented, PHP Foundation + Playground and native WooCommerce/MariaDB.",
-    "p7_native_ui": "passed: exact SHA d08802c9a009c0153365703983675caaa0eb9ad6, full runs 44668451481 and 44668445322 green; scoped WordPress Free/Pro native CSS, 11 Pro menu hooks, labeled real filters, keyboard-scrolling financial source tables, 13 mapping fields, native WordPress/WooCommerce/MariaDB/Playground."
+    "p7_native_ui": "passed: exact SHA d08802c9a009c0153365703983675caaa0eb9ad6, full runs 44668451481 and 44668445322 green; scoped WordPress Free/Pro native CSS, 11 Pro menu hooks, labeled real filters, keyboard-scrolling financial source tables, 13 mapping fields, native WordPress/WooCommerce/MariaDB/Playground.",
+    "p7_real_route_audit": "passed: exact source SHA 8c71ca4fe5c5f1089012eacd0ebad558adc14e85; full GitHub Actions 44671126063 and 44671120192 SUCCESS. Pure 14 UI / 24 WP admin / 10 REST / 15 forms 87 fields; native WP/WC registered route+field method/capability, only valid guest claim public, all anonymous registered permission callbacks reject, no finance POST dispatched."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -111,8 +112,8 @@
     "free_is_independent"
   ],
   "phase": "P7",
-  "active_task_id": "WBM-P7-T003",
-  "next_action": "Build and execute source-backed complete UI-001–UI-014 control-to-handler/method/capability/nonce/validation coverage and deny fake or unauthenticated actions; check actual native WP/WooCommerce Free/Pro menu hooks, public/private REST/admin routes, financial action invariants and report permissions in pure + native CI. Record unimplemented advanced filters without pretending actions exist. Only mark done after both full latest-code CI workflows pass.",
+  "active_task_id": "WBM-P7-T004",
+  "next_action": "Create real browser evidence (not PHP/CSS simulated screenshots) against disposable WordPress/WooCommerce Free+Pro with synthetic finance records; capture 1440/1024/375 real routes, keyboard focus, forced/high contrast and an actual RTL locale; attach machine-readable visual evidence and screenshot artifacts, inspect actual failures/clipping; only then mark T004 verified. Do not invent screenshots; if CI browser execution is unavailable, keep task blocked with precise evidence.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -187,8 +188,9 @@
     "WBM-P6-T007",
     "WBM-P6-T008",
     "WBM-P7-T001",
-    "WBM-P7-T002"
+    "WBM-P7-T002",
+    "WBM-P7-T003"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "d08802c9a009c0153365703983675caaa0eb9ad6"
+  "last_verified_remote_milestone": "8c71ca4fe5c5f1089012eacd0ebad558adc14e85"
 }
