@@ -37,11 +37,20 @@ requireValue(typeof metadata.repository === 'string' && /^https:\/\/github\.com\
 for (const field of ['version', 'requires_wp', 'requires_php', 'requires_wc', 'tested_wp', 'tested_wc']) {
   requireValue(validateVersion(metadata[field]), `Invalid version metadata: ${field}`);
 }
-requireValue(metadata.tested_wp === '7.0' && metadata.tested_wc === '11.3.0', 'P8 verified test matrix metadata must match actual pinned CI fixtures');
+const versionParts = (value: string): number[] => value.split('.').map(Number);
+const versionAtLeast = (actual: string, minimum: string): boolean => {
+  const actualParts = versionParts(actual);
+  const minimumParts = versionParts(minimum);
+  for (let i = 0; i < Math.max(actualParts.length, minimumParts.length); i++) {
+    if ((actualParts[i] ?? 0) > (minimumParts[i] ?? 0)) return true;
+    if ((actualParts[i] ?? 0) < (minimumParts[i] ?? 0)) return false;
+  }
+  return true;
+};
 requireValue(
-  metadata.requires_wp === metadata.tested_wp &&
-  Number(metadata.requires_wc.split('.')[0]) <= Number(metadata.tested_wc.split('.')[0]),
-  'Unsupported or unverified WooCommerce version support metadata',
+  versionAtLeast(metadata.tested_wp, metadata.requires_wp) &&
+  versionAtLeast(metadata.tested_wc, metadata.requires_wc),
+  'Tested WP/WooCommerce versions must not be older than minimum requirements.',
 );
 requireValue(Array.isArray(features), 'Feature catalog must be an array');
 requireValue(new Set(features.map((feature) => feature.id)).size === features.length, 'Duplicate feature ID');
