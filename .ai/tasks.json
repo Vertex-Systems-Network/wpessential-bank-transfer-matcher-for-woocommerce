@@ -896,8 +896,8 @@
       "WBM-P6-T004"
     ],
     "verification": "VERIFY-P6-T005",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Full GitHub Actions runs 44658437248 and 44658430001 SUCCESS at exact source SHA 93b1a3a97eb6d14d01bf66e9ec68358598b25894 (PHP/static/unit, packaged Playground + native WordPress/WooCommerce/MariaDB classic/HPOS). Native 21 USD + 1 EUR source batches, 20-row pagination and cursor, accurate page-only totals grouped by currency/exponent/state, appropriate unavailable-vs-zero, finance role gates, safe filters/admin UI. Saved Views intentionally excluded per ADR-0016; no unverified global bank balance or financial mutation.",
     "next_action": "Build source-backed finance dashboard KPIs with exact currency/amount minor-unit representation, page-scope labels, bounded status and bank filters, native WordPress admin UI, tests in classic and HPOS without mutating payments."
   },
   {
@@ -910,8 +910,9 @@
       "WBM-P6-T005"
     ],
     "verification": "VERIFY-P6-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Implement read-only, redacted, finance-manager-authorized diagnostics for import/export/mail job health plus verified bounded failed-job recovery. Add native classic/HPOS and PHP tests for authorization, corruption, retry/cancel, privacy and no financial changes. Do not restart failed jobs without source integrity proof."
   },
   {
     "id": "WBM-P6-T007",

@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P6-T005",
+  "id": "WBM-P6-T006",
   "phase": "P6",
-  "title": "Pro dashboard KPIs, Saved Views if included, advanced filtering.",
+  "title": "tools diagnostics, failed-job recovery, redacted diagnostics export.",
   "owner": "Pro engineering",
   "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
   "depends_on": [
-    "WBM-P6-T004"
+    "WBM-P6-T005"
   ],
-  "verification": "VERIFY-P6-T005",
+  "verification": "VERIFY-P6-T006",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Build source-backed finance dashboard KPIs with exact currency/amount minor-unit representation, page-scope labels, bounded status and bank filters, native WordPress admin UI, tests in classic and HPOS without mutating payments."
+  "next_action": "Implement read-only, redacted, finance-manager-authorized diagnostics for import/export/mail job health plus verified bounded failed-job recovery. Add native classic/HPOS and PHP tests for authorization, corruption, retry/cancel, privacy and no financial changes. Do not restart failed jobs without source integrity proof."
 }

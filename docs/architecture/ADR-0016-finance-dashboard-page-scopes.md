@@ -1,6 +1,6 @@
 # ADR-0016 — Bounded, source-backed Pro finance dashboard (WBM-P6-T005)
 
-Status: implemented on P6 draft branch, native classic/HPOS + Playground verification pending.
+Status: verified in native WooCommerce/MariaDB classic+HPOS, PHP/static/unit and Playground at exact SHA `93b1a3a`; full runs 44658437248 and 44658430001 SUCCESS.
 
 ## Decision and financial truthfulness
 
@@ -22,7 +22,7 @@ The browser presents UTC date filters (except imported bank credit `posted_date`
 ## Test gate
 
 - `tests/integration/pro-finance-dashboard.php` uses a disposable WooCommerce/MariaDB database and 21 synthetic USD + 1 synthetic EUR batches. It verifies exact first/next page counts, the keyset cursor, page totals separated by currency, unavailable versus empty source cards, bounded native admin rendering, anonymous denial and invalid input rejection.
-- The test runs via `scripts/test-native-install.sh` in the CI's classic and HPOS modes. All other foundation static, packaging and Playground checks must pass on the **exact current phase branch SHA** before marking P6-T005 `done`.
+- The test runs via `scripts/test-native-install.sh` in the CI's classic and HPOS modes. Full foundation/static, packaging and Playground checks **passed at exact source SHA `93b1a3a`** in GitHub Actions 44658437248 and 44658430001; this verifies P6-T005. Remaining P6 tasks need their own full current-head CI.
 - The phase gate still requires P6-T006 diagnostics/recovery, T007 retention/privacy/cleanup and T008 operational docs, plus no-oversend notifications. Owner-approved auto-merge happens only after all P6 tasks and exact-head CI pass, not now.
 
 ## Limitations
