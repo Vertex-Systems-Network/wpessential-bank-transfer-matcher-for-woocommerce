@@ -145,7 +145,7 @@ try {
       'wpessential-wbm-pro-allocations',
       'wpessential-wbm-pro-finance-reports',
       'wpessential-wbm-pro-dashboard']) {
-      assert(menuPages.includes(slug), 'Real finance operator missing permitted menu: ' + slug);
+      assert(menuPages.includes(slug), 'Finance menu absent: ' + slug + '; observed menu pages: ' + menuPages.join(','));
     }
     for (const slug of ['wpessential-wbm-pro-retention',
       'wpessential-wbm-pro-notifications', 'wpessential-wbm-pro-operations']) {
