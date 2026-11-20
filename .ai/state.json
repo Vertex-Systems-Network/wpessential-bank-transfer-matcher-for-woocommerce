@@ -1,7 +1,7 @@
 {
   "project": "WPEssential Bank Transfer Matcher for WooCommerce",
   "schema_version": 1,
-  "current_branch": "development/p6-reports-operations-20261120",
+  "current_branch": "development/p7-ui-ux-schemas-20261120",
   "last_verified_base_commit": "939b9c6c7ecd1882340af9dcd55fe932d4207251",
   "last_checkpoint_utc": "2026-11-20",
   "execution_status": "in_progress",
@@ -94,7 +94,9 @@
     "finance_operations": "passed: exact T006 SHA 9e0c9befd162dd5f18ecf4f476ed1cbd236e1953 full GitHub Actions 44661739149 and 44661731639; native source-hash guarded import retry, owner-bound fresh export requeue, nonce/dedup/anon defense, audited redacted diagnostics 3/hour, pure CSV privacy/formula fixture and Playground.",
     "finance_retention": "passed: exact T007 source SHA 3ca9a4914a0f9ad665e08aedb6c5e761ede9afe9 full GitHub Actions 44663096422 and 44663089250; synthetic private source age+hash cleanup with consent, 2h export CSV wipe, bounded metadata audit, default OFF, schema rights, periodic opt-out, Backup ADR-0018.",
     "p6_docs": "passed: complete GitHub Actions 44663971319 and 44663964390 exact b2311ce6ffbf1ca5a3bbfbe4699245193c8b27cf; docs guide, incident runbooks, phase acceptance and docs-content regression, native finance/security+Playground. Final phase-state commit itself requires new exact SHA CI.",
-    "p6_phase_gate": "P6-T001–T008 all completed with exact intermediate source SHA CI. Final phase head after task/state update must pass BOTH full CI checks before phase merge. Branch protection may only be enforced by GitHub; no reviews currently submitted."
+    "p6_phase_gate": "P6-T001–T008 all completed with exact intermediate source SHA CI. Final phase head after task/state update must pass BOTH full CI checks before phase merge. Branch protection may only be enforced by GitHub; no reviews currently submitted.",
+    "p6_phase_merge": "verified main SHA 51c34bd75f3936bddfc86911c99722c834465e1a from fully green Phase PR #12, exact P6 head 2b50907 with GitHub Actions 44664553928+44664548348 SUCCESS.",
+    "p7_screen_contracts": "source-backed UI-001–UI-014 schema and implementation-gap audit committed at 613d3b6; awaiting current P7 exact-head CI and manual next-phase QA"
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -109,7 +111,7 @@
   ],
   "phase": "P7",
   "active_task_id": "WBM-P7-T001",
-  "next_action": "On dedicated P7 branch AFTER P6 phase PR merge, audit documented screen schema UI-001–UI-014 against actual current WordPress Free/Pro admin components and route fields; enumerate missing screens/states, WC classic+HPOS and accessibility/RTL requirements without fabricating screenshots.",
+  "next_action": "Audit UI-001 to UI-014 in docs/ux/p7-source-backed-screen-contracts.md against existing Free/Pro renderers; verify 14-screen source mapping in CI, then record exact-head native+Playground proof before marking T001 complete. P7 T002–T005/browser+RTL gates remain pending.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",

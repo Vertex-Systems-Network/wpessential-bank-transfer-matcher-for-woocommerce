@@ -10,5 +10,5 @@
   "verification": "VERIFY-P7-T001",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "On dedicated P7 branch AFTER P6 phase PR merge, audit documented screen schema UI-001–UI-014 against actual current WordPress Free/Pro admin components and route fields; enumerate missing screens/states, WC classic+HPOS and accessibility/RTL requirements without fabricating screenshots."
+  "next_action": "Verify 14-screen source-backed schema audit, all real Free/Pro renderer paths, capability/action/state inventory and explicit unimplemented gaps in PHP Foundation CI; then mark P7-T001 done with exact-head full native/Playground evidence before P7-T002."
 }
