@@ -1064,8 +1064,8 @@
       "WBM-P7-T008"
     ],
     "verification": "VERIFY-P8-T001",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "Verified source SHA cb6f22d77ec1df5a053f15b4815ab9e729086a13: Foundation/Playground/native WooCommerce 11.3.0/WordPress 7.0.8 + disposable MariaDB GitHub Actions 44717249254 SUCCESS (both jobs). Native output PASS: nine real synthetic personas, ten exact registered REST routes, 100 permission/read-only API probes, 24 real WordPress public/private admin-post registration checks; reviewer-only verified-claim callback explicitly denied; no authorized finance POST, payment/status mutation or real bank data. Source-backed threat model: docs/security/threat-model.md; tests/integration/p8-route-capability-matrix.php; append-only .ai/sessions/2026-11-20-p8-t001-role-matrix-verified.md. Full phase P8 T002–T009 remains pending and no general security certification is claimed.",
     "next_action": "Open dedicated P8 security branch after verified P7 phase PR gate. Audit actual trust boundaries and source-backed WordPress REST/admin-post capabilities, nonce and object-level checks against synthetic anonymous/viewer/importer/approver/manager roles. Add fail-closed auth matrix in disposable native WP/WC/MariaDB; verify threat-model assets/risk/mitigation/residuals and exact-source CI; avoid authorized finance mutations. Continue P8-T002 only once evidence is verifiable."
   },
   {
@@ -1078,8 +1078,9 @@
       "WBM-P8-T001"
     ],
     "verification": "VERIFY-P8-T002",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Audit actual private receipt and bank statement file access under disposable WP/WC: order-specific receipt nonces and role restrictions, no anonymous finance/file access over real HTTP, encrypted/opaque private source paths outside document root, tampered path/symlink/expired bytes behavior, no raw data in logs. Capture negative-HTTP and native DB evidence; verify full exact-head CI and record limitations. Do not perform live payment or authorized finance POST."
   },
   {
     "id": "WBM-P8-T003",
