@@ -96,7 +96,7 @@ try {
     }
 
     $bank_account = (new BankAccountRepository($wpdb))->create(
-        'P8 private fixture', 'CI bank', 'USD', 'P800', $admin->ID
+        'P8 private fixture', 'CI bank', 'USD', '8000', $admin->ID
     );
     $profile = MappingProfile::from_array([
         'id'=>'p8-privacy','name'=>'P8 private',
