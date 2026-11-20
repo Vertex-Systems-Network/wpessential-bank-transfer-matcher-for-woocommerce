@@ -81,9 +81,19 @@ final class FinanceNotificationsPage {
 		echo '<p class="description">' .
 			esc_html__( 'Only users with both bank approval and import permissions can receive finance digests. No arbitrary email addresses are accepted. The recipient list is always checked again at delivery.', self::DOMAIN ) .
 			'</p><fieldset>';
-		$candidates = get_users( [ 'number' => 200, 'orderby' => 'display_name', 'order' => 'ASC' ] );
+		// Query eligible users before the 200-row UI cap, rather than
+		// exhausting the page with ordinary customers. Always preserve saved
+		// recipients even when a large store exceeds the visible selection cap.
+		$candidates = get_users( [ 'capability' => [ FreeCaps::APPROVE, ProCaps::IMPORT ],
+			'number' => 200, 'orderby' => 'display_name', 'order' => 'ASC' ] );
+		$selected = $config['recipient_ids']
+			? get_users( [ 'include' => $config['recipient_ids'] ] ) : [];
+		$by_id = [];
+		foreach ( array_merge( $candidates, $selected ) as $candidate ) {
+			$by_id[ (int) $candidate->ID ] = $candidate;
+		}
 		$found = 0;
-		foreach ( $candidates as $user ) {
+		foreach ( $by_id as $user ) {
 			$id = (int) $user->ID;
 			if ( ! user_can( $id, FreeCaps::APPROVE ) ||
 				! user_can( $id, ProCaps::IMPORT ) || ! is_email( $user->user_email ) ) continue;
