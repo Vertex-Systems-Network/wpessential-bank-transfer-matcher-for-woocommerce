@@ -26,6 +26,7 @@ final class PaymentFinalizer {
 			throw new RuntimeException( 'Order is being reconciled.' );
 		}
 		try {
+			CorrectionHoldGuard::assert_no_hold( $this->db, $order_id );
 			$order = wc_get_order( $order_id );
 			$table = $this->db->prefix . 'wbm_payment_finalizations';
 			$intent = $this->db->get_row( $this->db->prepare( "SELECT state FROM `$table` WHERE order_id = %d", $order_id ), ARRAY_A );

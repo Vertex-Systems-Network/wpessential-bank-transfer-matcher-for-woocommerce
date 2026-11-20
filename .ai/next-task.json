@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P4-T002",
-  "phase": "P4",
-  "title": "unique reference/amount/account/currency matching with exact deterministic rules.",
-  "owner": "Matching engineering",
-  "paths": "plugins/wpessential-bank-transfer-matcher-pro/src/Matching/",
+  "id": "WBM-P6-T002",
+  "phase": "P6",
+  "title": "outstanding, unmatched, partial, exception-aging and import summaries.",
+  "owner": "Pro engineering",
+  "paths": "plugins/wpessential-bank-transfer-matcher-pro/",
   "depends_on": [
-    "WBM-P4-T001"
+    "WBM-P6-T001"
   ],
-  "verification": "VERIFY-P4-T002",
+  "verification": "VERIFY-P6-T002",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Implement exact deterministic reference, amount, account and currency matching rules over eligible records, returning review-only candidates."
+  "next_action": "Verify all P6-T002 report sources in native+Playground CI: WooCommerce BACS outstanding/partial, imported unmatched/ambiguous, exception aging, allocation audit and import summaries. Then mark P6-T002 done only if complete CI green."
 }

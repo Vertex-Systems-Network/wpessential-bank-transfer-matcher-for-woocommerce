@@ -8,10 +8,12 @@
     "vendor/autoload.php",
     "vendor/composer/autoload_psr4.php",
     "vendor/composer/installed.json",
-    "src/Bootstrap/Plugin.php"
+    "src/Bootstrap/Plugin.php",
+    "assets/js/finance-dialogs.js"
   ],
   "source_roots": [
-    "src"
+    "src",
+    "assets"
   ],
   "forbidden_path_parts": [
     ".git",

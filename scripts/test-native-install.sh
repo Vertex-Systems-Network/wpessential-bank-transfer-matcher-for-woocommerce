@@ -46,6 +46,37 @@ wp_test eval-file "$root/tests/integration/pro-dry-run.php"
 wp_test eval-file "$root/tests/integration/pro-import-batches.php"
 wp_test eval-file "$root/tests/integration/pro-import-job.php"
 wp_test eval-file "$root/tests/integration/pro-import-ui.php"
+wp_test eval-file "$root/tests/integration/pro-review-cases.php"
+wp_test eval-file "$root/tests/integration/pro-review-ui.php"
+wp_test eval-file "$root/tests/integration/pro-review-api.php"
+wp_test eval-file "$root/tests/integration/pro-matching-safety.php"
+wp_test eval-file "$root/tests/integration/pro-allocation-schema.php"
+wp_test eval-file "$root/tests/integration/pro-receiving-bank-binding.php"
+wp_test eval-file "$root/tests/integration/pro-mismatch-cases.php"
+wp_test eval-file "$root/tests/integration/pro-approval-locks.php"
+# Real simultaneous independent WP-CLI requests against the same MariaDB database.
+bash "$root/scripts/test-pro-cross-process-races.sh" "$site" "$wp_cli"
+wp_test eval-file "$root/tests/integration/pro-one-to-one.php"
+wp_test eval-file "$root/tests/integration/pro-many-credits.php"
+wp_test eval-file "$root/tests/integration/pro-split-credit.php"
+wp_test eval-file "$root/tests/integration/pro-allocation-ui.php"
+wp_test eval-file "$root/tests/integration/pro-report-queries.php"
+wp_test eval-file "$root/tests/integration/pro-report-unmatched-credits.php"
+wp_test eval-file "$root/tests/integration/pro-report-exception-aging.php"
+wp_test option update woocommerce_custom_orders_table_enabled no
+wp_test eval-file "$root/tests/integration/pro-report-order-balances.php"
+wp_test option update woocommerce_custom_orders_table_enabled yes
+wp_test eval-file "$root/tests/integration/pro-report-order-balances.php"
+wp_test option update woocommerce_custom_orders_table_enabled no
+wp_test eval-file "$root/tests/integration/pro-finance-admin-security.php"
+# Exercise actual payment completion and audit recovery under both WooCommerce storage modes.
+wp_test option update woocommerce_custom_orders_table_enabled no
+wp_test eval-file "$root/tests/integration/pro-payment-finalizer.php"
+wp_test option update woocommerce_custom_orders_table_enabled yes
+wp_test eval-file "$root/tests/integration/pro-payment-finalizer.php"
+wp_test option update woocommerce_custom_orders_table_enabled no
+wp_test eval-file "$root/tests/integration/pro-overpayment-exceptions.php"
+wp_test eval-file "$root/tests/integration/free-pro-allocation-balance.php"
 
 wp_test option update woocommerce_cod_settings '{"enabled":"yes"}' --format=json
 wp_test option update woocommerce_bacs_accounts '[{"account_name":"Fixture account","bank_name":"Fixture bank","account_number":"","sort_code":"","iban":"","bic":""}]' --format=json

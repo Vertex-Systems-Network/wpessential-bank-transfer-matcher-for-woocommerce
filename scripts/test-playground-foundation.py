@@ -4,6 +4,7 @@ import argparse
 from io import BytesIO
 import json
 import subprocess
+import time
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -93,6 +94,23 @@ def build_smoke_bundle(scenario):
     return smoke
 
 
+def run_with_download_retry(command, retries=2):
+    """Retry only transient upstream WooCommerce ZIP downloads, never failed assertions."""
+    for attempt in range(retries + 1):
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        if result.stdout:
+            print(result.stdout, end='' if result.stdout.endswith('\n') else '\n', flush=True)
+        if result.returncode == 0:
+            return
+        transient = ('Could not download' in (result.stdout or '')
+                     and 'downloads.wordpress.org/plugin/woocommerce.latest-stable.zip'
+                     in (result.stdout or ''))
+        if not transient or attempt >= retries:
+            raise subprocess.CalledProcessError(result.returncode, command)
+        print(f'RETRY transient WooCommerce ZIP download ({attempt + 1}/{retries})', flush=True)
+        time.sleep(2 * (attempt + 1))
+
+
 def main():
     scenarios = ('base', 'free', 'pro', 'woo-missing', 'free-missing', *VERSION_SCENARIOS, 'lifecycle', 'access')
     parser = argparse.ArgumentParser(description=__doc__)
@@ -102,7 +120,7 @@ def main():
     cli = [args.cli] if args.cli else ['npx', '--yes', '@wp-playground/cli@3.1.65']
     for scenario in args.scenario or scenarios:
         bundle = build_smoke_bundle(scenario)
-        subprocess.run([*cli, 'run-blueprint', f'--blueprint={bundle}'], check=True)
+        run_with_download_retry([*cli, 'run-blueprint', f'--blueprint={bundle}'])
         print(f'PASS {scenario} Blueprint and PHP bootstrap assertions', flush=True)
 
 

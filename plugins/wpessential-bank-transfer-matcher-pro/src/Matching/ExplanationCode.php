@@ -17,4 +17,12 @@ enum ExplanationCode: string {
 	case EXACT_CURRENCY = 'exact_currency';
 	case EXACT_ACCOUNT = 'exact_account';
 	case AMBIGUOUS = 'ambiguous';
+	case DATE_PROXIMITY_HINT = 'date_proximity_hint';
+	case ORDER_TOKEN_HINT = 'order_token_hint';
+	case CUSTOMER_NAME_HINT = 'customer_name_hint';
+	case REVERSAL_DETECTED = 'reversal_detected';
+	case REFERENCE_CONFLICT = 'reference_conflict';
+	case AMOUNT_CONFLICT = 'amount_conflict';
+	case CURRENCY_CONFLICT = 'currency_conflict';
+	case ACCOUNT_CONFLICT = 'account_conflict';
 }

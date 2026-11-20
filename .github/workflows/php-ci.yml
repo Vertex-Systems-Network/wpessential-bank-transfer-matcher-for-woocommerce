@@ -29,6 +29,8 @@ jobs:
         run: |
           bash scripts/package-plugin.sh free
           bash scripts/package-plugin.sh pro
+      - name: Check finance dialog JavaScript syntax
+        run: node --check plugins/wpessential-bank-transfer-matcher-pro/assets/js/finance-dialogs.js
       - name: Check PHP syntax
         run: find plugins playground/tests tests -name vendor -prune -o -name '*.php' -print0 | xargs -0 -n 1 php -l
       - name: Analyze reconciliation domain types
@@ -40,10 +42,20 @@ jobs:
           php tests/transaction-identity.php
           php tests/matching-eligibility.php
           php tests/deterministic-matcher.php
+          php tests/allocation-balance.php
+          php tests/partial-credit-plan.php
+          php tests/split-credit-plan.php
+          php tests/overpayment-review.php
+          php tests/mismatch-review.php
+          php tests/payment-readiness.php
+          php tests/report-definitions.php
+          php tests/secondary-hints.php
+          php tests/conflict-cases.php
           php tests/camt053.php
           php tests/migrations.php
       - name: Package and test in Playground
         run: |
+          python3 tests/playground_download_retry.py
           python3 scripts/build_playground_bundles.py
           python3 scripts/test-playground-foundation.py
 

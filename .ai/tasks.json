@@ -607,9 +607,8 @@
       "WBM-P4-T001"
     ],
     "verification": "VERIFY-P4-T002",
-    "status": "in_progress",
-    "evidence": "",
-    "next_action": "Implement exact deterministic reference, amount, account and currency matching rules over eligible records, returning review-only candidates."
+    "status": "done",
+    "evidence": "GitHub Actions run 44584431775 passed task graph, docs, packaging, PHP syntax, PHPStan, deterministic matcher unit checks, Playground and native WordPress/WooCommerce/MariaDB. Only a unique normalized reference plus exact outstanding minor units, currency and bank account emits a review-only suggestion; ambiguity or mismatch is not promoted."
   },
   {
     "id": "WBM-P4-T003",
@@ -621,8 +620,8 @@
       "WBM-P4-T002"
     ],
     "verification": "VERIFY-P4-T003",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44586058010 passed task graph, docs, packaging, PHP syntax, PHPStan, bounded secondary-hint unit checks, Playground and native WordPress/WooCommerce/MariaDB. Date, order-token and customer-name hints add transparent rank signals only; candidate status is immutable so blocked or ambiguous evidence cannot be promoted."
   },
   {
     "id": "WBM-P4-T004",
@@ -634,8 +633,8 @@
       "WBM-P4-T003"
     ],
     "verification": "VERIFY-P4-T004",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44586921335 passed task graph, docs, packaging, PHP syntax, PHPStan, duplicate/reversal/conflict case unit checks, Playground and native WordPress/WooCommerce/MariaDB. Duplicate suspects, reversals and reference/amount/currency/account mismatches generate separate typed cases with deterministic severity/reasons and no evidence or payment mutation."
   },
   {
     "id": "WBM-P4-T005",
@@ -647,8 +646,8 @@
       "WBM-P4-T004"
     ],
     "verification": "VERIFY-P4-T005",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44588872295 passed task graph, docs, packaging, PHP syntax, PHPStan, Playground and native WordPress/WooCommerce/MariaDB including persisted review-case integration. Compare-and-swap lifecycle transitions, stale-state rejection, priority, assignee, append-only comments and immutable event history passed."
   },
   {
     "id": "WBM-P4-T006",
@@ -660,8 +659,8 @@
       "WBM-P4-T005"
     ],
     "verification": "VERIFY-P4-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44591051949 passed task graph, docs, packaging, PHP syntax, PHPStan, Playground and native WordPress/WooCommerce/MariaDB. Review queue filters/pagination/empty state and three-column bank evidence, order comparison and decision-context workspace rendered from persisted cases with explicit unverified/no-payment messaging and capability enforcement."
   },
   {
     "id": "WBM-P4-T007",
@@ -673,8 +672,8 @@
       "WBM-P4-T006"
     ],
     "verification": "VERIFY-P4-T007",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44593008847 passed task graph, docs, packaging, PHP syntax, PHPStan, Playground and native WordPress/WooCommerce/MariaDB. Capability-protected REST actions verified authorized assign/transition/priority/comment, typed reason rejection, unauthorized 403, expected-state CAS and nonce-authenticated workspace controls; actions mutate case audit state only."
   },
   {
     "id": "WBM-P4-T008",
@@ -686,8 +685,9 @@
       "WBM-P4-T007"
     ],
     "verification": "VERIFY-P4-T008",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44594688149 passed foundation, Playground, and native WordPress/WooCommerce/MariaDB. Native installer runs pro-matching-safety.php: wrong/missing reference, wrong amount, cancelled/refunded/paid/non-BACS order, and duplicate-suspect false-match cases remain unsuggested; no payment mutation.",
+    "next_action": "Add false-positive regression matrix for missing references, ambiguous evidence, cancelled/refunded/paid orders, non-BACS orders and duplicate suspects using real WooCommerce orders where applicable."
   },
   {
     "id": "WBM-P5-T001",
@@ -699,8 +699,8 @@
       "WBM-P4-T008"
     ],
     "verification": "VERIFY-P5-T001",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44602497110 passed foundation (PHP lint, static, unit, Playground) and native WordPress/WooCommerce/MariaDB including Pro ledger schema and balances. Duplicate run 44602510271 failed only on transient external WooCommerce ZIP download in Playground; native test passed."
   },
   {
     "id": "WBM-P5-T002",
@@ -712,8 +712,8 @@
       "WBM-P5-T001"
     ],
     "verification": "VERIFY-P5-T002",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44607440250 passed Foundation/Playground and native WooCommerce/MariaDB for internal one-to-one proposal and independent finance approval. Native fixture confirms source/order eligibility, credit fingerprint, idempotent request and approval replay, maker-checker rejection, cleared-bank acknowledgment, exact approved ledger balances, immutable two-event audit, and unchanged WooCommerce unpaid status. No REST/payment completion is exposed."
   },
   {
     "id": "WBM-P5-T003",
@@ -725,8 +725,8 @@
       "WBM-P5-T002"
     ],
     "verification": "VERIFY-P5-T003",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44612420651 passed Foundation (PHP syntax, PHPStan, exact money and partial planner, Playground) and native WordPress/WooCommerce/MariaDB. Tests verify 3 unique imported credits to one order, independent maker/checker, partial and fully allocated balances, overamount and stale order rejection, shared Free/Pro writer balances, Free↔Pro same-order duplicate-provenance blocks and no payment state changes. Other release-wide concurrency/cross-order identity gates remain pending."
   },
   {
     "id": "WBM-P5-T004",
@@ -738,8 +738,8 @@
       "WBM-P5-T003"
     ],
     "verification": "VERIFY-P5-T004",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44618354738 passed foundation/PHPStan/Playground and native WordPress/WooCommerce/MariaDB. Version 3 split-group schema, atomic 2-order maker proposal and independent checker approval, order/source named locks, unique idempotency, exact credit/order balances, duplicate-source, changed-order, uncleared-credit, individual-approval bypass rejection, append-only audit and no payment_complete were tested. Split allocations intentionally require full source distribution."
   },
   {
     "id": "WBM-P5-T005",
@@ -751,8 +751,8 @@
       "WBM-P5-T004"
     ],
     "verification": "VERIFY-P5-T005",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44620581332 passed foundation/PHPStan/Playground and native WordPress/WooCommerce/MariaDB. P5-T005 exact OverpaymentReview classification and versioned source-linked Pro exception ledger/events, idempotent case creation, independent audit-only reviewer decisions, source/order drift blockers and no allocation/refund/payment_complete validated in native integration fixture. One duplicate run failed only at external WordPress.org WooCommerce download, with native tests passing."
   },
   {
     "id": "WBM-P5-T006",
@@ -764,8 +764,8 @@
       "WBM-P5-T005"
     ],
     "verification": "VERIFY-P5-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions runs 44625635473 and 44625621260 both passed foundation (lint, static, unit, Playground packaging/bootstraps) and native WordPress/WooCommerce/MariaDB. Includes strict amount/currency/reference/receiving-account mismatch classifier, immutable merchant-confirmed bank binding and enforcement on one-to-one and split proposals/checkers, persisted source-backed mismatch cases with duplicate/idempotency protection, audit-only separate review, source/order drift blocks and no order payment mutation. Independent lock contention fixture prepared next."
   },
   {
     "id": "WBM-P5-T007",
@@ -777,8 +777,8 @@
       "WBM-P5-T006"
     ],
     "verification": "VERIFY-P5-T007",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44626679846 passed foundation/PHPStan/Playground and native WordPress/WooCommerce/MariaDB. Independent second-connection named-lock contention tests reject one-to-one maker proposals while the order is locked and checker approvals while the source is locked, and reject multi-recipient split maker/checker actions under contested recipient/source locks. Native fixtures confirm zero partial writes, maker!=checker, explicit clearance, idempotent approval+audit, and unchanged WooCommerce paid status."
   },
   {
     "id": "WBM-P5-T008",
@@ -790,8 +790,8 @@
       "WBM-P5-T007"
     ],
     "verification": "VERIFY-P5-T008",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions runs 44631943970 and 44631932845 both completely green for latest checked-out HEAD bc02cc6: foundation syntax/PHPStan/unit/Playground and native WordPress/WooCommerce/MariaDB. Verified Pro source-backed explicit maker/checker and clearance, durable pending intent before WC hooks, idempotent complete + paid-but-pending audit recovery, multi-credit order, split bank source shared across recipients, native source/order lock challenges, negative partial/unverified/mixed Free+Pro evidence, both classic and HPOS Woo order storage and strict overflow-safe LedgerBalance recomputation. No public API or auto importer trigger."
   },
   {
     "id": "WBM-P5-T009",
@@ -803,8 +803,8 @@
       "WBM-P5-T008"
     ],
     "verification": "VERIFY-P5-T009",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions runs 44636169810 and 44636161200 both passed complete Foundation PHP/static/Playground and native WordPress/WooCommerce/MariaDB for P5-T009 immutable source+allocation correction/reversal cases; independent finance maker/checker audit; idempotent replay and duplicate case holds; source/warning/order/related Pro+Free ledger drift rejection; separate SQL session split-recipient locks; Free and Pro allocation/payment holds even across split recipient orders. Paid Woo orders stay paid, ledger unchanged, no automatic refund or bank reversal."
   },
   {
     "id": "WBM-P5-T010",
@@ -816,8 +816,8 @@
       "WBM-P5-T009"
     ],
     "verification": "VERIFY-P5-T010",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions 44639405880 and 44639399125 both fully green (Foundation PHP syntax, static/PHPStan, JS syntax, Playground, native WordPress/WooCommerce/MariaDB). Verified native WooCommerce finance allocation admin queue, exact per-currency/state page totals, loaded split-source allocation workspace, masked bank provenance, append-only allocation/correction audit, persistent holds, scoped progressive dialog script in Pro package, nonce- and capability-gated finance proposal, independent approval including split group, correction raise/review; no automatic payment/refund action."
   },
   {
     "id": "WBM-P5-T011",
@@ -829,8 +829,8 @@
       "WBM-P5-T010"
     ],
     "verification": "VERIFY-P5-T011",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions run 44642819046 completed SUCCESS for latest cross-process fixture a926c66, including foundation PHP syntax/static/unit, WordPress Playground package/bootstraps and native WooCommerce/MariaDB. Sibling 44642809909 native MariaDB success. Real simultaneous separate WP-CLI processes challenged Pro maker source proposal, independent checker approval and explicit paid intent vs another Pro request AND a Free manual writer, plus source split to two recipients and a Free writer targeting the second recipient during first order finalization. Verified exactly one allocation/audit transition, bank source conservation, atomic split approval, no partial payment and idempotent WooCommerce payment hook."
   },
   {
     "id": "WBM-P6-T001",
@@ -842,8 +842,8 @@
       "WBM-P5-T011"
     ],
     "verification": "VERIFY-P6-T001",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "GitHub Actions runs 44643672874 and 44643662149 both completed SUCCESS for P6-T001 canonical report definitions: Foundation PHP lint/PHPStan/unit and Playground, native WordPress/WooCommerce/MariaDB. Strict six report IDs and state vocabularies, bounded exact ISO dates, account/currency/limit/keyset filters, canonical SHA-256 scope, exact per-currency/exponent/state minor-unit totals, overflow/float/SQL-like input rejection. Pure read-only; no accounting authorization."
   },
   {
     "id": "WBM-P6-T002",
@@ -855,7 +855,7 @@
       "WBM-P6-T001"
     ],
     "verification": "VERIFY-P6-T002",
-    "status": "planned",
+    "status": "in_progress",
     "evidence": ""
   },
   {
