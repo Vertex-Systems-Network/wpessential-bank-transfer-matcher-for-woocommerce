@@ -159,6 +159,16 @@ try {
             throw new Error('Tab focus trapped in scrollable finance table');
           }
           entry.keyboard_region_tested = true;
+          // Tab intentionally moves focus to the row action at the far end
+          // of a wide ledger. Restore the logical start before taking the
+          // visual baseline; otherwise the screenshot appears to clip the
+          // first columns even though the real table is horizontally scrollable.
+          await region.evaluate(node => { node.scrollLeft = 0; });
+          const restored = await region.evaluate(node => Math.abs(node.scrollLeft) < 1);
+          if (!restored) {
+            throw new Error('Unable to restore initial ledger scroll after keyboard QA');
+          }
+          entry.table_scroll_restored_for_screenshot = true;
         }
         const filename = mode + '-' + spec.ui + '-' + spec.key + '-' + size.width + '.png';
         await page.screenshot({ path: join(output, filename), fullPage: true,
