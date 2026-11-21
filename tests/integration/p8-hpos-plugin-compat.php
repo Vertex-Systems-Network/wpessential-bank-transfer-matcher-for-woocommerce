@@ -44,7 +44,7 @@ foreach (['wpessential-bank-transfer-matcher', 'wpessential-bank-transfer-matche
         'required_php' => 'Requires PHP',
     ]);
     if (($headers['tested_wp'] ?? '') !== '' ||
-        ($headers['tested_wc'] ?? '') !== '11.3.0' ||
+        ($headers['tested_wc'] ?? '') !== '11.3.1' ||
         ($headers['required_wp'] ?? '') !== '7.0' ||
         ($headers['required_wc'] ?? '') !== '10.8' ||
         ($headers['required_php'] ?? '') !== '8.3' ||

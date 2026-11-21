@@ -5,7 +5,7 @@
  * Version: 0.1.0
  * Requires at least: 7.0
  * Requires PHP: 8.3
- * WC tested up to: 11.3.0
+ * WC tested up to: 11.3.1
  * WC requires at least: 10.8
  * Requires Plugins: woocommerce
  * Author: WPEssential
