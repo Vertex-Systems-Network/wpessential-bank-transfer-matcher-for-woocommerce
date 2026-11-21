@@ -123,6 +123,17 @@ jobs:
             dist/p9-compatibility-matrix.json
           if-no-files-found: error
           retention-days: 14
+      - name: Audit real feature, test and fourteen UI/traceability ID evidence
+        run: |
+          python3 -m py_compile scripts/p9-acceptance-audit.py
+          python3 scripts/p9-acceptance-audit.py --negative-tests
+      - name: Upload source-backed acceptance and unresolved gap matrix
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-acceptance-feature-screen-test-audit
+          path: dist/p9-acceptance-audit.json
+          if-no-files-found: error
+          retention-days: 14
 
   mariadb-migrations:
     runs-on: ubuntu-latest

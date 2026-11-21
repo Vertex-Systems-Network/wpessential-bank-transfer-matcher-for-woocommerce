@@ -1,0 +1,9 @@
+# P9-T007 — Real feature ID, screen ID, test ID and requirement acceptance audit
+
+**Source-specific implementation draft; audit is NOT a public-release approval.** The `scripts/p9-acceptance-audit.py` process reads the canonical eight feature catalog IDs, 103 source task verification IDs, all fourteen UI-001–UI-014 source-backed screen contracts, and all 168 requirement rows in `docs/testing/traceability.csv`. It resolves every verified feature to a completed task and a real repository evidence file and checks every requirement's real source file/line. It cross-checks the local P9-T006 development validation report and **refuses** to promote unresolved evidence into a false release approval.
+
+Historical P9 data caveat: as of this source, **7/8 features marked verified, F-STATEMENT-IMPORT still planned, 168/168 traceability requirements marked planned**. That is evidence-documentation coverage, **not proof of 168 missing software features**. Existing browser/integration tests may verify behavior that the planning spreadsheet never annotated. The report accurately lists these gaps for per-ID reconciliation. Do not bulk-mark them verified without tests. Existing 14 screen contract integrity and source renderer checks are also exercised in the PHP Foundation test.
+
+CI writes `dist/p9-acceptance-audit.json` and uploads `p9-acceptance-feature-screen-test-audit`, after T006 actual-source SHA256/manifests and live Playground QA. Negative tests reject false release approval and traversal evidence paths.
+
+**Release gate remains blocked** until all critical gaps have real test evidence and official WordPress.org/WooCommerce/vendor gates are separately verified. P9-T007 task acceptance means the *audit itself* was run and reviewed, not that the product is approved. This is staged behind PR #21; do not merge until T006 source verification passes.
