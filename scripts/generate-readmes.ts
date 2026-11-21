@@ -99,7 +99,7 @@ for (const edition of editions) {
   const header = read(`${folder}/${slug}.php`);
   const fields = {
     'Plugin Name': title, Version: metadata.version, 'Requires at least': metadata.requires_wp,
-    'Requires PHP': metadata.requires_php, 'Tested up to': metadata.tested_wp,
+    'Requires PHP': metadata.requires_php,
     'WC requires at least': metadata.requires_wc, 'WC tested up to': metadata.tested_wc,
     'Requires Plugins': dependencies.join(', '), Author: metadata.author, License: metadata.license, 'Text Domain': slug,
   };

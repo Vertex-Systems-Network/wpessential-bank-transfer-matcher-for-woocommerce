@@ -16,7 +16,7 @@
       "id": "latest_supported_matrix",
       "kind": "technical",
       "status": "pending",
-      "proof": "WP 7.0.8 tested only, WC 11.3.0 tested; no latest patch recertification"
+      "proof": "Actual native WP 7.1.5/WC 11.3.1/PHP 8.3/MariaDB 11.4 Free/Pro HPOS+classic test passed runs 44848601239 and 44850189929; wider current supported-version matrix/managed QIT remain pending."
     },
     {
       "id": "full_phase_exact_head_ci",
@@ -27,14 +27,14 @@
     {
       "id": "wp_org_plugin_check",
       "kind": "technical",
-      "status": "not_run",
-      "proof": "Actual official WordPress Plugin Check (PCP) against final Free ZIP needed"
+      "status": "pending",
+      "proof": "Official Plugin Check 2.2.0 run 44850194589 artifact 14685076703: 0 errors, 45 warnings including 3 WPEssential WP naming/trademark flags. Formal reviewer assessment/clean final ZIP still pending."
     },
     {
       "id": "wp_org_readme_validator",
       "kind": "technical",
-      "status": "not_run",
-      "proof": "Online validator not executed; internal offline validator cannot substitute"
+      "status": "pending",
+      "proof": "Official public online validator returned HTTP 200 and processed exact Free readme, 4 notes/zero fatal errors run 44850194589; verified contributor credentials and screenshot assets not present; no publisher submission."
     },
     {
       "id": "woocommerce_managed_qit",

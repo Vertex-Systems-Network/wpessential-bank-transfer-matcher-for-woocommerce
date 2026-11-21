@@ -23,6 +23,9 @@ if (!did_action('woocommerce_init') ||
     throw new RuntimeException('Actual Free+Pro and WooCommerce initialization are required.');
 }
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
+// Only the explicitly labeled P9 exact-patch compatibility probe may test newer
+// real WordPress/WooCommerce versions than the currently declared header matrix.
+$latest_patch_probe = '1' === getenv( 'WBM_P9_LATEST_PATCH_PROBE' );
 foreach (['wpessential-bank-transfer-matcher', 'wpessential-bank-transfer-matcher-pro'] as $slug) {
     $filename = $slug . '/' . $slug . '.php';
     $file = WP_PLUGIN_DIR . '/' . $filename;
@@ -40,13 +43,14 @@ foreach (['wpessential-bank-transfer-matcher', 'wpessential-bank-transfer-matche
         'required_wp' => 'Requires at least', 'required_wc' => 'WC requires at least',
         'required_php' => 'Requires PHP',
     ]);
-    if (($headers['tested_wp'] ?? '') !== '7.0' ||
-        ($headers['tested_wc'] ?? '') !== '11.3.0' ||
+    if (($headers['tested_wp'] ?? '') !== '' ||
+        ($headers['tested_wc'] ?? '') !== '11.3.1' ||
         ($headers['required_wp'] ?? '') !== '7.0' ||
         ($headers['required_wc'] ?? '') !== '10.8' ||
         ($headers['required_php'] ?? '') !== '8.3' ||
         version_compare(WC_VERSION, $headers['required_wc'], '<') ||
-        version_compare(WC_VERSION, $headers['tested_wc'], '>')) {
+        ( ! $latest_patch_probe && version_compare(WC_VERSION, $headers['tested_wc'], '>') ) ||
+        ( $latest_patch_probe && ( WC_VERSION !== '11.3.1' || get_bloginfo( 'version' ) !== '7.1.5' ) ) ) {
         throw new RuntimeException('Plugin version requirements are unsupported or diverged: ' . $slug);
     }
 }

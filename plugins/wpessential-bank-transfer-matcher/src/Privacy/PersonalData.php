@@ -33,7 +33,7 @@ final class PersonalData {
 		$orders = self::orders( $email, $page );
 		$table = $wpdb->prefix . 'wbm_payment_claims';
 		foreach ( $orders as $order ) {
-			$claim = $wpdb->get_row( $wpdb->prepare( "SELECT status, transfer_date, amount_minor, currency, exponent, transfer_reference, sender_name, customer_note, created_at, attachment_mime FROM `$table` WHERE order_id = %d", $order->get_id() ), ARRAY_A );
+			$claim = $wpdb->get_row( $wpdb->prepare( 'SELECT status, transfer_date, amount_minor, currency, exponent, transfer_reference, sender_name, customer_note, created_at, attachment_mime FROM %i WHERE order_id = %d', $table, $order->get_id() ), ARRAY_A );
 			if ( ! $claim ) {
 				continue;
 			}
@@ -53,11 +53,11 @@ final class PersonalData {
 		$removed = false;
 		$retained = false;
 		foreach ( $orders as $order ) {
-			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT order_id FROM `$table` WHERE order_id = %d", $order->get_id() ) );
+			$exists = $wpdb->get_var( $wpdb->prepare( 'SELECT order_id FROM %i WHERE order_id = %d', $table, $order->get_id() ) );
 			if ( null === $exists ) {
 				continue;
 			}
-			$wpdb->query( $wpdb->prepare( "UPDATE `$table` SET sender_name = '', customer_note = '', attachment_mime = NULL, attachment_bytes = NULL, attachment_expires = NULL WHERE order_id = %d", $order->get_id() ) );
+			$wpdb->query( $wpdb->prepare( "UPDATE %i SET sender_name = '', customer_note = '', attachment_mime = NULL, attachment_bytes = NULL, attachment_expires = NULL WHERE order_id = %d", $table, $order->get_id() ) );
 			$removed = true;
 			$retained = true;
 		}
