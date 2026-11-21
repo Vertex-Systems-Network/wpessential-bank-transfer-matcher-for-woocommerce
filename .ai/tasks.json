@@ -1330,8 +1330,8 @@
       "WBM-P9-T010"
     ],
     "verification": "VERIFY-P9-T011",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "VERIFIED exact merge-source 1957a06a1008134578602cc96cd7967742a714b2, GitHub Actions 7/7 success including real Chromium-native browser run 44853116326, native MariaDB + Foundation/real WordPress Playground runs 44853116372/44853122217, independent official WP.org Plugin Check and authentic local Woo QIT CLI (managed cloud NOT RUN). Downloaded original source run Chromium artifact 14686177486 (13 true PNGs from real Free/Pro WP, LTR/Arabic RTL and 375px mobile) and source audit 14686212394; independently recalculated all 13 screenshot SHA256s, exact source SHA/run and six no-issue LTR/RTL/navigation/usability report hashes, visually reviewed source screenshots without pixel editing. Native MariaDB evidence artifact 14685609782 downloaded/checked exact source and original logs: real independent cross-process maker/checker/split credit locks, paired Free+Pro ZIP install, HPOS and classic Woo CRUD, synthetic/no financial mutations. All 7 exact-head CI green; separate Blueprint/Composer artifact checks from original run 44853116372 succeeded; WordPress latest patch remains separate verified P9-T009. PR #26 merged only to P9 dev as 43838ecb8fe546290563b3fe4877e5a3041e034a. No real merchant bank data, managed cloud QIT, public distribution, or approval.",
     "next_action": "P9-T011: review stacked PR #26; reconcile its browser+native actual-source QA into latest verified P9 SHA, rerun fresh GitHub Foundation actual WordPress Playground, 13 PNG LTR/Arabic RTL/375px/6 navigation+usability reports, WooCommerce MariaDB independent cross-request maker/checker/split races and source-specific artifacts. Require all exact-source CI, downloaded/visually checked images, no financial mutations and separate latest WP patch evidence. Managed Woo QIT, 168 requirement rows and publication remain blockers."
   },
   {
@@ -1344,8 +1344,9 @@
       "WBM-P9-T011"
     ],
     "verification": "VERIFY-P9-T012",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "P9-T012: retarget draft PR #27 canonical 0.1.0 doc and Free/Pro original ZIP/version lock onto current P9 phase branch, integrate T011 source without CI regression, verify exact head Foundation/Playground/native version, source/ZIP README/GPL and feature manifest drift tests, source SHA256 and artifacts. Keep 168 requirement rows, 45 WP scanner warnings/trademark and 7 managed cloud QIT suites external blockers; no public release."
   },
   {
     "id": "WBM-P9-T013",
