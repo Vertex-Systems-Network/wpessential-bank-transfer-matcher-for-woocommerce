@@ -1246,8 +1246,8 @@
       "WBM-P9-T004"
     ],
     "verification": "VERIFY-P9-T005",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "VERIFIED exact implementation source a33c68abbd7ace09097f012262b01d547dd74c54, all 6/6 GitHub Actions Foundation/real WordPress Playground/native MariaDB checks SUCCESS: runs 44843294837, 44843304834 and 44843491399. Current source combines latest P9-T004 packaging with three source-backed Playground base/Free/Pro Blueprints, verifies exact nested plugin ZIP byte parity and refuses mutated zip fixture, and runs actual CLI bootstrap, missing dependency, incompatible Free/Woo versions, lifecycle, access role scenarios. Native MariaDB clean ZIP install, missing Free/deactivate-reactivate/HPOS-classic and financial test suite SUCCESS. Downloaded real run 44843294837 artifact 14681504347 (three Blueprint ZIPs and SHA256 manifest) and paired independent plugin ZIP artifact 14681906146; independently recomputed 3/3 Blueprint hash values and byte-equality of embedded two plugin ZIPs to packaged ZIPs. PR #20 merged into P9 development SHA 5189dc8e4b75cfa5b6a85ffce9dad97e3ee8ba69. No public release/QIT/vendor approval claimed.",
     "next_action": "Review/retarget stacked PR #20 against current P9 phase branch, verify actual base/Free/Pro Playground Blueprint bundles embed exact production ZIP bytes, failed tamper tests, successful real Playground CLI scenarios, and independent native MariaDB/HPOS/classic install/migration. Accept only after exact new-head CI and artifact inspection; do not publish."
   },
   {
@@ -1260,8 +1260,9 @@
       "WBM-P9-T005"
     ],
     "verification": "VERIFY-P9-T006",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "P9-T006: review and integrate stacked PR #21 only after bringing latest P9 checkpoint into its branch, preserve the verified ZIP and Playground CI uploads. Verify five archive SHA256SUMS, canonical changelog, exact CI source provenance (PR checkout merge SHA vs head SHA), historical PHP/WC matrix with latest patch explicitly NOT VERIFIED, and validation report; require exact-source CI and downloaded real artifacts. Do not publish."
   },
   {
     "id": "WBM-P9-T007",
