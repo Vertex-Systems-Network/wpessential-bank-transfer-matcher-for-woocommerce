@@ -29,6 +29,8 @@ jobs:
           composer global require 'woocommerce/qit-cli:*' --no-interaction
           echo "$(composer global config bin-dir --absolute)" >> "$GITHUB_PATH"
       - name: Create disposable QIT-local WordPress/WooCommerce and activate both edition ZIPs
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           set -euo pipefail
           qit --version > dist/p9-qit-cli-version.txt

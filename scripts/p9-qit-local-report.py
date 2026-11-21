@@ -34,7 +34,8 @@ def main():
     summary={
        "schema_version":1,
        "scope":"Woo official QIT CLI LOCAL test environment ONLY, not managed vendor QIT",
-       "source_head":os.getenv("GITHUB_SHA") or "NOT VERIFIED",
+       "source_head":os.getenv("WBM_SOURCE_HEAD_SHA") or "NOT VERIFIED",
+       "ci_checkout_sha":os.getenv("GITHUB_SHA") or "NOT VERIFIED",
        "run_id":os.getenv("GITHUB_RUN_ID") or "NOT VERIFIED",
        "qit_cli_version":version,
        "qit_local_activated_plugins":S,
