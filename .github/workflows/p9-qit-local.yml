@@ -1,0 +1,68 @@
+name: P9 Woo QIT local isolated activation (not managed QIT)
+
+on:
+  push:
+    branches:
+      - development/p9-t010-qit-local-reviewer-20261121
+      - development/p9-release-candidate-docs-20261121
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  qit-local-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+      - name: Build original two production ZIPs for separate Free/Pro activation
+        run: |
+          bash scripts/package-plugin.sh free
+          bash scripts/package-plugin.sh pro
+      - name: Install actual official WooCommerce QIT CLI outside plugin packages
+        run: |
+          composer global require 'woocommerce/qit-cli:*' --no-interaction
+          echo "$(composer global config bin-dir --absolute)" >> "$GITHUB_PATH"
+      - name: Create disposable QIT-local WordPress/WooCommerce and activate both edition ZIPs
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          qit --version > dist/p9-qit-cli-version.txt
+          qit env:up --php=8.3 --wp=7.1.5 --woo=11.3.1 \
+            --plugin="$GITHUB_WORKSPACE/dist/wpessential-bank-transfer-matcher.zip" \
+            --plugin="$GITHUB_WORKSPACE/dist/wpessential-bank-transfer-matcher-pro.zip" \
+            > "$RUNNER_TEMP/p9-qit-local-setup.log" 2>&1 || {
+              echo "QIT local startup failed. Managed cloud QIT not executed; local status blocked."
+              tail -n 90 "$RUNNER_TEMP/p9-qit-local-setup.log" | sed -E 's#(password|token|secret|key)[=:][^ ,]+#\\1=[REDACTED]#Ig'
+              exit 1
+            }
+          : > dist/p9-qit-active-plugins.txt
+          for slug in woocommerce wpessential-bank-transfer-matcher wpessential-bank-transfer-matcher-pro; do
+            qit env:exec -- "wp plugin is-active $slug" > "$RUNNER_TEMP/p9-qit-$slug.log" 2>&1 || {
+              echo "QIT local genuine plugin inactive: $slug"
+              exit 1
+            }
+            printf '%s=active\n' "$slug" >> dist/p9-qit-active-plugins.txt
+          done
+          python3 scripts/p9-qit-local-report.py
+      - name: Stop every disposable QIT-local container
+        if: always()
+        run: |
+          if command -v qit >/dev/null 2>&1; then qit env:down --all || true; fi
+      - name: Upload local-QIT proof only; NEVER mislabel as Woo managed QIT
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-official-qit-cli-local-only-activation
+          path: |
+            dist/p9-qit-cli-version.txt
+            dist/p9-qit-active-plugins.txt
+            dist/p9-qit-local-result.json
+          if-no-files-found: error
+          retention-days: 14

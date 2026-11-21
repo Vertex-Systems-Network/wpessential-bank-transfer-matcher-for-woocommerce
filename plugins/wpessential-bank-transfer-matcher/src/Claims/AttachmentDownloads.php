@@ -81,7 +81,8 @@ final class AttachmentDownloads {
 		header( 'X-Content-Type-Options: nosniff' );
 		header( 'Content-Disposition: attachment; filename="payment-receipt.' . $extension . '"' );
 		header( 'Content-Length: ' . strlen( $bytes ) );
-		echo $bytes;
+		// Binary application/octet-stream receipt: HTML escaping corrupts the protected downloadable bytes.
+		echo $bytes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Capability-, nonce- and MIME-validated raw attachment response, not HTML.
 		exit;
 	}
 }

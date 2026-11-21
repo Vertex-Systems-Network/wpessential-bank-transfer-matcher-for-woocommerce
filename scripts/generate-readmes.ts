@@ -32,6 +32,20 @@ requireValue(metadata.status !== 'released', 'Release documentation requires P9 
 requireValue(typeof metadata.product === 'string' && metadata.product === metadata.free?.title, 'Missing or inconsistent product name');
 requireValue(typeof metadata.author === 'string' && metadata.author.trim(), 'Missing author');
 requireValue(Array.isArray(metadata.wordpress_org_contributors), 'Invalid WordPress.org contributor metadata');
+requireValue(
+  Array.isArray(metadata.wordpress_org_tags) &&
+  metadata.wordpress_org_tags.length >= 1 && metadata.wordpress_org_tags.length <= 5 &&
+  metadata.wordpress_org_tags.every((tag: unknown) =>
+    typeof tag === 'string' && /^[a-z0-9][a-z0-9 -]{1,19}$/.test(tag)
+  ) && new Set(metadata.wordpress_org_tags).size === metadata.wordpress_org_tags.length,
+  'Canonical WordPress.org tags must be 1–5 unique factual lowercase terms under 20 characters',
+);
+requireValue(
+  metadata.wordpress_org_contributors.every((person: unknown) =>
+    typeof person === 'string' && /^[A-Za-z0-9_-]{2,60}$/.test(person)
+  ) && new Set(metadata.wordpress_org_contributors).size === metadata.wordpress_org_contributors.length,
+  'WordPress.org contributor IDs must be verified usernames, not invented display names',
+);
 requireValue(metadata.license === 'GPL-2.0-or-later', 'Invalid product license');
 requireValue(typeof metadata.repository === 'string' && /^https:\/\/github\.com\/[\w-]+\/[\w-]+$/.test(metadata.repository), 'Invalid repository URL');
 for (const field of ['version', 'requires_wp', 'requires_php', 'requires_wc', 'tested_wp', 'tested_wc']) {
@@ -85,7 +99,7 @@ for (const edition of editions) {
   const header = read(`${folder}/${slug}.php`);
   const fields = {
     'Plugin Name': title, Version: metadata.version, 'Requires at least': metadata.requires_wp,
-    'Requires PHP': metadata.requires_php, 'Tested up to': metadata.tested_wp,
+    'Requires PHP': metadata.requires_php,
     'WC requires at least': metadata.requires_wc, 'WC tested up to': metadata.tested_wc,
     'Requires Plugins': dependencies.join(', '), Author: metadata.author, License: metadata.license, 'Text Domain': slug,
   };
@@ -105,7 +119,7 @@ for (const edition of editions) {
   outputs.set(`${folder}/README.md`, `# ${title}\n\n${description}\n\n## Requirements\n\nWordPress ${metadata.requires_wp}+, PHP ${metadata.requires_php}+, and WooCommerce ${metadata.requires_wc}+ are minimum requirements for the development build.\n\n## Development installation\n\n${quickStart}\n\n## Verified preview scope\n\n${scope}\n\n## FAQ\n\n${faq}\n\n## Support and privacy\n\n${support}\n\n## Changelog\n\n### ${metadata.version}\n\n${history}\n\n## Upgrade note\n\n${upgrade}\n`);
   if (edition === 'free') {
     const wpFaq = faq.replace(/^### (.+)$/gm, '= $1 =');
-    outputs.set(`${folder}/readme.txt`, `=== ${title} ===\nRequires at least: ${metadata.requires_wp}\nTested up to: ${metadata.tested_wp}\nRequires PHP: ${metadata.requires_php}\nWC requires at least: ${metadata.requires_wc}\nWC tested up to: ${metadata.tested_wc}\nStable tag: ${metadata.version}\nLicense: ${metadata.license}\n\n${description}\n\n== Description ==\n\n${scope}\n\n== Installation ==\n\n${quickStart}\n\n== Frequently Asked Questions ==\n\n${wpFaq}\n\n== Changelog ==\n\n= ${metadata.version} =\n\n${history}\n\n== Upgrade Notice ==\n\n= ${metadata.version} =\n\n${upgrade}\n`);
+    outputs.set(`${folder}/readme.txt`, `=== ${title} ===\nTags: ${metadata.wordpress_org_tags.join(', ')}\n${metadata.wordpress_org_contributors.length ? `Contributors: ${metadata.wordpress_org_contributors.join(', ')}\n` : ''}Requires Plugins: ${dependencies.join(', ')}\nRequires at least: ${metadata.requires_wp}\nTested up to: ${metadata.tested_wp}\nRequires PHP: ${metadata.requires_php}\nWC requires at least: ${metadata.requires_wc}\nWC tested up to: ${metadata.tested_wc}\nStable tag: ${metadata.version}\nLicense: ${metadata.license}\n\n${description}\n\n== Description ==\n\n${scope}\n\n== Installation ==\n\n${quickStart}\n\n== Frequently Asked Questions ==\n\n${wpFaq}\n\n== Changelog ==\n\n= ${metadata.version} =\n\n${history}\n\n== Upgrade Notice ==\n\n= ${metadata.version} =\n\n${upgrade}\n`);
   }
   const channel = edition === 'free' ? 'wordpress-org' : 'woocommerce-marketplace';
   outputs.set(`docs/submission/${channel}/listing-copy.generated.md`, `# ${title}\n\nDevelopment draft. Submission and publication are pending release verification.\n\n${description}\n\n${scope}\n\n${quickStart}\n`);
@@ -118,9 +132,12 @@ outputs.set('docs/release/metadata-sync-report.json', JSON.stringify({
   checked_headers: editions.map((edition) => metadata[edition].slug),
   verified_preview_features: visibleFeatures.map(({ id, edition, test_id, evidence }) => ({ id, edition, test_id, evidence })),
   generated_files: [...outputs.keys()],
+  wordpress_org_tags: metadata.wordpress_org_tags,
+  official_online_readme_validator: 'NOT VERIFIED',
+  contributor_usernames_verification: metadata.wordpress_org_contributors.length ? 'PENDING EXTERNAL VERIFICATION' : 'NOT VERIFIED',
   release_checks_pending: [
-    'Official WordPress.org readme validator',
-    'Verified WordPress.org contributor usernames and tested-version metadata',
+    'Official online WordPress.org readme validator and verified contributor usernames',
+    'Official WordPress Plugin Check and WooCommerce QIT results',
     'Marketplace, screenshots, and production package validation',
   ],
 }, null, 2) + '\n');

@@ -17,6 +17,7 @@ Settings controls receipt uploads and shop-manager access. Receipt uploads are d
 ## Verified preview scope
 
 - Separate add-on activation and Free dependency checks.
+- Import and validate bank statement rows.
 
 ## FAQ
 

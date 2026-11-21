@@ -115,7 +115,8 @@ final class ClaimReviews {
 			'verified' => __( 'Your bank transfer claim has been verified against merchant bank evidence. Check your order for its current payment status.', 'wpessential-bank-transfer-matcher' ),
 			'rejected' => __( 'Your bank transfer claim could not be verified. Please contact the store if you need help.', 'wpessential-bank-transfer-matcher' ),
 		];
-		$subject = sprintf( __( 'Update on order #%s', 'wpessential-bank-transfer-matcher' ), $order->get_order_number() );
+		/* translators: %s: WooCommerce order number. */
+        $subject = sprintf( __( 'Update on order #%s', 'wpessential-bank-transfer-matcher' ), $order->get_order_number() );
 		if ( wp_mail( $email, $subject, $messages[ $event['status'] ] ?? '' ) ) {
 			$repository->mark_notified( $event_id );
 			return 'sent';

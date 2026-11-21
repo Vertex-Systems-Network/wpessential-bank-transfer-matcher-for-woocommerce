@@ -1,0 +1,61 @@
+name: P9 latest official WordPress and WooCommerce native compatibility (synthetic)
+
+on:
+  push:
+    branches:
+      - development/p9-t009-wporg-official-preflight-20261121
+      - development/p9-release-candidate-docs-20261121
+
+permissions:
+  contents: read
+
+jobs:
+  latest-native-compat:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_DATABASE: wbm_ci
+          MARIADB_USER: wbm_ci
+          MARIADB_PASSWORD: wbm-ci-test-only
+          MARIADB_RANDOM_ROOT_PASSWORD: "1"
+        ports:
+          - 3306/tcp
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mysqli
+          tools: composer:v2, wp-cli
+      - name: Bootstrap official checksum-pinned WP CLI
+        run: bash scripts/ensure-wp-cli-ci.sh
+      - name: Package real Free and Pro optimized production archives
+        run: |
+          bash scripts/package-plugin.sh free
+          bash scripts/package-plugin.sh pro
+      - name: Install real WordPress 7.1.5 and test WooCommerce 11.3.1 on MariaDB
+        env:
+          WBM_DB_PORT: ${{ job.services.mariadb.ports['3306'] }}
+        run: |
+          site="$RUNNER_TEMP/wbm-latest-wp"
+          wp core download --path="$site" --version=7.1.5
+          wp config create --path="$site" --dbname=wbm_ci --dbuser=wbm_ci --dbpass=wbm-ci-test-only --dbhost="127.0.0.1:$WBM_DB_PORT"
+          wp core install --path="$site" --url=http://wbm-latest.test --title="WBM latest version CI" --admin_user=wbm_ci --admin_password="ci-synthetic-only" --admin_email=ci@example.test --skip-email
+          test "$(wp core version --path="$site")" = '7.1.5'
+          WBM_P9_LATEST_PATCH_PROBE=1 bash scripts/test-native-install.sh "$site" https://downloads.wordpress.org/plugin/woocommerce.11.3.1.zip
+          test "$(wp plugin get woocommerce --field=version --path="$site")" = '11.3.1'
+          printf 'PASS real synthetic WordPress 7.1.5 / WooCommerce 11.3.1 / PHP 8.3 / MariaDB 11.4, native Free/Pro clean ZIP installs, HPOS/classic, finance invariants\n' > "$RUNNER_TEMP/p9-latest-version-result.txt"
+      - name: Upload real latest-patch test outcome only on success
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-latest-wp-7-1-5-woo-11-3-1-native
+          path: ${{ runner.temp }}/p9-latest-version-result.txt
+          if-no-files-found: error
+          retention-days: 14

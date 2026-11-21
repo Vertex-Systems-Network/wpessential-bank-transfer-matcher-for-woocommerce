@@ -1,7 +1,7 @@
 {
   "project": "WPEssential Bank Transfer Matcher for WooCommerce",
   "schema_version": 1,
-  "current_branch": "development/p8-threat-model-access-matrix-20261120",
+  "current_branch": "development/p9-release-candidate-docs-20261121",
   "last_verified_base_commit": "939b9c6c7ecd1882340af9dcd55fe932d4207251",
   "last_checkpoint_utc": "2026-11-20",
   "execution_status": "in_progress",
@@ -112,7 +112,19 @@
     "p8_checkout_matrix": "PASSED at exact SHA ce5d78392d8b0f0cd8042aa4a55e4b45ce3bf50a: 9/9 checks green in native/Playground runs 44829621364/44829632822, Chromium 44829621375 artifact 14673854609, matrix 44829621415 PHP8.3+8.4 × WC10.8.0+11.3.0. Actual classic guest UI and Store API BACS two on-hold/unpaid orders, separate references/claim forms. Block frontend rendered; Block Pay button not clicked. No production payment.",
     "p8_import_benchmarks": "PASSED at exact d0b5143ed64bb66eaf86779fa651358961b08481: 10/10 GHA checks green; 44831039401 real benchmark artifact 14675449713, 1k 398.02ms, 10k 3670ms, 50k rejected pre-staging 21.21ms, PHP allocated peak 133.81MiB. SQL confirms unchanged rows/jobs/batches for 50k. Foundations 44831039373/44831053993, WC/PHP matrix 44831039366, Chromium 44831039387 all success. Not process RSS/production SLA.",
     "p8_upgrade_coexistence": "VERIFIED code 680602d833018fda5ebfaaa62bd0f1c95e1bb355: all 12 GitHub checks success, actual real HPOS+classic Woo 10.8.0->11.3.0 upgrade and Free+Pro dependency/reinstall with synthetic companion, ref/claim/bank rows intact; upgrade 44832609979, Foundation/native 44832609976+44832619094, browser 44832609830, PHP/WC matrix 44832609858, benchmark 44832610042. No production upgrade certification.",
-    "p8_final_security_closure": "CODE ACCEPTANCE PASS exact 11c19383bc2f61091be742939415c1437326514b: 12/12 GitHub check runs all success; genuine WP/WC/MariaDB six invalid CSV headers fail before private stage/queued action and real UTF-8 BOM one-row import succeeds; all T001–T008 existing security/checkout/upgrade/benchmark matrix green. Final T009 docs/state head requires new exact-head CI before merging phase PR. No independent pen certification."
+    "p8_final_security_closure": "CODE ACCEPTANCE PASS exact 11c19383bc2f61091be742939415c1437326514b: 12/12 GitHub check runs all success; genuine WP/WC/MariaDB six invalid CSV headers fail before private stage/queued action and real UTF-8 BOM one-row import succeeds; all T001–T008 existing security/checkout/upgrade/benchmark matrix green. Final T009 docs/state head requires new exact-head CI before merging phase PR. No independent pen certification.",
+    "p9_canonical_readmes": "SUCCESS exact P9 source SHA 4ebc305311d7ad1b104df9fecca01e5eb41be6cb, 12/12 Green: real Foundation/docs mutation/Playground and native MariaDB 44836580709/44836589937, Chromium LTR/RTL 44836580825, 4 WC/PHP cells 44836580630, in-place WC dual HPOS/classic 44836580786, 1k/10k/50k benchmark 44836580725. Official online WP.org readme validator NOT VERIFIED; no contributors invented.",
+    "p9_t002_marketplace": "VERIFIED source SHA 3321f3dedfc56edd8e703c6470ab6c0eee203e75: 12/12 original GitHub checks green. Source-backed Woo reviewer preflight and QIT matrix validated by native Foundation; managed Woo QIT not run, partner business/license approvals pending.",
+    "p9_t003_source_screens": "Verified five exact-source GitHub Actions checks at f933bbd, raw screenshot artifact 14680471253 and release screenshot artifact 14679654169; 13 original PNG SHA256 hashes independently checked.",
+    "p9_t004_zip": "Verified SHA 241f02a2c023ab9f64fe723ebc35354da81ff14a 4/4 Actions green, actual ZIPs + SHA256/license artifact 14680408152 from 44841278708, no third-party locked runtime Composer deps. Not approved for release.",
+    "p9_t005_playground": "Verified a33c68abbd7ace09097f012262b01d547dd74c54: 6/6 GitHub Actions green, real 3-Blueprint artifact 14681504347 and source plugin ZIPs 14681906146 downloaded and independently SHA256/byte-parity checked.",
+    "p9_t006_release_manifest": "Verified SHA 7ac11af08132a40c27dad3c0491e32254ee344fc all 4 Actions success, five ZIP SHA256, canonical changelog, license inventory, 44844529924 artifacts 14682700735,14682596573,14682656505; only historical compatibility, no QIT.",
+    "p9_t007_acceptance_audit": "Verified SHA 8c9cf880 6/6 Actions success; real audit artifact 14683367830: 8 features/14 screens/168 traceability, 168 planned, F-STATEMENT-IMPORT planned, release_eligible=false; managed Woo QIT not run.",
+    "p9_t008_publication_blockers": "VERIFIED exact source af48ce4d 4/4 native+Playground actions; genuine artifact 14683614396 15 gates 7 technical/2 business/6 permission, all unresolved, false publication denied; deterministic SQL hold until both independent contenders complete.",
+    "p9_t009_wporg_official": "VERIFIED eac7b606 7/7 checks; actual official scanner 2.2.0 0 errors 45 warnings incl WP trademark, official readme 4 notes/no fatal; ZIP 5 SHA256 and nested parity; real native WP7.1.5 WC11.3.1; owner submission NOT AUTHORIZED; official artifact 14685666331.",
+    "p9_t010_local_qit": "VERIFIED source 4af68afe 9/9 GitHub Actions green; actual QIT CLI 1.3.4 local Docker activated Woo+Free+Pro, genuine artifact 14685572948 SHA checked. No partner/managed QIT. All 8 feature catalog IDs evidence-linked; 168 requirement rows remain planned.",
+    "p9_t011_visual_native": "VERIFIED source 1957a06a 7/7 exact GitHub checks. Real browser 13 PNGs artifact 14686177486 and audit 14686212394 hashes and visual inspected, 6 LTR/RTL reports; native maker/checker/split race/HPOS/classic real artifact 14685609782; synthetic only. Phase merge 43838ecb.",
+    "p9_t012_docs_lock": "VERIFIED b2afb5f4 6/6 original Actions, actual docs lock artifact 14686248852, independently matched original Free/Pro ZIP 14687145040 and release manifest 14686258780; version 0.1.0 WP7.1/WC11.3.1 eight backed catalog IDs, GPL, no public release."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -126,8 +138,8 @@
     "free_is_independent"
   ],
   "phase": "P9",
-  "active_task_id": "WBM-P9-T001",
-  "next_action": "FIRST verify final P8 T009 task/evidence HEAD succeeds on ALL 12 configured exact-head GitHub checks and PR #15 has no unresolved reviews/protection conflicts; then mark ready and merge verified P8 phase PR into main with expected SHA per owner-authorized .ai/phase-merge-policy.md. Verify main commit/merged status. Create dedicated P9 release engineering branch and only then start true P9-T001: canonically generate WordPress.org readme.txt and separate Free/Pro READMEs, run docs drift/readme validator on actual source; record exact-head CI. No plugin publication.",
+  "active_task_id": "WBM-P9-T013",
+  "next_action": "P9-T013: retarget draft PR #28 onto current P9 phase head after accepted T012, preserving authentic Free/Pro ZIP and actual source. Require exact combined-head CI with independent Foundation ZIP CRC/GLP/Composer autoload no-vendor hashes, real native WooCommerce/MariaDB startup without Composer PATH and synthetic unpaid BACS CRUD. Download and hash actual artifacts and clean install, check final phase CI, enforce 168 requirement rows and 7 managed QIT/unapproved vendor+WordPress.org/trademark gates. Do not release, commit SVN or merge phase #16 into main.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -217,8 +229,20 @@
     "WBM-P8-T006",
     "WBM-P8-T007",
     "WBM-P8-T008",
-    "WBM-P8-T009"
+    "WBM-P8-T009",
+    "WBM-P9-T001",
+    "WBM-P9-T002",
+    "WBM-P9-T003",
+    "WBM-P9-T004",
+    "WBM-P9-T005",
+    "WBM-P9-T006",
+    "WBM-P9-T007",
+    "WBM-P9-T008",
+    "WBM-P9-T009",
+    "WBM-P9-T010",
+    "WBM-P9-T011",
+    "WBM-P9-T012"
   ],
   "blocked_tasks": [],
-  "last_verified_remote_milestone": "11c19383bc2f61091be742939415c1437326514b"
+  "last_verified_remote_milestone": "4ebc305311d7ad1b104df9fecca01e5eb41be6cb"
 }

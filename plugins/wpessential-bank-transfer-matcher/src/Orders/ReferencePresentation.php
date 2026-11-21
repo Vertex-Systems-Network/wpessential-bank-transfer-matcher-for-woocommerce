@@ -63,9 +63,9 @@ final class ReferencePresentation {
 		$hint = __( 'Use this exact reference when transferring.', 'wpessential-bank-transfer-matcher' );
 		$awaiting_transfer = $order->has_status( array( 'pending', 'on-hold' ) );
 		if ( $plain_text ) {
-			printf( "%s: %s\n", $label, $reference->value );
+			printf( "%s: %s\n", esc_html( $label ), esc_html( $reference->value ) );
 			if ( $awaiting_transfer ) {
-				echo $hint . "\n";
+				echo esc_html( $hint ) . "\n";
 			}
 			return;
 		}
