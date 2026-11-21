@@ -63,8 +63,10 @@ jobs:
           set +e
           wp plugin check wpessential-bank-transfer-matcher --mode=new --format=json --path="$site" > dist/p9-wporg-plugin-check-results.json 2> dist/p9-wporg-plugin-check-stderr.txt
           pcp_exit=$?
+          base64 -w0 plugins/wpessential-bank-transfer-matcher/readme.txt > "$RUNNER_TEMP/p9-readme-base64.txt"
           status=$(curl --silent --show-error --location --connect-timeout 12 --max-time 50 \
-            --data-urlencode "readme_contents@plugins/wpessential-bank-transfer-matcher/readme.txt" \
+            --data-urlencode "readme=" \
+            --data-urlencode "readme_contents@$RUNNER_TEMP/p9-readme-base64.txt" \
             --output dist/p9-wporg-official-readme-response.html \
             --write-out '%{http_code}' https://wordpress.org/plugins/developers/readme-validator/)
           online_exit=$?
