@@ -1,0 +1,13 @@
+P9 release feature catalog provenance: F-STATEMENT-IMPORT / VERIFY-P3-T002
+
+Genuine GitHub Actions run: https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44238596901
+Run 44238596901 date: 2026-11-18
+Native MariaDB job 134580644174: COMPLETED SUCCESS
+Foundation job: COMPLETED SUCCESS
+Actual native job log (2026-11-18T04:38:11.5575977Z):
+PASS streaming CSV raw rows, quoting, UTF-8 guards and exact canonical representation
+
+Task WBM-P3-T002 canonical state: DONE.
+Additional P3 CSV mapping/dry-run/job and P8 adversarial/native tests exist separately; this citation proves the scoped F-STATEMENT-IMPORT parser/test ID only, not official managed QIT or unrestricted production bank imports.
+Evidence independently retrieved from GitHub via connected GitHub tool on 2026-11-21.
+Managed Woo QIT: NOT RUN. Production payments: NOT EXERCISED. Publication: NOT AUTHORIZED.

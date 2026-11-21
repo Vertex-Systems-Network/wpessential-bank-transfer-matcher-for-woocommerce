@@ -58,8 +58,9 @@
   {
     "id": "F-STATEMENT-IMPORT",
     "edition": "pro",
-    "status": "planned",
+    "status": "verified",
     "summary": "Import and validate bank statement rows.",
-    "test_id": "VERIFY-P3-T002"
+    "test_id": "VERIFY-P3-T002",
+    "evidence": "playground/evidence/pro-csv-parser-2026-11-21.log"
   }
 ]

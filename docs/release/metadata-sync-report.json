@@ -47,6 +47,12 @@
       "edition": "free",
       "test_id": "VERIFY-P2-T012",
       "evidence": "playground/evidence/free-phase2-2026-11-18.log"
+    },
+    {
+      "id": "F-STATEMENT-IMPORT",
+      "edition": "pro",
+      "test_id": "VERIFY-P3-T002",
+      "evidence": "playground/evidence/pro-csv-parser-2026-11-21.log"
     }
   ],
   "generated_files": [
