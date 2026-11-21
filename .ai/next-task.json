@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P9-T006",
+  "id": "WBM-P9-T007",
   "phase": "P9",
-  "title": "generate SHA256SUMS, changelog, validation report, compatibility matrix.",
+  "title": "final acceptance audit vs every feature ID, screen ID and test ID.",
   "owner": "Release engineering",
   "paths": "docs/release/; scripts/",
   "depends_on": [
-    "WBM-P9-T005"
+    "WBM-P9-T006"
   ],
-  "verification": "VERIFY-P9-T006",
+  "verification": "VERIFY-P9-T007",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "P9-T006: review and integrate stacked PR #21 only after bringing latest P9 checkpoint into its branch, preserve the verified ZIP and Playground CI uploads. Verify five archive SHA256SUMS, canonical changelog, exact CI source provenance (PR checkout merge SHA vs head SHA), historical PHP/WC matrix with latest patch explicitly NOT VERIFIED, and validation report; require exact-source CI and downloaded real artifacts. Do not publish."
+  "next_action": "P9-T007: integrate draft PR #22 source-backed 8-feature/14-screen/168-requirement/103-task acceptance gap audit into latest P9 branch without losing packaging/Playground release checks. Verify exact combined-commit CI and artifact, preserve unresolved per-ID statuses, do not claim release eligibility."
 }
