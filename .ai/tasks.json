@@ -1274,8 +1274,8 @@
       "WBM-P9-T006"
     ],
     "verification": "VERIFY-P9-T007",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "VERIFIED source SHA 8c9cf880494c098480d9d198abdcd9dc70df26ac: all 6/6 GitHub Foundation/Playground/native MariaDB checks SUCCESS, runs 44846176946, 44846183161, 44846306553. Actual source run 44846306553 acceptance artifact 14683367830 downloaded and inspected: 8 feature IDs, 14 unique UI source-backed contracts, 168 requirement/source IDs, 103 task test IDs, all completed tasks have evidence; no unsupported release approval. Material unresolved product acceptance: F-STATEMENT-IMPORT remains planned and 168/168 traceability statuses remain planned (not necessarily missing software implementation). Report explicitly release_eligible=false, Woo QIT NOT RUN. PR #22 merged to P9 only as 26d7ef0d7aabb5b724787dae7f919180b3501a27. Completing source-backed acceptance audit DOES NOT approve product or publication.",
     "next_action": "P9-T007: integrate draft PR #22 source-backed 8-feature/14-screen/168-requirement/103-task acceptance gap audit into latest P9 branch without losing packaging/Playground release checks. Verify exact combined-commit CI and artifact, preserve unresolved per-ID statuses, do not claim release eligibility."
   },
   {
@@ -1288,8 +1288,9 @@
       "WBM-P9-T007"
     ],
     "verification": "VERIFY-P9-T008",
-    "status": "planned",
-    "evidence": ""
+    "status": "done",
+    "evidence": "VERIFIED P9-T008 source af48ce4d2fd1fd5b90fb753fc8ae0e1f0c5d1abf: real combined-commit GitHub Actions Foundation/Playground/MariaDB 4/4 success at runs 44848501120 and 44848507855. Source audit P9-T007 recorded 8 features, 14 UI screens and 168 planned requirements; fail-closed 15 publication gates (7 technical, 2 business, 6 permissions) artifact 14683614396 downloaded, parsed and confirmed release_ready=false/may_submit=false/owner_approval NOT AUTHORIZED. Corrected fixed-sleep PHP/SQL race fixture with real named-lock rendezvous, both real independent WP-CLI contenders and fail-closed timeout after an actual race misordering failure in run 44847401089. New source all 4 CI passed. PR #23 merged into P9 development at b793b1dadef47dcda7d0c2f52f8ace86f324ef10. Product/marketplace/WordPress.org/QIT approval not claimed.",
+    "next_action": "P9-T008: reconcile 15 true technical/business/permission-only release blockers via stacked PR #23, fail-closed validation of P9-T007 source audit and no-release authority; retarget to P9, resolve conflict without loss of prior CI/archives; inspect exact-commit tests/artifact. External release remains blocked."
   },
   {
     "id": "WBM-P9-T009",
@@ -1301,8 +1302,9 @@
       "WBM-P9-T008"
     ],
     "verification": "VERIFY-P9-T009",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Review draft PR #24 official WordPress.org PCP 2.2.0/readme validator/Free SVN dry-run; integrate latest P9-T008 source and exact source-head CI. Scanner had 1 readme outdated WP error and 45 warnings at historical Tested up to:7.0; real native latest WP7.1.5/WC11.3.1 passed in run 44848601239; update canonical tested versions and generator outputs only after that evidence; require clean scan, truthful online notes, real archive and native tests. No public submission, no credentials."
   },
   {
     "id": "WBM-P9-T010",

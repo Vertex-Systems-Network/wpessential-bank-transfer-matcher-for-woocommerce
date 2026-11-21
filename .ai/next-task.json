@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P9-T007",
+  "id": "WBM-P9-T009",
   "phase": "P9",
-  "title": "final acceptance audit vs every feature ID, screen ID and test ID.",
+  "title": "run WordPress Plugin Check and official readme validator with results, prepare WordPress.org SVN dry-run structure and Free submission checklist (Section 16B).",
   "owner": "Release engineering",
   "paths": "docs/release/; scripts/",
   "depends_on": [
-    "WBM-P9-T006"
+    "WBM-P9-T008"
   ],
-  "verification": "VERIFY-P9-T007",
+  "verification": "VERIFY-P9-T009",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "P9-T007: integrate draft PR #22 source-backed 8-feature/14-screen/168-requirement/103-task acceptance gap audit into latest P9 branch without losing packaging/Playground release checks. Verify exact combined-commit CI and artifact, preserve unresolved per-ID statuses, do not claim release eligibility."
+  "next_action": "Review draft PR #24 official WordPress.org PCP 2.2.0/readme validator/Free SVN dry-run; integrate latest P9-T008 source and exact source-head CI. Scanner had 1 readme outdated WP error and 45 warnings at historical Tested up to:7.0; real native latest WP7.1.5/WC11.3.1 passed in run 44848601239; update canonical tested versions and generator outputs only after that evidence; require clean scan, truthful online notes, real archive and native tests. No public submission, no credentials."
 }
