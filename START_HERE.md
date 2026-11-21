@@ -1,5 +1,11 @@
 # Start here
 
+## P9-T007 acceptance evidence audited; P9-T008 publication blockers active — 2026-11-21
+
+**96/103 completed tasks.** Exact source `8c9cf880494c098480d9d198abdcd9dc70df26ac`: 6/6 original GitHub Actions SUCCESS, real audit artifact **14683367830** downloaded and verified (8 features, 14 WP/Woo UI contracts, 168 traceability rows, 103 tasks). [PR #22](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/22) merged into P9 only at `26d7ef0d7aabb5b724787dae7f919180b3501a27`. **Release approval is NOT granted:** 168 requirement statuses and one catalog feature still planned; actual official Woo QIT, publisher accounts, latest version recertification not verified.
+
+**P9-T008 active:** [draft PR #23](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/23) classifies technical, commercial and permission-only release blockers; do not treat access as the only issue. [PR #24](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/24) runs actual WP.org PCP and readme validator, found genuine blocking findings; remains stacked until T008.
+
 ## P9-T006 verified, P9-T007 acceptance audit active — 2026-11-21
 
 **95/103 tasks done.** Source `7ac11af08132a40c27dad3c0491e32254ee344fc` all four GitHub Actions success [44844525266](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44844525266) and [44844529924](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44844529924). Free/Pro artifact **14682700735**, 3-Blueprint artifact **14682596573** and candidate SHA256/changelog/compat report **14682656505** downloaded; independent checks all five actual ZIP SHA256s and nested bytes match. [PR #21](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/21) merged into P9 development at `19b459f986f0ea2d548e0f056521d63bc43bccfd`. Managed QIT, official WordPress.org checks and latest patch compatibility remain unverified.
