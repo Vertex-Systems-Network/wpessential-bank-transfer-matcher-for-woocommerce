@@ -159,6 +159,8 @@ jobs:
           if-no-files-found: error
           retention-days: 14
       - name: Final original Free/Pro archive and Composer autoload dependency audit
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           python3 -m py_compile scripts/p9-t013-final-audit.py
           python3 scripts/p9-t013-final-audit.py --archive
@@ -227,6 +229,8 @@ jobs:
           if-no-files-found: error
           retention-days: 14
       - name: Prove installed Free/Pro and WooCommerce operate without Composer executable
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           bash scripts/p9-t013-no-composer.sh "$RUNNER_TEMP/wbm-wordpress"
           python3 scripts/p9-t013-final-audit.py --native
