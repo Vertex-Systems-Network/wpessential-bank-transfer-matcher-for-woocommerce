@@ -123,7 +123,8 @@
     "p9_t008_publication_blockers": "VERIFIED exact source af48ce4d 4/4 native+Playground actions; genuine artifact 14683614396 15 gates 7 technical/2 business/6 permission, all unresolved, false publication denied; deterministic SQL hold until both independent contenders complete.",
     "p9_t009_wporg_official": "VERIFIED eac7b606 7/7 checks; actual official scanner 2.2.0 0 errors 45 warnings incl WP trademark, official readme 4 notes/no fatal; ZIP 5 SHA256 and nested parity; real native WP7.1.5 WC11.3.1; owner submission NOT AUTHORIZED; official artifact 14685666331.",
     "p9_t010_local_qit": "VERIFIED source 4af68afe 9/9 GitHub Actions green; actual QIT CLI 1.3.4 local Docker activated Woo+Free+Pro, genuine artifact 14685572948 SHA checked. No partner/managed QIT. All 8 feature catalog IDs evidence-linked; 168 requirement rows remain planned.",
-    "p9_t011_visual_native": "VERIFIED source 1957a06a 7/7 exact GitHub checks. Real browser 13 PNGs artifact 14686177486 and audit 14686212394 hashes and visual inspected, 6 LTR/RTL reports; native maker/checker/split race/HPOS/classic real artifact 14685609782; synthetic only. Phase merge 43838ecb."
+    "p9_t011_visual_native": "VERIFIED source 1957a06a 7/7 exact GitHub checks. Real browser 13 PNGs artifact 14686177486 and audit 14686212394 hashes and visual inspected, 6 LTR/RTL reports; native maker/checker/split race/HPOS/classic real artifact 14685609782; synthetic only. Phase merge 43838ecb.",
+    "p9_t012_docs_lock": "VERIFIED b2afb5f4 6/6 original Actions, actual docs lock artifact 14686248852, independently matched original Free/Pro ZIP 14687145040 and release manifest 14686258780; version 0.1.0 WP7.1/WC11.3.1 eight backed catalog IDs, GPL, no public release."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -137,8 +138,8 @@
     "free_is_independent"
   ],
   "phase": "P9",
-  "active_task_id": "WBM-P9-T012",
-  "next_action": "P9-T012: retarget draft PR #27 canonical 0.1.0 doc and Free/Pro original ZIP/version lock onto current P9 phase branch, integrate T011 source without CI regression, verify exact head Foundation/Playground/native version, source/ZIP README/GPL and feature manifest drift tests, source SHA256 and artifacts. Keep 168 requirement rows, 45 WP scanner warnings/trademark and 7 managed cloud QIT suites external blockers; no public release.",
+  "active_task_id": "WBM-P9-T013",
+  "next_action": "P9-T013: retarget draft PR #28 onto current P9 phase head after accepted T012, preserving authentic Free/Pro ZIP and actual source. Require exact combined-head CI with independent Foundation ZIP CRC/GLP/Composer autoload no-vendor hashes, real native WooCommerce/MariaDB startup without Composer PATH and synthetic unpaid BACS CRUD. Download and hash actual artifacts and clean install, check final phase CI, enforce 168 requirement rows and 7 managed QIT/unapproved vendor+WordPress.org/trademark gates. Do not release, commit SVN or merge phase #16 into main.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -239,7 +240,8 @@
     "WBM-P9-T008",
     "WBM-P9-T009",
     "WBM-P9-T010",
-    "WBM-P9-T011"
+    "WBM-P9-T011",
+    "WBM-P9-T012"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "4ebc305311d7ad1b104df9fecca01e5eb41be6cb"
