@@ -2,6 +2,7 @@
   "slug": "wpessential-bank-transfer-matcher-pro",
   "required": [
     "wpessential-bank-transfer-matcher-pro.php",
+    "LICENSE",
     "README.md",
     "composer.json",
     "composer.lock",
