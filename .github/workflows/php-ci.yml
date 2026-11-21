@@ -33,6 +33,7 @@ jobs:
           bash scripts/package-plugin.sh pro
       - name: P9 independent ZIP licenses, optimized autoload and deterministic repeat
         run: |
+          python3 -m py_compile scripts/verify-release-archives.py tests/p9_archive_guards.py
           python3 scripts/verify-release-archives.py --output /tmp/wbm-p9-license-inventory.json
           PYTHONOPTIMIZE=1 python3 tests/p9_archive_guards.py
           PYTHONOPTIMIZE=1 python3 scripts/verify-release-archives.py
