@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P9-T005",
+  "id": "WBM-P9-T006",
   "phase": "P9",
-  "title": "build/execute actual Free and Pro WordPress Playground Blueprint bundles; also test clean install/deactivate/reactivate/upgrade in MySQL-backed disposable WP (Section 16E).",
+  "title": "generate SHA256SUMS, changelog, validation report, compatibility matrix.",
   "owner": "Release engineering",
   "paths": "docs/release/; scripts/",
   "depends_on": [
-    "WBM-P9-T004"
+    "WBM-P9-T005"
   ],
-  "verification": "VERIFY-P9-T005",
+  "verification": "VERIFY-P9-T006",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Review/retarget stacked PR #20 against current P9 phase branch, verify actual base/Free/Pro Playground Blueprint bundles embed exact production ZIP bytes, failed tamper tests, successful real Playground CLI scenarios, and independent native MariaDB/HPOS/classic install/migration. Accept only after exact new-head CI and artifact inspection; do not publish."
+  "next_action": "P9-T006: review and integrate stacked PR #21 only after bringing latest P9 checkpoint into its branch, preserve the verified ZIP and Playground CI uploads. Verify five archive SHA256SUMS, canonical changelog, exact CI source provenance (PR checkout merge SHA vs head SHA), historical PHP/WC matrix with latest patch explicitly NOT VERIFIED, and validation report; require exact-source CI and downloaded real artifacts. Do not publish."
 }
