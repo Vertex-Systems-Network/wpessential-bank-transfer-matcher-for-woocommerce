@@ -1260,8 +1260,8 @@
       "WBM-P9-T005"
     ],
     "verification": "VERIFY-P9-T006",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "VERIFIED exact source SHA 7ac11af08132a40c27dad3c0491e32254ee344fc: 4/4 Foundation/real Playground/native WooCommerce MariaDB checks succeeded (runs 44844525266, 44844529924). Downloaded actual run 44844529924 archives: independent Free/Pro 14682700735, 3 Playground Blueprints 14682596573, SHA256SUMS, canonical 0.1.0 changelog, historical version matrix and validation report 14682656505. Independently recomputed all 5 SHA256SUMS, nested Free/Pro bytes in Blueprint, license inventory, changelog source hash and CI provenance source HEAD vs synthetic PR merge checkout. Verified report does NOT claim new WC/WP versions, QIT, public release or Marketplace approval. PR #21 merged to P9 development as 19b459f986f0ea2d548e0f056521d63bc43bccfd.",
     "next_action": "P9-T006: review and integrate stacked PR #21 only after bringing latest P9 checkpoint into its branch, preserve the verified ZIP and Playground CI uploads. Verify five archive SHA256SUMS, canonical changelog, exact CI source provenance (PR checkout merge SHA vs head SHA), historical PHP/WC matrix with latest patch explicitly NOT VERIFIED, and validation report; require exact-source CI and downloaded real artifacts. Do not publish."
   },
   {
@@ -1274,8 +1274,9 @@
       "WBM-P9-T006"
     ],
     "verification": "VERIFY-P9-T007",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "P9-T007: integrate draft PR #22 source-backed 8-feature/14-screen/168-requirement/103-task acceptance gap audit into latest P9 branch without losing packaging/Playground release checks. Verify exact combined-commit CI and artifact, preserve unresolved per-ID statuses, do not claim release eligibility."
   },
   {
     "id": "WBM-P9-T008",
