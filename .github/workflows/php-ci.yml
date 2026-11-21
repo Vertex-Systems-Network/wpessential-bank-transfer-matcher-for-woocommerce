@@ -134,6 +134,17 @@ jobs:
           path: dist/p9-acceptance-audit.json
           if-no-files-found: error
           retention-days: 14
+      - name: Deny premature release and document publication permission boundaries
+        run: |
+          python3 -m py_compile scripts/p9-publication-preflight.py
+          python3 scripts/p9-publication-preflight.py --negative-tests
+      - name: Upload immutable release blocker and handoff classification
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-release-publication-blockers
+          path: dist/p9-publication-preflight.json
+          if-no-files-found: error
+          retention-days: 14
 
   mariadb-migrations:
     runs-on: ubuntu-latest
