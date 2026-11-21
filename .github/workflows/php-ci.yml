@@ -187,4 +187,18 @@ jobs:
         run: |
           bash scripts/package-plugin.sh free
           bash scripts/package-plugin.sh pro
-          bash scripts/test-native-install.sh "$RUNNER_TEMP/wbm-wordpress"
+          set -o pipefail
+          bash scripts/test-native-install.sh "$RUNNER_TEMP/wbm-wordpress" | tee "$RUNNER_TEMP/p9-t011-native-test.log"
+      - name: Verify real cross-request SQL concurrency, HPOS and classic logs from native WooCommerce
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python3 -m py_compile scripts/p9-t011-release-qa.py
+          python3 scripts/p9-t011-release-qa.py --native-log "$RUNNER_TEMP/p9-t011-native-test.log"
+      - name: Upload real native MariaDB race and HPOS/classic source matrix (raw private logs stay ephemeral)
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-t011-native-sql-races-and-storage
+          path: dist/p9-t011-native-matrix.json
+          if-no-files-found: error
+          retention-days: 14
