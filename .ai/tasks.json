@@ -1316,8 +1316,8 @@
       "WBM-P9-T009"
     ],
     "verification": "VERIFY-P9-T010",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "VERIFIED exact source 4af68afe58c44b9c1132db77014c22eb7781c600 all 9/9 GitHub Actions Foundation/real Playground/native MariaDB/official WordPress.org preflight/local QIT CLI jobs SUCCESS, including QIT runs 44852162896, 44852156807. Real official QIT CLI 1.3.4 in temporary vendor-auth-free LOCAL Docker installed and activated actual WooCommerce, independently packaged Free/Pro; native result artifact 14685572948 downloaded/inspected source HEAD, distinct CI synthetic checkout, two plugin ZIP SHA256 and three real plugin activations. QIT managed cloud seven suites all not_run/no run IDs, no vendor auth/product review/paid license backend, no misleading approvals. Source-backed P3-T002 native streaming UTF-8 CSV test PASS from actual Actions run 44238596901/native job 134580644174; F-STATEMENT-IMPORT changed planned→verified with new provenance log playground/evidence/pro-csv-parser-2026-11-21.log and generator-consistent Pro README/Marketplace listing/metadata; 8/8 canonical feature IDs now verified. All 168 requirement traceability lines remain planned/unapproved. PR25 merged P9 development only at 247a872dc10906a10c07ce60e363ea3152b2db6d. No public distribution or money actions.",
     "next_action": "P9-T010: retarget staged PR #25 onto current verified P9 head, preserve T009 release fixes; review genuine WooCommerce QIT 1.3.4 vendor-auth-free local Docker Free+Pro activation proof and exact ZIP hashes. Require fresh exact-source native/Playground/local QIT CI and artifact. Prepare accurate seven managed Woo QIT NOT RUN, vendor account/license/pricing/freemium business acceptance blockers; never claim Marketplace approval or publish."
   },
   {
@@ -1330,8 +1330,9 @@
       "WBM-P9-T010"
     ],
     "verification": "VERIFY-P9-T011",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "P9-T011: review stacked PR #26; reconcile its browser+native actual-source QA into latest verified P9 SHA, rerun fresh GitHub Foundation actual WordPress Playground, 13 PNG LTR/Arabic RTL/375px/6 navigation+usability reports, WooCommerce MariaDB independent cross-request maker/checker/split races and source-specific artifacts. Require all exact-source CI, downloaded/visually checked images, no financial mutations and separate latest WP patch evidence. Managed Woo QIT, 168 requirement rows and publication remain blockers."
   },
   {
     "id": "WBM-P9-T012",

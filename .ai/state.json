@@ -121,7 +121,8 @@
     "p9_t006_release_manifest": "Verified SHA 7ac11af08132a40c27dad3c0491e32254ee344fc all 4 Actions success, five ZIP SHA256, canonical changelog, license inventory, 44844529924 artifacts 14682700735,14682596573,14682656505; only historical compatibility, no QIT.",
     "p9_t007_acceptance_audit": "Verified SHA 8c9cf880 6/6 Actions success; real audit artifact 14683367830: 8 features/14 screens/168 traceability, 168 planned, F-STATEMENT-IMPORT planned, release_eligible=false; managed Woo QIT not run.",
     "p9_t008_publication_blockers": "VERIFIED exact source af48ce4d 4/4 native+Playground actions; genuine artifact 14683614396 15 gates 7 technical/2 business/6 permission, all unresolved, false publication denied; deterministic SQL hold until both independent contenders complete.",
-    "p9_t009_wporg_official": "VERIFIED eac7b606 7/7 checks; actual official scanner 2.2.0 0 errors 45 warnings incl WP trademark, official readme 4 notes/no fatal; ZIP 5 SHA256 and nested parity; real native WP7.1.5 WC11.3.1; owner submission NOT AUTHORIZED; official artifact 14685666331."
+    "p9_t009_wporg_official": "VERIFIED eac7b606 7/7 checks; actual official scanner 2.2.0 0 errors 45 warnings incl WP trademark, official readme 4 notes/no fatal; ZIP 5 SHA256 and nested parity; real native WP7.1.5 WC11.3.1; owner submission NOT AUTHORIZED; official artifact 14685666331.",
+    "p9_t010_local_qit": "VERIFIED source 4af68afe 9/9 GitHub Actions green; actual QIT CLI 1.3.4 local Docker activated Woo+Free+Pro, genuine artifact 14685572948 SHA checked. No partner/managed QIT. All 8 feature catalog IDs evidence-linked; 168 requirement rows remain planned."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -135,8 +136,8 @@
     "free_is_independent"
   ],
   "phase": "P9",
-  "active_task_id": "WBM-P9-T010",
-  "next_action": "P9-T010: retarget staged PR #25 onto current verified P9 head, preserve T009 release fixes; review genuine WooCommerce QIT 1.3.4 vendor-auth-free local Docker Free+Pro activation proof and exact ZIP hashes. Require fresh exact-source native/Playground/local QIT CI and artifact. Prepare accurate seven managed Woo QIT NOT RUN, vendor account/license/pricing/freemium business acceptance blockers; never claim Marketplace approval or publish.",
+  "active_task_id": "WBM-P9-T011",
+  "next_action": "P9-T011: review stacked PR #26; reconcile its browser+native actual-source QA into latest verified P9 SHA, rerun fresh GitHub Foundation actual WordPress Playground, 13 PNG LTR/Arabic RTL/375px/6 navigation+usability reports, WooCommerce MariaDB independent cross-request maker/checker/split races and source-specific artifacts. Require all exact-source CI, downloaded/visually checked images, no financial mutations and separate latest WP patch evidence. Managed Woo QIT, 168 requirement rows and publication remain blockers.",
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -235,7 +236,8 @@
     "WBM-P9-T006",
     "WBM-P9-T007",
     "WBM-P9-T008",
-    "WBM-P9-T009"
+    "WBM-P9-T009",
+    "WBM-P9-T010"
   ],
   "blocked_tasks": [],
   "last_verified_remote_milestone": "4ebc305311d7ad1b104df9fecca01e5eb41be6cb"
