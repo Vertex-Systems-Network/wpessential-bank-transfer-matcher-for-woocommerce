@@ -158,6 +158,17 @@ jobs:
           path: dist/p9-t012-docs-lock.json
           if-no-files-found: error
           retention-days: 14
+      - name: Final original Free/Pro archive and Composer autoload dependency audit
+        run: |
+          python3 -m py_compile scripts/p9-t013-final-audit.py
+          python3 scripts/p9-t013-final-audit.py --archive
+      - name: Upload two edition release archive audit with source SHA256
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-t013-final-free-pro-zip-audit
+          path: dist/p9-t013-final-zip-report.json
+          if-no-files-found: error
+          retention-days: 14
 
   mariadb-migrations:
     runs-on: ubuntu-latest
@@ -213,5 +224,16 @@ jobs:
         with:
           name: p9-t011-native-sql-races-and-storage
           path: dist/p9-t011-native-matrix.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Prove installed Free/Pro and WooCommerce operate without Composer executable
+        run: |
+          bash scripts/p9-t013-no-composer.sh "$RUNNER_TEMP/wbm-wordpress"
+          python3 scripts/p9-t013-final-audit.py --native
+      - name: Upload real Composerless WordPress financial-safety smoke proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-t013-installed-composerless-free-pro
+          path: dist/p9-t013-no-composer-report.json
           if-no-files-found: error
           retention-days: 14
