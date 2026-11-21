@@ -21,24 +21,71 @@ def require(value,message):
 def sha(data):
     return hashlib.sha256(data).hexdigest()
 
+def parse_official_plugin_check(raw):
+    """WP Plugin Check 2.x --format=json emits FILE: path plus a JSON list per file."""
+    headers=list(re.finditer(r"(?m)^FILE: ([^\r\n]+)\r?\n",raw))
+    if headers:
+        require(not raw[:headers[0].start()].strip(),"Unexpected preamble in official plugin scanner output")
+        findings=[]
+        for idx, match in enumerate(headers):
+            segment=raw[match.end():headers[idx+1].start() if idx+1<len(headers) else len(raw)].strip()
+            rows=json.loads(segment)
+            require(isinstance(rows,list),"Non-list JSON result in official Plugin Check block")
+            for row in rows:
+                require(isinstance(row,dict) and row.get("type") in ("ERROR","WARNING","INFO"),"Unknown official finding record")
+                findings.append({**row,"file":match.group(1)})
+        return findings
+    result=json.loads(raw)
+    if isinstance(result,dict):
+        result=result.get("results")
+    require(isinstance(result,list),"Plugin Check JSON format changed")
+    require(all(isinstance(row,dict) for row in result),"Plugin Check record not an object")
+    return result
+
+def self_test():
+    fixture='FILE: src/A.php\n[{"type":"ERROR","code":"critical"}]\nFILE: readme.txt\n[{"type":"WARNING","code":"readme"}]\n'
+    results=parse_official_plugin_check(fixture)
+    require(len(results)==2 and results[0]["file"]=="src/A.php" and results[0]["type"]=="ERROR",
+            "Plugin Check file-delimited output not properly parsed")
+    require(results[1]["type"]=="WARNING","Plugin Check warning count mismatch")
+    try:
+        parse_official_plugin_check("FILE: unsafe.php\nNOT_JSON\n")
+    except (ValueError,SystemExit):
+        pass
+    else:
+        raise SystemExit("CRITICAL: malformed Plugin Check output accepted")
+    print("PASS official Plugin Check 2.x FILE: per-file JSON findings and malformed output rejection")
+
 def process_result(args):
     raw=(DIST/"p9-wporg-plugin-check-results.json").read_text()
     stderr=(DIST/"p9-wporg-plugin-check-stderr.txt").read_text()
-    parsed=None
     try:
-        parsed=json.loads(raw)
-    except ValueError:
-        pass
-    if not isinstance(parsed,(list,dict)):
+        findings=parse_official_plugin_check(raw)
+    except (ValueError,SystemExit) as exc:
+        findings=None
+        parse_error=str(exc)
+    else:
+        parse_error=None
+    if findings is None:
         pcp_state="INVALID_OR_NON_JSON"
         result_count=None
-        results=[]
+        error_count=None
+        warning_count=None
+        sample=[]
     else:
-        results=parsed if isinstance(parsed,list) else parsed.get("results",[])
-        if not isinstance(results,list):
-            results=[]
-        result_count=len(results)
-        pcp_state="PASSED_WITH_NO_FINDINGS" if args.plugin_check_exit==0 and result_count==0 else "FINDINGS_OR_FAILED"
+        result_count=len(findings)
+        error_count=sum(x.get("type")=="ERROR" for x in findings)
+        warning_count=sum(x.get("type")=="WARNING" for x in findings)
+        sample=[{"file":x.get("file"),"line":x.get("line"),"code":x.get("code"),"type":x.get("type")}
+                for x in findings if x.get("type")=="ERROR"]
+        if error_count:
+            pcp_state="BLOCKED_ERRORS"
+        elif args.plugin_check_exit != 0:
+            pcp_state="CHECK_FAILED_EXIT"
+        elif warning_count:
+            pcp_state="WARNINGS_REQUIRE_REVIEW"
+        else:
+            pcp_state="PASSED_WITH_NO_FINDINGS"
     html_path=DIST/"p9-wporg-official-readme-response.html"
     html=html_path.read_text() if html_path.is_file() else ""
     if args.readme_curl_exit!=0 or args.readme_http_status!="200":
@@ -71,6 +118,10 @@ def process_result(args):
         "plugin_check_exit":args.plugin_check_exit,
         "plugin_check_output_state":pcp_state,
         "plugin_check_count":result_count,
+        "plugin_check_error_count":error_count,
+        "plugin_check_warning_count":warning_count,
+        "plugin_check_unparsed_reason":parse_error,
+        "plugin_check_error_findings":sample,
         "plugin_check_raw_sha256":sha(raw.encode()),
         "plugin_check_stderr_sha256":sha(stderr.encode()),
         "official_readme_url":OFFICIAL_URL,
@@ -90,7 +141,7 @@ def process_result(args):
     if pcp_state=="INVALID_OR_NON_JSON":
         print("BLOCKED: official plugin-check produced unparseable output; external result recorded, no pass claimed")
     else:
-        print("RECORDED actual WP.org Plugin Check:",pcp_state,"exit",args.plugin_check_exit,"findings",result_count)
+        print("RECORDED actual WP.org Plugin Check:",pcp_state,"exit",args.plugin_check_exit,"findings",result_count,"ERROR",error_count,"WARNING",warning_count)
     print("RECORDED official online readme:",online,"HTTP",args.readme_http_status)
     return data
 
@@ -142,8 +193,11 @@ def main():
     p.add_argument("--readme-curl-exit",type=int)
     p.add_argument("--readme-http-status",default="")
     p.add_argument("--svn-dry-run",action="store_true")
+    p.add_argument("--self-test",action="store_true")
     a=p.parse_args()
-    if a.svn_dry_run:
+    if a.self_test:
+        self_test()
+    elif a.svn_dry_run:
         svn_dry_run()
     else:
         require(a.plugin_check_exit is not None and a.readme_curl_exit is not None,
