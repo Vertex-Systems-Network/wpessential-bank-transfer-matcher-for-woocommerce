@@ -16,7 +16,7 @@ def require(value, reason):
 def valid_repo_file(path):
     require(isinstance(path,str) and path and "\\" not in path, "Invalid evidence source path")
     parts = PurePosixPath(path).parts
-    require(parts and not path.startswith("/") and ".." not in parts and not path.startswith("."), "Unsafe source path")
+    require(parts and not path.startswith("/") and ".." not in parts and path not in (".", ".."), "Unsafe source path")
     candidate = ROOT / path
     require(candidate.is_file(), "Evidence file not found: " + path)
     return candidate
