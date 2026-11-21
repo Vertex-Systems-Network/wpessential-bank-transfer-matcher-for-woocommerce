@@ -1232,8 +1232,8 @@
       "WBM-P9-T003"
     ],
     "verification": "VERIFY-P9-T004",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "VERIFIED exact source SHA 241f02a2c023ab9f64fe723ebc35354da81ff14a: 4/4 GitHub Actions checks SUCCESS (Foundation/Playground/native WooCommerce/MariaDB runs 44841278708 and 44841284694). Deterministic separate Free/Pro ZIPs, optimized Composer 2 production autoloaders, GPL-2.0-or-later notices, locked zero third-party runtime dependencies, safe ZIP membership/CRC/path isolation, reproducible SHA256 repeats, fail-closed Python -O negative regression. Actual CI candidate ZIPs and license report artifact 14680408152 downloaded and nested edition ZIP SHA256 matched manifest. PR #19 merged into P9 development as 3fc3a3a4331c48bfe5d5567f936b2e76eefdd296. No external licensing provider, managed QIT, WordPress.org Plugin Check, marketplace approval or public release verified.",
     "next_action": "Complete P9-T004 via draft PR #19: independently packaged Free and Pro GPL LICENSE notices, deterministic second rebuild SHA256, optimized Composer production autoload, actual ZIP/lockfile/license scan and native install. Mark done only after verified exact-head CI; avoid public release."
   },
   {
@@ -1246,8 +1246,9 @@
       "WBM-P9-T004"
     ],
     "verification": "VERIFY-P9-T005",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "Review/retarget stacked PR #20 against current P9 phase branch, verify actual base/Free/Pro Playground Blueprint bundles embed exact production ZIP bytes, failed tamper tests, successful real Playground CLI scenarios, and independent native MariaDB/HPOS/classic install/migration. Accept only after exact new-head CI and artifact inspection; do not publish."
   },
   {
     "id": "WBM-P9-T006",
