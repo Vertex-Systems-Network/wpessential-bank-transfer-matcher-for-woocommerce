@@ -1,0 +1,90 @@
+name: P9 WordPress.org real Free preflight (no submission)
+
+on:
+  push:
+    branches:
+      - development/p9-t009-wporg-official-preflight-20261121
+      - development/p9-release-candidate-docs-20261121
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  wordpress-org-preflight:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_DATABASE: wbm_ci
+          MARIADB_USER: wbm_ci
+          MARIADB_PASSWORD: wbm-ci-test-only
+          MARIADB_RANDOM_ROOT_PASSWORD: "1"
+        ports:
+          - 3306/tcp
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mysqli
+          tools: composer:v2, wp-cli
+      - name: Ensure checksum-pinned WordPress CLI
+        run: bash scripts/ensure-wp-cli-ci.sh
+      - name: Build actual Free release candidate only
+        run: |
+          bash scripts/package-plugin.sh free
+          python3 -m py_compile scripts/p9-wporg-official-preflight.py
+      - name: Install disposable WordPress and original WordPress.org Plugin Check
+        env:
+          WBM_DB_PORT: ${{ job.services.mariadb.ports['3306'] }}
+        run: |
+          site="$RUNNER_TEMP/p9-wporg"
+          wp core download --path="$site" --version=7.0.8
+          wp config create --path="$site" --dbname=wbm_ci --dbuser=wbm_ci --dbpass=wbm-ci-test-only --dbhost="127.0.0.1:$WBM_DB_PORT"
+          wp core install --path="$site" --url=http://wbm-wporg.test --title="P9 WordPress.org synthetic check" --admin_user=ci-review --admin_password='ci-synthetic-only' --admin_email=ci@example.test --skip-email
+          wp plugin install https://downloads.wordpress.org/plugin/woocommerce.11.3.0.zip --activate --path="$site"
+          wp plugin install "$GITHUB_WORKSPACE/dist/wpessential-bank-transfer-matcher.zip" --activate --path="$site"
+          wp plugin install plugin-check --activate --path="$site"
+          wp plugin get plugin-check --field=version --path="$site" > dist/p9-wporg-plugin-check-version.txt
+          wp core version --path="$site" > dist/p9-wporg-core-version.txt
+          wp plugin get woocommerce --field=version --path="$site" > dist/p9-wporg-woo-version.txt
+      - name: Execute actual WordPress Plugin Check CLI and official online readme validator
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          site="$RUNNER_TEMP/p9-wporg"
+          set +e
+          wp plugin check wpessential-bank-transfer-matcher --mode=new --format=json --path="$site" > dist/p9-wporg-plugin-check-results.json 2> dist/p9-wporg-plugin-check-stderr.txt
+          pcp_exit=$?
+          status=$(curl --silent --show-error --location --connect-timeout 12 --max-time 50 \
+            --data-urlencode "readme_contents@plugins/wpessential-bank-transfer-matcher/readme.txt" \
+            --output dist/p9-wporg-official-readme-response.html \
+            --write-out '%{http_code}' https://wordpress.org/plugins/developers/readme-validator/)
+          online_exit=$?
+          set -e
+          python3 scripts/p9-wporg-official-preflight.py --plugin-check-exit "$pcp_exit" --readme-curl-exit "$online_exit" --readme-http-status "$status"
+      - name: Prepare candidate-only SVN trunk and tag file layout
+        run: python3 scripts/p9-wporg-official-preflight.py --svn-dry-run
+      - name: Upload actual external check outputs, including unverified or failed results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-wordpress-org-real-plugin-check-and-readme
+          path: |
+            dist/p9-wporg-plugin-check-results.json
+            dist/p9-wporg-plugin-check-stderr.txt
+            dist/p9-wporg-plugin-check-version.txt
+            dist/p9-wporg-core-version.txt
+            dist/p9-wporg-woo-version.txt
+            dist/p9-wporg-official-readme-response.html
+            dist/p9-wporg-official-check-results.json
+            dist/p9-wporg-svn-dry-run-manifest.json
+          if-no-files-found: warn
+          retention-days: 14
