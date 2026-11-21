@@ -145,6 +145,19 @@ jobs:
           path: dist/p9-publication-preflight.json
           if-no-files-found: error
           retention-days: 14
+      - name: Verify P9 canonical version and every documentation source matches built ZIPs without drift
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python3 -m py_compile scripts/p9-t012-docs-lock.py
+          python3 scripts/p9-t012-docs-lock.py --negative-tests
+      - name: Upload factual P9 0.1.0 docs lock and canonical changelog/ZIP header evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-t012-canonical-documentation-lock
+          path: dist/p9-t012-docs-lock.json
+          if-no-files-found: error
+          retention-days: 14
 
   mariadb-migrations:
     runs-on: ubuntu-latest
