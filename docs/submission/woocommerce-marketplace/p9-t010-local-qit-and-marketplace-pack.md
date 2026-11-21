@@ -1,0 +1,13 @@
+# P9-T010 — Actual local QIT CLI smoke, managed QIT explicitly blocked
+
+**Draft, not Marketplace submission.** Official Woo docs: <https://qit.woo.com/docs/getting-started/>, <https://qit.woo.com/docs/environment/introduction/>, <https://qit.woo.com/docs/support/faqs/>, <https://developer.woocommerce.com/docs/woo-marketplace/submitting-your-product>.
+
+The workflow `.github/workflows/p9-qit-local.yml` attempts an actual WooCommerce **QIT CLI** installation and ephemeral Docker `qit env:up` at WordPress **7.1.5**, Woo **11.3.1**, PHP **8.3**, with separately built production **Free+Pro ZIPs**. It requires each plugin's real WP-CLI active check and destroys the environment after execution. Raw environment setup logs can contain disposable service credentials and are deliberately **not uploaded**. Genuine successful run IDs and artifact hashes are required before claiming the local smoke check passed. A failure is a blocker, not a simulated pass.
+
+**Not equivalent to official managed QIT.** Woo docs state managed QIT/cloud runs require authenticated Marketplace partner status with a listed extension. All seven original managed QIT suites (Activation, Woo API, End-to-end, Security, Malware, PHPCompatibility, Validation) remain `not_run`, with no vendor run IDs or report links, until owner supplies access and separate managed runs actually execute. The local CLI itself is vendor-auth-free and offers a useful second execution environment.
+
+**Submission reviewer evidence:** Free+Pro individual Composer production ZIPs and manifests from P9-T004/T006, unchanged preview Pro API constraint `>=1.0.0 <2.0.0`; real native PHP 8.3/8.4 WC 10.8/11.3 and WP 7.1.5/WC11.3.1, database concurrency and HPOS/classic, user role gates, Checkout Classic and Blocks synthetic Store API, RTL/mobile screenshots and local QIT activate checks. See [P9-T002 reviewer preflight](p9-t002-reviewer-preflight.md). Do not claim the clicked Checkout Block button or managed Woo QIT passed, or that a license/update entitlement provider exists.
+
+**Commercial evidence still blocked:** No approved Marketplace seller identity, Partner vendor approval, support email, product ID, license and updates backend, price, refund/terms agreement or Woo monetization contract. Both Free and Pro need distinct freemium submissions later; creating a dual-archive draft does not create listings. External account credentials must not be written into CI or issue comments.
+
+**Security invariants:** No live merchant bank transfers, account access, statement CSVs, refunds or payouts are exercised. Do not merge the P9 phase into main while managed QIT/business/technical acceptance remains incomplete; never submit or publish on the user's behalf without explicit authorization.
