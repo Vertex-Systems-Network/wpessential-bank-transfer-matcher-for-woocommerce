@@ -56,8 +56,20 @@ def configured_version_matrix(root, metadata):
     wp = wp_match.group(1)
     require(php == ["8.3","8.4"] and wc == ["10.8.0","11.3.0"] and wp == "7.0.8",
             "Version suite changed; human review current evidence before updating claims")
-    require(metadata["tested_wc"] == "11.3.0" and metadata["requires_php"] == "8.3",
-            "Canonical version claims no longer match this fixture")
+    require(metadata["requires_php"] == "8.3" and metadata["requires_wp"] == "7.0",
+            "Canonical minimum version requirements no longer match historical tested matrix")
+    latest_claim = metadata["tested_wp"] == "7.1" and metadata["tested_wc"] == "11.3.1"
+    historical_claim = metadata["tested_wp"] == "7.0" and metadata["tested_wc"] == "11.3.0"
+    require(latest_claim or historical_claim, "Unknown current-patch claim; real CI evidence review required")
+    if latest_claim:
+        # This is configuration validation, NOT an assertion that the other CI
+        # job ran or passed. The actual native CI run and its artifact are
+        # verified separately before any public compatibility claim.
+        latest_workflow = (root / ".github/workflows/p9-latest-version-native.yml").read_text()
+        require('wp core download --path="$site" --version=7.1.5' in latest_workflow and
+                'https://downloads.wordpress.org/plugin/woocommerce.11.3.1.zip' in latest_workflow and
+                'bash scripts/test-native-install.sh' in latest_workflow,
+                "Latest WordPress/WooCommerce compatibility workflow is not source-backed")
     return {
         "schema_version": 1,
         "type": "installed_source_matrix_historical_not_current_recertification",
@@ -67,8 +79,16 @@ def configured_version_matrix(root, metadata):
         "source_workflow": ".github/workflows/p8-wc-php-matrix.yml",
         "source_evidence": "docs/security/p8-t006-checkout-compatibility.md",
         "historical_ci_run": "44829621415",
-        "wp_latest_patch": "NOT VERIFIED",
-        "woocommerce_latest_patch": "NOT VERIFIED",
+        "wp_latest_patch": "SEPARATE CI GATE — inspect real source run/artifact; not proven here" if latest_claim else "NOT VERIFIED",
+        "woocommerce_latest_patch": "SEPARATE CI GATE — inspect real source run/artifact; not proven here" if latest_claim else "NOT VERIFIED",
+        "canonical_tested_wp": metadata["tested_wp"],
+        "canonical_tested_wc": metadata["tested_wc"],
+        "latest_native_workflow": ".github/workflows/p9-latest-version-native.yml" if latest_claim else None,
+        "latest_native_real_ci_evidence": [
+            "https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44848601239",
+            "https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44850189929",
+        ] if latest_claim else [],
+        "latest_native_self_verified_in_this_generator": False,
         "official_woocommerce_qit": "NOT RUN",
         "note": "This reads configured versions and documented previous success; it does not run the version matrix or assert support for untested releases.",
     }
@@ -125,7 +145,7 @@ def build(root):
         "managed_woo_qit": "NOT RUN",
         "native_mariadb_job": "SEPARATE CI JOB; read its conclusion independently",
         "live_blueprint_executed": "NOT SELF PROVED by generated hash report; inspect parent CI Foundation run",
-        "latest_patch_compatibility": "NOT VERIFIED",
+        "latest_patch_compatibility": "SEPARATE REAL NATIVE CI REQUIRED; NOT SELF VERIFIED" if meta["tested_wp"] == "7.1" else "NOT VERIFIED",
         "changelog_source": str(changelog_file.relative_to(root)),
         "changelog_sha256": hashlib.sha256(changelog).hexdigest(),
         "release_archives": archives,
