@@ -55,6 +55,9 @@ race_phase() {
     cat "$free_log"
   fi
   cat "$contender"
+  # Keep the primary DB advisory locks held until both independent contenders
+  # have made their real WP-CLI requests and received lock denials.
+  touch "$scratch/$stage.release"
   if ! wait "$primary_pid"; then cat "$primary" >&2; exit 1; fi
   primary_pid=""
   cat "$primary"
