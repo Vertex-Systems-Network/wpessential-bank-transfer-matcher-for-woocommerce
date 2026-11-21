@@ -10,7 +10,7 @@
       "id": "product_acceptance",
       "kind": "technical",
       "status": "pending",
-      "proof": "P9-T007 source traceability rows and F-STATEMENT-IMPORT unresolved"
+      "proof": "All eight feature catalog IDs have source-backed completed task evidence (CSV parser run 44238596901); 168 requirement traceability rows still planned and require per-ID acceptance. No public release."
     },
     {
       "id": "latest_supported_matrix",
