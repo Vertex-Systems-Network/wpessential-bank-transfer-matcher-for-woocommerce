@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P9-T005",
+  "id": "WBM-P9-T007",
   "phase": "P9",
-  "title": "build/execute actual Free and Pro WordPress Playground Blueprint bundles; also test clean install/deactivate/reactivate/upgrade in MySQL-backed disposable WP (Section 16E).",
+  "title": "final acceptance audit vs every feature ID, screen ID and test ID.",
   "owner": "Release engineering",
   "paths": "docs/release/; scripts/",
   "depends_on": [
-    "WBM-P9-T004"
+    "WBM-P9-T006"
   ],
-  "verification": "VERIFY-P9-T005",
+  "verification": "VERIFY-P9-T007",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Review/retarget stacked PR #20 against current P9 phase branch, verify actual base/Free/Pro Playground Blueprint bundles embed exact production ZIP bytes, failed tamper tests, successful real Playground CLI scenarios, and independent native MariaDB/HPOS/classic install/migration. Accept only after exact new-head CI and artifact inspection; do not publish."
+  "next_action": "P9-T007: integrate draft PR #22 source-backed 8-feature/14-screen/168-requirement/103-task acceptance gap audit into latest P9 branch without losing packaging/Playground release checks. Verify exact combined-commit CI and artifact, preserve unresolved per-ID statuses, do not claim release eligibility."
 }

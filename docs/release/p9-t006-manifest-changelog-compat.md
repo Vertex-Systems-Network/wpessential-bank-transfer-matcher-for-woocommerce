@@ -12,3 +12,7 @@ The `scripts/generate-p9-release-evidence.py` script must run **after** Playgrou
 CI should upload `p9-sha256-changelog-compat-validation` only after all earlier source-ordered validation steps succeed. A successful upload and verified source artifacts are necessary but not sufficient for release. Actual Marketplace vendor submission, pricing/license integration, Woo managed QIT, WordPress.org validator/Plugin Check, and production WordPress/WooCommerce patch-version support are separate gates.
 
 **Status:** draft stacked on P9-T005, do not merge or mark P9-T006 complete until P9-T005 accepted at exact CI and P9-T006 native/Playground checks and artifact integrity independently verified.
+
+## CI pull-request SHA provenance
+
+For a GitHub Actions `pull_request` event, `github.sha` / `GITHUB_SHA` is often GitHub's *synthetic PR merge checkout SHA*, rather than the original branch head commit. The P9-T006 generator now records **both** the source PR head (from `github.event.pull_request.head.sha`, falling back to `github.sha` on push) and the separate actual CI checkout SHA. Both are useful: the source head ties task acceptance to code reviewed; the checkout SHA ties the test result to its exact merged base. A release report must never equate the two without verification. Official release builds must regenerate checksums on the final merged source, not merely re-use a PR test artifact.

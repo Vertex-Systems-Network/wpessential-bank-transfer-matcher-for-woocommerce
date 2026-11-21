@@ -107,6 +107,8 @@ jobs:
           if-no-files-found: error
           retention-days: 14
       - name: Generate P9 release SHA256SUMS, canonical changelog and historical compatibility report
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           python3 -m py_compile scripts/generate-p9-release-evidence.py
           python3 scripts/generate-p9-release-evidence.py --negative-tests
