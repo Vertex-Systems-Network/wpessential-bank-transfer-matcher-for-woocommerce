@@ -94,6 +94,18 @@ jobs:
           python3 tests/playground_download_retry.py
           python3 scripts/build_playground_bundles.py
           python3 scripts/test-playground-foundation.py
+          python3 scripts/verify-playground-release-bundles.py --negative-tests
+      - name: Upload exact-source base/Free/Pro Playground release evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-playground-bundles
+          path: |
+            dist/playground-base.zip
+            dist/playground-free.zip
+            dist/playground-pro.zip
+            dist/p9-playground-bundle-manifest.json
+          if-no-files-found: error
+          retention-days: 14
 
   mariadb-migrations:
     runs-on: ubuntu-latest
