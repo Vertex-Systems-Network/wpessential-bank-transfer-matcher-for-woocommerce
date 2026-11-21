@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P9-T007",
+  "id": "WBM-P9-T008",
   "phase": "P9",
-  "title": "final acceptance audit vs every feature ID, screen ID and test ID.",
+  "title": "document exact permission/credential-only release blockers and safe publish steps.",
   "owner": "Release engineering",
   "paths": "docs/release/; scripts/",
   "depends_on": [
-    "WBM-P9-T006"
+    "WBM-P9-T007"
   ],
-  "verification": "VERIFY-P9-T007",
+  "verification": "VERIFY-P9-T008",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "P9-T007: integrate draft PR #22 source-backed 8-feature/14-screen/168-requirement/103-task acceptance gap audit into latest P9 branch without losing packaging/Playground release checks. Verify exact combined-commit CI and artifact, preserve unresolved per-ID statuses, do not claim release eligibility."
+  "next_action": "P9-T008: reconcile 15 true technical/business/permission-only release blockers via stacked PR #23, fail-closed validation of P9-T007 source audit and no-release authority; retarget to P9, resolve conflict without loss of prior CI/archives; inspect exact-commit tests/artifact. External release remains blocked."
 }
