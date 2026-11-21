@@ -20,7 +20,7 @@ def validate_archive(edition):
     slug = SLUGS[edition]
     plugin = ROOT / "plugins" / slug
     package = ROOT / "dist" / (slug + ".zip")
-    require(package.is_file(), "Missing package ZIP: " + str(package)
+    require(package.is_file(), "Missing package ZIP: " + str(package))
     composer = json.loads((plugin / "composer.json").read_text())
     lock = json.loads((plugin / "composer.lock").read_text())
     required = set(json.loads((plugin / "build/package-manifest.json").read_text())["required"])
