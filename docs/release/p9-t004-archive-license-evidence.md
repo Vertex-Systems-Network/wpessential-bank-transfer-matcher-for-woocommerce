@@ -15,3 +15,7 @@ Build each plugin separately with `bash scripts/package-plugin.sh free` and `bas
 ## Negative release-integrity regression
 
 The first implementation used bare Python `assert` checks. Python's optimized mode (`-O` / `PYTHONOPTIMIZE=1`) removes `assert` statements, which could silently bypass archive integrity validation. These checks now use an always-on `require(...)` that raises `SystemExit` on failure. CI explicitly runs `PYTHONOPTIMIZE=1 python3 tests/p9_archive_guards.py` with a missing ZIP and a false invariant, and also runs the full ZIP verifier in optimized mode. No release gate may rely solely on optimized-out assertions.
+
+## Reproducible candidate artifact (not public distribution)
+
+After the two ZIP checks and exact repeat-build comparison pass, Foundation CI uploads `p9-independent-free-pro-zip-candidates` with the distinct Free and Pro ZIP files and generated `p9-license-inventory.json` as a short-lived GitHub Actions artifact. This retains auditable candidate bytes from the actual CI runner; official release packaging, WordPress.org validation, Woo QIT, versioned checksum release manifest, and marketplace publication remain separate P9 gates. Only claim that artifact exists after the corresponding Actions upload step reports success.
