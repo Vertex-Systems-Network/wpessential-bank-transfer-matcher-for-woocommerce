@@ -1344,8 +1344,8 @@
       "WBM-P9-T011"
     ],
     "verification": "VERIFY-P9-T012",
-    "status": "in_progress",
-    "evidence": "",
+    "status": "done",
+    "evidence": "VERIFIED exact source b2afb5f4a2990cc2c85d8042e4cfa579c8ae6c9e, all 6/6 real GitHub Foundation/WordPress Playground/native MariaDB/QIT-local/official WordPress.org checks succeeded at runs 44853966827 and 44853970291. Original exact-source docs lock artifact 14686248852 downloaded and independently checked against real separate Free/Pro original package artifact 14687145040 and SHA256SUMS/changelog/compat artifact 14686258780: both ZIP SHA256s equal docs-lock and release manifests, CRC correct, exact source headers and edition README/GPL notices; 0.1.0 version, canonical WordPress 7.1/WC 11.3.1, all 8 source-proven feature IDs. Source and synthetic CI checkout distinct. Negative false Stable tag and tested-version cases rejected; generated metadata docs:check independently passed in Foundation. P9-T012 PR #27 squash merged only into P9 development at 114b9c3d66b00612e1668c1963afcf41585147ee. Managed Woo cloud QIT seven suites remain NOT RUN, 168 acceptance traceability rows planned; no public distribution.",
     "next_action": "P9-T012: retarget draft PR #27 canonical 0.1.0 doc and Free/Pro original ZIP/version lock onto current P9 phase branch, integrate T011 source without CI regression, verify exact head Foundation/Playground/native version, source/ZIP README/GPL and feature manifest drift tests, source SHA256 and artifacts. Keep 168 requirement rows, 45 WP scanner warnings/trademark and 7 managed cloud QIT suites external blockers; no public release."
   },
   {
@@ -1358,8 +1358,9 @@
       "WBM-P9-T012"
     ],
     "verification": "VERIFY-P9-T013",
-    "status": "planned",
-    "evidence": ""
+    "status": "in_progress",
+    "evidence": "",
+    "next_action": "P9-T013: retarget draft PR #28 onto current P9 phase head after accepted T012, preserving authentic Free/Pro ZIP and actual source. Require exact combined-head CI with independent Foundation ZIP CRC/GLP/Composer autoload no-vendor hashes, real native WooCommerce/MariaDB startup without Composer PATH and synthetic unpaid BACS CRUD. Download and hash actual artifacts and clean install, check final phase CI, enforce 168 requirement rows and 7 managed QIT/unapproved vendor+WordPress.org/trademark gates. Do not release, commit SVN or merge phase #16 into main."
   },
   {
     "id": "WBM-P10-T001",
