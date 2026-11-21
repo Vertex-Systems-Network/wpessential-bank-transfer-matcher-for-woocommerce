@@ -47,7 +47,7 @@ jobs:
           site="$RUNNER_TEMP/wbm-latest-wp"
           wp core download --path="$site" --version=7.1.5
           wp config create --path="$site" --dbname=wbm_ci --dbuser=wbm_ci --dbpass=wbm-ci-test-only --dbhost="127.0.0.1:$WBM_DB_PORT"
-          wp core install --path="$site" --url=http://wbm-latest.test --title="WBM latest version CI" --admin_user=wbm_latest --admin_password="ci-synthetic-only" --admin_email=ci@example.test --skip-email
+          wp core install --path="$site" --url=http://wbm-latest.test --title="WBM latest version CI" --admin_user=wbm_ci --admin_password="ci-synthetic-only" --admin_email=ci@example.test --skip-email
           test "$(wp core version --path="$site")" = '7.1.5'
           WBM_P9_LATEST_PATCH_PROBE=1 bash scripts/test-native-install.sh "$site" https://downloads.wordpress.org/plugin/woocommerce.11.3.1.zip
           test "$(wp plugin get woocommerce --field=version --path="$site")" = '11.3.1'
