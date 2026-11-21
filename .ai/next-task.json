@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P9-T004",
+  "id": "WBM-P9-T005",
   "phase": "P9",
-  "title": "build deterministic Free ZIP and Pro ZIP with **Composer optimized production autoloaders** and scanned/vendor dependency licenses (Section 16A).",
+  "title": "build/execute actual Free and Pro WordPress Playground Blueprint bundles; also test clean install/deactivate/reactivate/upgrade in MySQL-backed disposable WP (Section 16E).",
   "owner": "Release engineering",
   "paths": "docs/release/; scripts/",
   "depends_on": [
-    "WBM-P9-T003"
+    "WBM-P9-T004"
   ],
-  "verification": "VERIFY-P9-T004",
+  "verification": "VERIFY-P9-T005",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Complete P9-T004 via draft PR #19: independently packaged Free and Pro GPL LICENSE notices, deterministic second rebuild SHA256, optimized Composer production autoload, actual ZIP/lockfile/license scan and native install. Mark done only after verified exact-head CI; avoid public release."
+  "next_action": "Review/retarget stacked PR #20 against current P9 phase branch, verify actual base/Free/Pro Playground Blueprint bundles embed exact production ZIP bytes, failed tamper tests, successful real Playground CLI scenarios, and independent native MariaDB/HPOS/classic install/migration. Accept only after exact new-head CI and artifact inspection; do not publish."
 }
