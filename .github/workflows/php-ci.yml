@@ -106,6 +106,21 @@ jobs:
             dist/p9-playground-bundle-manifest.json
           if-no-files-found: error
           retention-days: 14
+      - name: Generate P9 release SHA256SUMS, canonical changelog and historical compatibility report
+        run: |
+          python3 -m py_compile scripts/generate-p9-release-evidence.py
+          python3 scripts/generate-p9-release-evidence.py --negative-tests
+      - name: Upload P9 source-verified release validation bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-sha256-changelog-compat-validation
+          path: |
+            dist/SHA256SUMS
+            dist/CHANGELOG-0.1.0.md
+            dist/p9-validation-report.json
+            dist/p9-compatibility-matrix.json
+          if-no-files-found: error
+          retention-days: 14
 
   mariadb-migrations:
     runs-on: ubuntu-latest
