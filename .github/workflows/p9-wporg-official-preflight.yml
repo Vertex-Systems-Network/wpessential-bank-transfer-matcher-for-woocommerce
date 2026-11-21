@@ -41,6 +41,7 @@ jobs:
         run: |
           bash scripts/package-plugin.sh free
           python3 -m py_compile scripts/p9-wporg-official-preflight.py
+          python3 scripts/p9-wporg-official-preflight.py --self-test
       - name: Install disposable WordPress and original WordPress.org Plugin Check
         env:
           WBM_DB_PORT: ${{ job.services.mariadb.ports['3306'] }}
