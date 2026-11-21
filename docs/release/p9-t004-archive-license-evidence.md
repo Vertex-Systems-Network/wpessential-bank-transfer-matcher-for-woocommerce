@@ -11,3 +11,7 @@ Build each plugin separately with `bash scripts/package-plugin.sh free` and `bas
 - Independent clean ZIP activation, missing Free handling, classic/HPOS and in-place WooCommerce upgrades are separately evidenced by P8 native tests. P9-T005/T013 still must recheck final release artifacts and vendor/license notices.
 
 **Do not claim completion yet.** Run exact-source Foundation+native CI for this new branch. Review failures, do not promote packaging to released or Marketplace-approved, and preserve P9 phase order (T003 active before this task becomes ready).
+
+## Negative release-integrity regression
+
+The first implementation used bare Python `assert` checks. Python's optimized mode (`-O` / `PYTHONOPTIMIZE=1`) removes `assert` statements, which could silently bypass archive integrity validation. These checks now use an always-on `require(...)` that raises `SystemExit` on failure. CI explicitly runs `PYTHONOPTIMIZE=1 python3 tests/p9_archive_guards.py` with a missing ZIP and a false invariant, and also runs the full ZIP verifier in optimized mode. No release gate may rely solely on optimized-out assertions.
