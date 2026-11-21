@@ -1,5 +1,11 @@
 # Start here
 
+## P9-T004 verified release-candidate ZIPs; P9-T005 Playground active — 2026-11-21
+
+**93/103 tasks done.** P9-T004 exact source `241f02a2c023ab9f64fe723ebc35354da81ff14a` passed four GitHub Actions native Foundation/Playground/MariaDB jobs (runs [44841278708](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44841278708) and [44841284694](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44841284694)). The original candidate Free/Pro ZIPs and license inventory artifact **14680408152** were downloaded and source SHA256 verified, with optimized Composer, GPL notices and deterministic rebuild. [PR #19](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/19) merged into **P9 development only**, not main. No official Marketplace/WordPress.org approval.
+
+**P9-T005 active:** review/retarget stacked [PR #20](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/20), verify 3 actual Playground Blueprint packages, identical nested Free/Pro ZIPs, tamper rejection, native MariaDB HPOS/classic, and final exact-head CI. No real bank or production actions.
+
 ## P9-T003 real screenshots VERIFIED, P9-T004 packaging active — 2026-11-21
 
 **92/103 tasks complete.** P9-T003 accepted on exact source `f933bbd38c91318e539f0516dbb99c94497990d6`: 5/5 GitHub Actions SUCCESS, Foundation/native/Playground runs [44839527049](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44839527049) and [44839532750](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44839532750), real WordPress/Chromium BACS Arabic RTL/browser [44839527073](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44839527073). Verified release screenshot artifact 14679654169: 5 Free, 6 Pro, 2 RTL/mobile PNGs, all 13 SHA256 checked and unchanged from genuine disposable screenshots; raw artifact 14680471253. [PR #18](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/18) merged into P9 development at `017a1794536fedb0a4b9df03003e4ec13d6964af`.
