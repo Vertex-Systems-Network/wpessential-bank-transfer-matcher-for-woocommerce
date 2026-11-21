@@ -45,7 +45,7 @@ final class CustomerClaims {
 		}
 		$result = self::process( wp_unslash( $_POST ), $_FILES['receipt'] ?? [] );
 		if ( is_wp_error( $result ) ) {
-			wp_die( esc_html( $result->get_error_message() ), '', [ 'response' => $result->get_error_data() ] );
+			wp_die( esc_html( $result->get_error_message() ), '', [ 'response' => (int) $result->get_error_data() ] );
 		}
 		[ $order, $status ] = $result;
 		$url = $order->get_customer_id() ? $order->get_view_order_url() : $order->get_checkout_order_received_url();
@@ -138,7 +138,9 @@ final class CustomerClaims {
 				<p><label><?php esc_html_e( 'Billing email', 'wpessential-bank-transfer-matcher' ); ?> <input type="email" name="billing_email" required></label></p>
 			<?php endif; ?>
 			<p><label><?php esc_html_e( 'Transfer date', 'wpessential-bank-transfer-matcher' ); ?> <input type="date" name="transfer_date" required></label></p>
-			<p><label><?php printf( esc_html__( 'Transfer amount (%s)', 'wpessential-bank-transfer-matcher' ), esc_html( $order->get_currency() ) ); ?> <input type="text" inputmode="decimal" name="transfer_amount" maxlength="20" required></label></p>
+			<p><label><?php
+            /* translators: %s: the WooCommerce order currency code. */
+            printf( esc_html__( 'Transfer amount (%s)', 'wpessential-bank-transfer-matcher' ), esc_html( $order->get_currency() ) ); ?> <input type="text" inputmode="decimal" name="transfer_amount" maxlength="20" required></label></p>
 			<p><label><?php esc_html_e( 'Bank transfer reference (optional)', 'wpessential-bank-transfer-matcher' ); ?> <input type="text" name="transfer_reference" maxlength="100"></label></p>
 			<p><label><?php esc_html_e( 'Sender name (optional)', 'wpessential-bank-transfer-matcher' ); ?> <input type="text" name="sender_name" maxlength="100"></label></p>
 			<p><label><?php esc_html_e( 'Note for the store (optional)', 'wpessential-bank-transfer-matcher' ); ?> <textarea name="customer_note" maxlength="1000"></textarea></label></p>

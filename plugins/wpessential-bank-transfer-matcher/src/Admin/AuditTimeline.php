@@ -56,7 +56,8 @@ final class AuditTimeline {
 		echo '<ol>';
 		foreach ( $events as $event ) {
 			$user = $event['actor_id'] ? get_userdata( $event['actor_id'] ) : false;
-			$actor = $user ? $user->display_name : ( $event['actor_id'] ? sprintf( __( 'User #%d', 'wpessential-bank-transfer-matcher' ), $event['actor_id'] ) : __( 'Customer', 'wpessential-bank-transfer-matcher' ) );
+			/* translators: %d: WordPress user ID. */
+            $actor = $user ? $user->display_name : ( $event['actor_id'] ? sprintf( __( 'User #%d', 'wpessential-bank-transfer-matcher' ), $event['actor_id'] ) : __( 'Customer', 'wpessential-bank-transfer-matcher' ) );
 			$time = strtotime( $event['created_at'] . ' UTC' );
 			printf( '<li><strong>%s</strong> · %s · <time datetime="%s">%s</time></li>',
 				esc_html( $labels[ $event['kind'] ] ?? $event['kind'] ), esc_html( $actor ),
