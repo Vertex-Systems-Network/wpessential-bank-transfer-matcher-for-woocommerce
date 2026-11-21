@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P9-T009",
+  "id": "WBM-P9-T010",
   "phase": "P9",
-  "title": "run WordPress Plugin Check and official readme validator with results, prepare WordPress.org SVN dry-run structure and Free submission checklist (Section 16B).",
+  "title": "run available Woo QIT suites and prepare Marketplace Pro evidence pack, screenshots, business case, two-submission freemium plan and reviewer walkthrough (Section 16C).",
   "owner": "Release engineering",
   "paths": "docs/release/; scripts/",
   "depends_on": [
-    "WBM-P9-T008"
+    "WBM-P9-T009"
   ],
-  "verification": "VERIFY-P9-T009",
+  "verification": "VERIFY-P9-T010",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "Review draft PR #24 official WordPress.org PCP 2.2.0/readme validator/Free SVN dry-run; integrate latest P9-T008 source and exact source-head CI. Scanner had 1 readme outdated WP error and 45 warnings at historical Tested up to:7.0; real native latest WP7.1.5/WC11.3.1 passed in run 44848601239; update canonical tested versions and generator outputs only after that evidence; require clean scan, truthful online notes, real archive and native tests. No public submission, no credentials."
+  "next_action": "P9-T010: retarget staged PR #25 onto current verified P9 head, preserve T009 release fixes; review genuine WooCommerce QIT 1.3.4 vendor-auth-free local Docker Free+Pro activation proof and exact ZIP hashes. Require fresh exact-source native/Playground/local QIT CI and artifact. Prepare accurate seven managed Woo QIT NOT RUN, vendor account/license/pricing/freemium business acceptance blockers; never claim Marketplace approval or publish."
 }

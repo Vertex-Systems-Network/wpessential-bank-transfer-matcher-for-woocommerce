@@ -201,6 +201,48 @@ def svn_dry_run():
     (DIST/"p9-wporg-svn-dry-run-manifest.json").write_text(json.dumps(report,indent=2)+"\n")
     print("PASS real Free ZIP staged as unpublished trunk/tags",version,"; assets pending; NO SVN COMMIT")
 
+def review_preflight(data):
+    """Scanner errors are fatal even when official CLI returns exit status 0."""
+    require(data["plugin_check_error_count"] is not None,
+            "Official WordPress Plugin Check output was not parseable; review raw attached artifact")
+    require(data["plugin_check_error_count"] == 0,
+            "Official WordPress Plugin Check has release-blocking errors; review raw attached artifact")
+    require(data["plugin_check_exit"] == 0,
+            "Official WordPress Plugin Check CLI failed execution despite parseable output")
+    require(data["official_readme_response"] in (
+        "PASSED_OFFICIAL_FORM_RESPONSE",
+        "OFFICIAL_FORM_PROCESSED_WITH_NOTES_NO_FATAL_ERROR",
+    ), "Official readme not validated or contains fatal errors")
+    require(data["public_submission"] == "NOT AUTHORIZED" and data["release_ready"] is False,
+            "Preflight cannot authorize public release")
+    print("PASS official Plugin Check error gate and verified public readme response; warnings and publisher approval remain separate")
+
+def self_test_review_gate():
+    clean={
+        "plugin_check_error_count":0,
+        "plugin_check_exit":0,
+        "official_readme_response":"OFFICIAL_FORM_PROCESSED_WITH_NOTES_NO_FATAL_ERROR",
+        "public_submission":"NOT AUTHORIZED",
+        "release_ready":False,
+    }
+    review_preflight(clean)
+    for name,value in (
+        ("plugin_check_error_count",1),
+        ("plugin_check_error_count",None),
+        ("plugin_check_exit",1),
+        ("official_readme_response","UNVERIFIED_UNRECOGNIZED_RESPONSE"),
+        ("official_readme_response","FATAL_ERRORS_OFFICIAL_FORM_RESPONSE"),
+        ("public_submission","AUTHORIZED"),
+        ("release_ready",True),
+    ):
+        bad={**clean,name:value}
+        try:
+            review_preflight(bad)
+        except SystemExit:
+            continue
+        raise SystemExit("CRITICAL: official scanner gate accepted " + name + " bad value")
+    print("PASS 7 negative official-plugin-check and online-validator approval denials")
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--plugin-check-exit",type=int)
@@ -211,11 +253,13 @@ def main():
     a=p.parse_args()
     if a.self_test:
         self_test()
+        self_test_review_gate()
     elif a.svn_dry_run:
         svn_dry_run()
     else:
         require(a.plugin_check_exit is not None and a.readme_curl_exit is not None,
                 "Missing actual external command return codes")
-        process_result(a)
+        report=process_result(a)
+        review_preflight(report)
 if __name__=="__main__":
     main()
