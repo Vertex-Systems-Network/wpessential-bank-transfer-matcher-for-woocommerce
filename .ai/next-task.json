@@ -1,14 +1,14 @@
 {
-  "id": "WBM-P9-T008",
+  "id": "WBM-P9-T009",
   "phase": "P9",
-  "title": "document exact permission/credential-only release blockers and safe publish steps.",
+  "title": "run WordPress Plugin Check and official readme validator with results, prepare WordPress.org SVN dry-run structure and Free submission checklist (Section 16B).",
   "owner": "Release engineering",
   "paths": "docs/release/; scripts/",
   "depends_on": [
-    "WBM-P9-T007"
+    "WBM-P9-T008"
   ],
-  "verification": "VERIFY-P9-T008",
+  "verification": "VERIFY-P9-T009",
   "status": "in_progress",
   "evidence": "",
-  "next_action": "P9-T008: reconcile 15 true technical/business/permission-only release blockers via stacked PR #23, fail-closed validation of P9-T007 source audit and no-release authority; retarget to P9, resolve conflict without loss of prior CI/archives; inspect exact-commit tests/artifact. External release remains blocked."
+  "next_action": "Review draft PR #24 official WordPress.org PCP 2.2.0/readme validator/Free SVN dry-run; integrate latest P9-T008 source and exact source-head CI. Scanner had 1 readme outdated WP error and 45 warnings at historical Tested up to:7.0; real native latest WP7.1.5/WC11.3.1 passed in run 44848601239; update canonical tested versions and generator outputs only after that evidence; require clean scan, truthful online notes, real archive and native tests. No public submission, no credentials."
 }

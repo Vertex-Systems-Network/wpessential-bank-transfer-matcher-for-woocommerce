@@ -1,5 +1,11 @@
 # Start here
 
+## P9-T008 verified publication blockers, P9-T009 official WordPress.org checks active — 2026-11-21
+
+**97/103 completed tasks.** Source `af48ce4d2fd1fd5b90fb753fc8ae0e1f0c5d1abf` all four Foundation/Playground/real WooCommerce MariaDB checks passed [44848501120](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44848501120) and [44848507855](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44848507855). Source-backed fail-closed 15 release gates (7 technical, 2 commercial, 6 permission), genuine artifact **14683614396** checked; publisher action NOT AUTHORIZED. A real race timing regression was fixed with deterministic held SQL lock + independent native WP-CLI challengers and verified. [PR #23](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/23) merged into P9 at `b793b1dadef47dcda7d0c2f52f8ace86f324ef10`.
+
+**P9-T009 active:** staged [PR #24](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/24) runs real WordPress.org Plugin Check 2.2.0/readme validator and Free-only SVN dry-run. Original official scan 15 errors; later actual scan 1 outdated WP version error and 45 warnings; native WP 7.1.5/WooCommerce 11.3.1 source tests passed run 44848601239. Update canonical metadata/docs and pass exact-head checks before T009 gate; real WordPress.org publisher approval/2FA/SVN/QIT remains pending, no public submission.
+
 ## P9-T007 acceptance evidence audited; P9-T008 publication blockers active — 2026-11-21
 
 **96/103 completed tasks.** Exact source `8c9cf880494c098480d9d198abdcd9dc70df26ac`: 6/6 original GitHub Actions SUCCESS, real audit artifact **14683367830** downloaded and verified (8 features, 14 WP/Woo UI contracts, 168 traceability rows, 103 tasks). [PR #22](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/22) merged into P9 only at `26d7ef0d7aabb5b724787dae7f919180b3501a27`. **Release approval is NOT granted:** 168 requirement statuses and one catalog feature still planned; actual official Woo QIT, publisher accounts, latest version recertification not verified.
