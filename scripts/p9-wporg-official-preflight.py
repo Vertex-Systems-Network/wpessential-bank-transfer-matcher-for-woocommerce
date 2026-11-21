@@ -88,15 +88,28 @@ def process_result(args):
             pcp_state="PASSED_WITH_NO_FINDINGS"
     html_path=DIST/"p9-wporg-official-readme-response.html"
     html=html_path.read_text() if html_path.is_file() else ""
+    readme_notes_count=0
     if args.readme_curl_exit!=0 or args.readme_http_status!="200":
         online="UNVERIFIED_NETWORK_OR_HTTP"
     else:
-        successful=bool(re.search(r'class=["\'][^"\']*notice-success[^"\']*["\'][^>]*>.*?Congratulations! No errors found\.',html,re.I|re.S))
-        fatal=bool(re.search(r'Fatal Errors:|class=["\']errors error["\']',html,re.I))
-        if successful and not fatal:
-            online="PASSED_OFFICIAL_FORM_RESPONSE"
-        elif fatal:
+        section=re.search(r'<div class="wrap readme-validator">(.*?)<form method="get"',html,re.I|re.S)
+        validator_section=section.group(1) if section else ""
+        fatal=bool(re.search(r'Fatal Errors:|notice[- ]error|class=["\']errors error["\']',validator_section,re.I))
+        success=bool(re.search(r'class=["\'][^"\']*notice-success[^"\']*["\'][^>]*>.*?Congratulations! No errors found\.',validator_section,re.I|re.S))
+        notes=re.search(r'<ul class="notes">(.*?)</ul>',validator_section,re.I|re.S)
+        if notes:
+            readme_notes_count=len(re.findall(r'<li\b',notes.group(1),re.I))
+        # The live 2026 official validator displays a Notes-only result rather
+        # than a success banner after a correctly Base64-encoded form submission.
+        # Check this is the submitted source, not a blank GET/fallback page.
+        posted_source=bool(re.search(r'<textarea[^>]*name="readme_visible"[^>]*>\s*===\s*WPEssential Bank Transfer Matcher',html,re.I)
+                           and "Stable tag: 0.1.0" in html and "readme_contents" in html)
+        if fatal:
             online="FATAL_ERRORS_OFFICIAL_FORM_RESPONSE"
+        elif success:
+            online="PASSED_OFFICIAL_FORM_RESPONSE"
+        elif notes and posted_source and readme_notes_count:
+            online="OFFICIAL_FORM_PROCESSED_WITH_NOTES_NO_FATAL_ERROR"
         else:
             online="UNVERIFIED_UNRECOGNIZED_RESPONSE"
     archive=DIST/(SLUG+".zip")
@@ -129,6 +142,7 @@ def process_result(args):
         "official_readme_http_status":args.readme_http_status,
         "official_readme_curl_exit":args.readme_curl_exit,
         "official_readme_response":online,
+        "official_readme_notes_count":readme_notes_count,
         "official_readme_raw_sha256":sha(html.encode()) if html else None,
         "package_readme_sha256":sha(readme),
         "public_submission":"NOT AUTHORIZED",
