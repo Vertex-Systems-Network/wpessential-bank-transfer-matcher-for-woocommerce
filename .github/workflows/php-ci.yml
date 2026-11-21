@@ -34,7 +34,7 @@ jobs:
       - name: P9 independent ZIP licenses, optimized autoload and deterministic repeat
         run: |
           python3 -m py_compile scripts/verify-release-archives.py tests/p9_archive_guards.py
-          python3 scripts/verify-release-archives.py --output /tmp/wbm-p9-license-inventory.json
+          python3 scripts/verify-release-archives.py --output dist/p9-license-inventory.json
           PYTHONOPTIMIZE=1 python3 tests/p9_archive_guards.py
           PYTHONOPTIMIZE=1 python3 scripts/verify-release-archives.py
           sha256sum dist/wpessential-bank-transfer-matcher.zip dist/wpessential-bank-transfer-matcher-pro.zip > /tmp/wbm-package-first.sha256
@@ -43,6 +43,16 @@ jobs:
           sha256sum dist/wpessential-bank-transfer-matcher.zip dist/wpessential-bank-transfer-matcher-pro.zip > /tmp/wbm-package-second.sha256
           cmp /tmp/wbm-package-first.sha256 /tmp/wbm-package-second.sha256
           python3 scripts/verify-release-archives.py
+      - name: Upload verified Free and Pro candidate ZIPs and factual license inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-independent-free-pro-zip-candidates
+          path: |
+            dist/wpessential-bank-transfer-matcher.zip
+            dist/wpessential-bank-transfer-matcher-pro.zip
+            dist/p9-license-inventory.json
+          if-no-files-found: error
+          retention-days: 14
       - name: Check finance dialog JavaScript syntax
         run: |
           node --check plugins/wpessential-bank-transfer-matcher-pro/assets/js/finance-dialogs.js
