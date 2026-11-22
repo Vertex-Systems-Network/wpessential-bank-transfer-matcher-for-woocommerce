@@ -17,10 +17,12 @@ final class Assets {
 				if ( $page_hook === $current_hook ) {
 					$plugin = dirname( __DIR__, 2 ) . '/wpessential-bank-transfer-matcher.php';
 					wp_enqueue_style( 'wpessential-wbm-admin', plugins_url( 'assets/admin.css', $plugin ), array(), '1.0.0' );
-					wp_enqueue_script( 'wpessential-wbm-admin', plugins_url( 'assets/admin.js', $plugin ), array(), '1.0.0', true );
+					wp_enqueue_script( 'wpessential-wbm-admin', plugins_url( 'assets/admin.js', $plugin ), array(), '1.0.1', true );
 					wp_localize_script( 'wpessential-wbm-admin', 'wpessentialWbmAdmin', array(
 						'root' => esc_url_raw( rest_url() ), 'nonce' => wp_create_nonce( 'wp_rest' ),
 						'processing' => __( 'Processing…', 'wpessential-bank-transfer-matcher' ),
+						'referenceCopied' => __( 'Payment reference copied.', 'wpessential-bank-transfer-matcher' ),
+						'referenceSelected' => __( 'Payment reference selected. Use your device’s copy command.', 'wpessential-bank-transfer-matcher' ),
 						'saved' => __( 'Saved. Refreshing the reconciliation state…', 'wpessential-bank-transfer-matcher' ),
 						'failed' => __( 'The action could not be completed. Review the fields and retry.', 'wpessential-bank-transfer-matcher' ),
 					) );

@@ -25,7 +25,7 @@ Implementation gaps: integrated cross-edition KPI hierarchy and explicit data-sc
 Current source: Free src/Admin/OrdersPage.php, backed by WC order CRUD and BACS status.
 Actor: wbm_view; actual payment actions demand separate approval role.
 Fields: immutable order reference and WC order number, status, gateway, creation date, claim state, independent verified sum, exact remaining amount and ISO currency.
-Controls: exact WooCommerce order ID or immutable payment-reference lookup within eligible status and native BACS, status, currency and inclusive creation-date filters, clear filters and bounded pagination. Payment-state and amount filtering remain acceptance gaps.
+Controls: exact WooCommerce order ID or immutable payment-reference lookup within eligible status and native BACS, status, currency and inclusive creation-date filters, clear filters, bounded pagination and per-row payment-reference copy with accessible feedback. Payment-state and amount filtering remain acceptance gaps.
 States: BACS default view, filtered empty, missing reference, unrelated gateway, no match, permission denied.
 Gap: customer-field and custom order-number search, additional filter predicates and full row-action parity.
 

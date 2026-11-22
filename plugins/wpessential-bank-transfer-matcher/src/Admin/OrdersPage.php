@@ -198,10 +198,18 @@ final class OrdersPage {
 		$customer = '' !== $customer ? $customer : __( 'Guest', 'wpessential-bank-transfer-matcher' );
 		$state = $data['mismatch'] ? __( 'Balance exception', 'wpessential-bank-transfer-matcher' ) : ( 0 === $data['outstanding'] ? __( 'Fully allocated', 'wpessential-bank-transfer-matcher' ) : ( $data['allocated'] > 0 ? __( 'Partial', 'wpessential-bank-transfer-matcher' ) : __( 'Unallocated', 'wpessential-bank-transfer-matcher' ) ) );
 		$reconcile_url = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_view' => 'order', 'order_id' => $order->get_id() ], admin_url( 'admin.php' ) );
+		$reference = '—';
+		if ( null !== $data['reference'] ) {
+			$reference = sprintf(
+				'<span class="wbm-copy-reference"><span class="wbm-copy-value">%s</span> <button type="button" class="button button-small" hidden>%s</button> <span role="status"></span></span>',
+				esc_html( $data['reference'] ), esc_html__( 'Copy reference', 'wpessential-bank-transfer-matcher' )
+			);
+		}
 		printf( '<tr><td><a href="%s">#%s</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td><a class="button button-small" href="%s">%s</a></td></tr>',
 			esc_url( $order->get_edit_order_url() ), esc_html( $order->get_order_number() ),
 			esc_html( $order->get_date_created()?->date_i18n( get_option( 'date_format' ) ) ?? '—' ), esc_html( $customer ),
-			esc_html( $data['reference'] ?? '—' ), esc_html( self::money( $money->minor_units, $money->currency, $money->exponent ) ),
+			wp_kses( $reference, [ 'span' => [ 'class' => true, 'role' => true ], 'button' => [ 'type' => true, 'class' => true, 'hidden' => true ] ] ),
+			esc_html( self::money( $money->minor_units, $money->currency, $money->exponent ) ),
 			esc_html( self::money( $data['allocated'], $money->currency, $money->exponent ) ),
 			esc_html( self::money( $data['outstanding'], $money->currency, $money->exponent ) ),
 			esc_html( $data['claim_status'] ?? '—' ), esc_html( $state ), esc_url( $reconcile_url ), esc_html__( 'Review', 'wpessential-bank-transfer-matcher' )
