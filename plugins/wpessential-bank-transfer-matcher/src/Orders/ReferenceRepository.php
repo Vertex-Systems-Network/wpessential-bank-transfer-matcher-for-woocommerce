@@ -37,15 +37,8 @@ final class ReferenceRepository {
 	}
 
 	public function find( EntityId $order_id ): ?PaymentReference {
-		if ( ! $this->ready ) {
-			$version = $this->schema_version();
-			if ( null === $version ) {
-				return null;
-			}
-			if ( '1' !== $version ) {
-				throw new RuntimeException( 'Unsupported payment reference schema version.' );
-			}
-			$this->ready = true;
+		if ( ! $this->can_read() ) {
+			return null;
 		}
 		$table = $this->db->prefix . 'wbm_payment_references';
 		$value = $this->db->get_var( $this->db->prepare( "SELECT reference FROM `$table` WHERE order_id = %d", $order_id->value ) );
@@ -54,6 +47,33 @@ final class ReferenceRepository {
 		}
 
 		return null === $value ? null : new PaymentReference( (string) $value );
+	}
+
+	public function find_order_id( PaymentReference $reference ): ?EntityId {
+		if ( ! $this->can_read() ) {
+			return null;
+		}
+		$table = $this->db->prefix . 'wbm_payment_references';
+		$value = $this->db->get_var( $this->db->prepare( "SELECT order_id FROM `$table` WHERE reference = %s", $reference->value ) );
+		if ( '' !== $this->db->last_error ) {
+			throw new RuntimeException( 'Could not look up the payment reference.' );
+		}
+
+		return null === $value ? null : new EntityId( (int) $value );
+	}
+
+	private function can_read(): bool {
+		if ( ! $this->ready ) {
+			$version = $this->schema_version();
+			if ( null === $version ) {
+				return false;
+			}
+			if ( '1' !== $version ) {
+				throw new RuntimeException( 'Unsupported payment reference schema version.' );
+			}
+			$this->ready = true;
+		}
+		return true;
 	}
 
 	private function ensure_schema(): void {

@@ -213,7 +213,7 @@ try {
   // Exercise actual GET forms, not decorative filters or mocked API handlers.
   // Never submit a financial POST, allocation, claim or approval in visual QA.
   await page.setViewportSize({ width: 375, height: 812 });
-  const checkFilter = async (name, route, apply, verify) => {
+  const checkFilter = async (ui, name, route, apply, verify) => {
     try {
       const response = await page.goto(base + route, { waitUntil: 'domcontentloaded' });
       if (!response || response.status() !== 200) {
@@ -224,14 +224,33 @@ try {
       await verify();
       const filename = mode + '-functional-' + name + '-375.png';
       await page.screenshot({ path: join(output, filename), fullPage: true });
-      report.screens.push({ ui: name === 'review-filter-empty' ? 'UI-009' : 'UI-008',
+      report.screens.push({ ui,
         name, width: 375, mode, screenshot: filename, live_get_filter: true });
     } catch (error) {
       report.issues.push({ mode, page: name, width: 375, issue:
         'Native filter or persistence failed: ' + String(error?.message || error).slice(0, 220) });
     }
   };
-  await checkFilter('review-filter-empty',
+  await checkFilter('UI-002', 'order-reference-copy',
+    url('wpessential-bank-transfer-matcher') + '&wbm_search=' + encodeURIComponent(id),
+    async () => {
+      const control = page.locator('.wbm-copy-reference');
+      const reference = await control.locator('.wbm-copy-value').innerText();
+      const button = control.getByRole('button', { name: 'Copy reference' });
+      await button.focus();
+      await button.press('Enter');
+      await control.getByRole('status').filter({ hasText: /payment reference (copied|selected)/i }).waitFor();
+      const message = await control.getByRole('status').innerText();
+      if (message.includes('selected') && await page.evaluate(() => String(window.getSelection())) !== reference) {
+        throw new Error('Clipboard fallback did not select the exact payment reference');
+      }
+    },
+    async () => {
+      if (new URL(page.url()).searchParams.get('wbm_search') !== String(id)) {
+        throw new Error('Copy reference changed the active order search');
+      }
+    });
+  await checkFilter('UI-009', 'review-filter-empty',
     url('wpessential-wbm-pro-review-queue'),
     async () => {
       await page.locator('form.wbm-pro-toolbar select[name="status"]').selectOption('resolved');
@@ -245,7 +264,7 @@ try {
         throw new Error('Case-state GET filter did not persist or return source-backed empty state');
       }
     });
-  await checkFilter('bank-source-page-size',
+  await checkFilter('UI-008', 'bank-source-page-size',
     url('wpessential-wbm-pro-bank-transactions') + '&batch=' + fixture.batch_id,
     async () => {
       await page.locator('form.wbm-pro-toolbar select[name="per_page"]').selectOption('20');

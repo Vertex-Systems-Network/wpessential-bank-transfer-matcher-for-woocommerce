@@ -5,6 +5,7 @@ Development draft. Submission and publication are pending release verification.
 Development preview of the separate add-on. Requires a compatible active Free edition.
 
 - Separate add-on activation and Free dependency checks.
+- Import and validate bank statement rows.
 
 Activate WooCommerce 10.8 or later first. In WordPress, open Plugins → Add Plugin → Upload Plugin, choose the Free edition ZIP, and activate it. A complete production ZIP already contains its Composer autoloader; the server does not need Composer.
 

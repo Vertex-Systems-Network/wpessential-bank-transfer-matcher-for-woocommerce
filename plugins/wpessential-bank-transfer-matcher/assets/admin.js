@@ -1,5 +1,25 @@
 ( () => {
 	const config = window.wpessentialWbmAdmin || {};
+	document.querySelectorAll( '.wbm-copy-reference' ).forEach( ( control ) => {
+		const button = control.querySelector( 'button' );
+		const value = control.querySelector( '.wbm-copy-value' );
+		const message = control.querySelector( '[role="status"]' );
+		button.hidden = false;
+		button.addEventListener( 'click', async () => {
+			message.textContent = '';
+			try {
+				await navigator.clipboard.writeText( value.textContent );
+				message.textContent = config.referenceCopied;
+			} catch ( error ) {
+				const selection = window.getSelection();
+				const range = document.createRange();
+				range.selectNodeContents( value );
+				selection.removeAllRanges();
+				selection.addRange( range );
+				message.textContent = config.referenceSelected;
+			}
+		} );
+	} );
 	document.querySelectorAll( '.wbm-api-form' ).forEach( ( form ) => {
 		form.addEventListener( 'submit', async ( event ) => {
 			event.preventDefault();

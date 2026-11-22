@@ -223,7 +223,7 @@ if ( 'split_setup' === $stage ) {
 }
 if ( str_ends_with( $stage, '_hold' ) ) {
 	$signal = $args[1] ?? null;
-	if ( ! is_string( $signal ) || ! str_starts_with( $signal, '/tmp/wbm-pro-race-' ) ) {
+	if ( ! is_string( $signal ) || ! str_starts_with( $signal, '/tmp/wbm-pro-race-' ) || ! str_ends_with( $signal, '.ready' ) ) {
 		throw new InvalidArgumentException( 'Race signal must be in disposable /tmp path.' );
 	}
 	$signaled = false;
@@ -233,7 +233,21 @@ if ( str_ends_with( $stage, '_hold' ) ) {
 			if ( false === file_put_contents( $signal, 'lock acquired' ) ) {
 				throw new RuntimeException( 'Failed to record held-lock barrier.' );
 			}
-			usleep( 3500000 );
+			// Release only after both concurrent independent WP-CLI contenders return.
+            // Wall-clock sleeps were flaky on slow GitHub workers and allowed a
+            // legitimately committed proposal to be misclassified as a lock failure.
+            $release = substr( $signal, 0, -strlen( '.ready' ) ) . '.release';
+            $deadline = microtime( true ) + 60;
+            while ( true ) {
+                clearstatcache( true, $release );
+                if ( is_file( $release ) ) {
+                    break;
+                }
+                if ( microtime( true ) >= $deadline ) {
+                    throw new RuntimeException( 'Contender barrier timed out while holding synthetic race locks.' );
+                }
+                usleep( 100000 );
+            }
 		}
 		return $sql;
 	}, 999 );

@@ -23,12 +23,36 @@ jobs:
         run: python3 scripts/check-project-state.py
       - name: Verify generated documentation
         run: |
-          node scripts/generate-readmes.ts --check
+          npm run docs:check
+          npm run docs:readme-validate
           python3 tests/docs_generation.py
+          python3 tests/marketplace_evidence.py
       - name: Validate and build independent Composer packages
         run: |
           bash scripts/package-plugin.sh free
           bash scripts/package-plugin.sh pro
+      - name: P9 independent ZIP licenses, optimized autoload and deterministic repeat
+        run: |
+          python3 -m py_compile scripts/verify-release-archives.py tests/p9_archive_guards.py
+          python3 scripts/verify-release-archives.py --output dist/p9-license-inventory.json
+          PYTHONOPTIMIZE=1 python3 tests/p9_archive_guards.py
+          PYTHONOPTIMIZE=1 python3 scripts/verify-release-archives.py
+          sha256sum dist/wpessential-bank-transfer-matcher.zip dist/wpessential-bank-transfer-matcher-pro.zip > /tmp/wbm-package-first.sha256
+          bash scripts/package-plugin.sh free
+          bash scripts/package-plugin.sh pro
+          sha256sum dist/wpessential-bank-transfer-matcher.zip dist/wpessential-bank-transfer-matcher-pro.zip > /tmp/wbm-package-second.sha256
+          cmp /tmp/wbm-package-first.sha256 /tmp/wbm-package-second.sha256
+          python3 scripts/verify-release-archives.py
+      - name: Upload verified Free and Pro candidate ZIPs and factual license inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-independent-free-pro-zip-candidates
+          path: |
+            dist/wpessential-bank-transfer-matcher.zip
+            dist/wpessential-bank-transfer-matcher-pro.zip
+            dist/p9-license-inventory.json
+          if-no-files-found: error
+          retention-days: 14
       - name: Check finance dialog JavaScript syntax
         run: |
           node --check plugins/wpessential-bank-transfer-matcher-pro/assets/js/finance-dialogs.js
@@ -70,6 +94,83 @@ jobs:
           python3 tests/playground_download_retry.py
           python3 scripts/build_playground_bundles.py
           python3 scripts/test-playground-foundation.py
+          python3 scripts/verify-playground-release-bundles.py --negative-tests
+      - name: Upload exact-source base/Free/Pro Playground release evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-playground-bundles
+          path: |
+            dist/playground-base.zip
+            dist/playground-free.zip
+            dist/playground-pro.zip
+            dist/p9-playground-bundle-manifest.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Generate P9 release SHA256SUMS, canonical changelog and historical compatibility report
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python3 -m py_compile scripts/generate-p9-release-evidence.py
+          python3 scripts/generate-p9-release-evidence.py --negative-tests
+      - name: Upload P9 source-verified release validation bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-sha256-changelog-compat-validation
+          path: |
+            dist/SHA256SUMS
+            dist/CHANGELOG-0.1.0.md
+            dist/p9-validation-report.json
+            dist/p9-compatibility-matrix.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Audit real feature, test and fourteen UI/traceability ID evidence
+        run: |
+          python3 -m py_compile scripts/p9-acceptance-audit.py
+          python3 scripts/p9-acceptance-audit.py --negative-tests
+      - name: Upload source-backed acceptance and unresolved gap matrix
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-acceptance-feature-screen-test-audit
+          path: dist/p9-acceptance-audit.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Deny premature release and document publication permission boundaries
+        run: |
+          python3 -m py_compile scripts/p9-publication-preflight.py
+          python3 scripts/p9-publication-preflight.py --negative-tests
+      - name: Upload immutable release blocker and handoff classification
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-release-publication-blockers
+          path: dist/p9-publication-preflight.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Verify P9 canonical version and every documentation source matches built ZIPs without drift
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python3 -m py_compile scripts/p9-t012-docs-lock.py
+          python3 scripts/p9-t012-docs-lock.py --negative-tests
+      - name: Upload factual P9 0.1.0 docs lock and canonical changelog/ZIP header evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-t012-canonical-documentation-lock
+          path: dist/p9-t012-docs-lock.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Final original Free/Pro archive and Composer autoload dependency audit
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python3 -m py_compile scripts/p9-t013-final-audit.py
+          python3 scripts/p9-t013-final-audit.py --archive
+      - name: Upload two edition release archive audit with source SHA256
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-t013-final-free-pro-zip-audit
+          path: dist/p9-t013-final-zip-report.json
+          if-no-files-found: error
+          retention-days: 14
 
   mariadb-migrations:
     runs-on: ubuntu-latest
@@ -112,4 +213,33 @@ jobs:
         run: |
           bash scripts/package-plugin.sh free
           bash scripts/package-plugin.sh pro
-          bash scripts/test-native-install.sh "$RUNNER_TEMP/wbm-wordpress"
+          set -o pipefail
+          bash scripts/test-native-install.sh "$RUNNER_TEMP/wbm-wordpress" | tee "$RUNNER_TEMP/p9-t011-native-test.log"
+      - name: Verify real cross-request SQL concurrency, HPOS and classic logs from native WooCommerce
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python3 -m py_compile scripts/p9-t011-release-qa.py
+          python3 scripts/p9-t011-release-qa.py --native-log "$RUNNER_TEMP/p9-t011-native-test.log"
+      - name: Upload real native MariaDB race and HPOS/classic source matrix (raw private logs stay ephemeral)
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-t011-native-sql-races-and-storage
+          path: dist/p9-t011-native-matrix.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Prove installed Free/Pro and WooCommerce operate without Composer executable
+        env:
+          WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -o pipefail
+          log="$RUNNER_TEMP/p9-t013-no-composer.log"
+          bash scripts/p9-t013-no-composer.sh "$RUNNER_TEMP/wbm-wordpress" | tee "$log"
+          python3 scripts/p9-t013-final-audit.py --native-log "$log"
+      - name: Upload real Composerless WordPress financial-safety smoke proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: p9-t013-installed-composerless-free-pro
+          path: dist/p9-t013-no-composer-report.json
+          if-no-files-found: error
+          retention-days: 14

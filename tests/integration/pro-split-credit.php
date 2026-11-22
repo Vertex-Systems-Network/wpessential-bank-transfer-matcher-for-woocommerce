@@ -67,6 +67,7 @@ if ( 1 !== $wpdb->insert( $imports, [
 	'identity_fingerprint' => hash( 'sha256', 'split-source/' . $batch ),
 ] ) ) throw new RuntimeException( 'Could not create a synthetic unique imported credit.' );
 $source_id = (int) $wpdb->insert_id;
+$three_source_id = null;
 $reviewer_id = wp_create_user( 'wbm-split-checker-' . wp_generate_password( 8, false ),
 	wp_generate_password( 16 ), 'split-checker-' . wp_generate_password( 8, false ) . '@example.test' );
 if ( is_wp_error( $reviewer_id ) ) throw new RuntimeException( $reviewer_id->get_error_message() );
@@ -351,6 +352,58 @@ try {
 		$_GET = $before_get;
 	}
 	echo "PASS WordPress-native allocation queue, masked source, correction audit and no financial mutation forms\n";
+
+	wp_set_current_user( $admin->ID );
+	$triple_lines = [];
+	$triple_reference = null;
+	foreach ( [ 3000, 4000, 5000 ] as $amount ) {
+		$recipient = wc_create_order();
+		if ( ! $recipient instanceof WC_Order ) {
+			throw new RuntimeException( 'Could not create a three-order split recipient.' );
+		}
+		$orders[] = $recipient;
+		$recipient->set_payment_method( 'bacs' );
+		$recipient->set_currency( 'USD' );
+		$recipient->set_total( (string) intdiv( $amount, 100 ) );
+		$recipient->set_status( 'on-hold' );
+		$recipient->save();
+		$reference = PaymentReference::issue();
+		( new ReferenceRepository( $wpdb ) )->reserve( new EntityId( $recipient->get_id() ), $reference );
+		$triple_reference ??= $reference->value;
+		$bank_bindings->confirm( $recipient->get_id(), $account, $admin->ID, $reason );
+		$triple_lines[] = [ 'order_id' => $recipient->get_id(), 'amount_minor' => $amount ];
+	}
+	$three_source = array_replace( $canonical, [
+		'source_row' => 3, 'amount_minor' => 12000, 'reference' => $triple_reference,
+		'description' => 'Synthetic transferred amount for three distinct orders',
+		'transaction_id' => 'SPLIT-THREE-SYNTH-' . $orders[0]->get_id(),
+	] );
+	if ( 1 !== $wpdb->insert( $imports, [
+		'batch_id' => $batch, 'source_row' => 3, 'canonical_json' => wp_json_encode( $three_source ),
+		'error_code' => '', 'warning_code' => '',
+		'identity_fingerprint' => hash( 'sha256', 'split-three-source/' . $batch ),
+	] ) ) {
+		throw new RuntimeException( 'Could not create the synthetic three-order credit.' );
+	}
+	$three_source_id = (int) $wpdb->insert_id;
+	$three_proposal = $writer->propose( $three_source_id, $triple_lines, $admin->ID,
+		hash( 'sha256', 'split-three-group/' . $three_source_id ), 'Assign one synthetic cleared deposit to three BACS orders.' );
+	wp_set_current_user( $reviewer_id );
+	$three_approved = $writer->approve( $three_proposal['split_group_key'], $reviewer_id, true,
+		'Independently review the synthetic cleared deposit and all three recipients.' );
+	if ( 'approved' !== $three_approved['status'] || 3 !== count( $three_approved['allocation_ids'] ) ||
+		$three_approved['allocation_ids'] !== $three_proposal['allocation_ids'] || $three_approved['order_payment_changed'] ) {
+		throw new RuntimeException( 'The three-order credit did not receive atomic approval.' );
+	}
+	foreach ( $triple_lines as $line ) {
+		$balance = $ledger->snapshot( $line['order_id'], $three_source_id, $line['amount_minor'], 12000, 'USD', 2, $account );
+		$recipient = wc_get_order( $line['order_id'] );
+		if ( 0 !== $balance['order_outstanding_minor'] || 12000 !== $balance['credit_allocated_minor'] ||
+			0 !== $balance['credit_unallocated_minor'] || ! $recipient->has_status( 'on-hold' ) || $recipient->is_paid() ) {
+			throw new RuntimeException( 'Three-order split did not conserve the credit or changed WooCommerce payment status.' );
+		}
+	}
+	echo "PASS one bank credit split across three native orders with exact totals and no paid transition\n";
 } finally {
 	if ( null !== $held_lock ) $other_connection->get_var( $other_connection->prepare( 'SELECT RELEASE_LOCK(%s)', $held_lock ) );
 	wp_set_current_user( $admin->ID );
@@ -366,12 +419,15 @@ try {
 	}
 	$wpdb->delete( $case_table, [ 'transaction_row_id' => $source_id ], [ '%d' ] );
 	$allocations = $wpdb->prefix . 'wbm_pro_allocations';
-	$ids = $wpdb->get_col( $wpdb->prepare(
-		"SELECT id FROM $allocations WHERE transaction_row_id = %d", $source_id
-	) );
-	foreach ( $ids as $id ) $wpdb->delete( $wpdb->prefix . 'wbm_pro_allocation_events',
-		[ 'allocation_id' => (int) $id ], [ '%d' ] );
-	$wpdb->delete( $allocations, [ 'transaction_row_id' => $source_id ], [ '%d' ] );
+	foreach ( array_filter( [ $source_id, $three_source_id ] ) as $cleanup_source_id ) {
+		$ids = $wpdb->get_col( $wpdb->prepare(
+			"SELECT id FROM $allocations WHERE transaction_row_id = %d", $cleanup_source_id
+		) );
+		foreach ( $ids as $id ) {
+			$wpdb->delete( $wpdb->prefix . 'wbm_pro_allocation_events', [ 'allocation_id' => (int) $id ], [ '%d' ] );
+		}
+		$wpdb->delete( $allocations, [ 'transaction_row_id' => $cleanup_source_id ], [ '%d' ] );
+	}
 	$wpdb->delete( $imports, [ 'batch_id' => $batch ], [ '%d' ] );
 	$wpdb->delete( $wpdb->prefix . 'wbm_pro_import_batches', [ 'id' => $batch ], [ '%d' ] );
 	$wpdb->query( "DELETE FROM {$wpdb->prefix}wbm_pro_order_bank_events WHERE bank_account_id = " . (int) $account );

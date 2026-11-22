@@ -2,6 +2,7 @@
 
 use WPEssential\BankTransferMatcherPro\Import\CanonicalStatementRow;
 use WPEssential\BankTransferMatcherPro\Import\CsvParser;
+use WPEssential\BankTransferMatcherPro\Import\MappingProfile;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) throw new RuntimeException( 'Run against the disposable wbm_ci database.' );
 $parser = new CsvParser();
@@ -12,6 +13,22 @@ if ( 2 !== count( $rows ) || 2 !== $rows[0]->row_number || 'Customer, transfer' 
 }
 $semicolon = $parser->parse( "Date;Amount;Currency\n2026-11-18;10,50;EUR\n", ';' );
 if ( '10,50' !== $semicolon[0]->value( 'Amount' ) ) throw new RuntimeException( 'Explicit semicolon delimiter changed the raw decimal value.' );
+$locale_profile = MappingProfile::from_array( [
+	'id' => 'localized-csv', 'name' => 'Localized CSV', 'delimiter' => ';',
+	'date_header' => 'Date', 'date_format' => 'Y-m-d', 'amount_header' => 'Amount',
+	'decimal_separator' => ',', 'thousands_separator' => '.', 'exponent' => 2,
+	'currency_header' => 'Currency', 'fixed_currency' => '', 'reference_header' => '',
+	'description_header' => 'Payer', 'transaction_id_header' => 'Bank ID',
+] );
+$localized_rows = $parser->parse(
+	"\xEF\xBB\xBFDate;Amount;Currency;Payer;Bank ID\n2026-11-18;1.234,56;EUR;José Álvarez;000123\n", ';'
+);
+$localized = $locale_profile->map( $localized_rows[0] );
+if ( 123456 !== $localized->amount_minor || 'EUR' !== $localized->currency ||
+	'000123' !== $localized->transaction_id || 'José Álvarez' !== $localized->description ) {
+	throw new RuntimeException( 'Localized CSV changed amount, payer name, or bank ID.' );
+}
+echo "PASS localized CSV BOM, decimal comma, thousands grouping, leading-zero ID and UTF-8 payer\n";
 $canonical = new CanonicalStatementRow( 2, '2026-11-18', 2500, 'USD', 2, ' tx-100 ', 'Customer   transfer' );
 $same = new CanonicalStatementRow( 99, '2026-11-18', 2500, 'USD', 2, 'TX-100', 'customer transfer' );
 if ( $canonical->fingerprint !== $same->fingerprint || 2500 !== $canonical->amount_minor ) throw new RuntimeException( 'Canonical row fingerprint or exact minor units are unstable.' );

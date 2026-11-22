@@ -12,7 +12,7 @@ final class Overview {
 	public function __construct( private readonly wpdb $db ) {}
 
 	/** @param list<\WC_Order> $orders */
-	public function render( int $eligible_count, array $orders ): void {
+	public function render( int $eligible_count, array $orders, OrderSummary $summary ): void {
 		$claims = 0;
 		$verified = 0;
 		if ( $this->version( 'wpessential_wbm_claim_schema' ) ) {
@@ -25,14 +25,13 @@ final class Overview {
 		}
 		$currencies = [];
 		$incomplete = false;
-		$summary = new OrderSummary( $this->db );
 		foreach ( $orders as $order ) {
 			try {
-				$data = $summary->get( $order );
+				$data = $summary->balance( $order );
 				$money = $data['total'];
 				$key = $money->currency . ':' . $money->exponent;
 				$previous = $currencies[ $key ]['minor'] ?? 0;
-				if ( $data['outstanding'] < 0 || $data['outstanding'] > PHP_INT_MAX - $previous ) {
+				if ( $data['mismatch'] || $data['outstanding'] < 0 || $data['outstanding'] > PHP_INT_MAX - $previous ) {
 					throw new RuntimeException( 'Invalid outstanding balance.' );
 				}
 				$currencies[ $key ] = [ 'minor' => $previous + $data['outstanding'], 'currency' => $money->currency, 'exponent' => $money->exponent ];

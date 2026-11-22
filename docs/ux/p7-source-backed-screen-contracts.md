@@ -25,9 +25,9 @@ Implementation gaps: integrated cross-edition KPI hierarchy and explicit data-sc
 Current source: Free src/Admin/OrdersPage.php, backed by WC order CRUD and BACS status.
 Actor: wbm_view; actual payment actions demand separate approval role.
 Fields: immutable order reference and WC order number, status, gateway, creation date, claim state, independent verified sum, exact remaining amount and ISO currency.
-Controls: implemented status filter and bounded order list; target includes order/reference search, payment state, gateway, ISO currency, date ranges, amount bounds, clear filters and next/previous pagination only where real query predicates exist.
+Controls: exact WooCommerce order ID or immutable payment-reference lookup within eligible status and native BACS, status, currency and inclusive creation-date filters, clear filters, bounded pagination at 20, 50 or 100 rows, newest/oldest creation date sorting and per-row payment-reference copy with accessible feedback. The claim status filter applies before pagination and includes orders with no claim. Reconciliation state and outstanding amount use the displayed Free manual ledger. Amount bounds require a currency. Balance filters evaluate up to 250 candidates before pagination and prompt for narrower filters on larger sets.
 States: BACS default view, filtered empty, missing reference, unrelated gateway, no match, permission denied.
-Gap: verify and implement full search/multi-filter semantics and per-row financial balances; do NOT expose an unimplemented Export visible action.
+Gap: customer-field and custom order-number search, additional filter predicates and full row-action parity.
 
 ## UI-003 — ORDER DETAIL / WC META PANEL (Free, Pro sources)
 

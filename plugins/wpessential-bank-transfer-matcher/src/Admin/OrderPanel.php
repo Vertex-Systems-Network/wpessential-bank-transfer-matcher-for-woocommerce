@@ -34,7 +34,7 @@ final class OrderPanel {
 		);
 		printf( '<p><strong>%s</strong> %s · <strong>%s</strong> %d</p>',
 			esc_html__( 'Claim status:', 'wpessential-bank-transfer-matcher' ), esc_html( $data['claim_status'] ?? '—' ),
-			esc_html__( 'Manual evidence records:', 'wpessential-bank-transfer-matcher' ), $data['evidence_count']
+			esc_html__( 'Manual evidence records:', 'wpessential-bank-transfer-matcher' ), absint( $data['evidence_count'] )
 		);
 		if ( $data['mismatch'] ) {
 			printf( '<p role="alert"><strong>%s</strong></p>', esc_html__( 'WooCommerce payment state and verified allocations disagree. Review before taking further action.', 'wpessential-bank-transfer-matcher' ) );

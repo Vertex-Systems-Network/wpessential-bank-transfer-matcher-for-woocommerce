@@ -35,7 +35,7 @@ $profile=MappingProfile::from_array([
     'currency_header'=>'','fixed_currency'=>'USD','reference_header'=>'Reference',
     'description_header'=>'','transaction_id_header'=>'Bank ID',
 ]);
-$make_file=static function(int $size) use (&$files): string {
+$make_file=static function(int $size, bool $include_invalid_amount = false) use (&$files): string {
     $path=tempnam(sys_get_temp_dir(), 'wbm-p8-perf-');
     if (!is_string($path)) throw new RuntimeException('No temp CSV path.');
     $files[]=$path;
@@ -45,7 +45,7 @@ $make_file=static function(int $size) use (&$files): string {
         fputcsv($f,['Date','Amount','Reference','Bank ID'],',','"','');
         for($i=1;$i<=$size;++$i) {
             fputcsv($f,[
-                gmdate('Y-m-d'),'1.00',
+                gmdate('Y-m-d'),$include_invalid_amount && $i === 1 ? 'invalid-amount' : '1.00',
                 "P8PERF-$size-$i", sprintf('P8%05d-%06d',$size,$i),
             ],',','"','');
         }
@@ -151,6 +151,25 @@ try {
         'reason'=>'10k_row_cap',
     ];
     echo "PASS P8-T007 real 1k/10k synthetic import and 50k early rejection; time, memory, bytes, rows in JSON\n";
+    $malformed = $make_file(50000, true);
+    try {
+        $unexpected = $job->start($malformed, $account, $profile, (int)$actor->ID);
+        $batches[] = $unexpected;
+        throw new RuntimeException('A 50k-row statement with one bad amount bypassed the row cap.');
+    } catch (InvalidArgumentException $error) {
+        if ($error->getMessage() !== 'The CSV row limit was exceeded.') {
+            throw $error;
+        }
+    }
+    if ($before_counts !== [
+        (int)$wpdb->get_var("SELECT COUNT(*) FROM $rows_table"),
+        (int)$wpdb->get_var("SELECT COUNT(*) FROM $batches_table"),
+        (int)$wpdb->get_var("SELECT COUNT(*) FROM $jobs_table"),
+    ]) {
+        throw new RuntimeException('Rejected 50k CSV with a bad amount altered import state.');
+    }
+    echo "PASS 50k-row statement with one bad amount rejected by row cap before staging\n";
+
 } finally {
     foreach($batches as $id)if($id>0)$cleanup((int)$id);
     if($account>0)$wpdb->delete($wpdb->prefix.'wbm_pro_bank_accounts',['id'=>$account],['%d']);

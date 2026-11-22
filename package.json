@@ -1,0 +1,14 @@
+{
+  "name": "wpessential-bank-transfer-matcher-release-docs",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "docs:generate": "node scripts/generate-readmes.ts",
+    "docs:check": "node scripts/generate-readmes.ts --check",
+    "docs:readme-validate": "python3 scripts/validate-wporg-readme.py"
+  }
+}

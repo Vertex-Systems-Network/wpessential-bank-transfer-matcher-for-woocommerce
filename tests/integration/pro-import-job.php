@@ -29,12 +29,29 @@ try {
 	if ( $row_total !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $batch ) ) ) throw new RuntimeException( 'Replay duplicated staged rows.' );
 	$first = $wpdb->get_var( $wpdb->prepare( "SELECT canonical_json FROM `$rows` WHERE batch_id = %d AND source_row = 2", $batch ) );
 	if ( '000001' !== ( json_decode( $first, true )['transaction_id'] ?? '' ) ) throw new RuntimeException( 'Bank transaction ID lost leading zeroes.' );
-	try { $job->start( $source, $account, $profile, $actor->ID ); throw new RuntimeException( 'Exact file reimport was accepted.' ); }
-	catch ( InvalidArgumentException $error ) { if ( 'Exact file reimport was accepted.' === $error->getMessage() ) throw $error; }
+	for ( $attempt = 0; $attempt < 5; ++$attempt ) {
+		try {
+			$job->start( $source, $account, $profile, $actor->ID );
+		} catch ( InvalidArgumentException $expected ) {
+			if ( 'This exact statement file was already imported for the selected account.' !== $expected->getMessage() ) {
+				throw $expected;
+			}
+			continue;
+		}
+		throw new RuntimeException( 'Exact file reimport was accepted.' );
+	}
 	// A changed private source must fail closed before any additional row is written.
 	$second_source = tempnam( sys_get_temp_dir(), 'wbm-job-overlap-' );
-	copy( $source, $second_source ); file_put_contents( $second_source, "\n", FILE_APPEND );
-	$second = $job->start( $second_source, $account, $profile, $actor->ID );
+	$overlap_profile = MappingProfile::from_array( array_replace(
+		$profile->to_array(), [ 'transaction_id_header' => '' ]
+	) );
+	$overlap = fopen( $second_source, 'wb' );
+	fwrite( $overlap, "Date,Amount,Reference\n" );
+	for ( $i = 1; $i <= $row_total; ++$i ) {
+		fputcsv( $overlap, [ '2026-11-18', '1.00', 'REF-' . $i ], ',', '"', '' );
+	}
+	fclose( $overlap );
+	$second = $job->start( $second_source, $account, $overlap_profile, $actor->ID );
 	$second_path = $wpdb->get_var( $wpdb->prepare( "SELECT source_path FROM `$jobs` WHERE batch_id = %d", $second ) );
 	file_put_contents( $second_path, 'tampered' );
 	try { $job->process( $second ); throw new RuntimeException( 'Changed source was accepted.' ); }
@@ -46,6 +63,11 @@ try {
 	$second_state = $wpdb->get_row( $wpdb->prepare( "SELECT status, warning_count FROM `$batches` WHERE id = %d", $second ), ARRAY_A );
 	if ( 'completed' !== $second_state['status'] || $row_total !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $second ) ) ) throw new RuntimeException( 'Explicit retry did not resume safely.' );
 	if ( $row_total !== (int) $second_state['warning_count'] || $row_total !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d AND warning_code = 'possible_duplicate'", $second ) ) ) throw new RuntimeException( 'Overlapping-file duplicate warnings were not persisted.' );
+	$overlap_payload = $wpdb->get_var( $wpdb->prepare( "SELECT canonical_json FROM `$rows` WHERE batch_id = %d AND source_row = 2", $second ) );
+	if ( '' !== ( json_decode( $overlap_payload, true )['transaction_id'] ?? null ) ) {
+		throw new RuntimeException( 'Overlapping statement fixture did not exercise missing bank IDs.' );
+	}
+	echo "PASS overlapping statement without source IDs retains rows and flags duplicate candidates\n";
 	$third_source = tempnam( sys_get_temp_dir(), 'wbm-job-cancel-' );
 	copy( $source, $third_source ); file_put_contents( $third_source, "\n\n", FILE_APPEND );
 	$third = $job->start( $third_source, $account, $profile, $actor->ID );

@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "scope": "P9-T008 publishing preflight only — no external actions",
+  "release_ready": false,
+  "public_release_authorized": false,
+  "owner_approval": "NOT AUTHORIZED",
+  "required_provenance": "External verification must include source/commit, named checker, timestamp, actual pass/report URL, and owner approval where applicable; never fabricate credentials.",
+  "gates": [
+    {
+      "id": "product_acceptance",
+      "kind": "technical",
+      "status": "pending",
+      "proof": "All eight feature catalog IDs have source-backed completed task evidence (CSV parser run 44238596901); 168 requirement traceability rows still planned and require per-ID acceptance. No public release."
+    },
+    {
+      "id": "latest_supported_matrix",
+      "kind": "technical",
+      "status": "pending",
+      "proof": "Actual native WP 7.1.5/WC 11.3.1/PHP 8.3/MariaDB 11.4 Free/Pro HPOS+classic test passed runs 44848601239 and 44850189929; wider current supported-version matrix/managed QIT remain pending."
+    },
+    {
+      "id": "full_phase_exact_head_ci",
+      "kind": "technical",
+      "status": "pending",
+      "proof": "P9 phase final head not yet tested or merged"
+    },
+    {
+      "id": "wp_org_plugin_check",
+      "kind": "technical",
+      "status": "pending",
+      "proof": "Official Plugin Check 2.2.0 run 44850194589 artifact 14685076703: 0 errors, 45 warnings including 3 WPEssential WP naming/trademark flags. Formal reviewer assessment/clean final ZIP still pending."
+    },
+    {
+      "id": "wp_org_readme_validator",
+      "kind": "technical",
+      "status": "pending",
+      "proof": "Official public online validator returned HTTP 200 and processed exact Free readme, 4 notes/zero fatal errors run 44850194589; verified contributor credentials and screenshot assets not present; no publisher submission."
+    },
+    {
+      "id": "woocommerce_managed_qit",
+      "kind": "technical",
+      "status": "not_run",
+      "proof": "Seven official Woo QIT suites in reviewer matrix have no genuine run IDs"
+    },
+    {
+      "id": "final_release_zip_integrity",
+      "kind": "technical",
+      "status": "pending",
+      "proof": "Final phase output, archive inventory, checksums and clean WP installs require P9-T013"
+    },
+    {
+      "id": "final_brand_listing_review",
+      "kind": "business",
+      "status": "unverified",
+      "proof": "Owner approval of distinct Free and Pro listing, icons, benefits, screenshots, translations"
+    },
+    {
+      "id": "commercial_pro_support_license",
+      "kind": "business",
+      "status": "unverified",
+      "proof": "Real paid licensing and update/support service model, terms, pricing and SLA cannot be inferred"
+    },
+    {
+      "id": "wordpress_org_2fa_authorized_account",
+      "kind": "permission",
+      "status": "unverified",
+      "proof": "Account identity and mandatory two-factor authentication are external owner controls"
+    },
+    {
+      "id": "wordpress_org_directory_review",
+      "kind": "permission",
+      "status": "unverified",
+      "proof": "WordPress.org new Free plugin slug has not been accepted by directory reviewers"
+    },
+    {
+      "id": "wordpress_org_svn_write_access",
+      "kind": "permission",
+      "status": "unverified",
+      "proof": "SVN repository/committer permissions must be granted after listing approval"
+    },
+    {
+      "id": "woo_marketplace_vendor_access",
+      "kind": "permission",
+      "status": "unverified",
+      "proof": "Woo Marketplace partner vendor dashboard/account and QIT privileges not connected"
+    },
+    {
+      "id": "woo_marketplace_contract_listing",
+      "kind": "permission",
+      "status": "unverified",
+      "proof": "Vendor contract, legal identity, seller details, payout terms, product approval not confirmed"
+    },
+    {
+      "id": "public_submission_explicit_approval",
+      "kind": "permission",
+      "status": "not_authorized",
+      "proof": "Source phase merge authorization never authorizes SVN pushes, plugin directory submissions, listings, payment services"
+    }
+  ],
+  "official_sources": [
+    "https://wordpress.org/plugins/developers/",
+    "https://make.wordpress.org/plugins/2024/10/01/plugin-check-and-2fa-now-mandatory-for-new-plugin-submissions/",
+    "https://developer.wordpress.org/plugins/wordpress-org/how-to-use-subversion/",
+    "https://developer.wordpress.org/plugins/wordpress-org/detailed-plugin-guidelines/",
+    "https://developer.woocommerce.com/docs/woo-marketplace/submitting-your-product",
+    "https://developer.woocommerce.com/docs/woo-marketplace/support-guidelines"
+  ]
+}

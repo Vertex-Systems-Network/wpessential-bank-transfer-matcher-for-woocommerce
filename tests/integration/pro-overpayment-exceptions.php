@@ -15,7 +15,7 @@ wp_set_current_user( $admin->ID );
 $order = wc_create_order();
 $order->set_payment_method( 'bacs' );
 $order->set_currency( 'USD' );
-$order->set_total( '100.00' );
+$order->set_total( '500.00' );
 $order->set_status( 'on-hold' );
 $order->save();
 $reference = PaymentReference::issue();
@@ -36,7 +36,7 @@ $batch_repo->transition( $batch, 'pending', 'processing' );
 $batch_repo->transition( $batch, 'processing', 'completed', 1 );
 $imports = $wpdb->prefix . 'wbm_pro_import_rows';
 $payload = [
-	'source_row' => 2, 'posted_date' => gmdate( 'Y-m-d' ), 'amount_minor' => 12000,
+	'source_row' => 2, 'posted_date' => gmdate( 'Y-m-d' ), 'amount_minor' => 52500,
 	'currency' => 'USD', 'exponent' => 2, 'reference' => $reference->value,
 	'description' => 'Synthetic overpayment', 'transaction_id' => 'OVERPAY-' . $order->get_id(),
 ];
@@ -73,7 +73,7 @@ try {
 	$replay = $cases->raise( $source_id, $order->get_id(), $admin->ID, $key, $reason );
 	if ( 'open' !== $case['status'] || 'already_open' !== $replay['status'] ||
 		$case['exception_id'] !== $replay['exception_id'] ||
-		12000 !== $case['credit_unallocated_minor'] || $case['order_payment_changed'] ) {
+		52500 !== $case['credit_unallocated_minor'] || $case['order_payment_changed'] ) {
 		throw new RuntimeException( 'Exception creation and idempotency were invalid.' );
 	}
 	$reject( static fn (): array => $cases->raise( $source_id, $order->get_id(),
@@ -81,8 +81,8 @@ try {
 	$table = $wpdb->prefix . 'wbm_pro_exceptions';
 	$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE id = %d", $case['exception_id'] ), ARRAY_A );
 	if ( ! is_array( $row ) || 'overpayment' !== $row['exception_code'] ||
-		2000 !== (int) $row['overpayment_minor'] ||
-		10000 !== (int) $row['order_outstanding_minor'] ) {
+		2500 !== (int) $row['overpayment_minor'] ||
+		50000 !== (int) $row['order_outstanding_minor'] ) {
 		throw new RuntimeException( 'Overpayment/source remainder snapshot invalid.' );
 	}
 	$reject( static fn (): array => $cases->review( $case['exception_id'], $admin->ID,
@@ -94,11 +94,11 @@ try {
 	$reject( static fn (): array => $cases->review( $case['exception_id'], $reviewer_id,
 		'continue_hold', $review_note ), 'duplicated bank source' );
 	$wpdb->update( $imports, [ 'warning_code' => '' ], [ 'id' => $source_id ] );
-	$order->set_total( '99.00' );
+	$order->set_total( '499.00' );
 	$order->save();
 	$reject( static fn (): array => $cases->review( $case['exception_id'], $reviewer_id,
 		'continue_hold', $review_note ), 'changed order amount' );
-	$order->set_total( '100.00' );
+	$order->set_total( '500.00' );
 	$order->save();
 	$approved = $cases->review( $case['exception_id'], $reviewer_id, 'continue_hold', $review_note );
 	$repeated = $cases->review( $case['exception_id'], $reviewer_id, 'continue_hold', $review_note );
@@ -107,8 +107,8 @@ try {
 		throw new RuntimeException( 'Independent review changed the WooCommerce payment state.' );
 	}
 	$ledger = ( new AllocationLedgerRepository( $wpdb ) )->snapshot( $order->get_id(),
-		$source_id, 10000, 12000, 'USD', 2, $account );
-	if ( 10000 !== $ledger['order_outstanding_minor'] || 12000 !== $ledger['credit_unallocated_minor'] ) {
+		$source_id, 50000, 52500, 'USD', 2, $account );
+	if ( 50000 !== $ledger['order_outstanding_minor'] || 52500 !== $ledger['credit_unallocated_minor'] ) {
 		throw new RuntimeException( 'Review moved bank money or altered a payment.' );
 	}
 	$events = $wpdb->prefix . 'wbm_pro_exception_events';

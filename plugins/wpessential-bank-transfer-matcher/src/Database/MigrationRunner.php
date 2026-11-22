@@ -59,7 +59,8 @@ final class MigrationRunner {
 
 		for ( ; $version < $target; ++$version ) {
 			if ( true !== $steps[ $version ]( $this->db ) ) {
-				throw new RuntimeException( 'Schema migration verification failed at version ' . ( $version + 1 ) . '.' );
+				// Internal exception uses an integer-only version, never untrusted HTML output.
+				throw new RuntimeException( sprintf( 'Schema migration verification failed at version %d.', (int) ( $version + 1 ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Numeric internal exception, not direct HTML.
 			}
 
 			$written = $this->db->query(
