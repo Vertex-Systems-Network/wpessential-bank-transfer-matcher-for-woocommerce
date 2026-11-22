@@ -5,9 +5,12 @@ use WPEssential\BankTransferMatcher\Admin\OrderPanel;
 use WPEssential\BankTransferMatcher\Bootstrap\Plugin;
 use WPEssential\BankTransferMatcher\Claims\ClaimRepository;
 use WPEssential\BankTransferMatcher\Claims\ClaimReviewRepository;
+use WPEssential\BankTransferMatcher\Domain\EntityId;
 use WPEssential\BankTransferMatcher\Domain\Money;
+use WPEssential\BankTransferMatcher\Domain\PaymentReference;
 use WPEssential\BankTransferMatcher\Evidence\AllocationRepository;
 use WPEssential\BankTransferMatcher\Evidence\EvidenceRepository;
+use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
 	throw new RuntimeException( 'Run against the disposable wbm_ci database.' );
@@ -56,6 +59,48 @@ try {
 		preg_match( '/<section class="wbm-overview".*?<\/section>/s', $html, $overview_markup );
 		throw new RuntimeException( 'Overview counts or currency-specific balance are incorrect: ' . wp_strip_all_tags( $overview_markup[0] ?? substr( $html, 0, 1000 ) ) );
 	}
+	$references = new ReferenceRepository( $wpdb );
+	$reference = $references->reserve( new EntityId( $usd->get_id() ), PaymentReference::issue() );
+	if ( null === $reference ) {
+		throw new RuntimeException( 'Could not reserve the order search fixture reference.' );
+	}
+	$find_orders = static function ( string $search, string $status ): string {
+		$_GET = [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_search' => $search, 'wbm_status' => $status ];
+		ob_start();
+		try {
+			Plugin::render_page();
+			return (string) ob_get_contents();
+		} finally {
+			ob_end_clean();
+		}
+	};
+	foreach ( [ (string) $usd->get_id(), strtolower( $reference->value ) ] as $search ) {
+		$match = $find_orders( $search, 'on-hold' );
+		if ( ! str_contains( $match, '>' . '#' . $usd->get_order_number() . '</a>' ) ||
+			str_contains( $match, '>' . '#' . $eur->get_order_number() . '</a>' ) ||
+			! str_contains( $match, 'Clear filters' ) ||
+			str_contains( $match, 'No bank transfer orders match these filters.' ) ) {
+			throw new RuntimeException( 'Exact order search returned the wrong rows or lost its clear action.' );
+		}
+	}
+	foreach ( [
+		[ $reference->value, 'pending' ],
+		[ PaymentReference::issue()->value, 'eligible' ],
+		[ str_repeat( '9', 65 ), 'eligible' ],
+	] as [ $search, $status ] ) {
+		$miss = $find_orders( $search, $status );
+		if ( ! str_contains( $miss, 'No bank transfer orders match these filters.' ) ||
+			str_contains( $miss, '>' . '#' . $usd->get_order_number() . '</a>' ) ) {
+			throw new RuntimeException( 'Unmatched or filtered lookup opened an unrelated order.' );
+		}
+	}
+	$eur->set_payment_method( 'cod' );
+	$eur->save();
+	if ( ! str_contains( $find_orders( (string) $eur->get_id(), 'eligible' ), 'No bank transfer orders match these filters.' ) ) {
+		throw new RuntimeException( 'Order lookup returned an ineligible payment method.' );
+	}
+	echo "PASS $mode exact reference/order ID search, status, no results and gateway scoping\n";
+
 	ob_start();
 	OrderPanel::render( $usd );
 	$panel = ob_get_clean();
@@ -69,7 +114,7 @@ try {
 } finally {
 	$_GET = $previous_get;
 	foreach ( $orders as $order ) {
-		foreach ( [ 'wbm_claim_review_events', 'wbm_manual_allocations', 'wbm_bank_evidence', 'wbm_payment_claims' ] as $suffix ) {
+		foreach ( [ 'wbm_payment_references', 'wbm_claim_review_events', 'wbm_manual_allocations', 'wbm_bank_evidence', 'wbm_payment_claims' ] as $suffix ) {
 			$wpdb->delete( $wpdb->prefix . $suffix, [ 'order_id' => $order->get_id() ], [ '%d' ] );
 		}
 		$order->delete( true );
