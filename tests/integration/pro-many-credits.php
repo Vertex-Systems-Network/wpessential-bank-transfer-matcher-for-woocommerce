@@ -145,6 +145,18 @@ try {
 	wp_set_current_user( $admin->ID );
 	$failed( static fn (): array => $maker->propose( $order->get_id(), $source_ids[3], $admin->ID,
 		hash( 'sha256', 'multi-credit-overflow-request' ), $credit_reason ), 'Over-allocating credit proposal' );
+	$order->update_status( 'cancelled' );
+	wp_set_current_user( $reviewer_id );
+	$failed( static fn (): array => $checker->approve( $proposals[2]['allocation_id'], $reviewer_id, true, $review_reason ),
+		'Approval of credit for a cancelled partially funded order' );
+	if ( ! wc_get_order( $order->get_id() )->has_status( 'cancelled' ) || wc_get_order( $order->get_id() )->is_paid() ) {
+		throw new RuntimeException( 'Rejected approval changed the cancelled order payment state.' );
+	}
+	wp_set_current_user( $admin->ID );
+	$order->update_status( 'on-hold' );
+	$assert_outstanding( 4000, $source_ids[2], 4000 );
+	echo "PASS cancelled partially funded order rejects remaining credit and preserves its ledger\n";
+
 	// Changing the WooCommerce total between proposal and approval must block the final credit.
 	$order->set_total( '110.00' );
 	$order->save();

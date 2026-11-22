@@ -163,7 +163,7 @@ FIXTURE-015,FIXTURE-015,Free+Pro,,,,,tests/money.php,,,docs/testing/fixture-matr
 FIXTURE-016,FIXTURE-016,Free+Pro,,,,,,tests/integration/customer-claims.php,,docs/testing/fixture-matrix.md:16,verified,https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/45056009436/job/137311272969
 FIXTURE-017,FIXTURE-017,Free+Pro,,,,,UNIT-FIXTURE-017,INTEGRATION-FIXTURE-017,,docs/testing/fixture-matrix.md:17,planned,
 FIXTURE-018,FIXTURE-018,Free+Pro,,,,,,tests/integration/pro-cross-process-races.php,,docs/testing/fixture-matrix.md:18,verified,https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/45056009436/job/137311272969
-FIXTURE-019,FIXTURE-019,Free+Pro,,,,,UNIT-FIXTURE-019,INTEGRATION-FIXTURE-019,,docs/testing/fixture-matrix.md:19,planned,
+FIXTURE-019,FIXTURE-019,Free+Pro,,,,,,tests/integration/pro-many-credits.php,,docs/testing/fixture-matrix.md:19,verified,https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/45064671869/job/137338039842
 FIXTURE-020,FIXTURE-020,Free+Pro,,,,,UNIT-FIXTURE-020,INTEGRATION-FIXTURE-020,,docs/testing/fixture-matrix.md:20,planned,
 FIXTURE-021,FIXTURE-021,Free+Pro,,,,,UNIT-FIXTURE-021,INTEGRATION-FIXTURE-021,,docs/testing/fixture-matrix.md:21,planned,
 FIXTURE-022,FIXTURE-022,Free+Pro,,,,,,,tests/browser/p8-private-http.mjs,docs/testing/fixture-matrix.md:22,verified,https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/45057153784/job/137314804375
