@@ -193,7 +193,7 @@ final class OrdersPage {
 		echo '<label for="wbm-per-page">' . esc_html__( 'Orders per page', 'wpessential-bank-transfer-matcher' ) . '</label> ';
 		echo '<select id="wbm-per-page" name="wbm_per_page">';
 		foreach ( $page_sizes as $size ) {
-			printf( '<option value="%d"%s>%s</option>', $size, selected( $per_page, $size, false ), esc_html( (string) $size ) );
+			printf( '<option value="%s"%s>%s</option>', esc_attr( (string) $size ), selected( $per_page, $size, false ), esc_html( (string) $size ) );
 		}
 		echo '</select> ';
 		echo '<button type="submit" class="button">' . esc_html__( 'Filter', 'wpessential-bank-transfer-matcher' ) . '</button>';
