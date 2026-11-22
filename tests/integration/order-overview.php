@@ -222,6 +222,22 @@ try {
 	}
 	echo "PASS $mode 20/50/100 BACS page sizes, scoped filters and balance pagination\n";
 
+	$oldest = $find_orders( '', 'on-hold', $page_filters + [ 'wbm_per_page' => '50', 'wbm_sort' => 'oldest' ] );
+	$oldest_next = $find_orders( '', 'on-hold', $page_filters + [ 'wbm_per_page' => '50', 'wbm_sort' => 'oldest', 'paged' => '2' ] );
+	$oldest_balance = $find_orders( '', 'on-hold', $page_filters + [ 'wbm_sort' => 'oldest', 'wbm_min_due' => '0' ] );
+	$invalid_sort = $find_orders( '', 'on-hold', $page_filters + [ 'wbm_per_page' => '50', 'wbm_sort' => 'unsupported' ] );
+	$first_unclaimed_label = '>#' . $orders[2]->get_order_number() . '</a>';
+	if ( ! str_contains( $oldest, $usd_label ) || str_contains( $oldest, $unclaimed_label ) ||
+		! str_contains( $oldest, $first_unclaimed_label ) ||
+		str_contains( $oldest_next, $usd_label ) || ! str_contains( $oldest_next, $unclaimed_label ) ||
+		! str_contains( $oldest, 'wbm_sort=oldest' ) ||
+		! str_contains( $oldest_balance, $usd_label ) || str_contains( $oldest_balance, $unclaimed_label ) ||
+		str_contains( $invalid_sort, $usd_label ) ) {
+		throw new RuntimeException( 'Order date sort was lost across filters or pagination, or identical timestamps were unstable.' );
+	}
+	echo "PASS $mode stable newest/oldest order dates, equal timestamps and filtered pagination\n";
+
+
 	$eur->set_payment_method( 'bacs' );
 	$eur->save();
 	$eur_label = '>#' . $eur->get_order_number() . '</a>';

@@ -28,6 +28,8 @@ final class OrdersPage {
 		$page_sizes = [ 20, 50, 100 ];
 		$requested_size = isset( $_GET['wbm_per_page'] ) && is_string( $_GET['wbm_per_page'] ) ? wp_unslash( $_GET['wbm_per_page'] ) : '';
 		$per_page = in_array( $requested_size, [ '20', '50', '100' ], true ) ? (int) $requested_size : $page_sizes[0];
+		$sort = isset( $_GET['wbm_sort'] ) && is_string( $_GET['wbm_sort'] ) && 'oldest' === wp_unslash( $_GET['wbm_sort'] ) ? 'oldest' : 'newest';
+		$sort_direction = 'oldest' === $sort ? 'ASC' : 'DESC';
 		$search = isset( $_GET['wbm_search'] ) && is_string( $_GET['wbm_search'] ) ? trim( wp_unslash( $_GET['wbm_search'] ) ) : '';
 		$statuses = 'eligible' === $status ? [ 'on-hold', 'pending' ] : [ $status ];
 		global $wpdb;
@@ -85,7 +87,7 @@ final class OrdersPage {
 			if ( '' === $search ) {
 				$query = [
 					'payment_method' => 'bacs', 'status' => $statuses, 'limit' => $per_page,
-					'page' => $page, 'paginate' => true, 'orderby' => 'date', 'order' => 'DESC',
+					'page' => $page, 'paginate' => true, 'orderby' => [ 'date' => $sort_direction, 'ID' => $sort_direction ],
 				];
 				if ( null !== $start && null !== $end ) {
 					$query['date_created'] = "$start...$end";
@@ -196,8 +198,14 @@ final class OrdersPage {
 			printf( '<option value="%s"%s>%s</option>', esc_attr( (string) $size ), selected( $per_page, $size, false ), esc_html( (string) $size ) );
 		}
 		echo '</select> ';
+		echo '<label for="wbm-sort">' . esc_html__( 'Order by creation date', 'wpessential-bank-transfer-matcher' ) . '</label> ';
+		echo '<select id="wbm-sort" name="wbm_sort">';
+		foreach ( [ 'newest' => __( 'Newest first', 'wpessential-bank-transfer-matcher' ), 'oldest' => __( 'Oldest first', 'wpessential-bank-transfer-matcher' ) ] as $value => $label ) {
+			printf( '<option value="%s"%s>%s</option>', esc_attr( $value ), selected( $sort, $value, false ), esc_html( $label ) );
+		}
+		echo '</select> ';
 		echo '<button type="submit" class="button">' . esc_html__( 'Filter', 'wpessential-bank-transfer-matcher' ) . '</button>';
-		if ( '' !== $search || 'eligible' !== $status || '' !== $from || '' !== $to || '' !== $currency || '' !== $claim_state || $has_balance_filter || $per_page !== $page_sizes[0] ) {
+		if ( '' !== $search || 'eligible' !== $status || '' !== $from || '' !== $to || '' !== $currency || '' !== $claim_state || $has_balance_filter || $per_page !== $page_sizes[0] || 'newest' !== $sort ) {
 			printf( ' <a href="%s">%s</a>', esc_url( add_query_arg( 'page', 'wpessential-bank-transfer-matcher', admin_url( 'admin.php' ) ) ), esc_html__( 'Clear filters', 'wpessential-bank-transfer-matcher' ) );
 		}
 		echo '</form>';
@@ -219,7 +227,7 @@ final class OrdersPage {
 			echo '</tbody></table></div>';
 		}
 		if ( $pages > 1 ) {
-			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'wbm_from' => $from, 'wbm_to' => $to, 'wbm_currency' => $currency, 'wbm_claim' => $claim_state, 'wbm_balance' => $balance_state, 'wbm_min_due' => $minimum_due, 'wbm_max_due' => $maximum_due, 'wbm_per_page' => $per_page, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
+			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'wbm_from' => $from, 'wbm_to' => $to, 'wbm_currency' => $currency, 'wbm_claim' => $claim_state, 'wbm_balance' => $balance_state, 'wbm_min_due' => $minimum_due, 'wbm_max_due' => $maximum_due, 'wbm_per_page' => $per_page, 'wbm_sort' => $sort, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
 			echo '<nav class="wbm-pagination" aria-label="' . esc_attr__( 'Bank transfer order pages', 'wpessential-bank-transfer-matcher' ) . '">';
 			echo wp_kses_post( paginate_links( [ 'base' => $base, 'format' => '', 'current' => $page, 'total' => $pages, 'type' => 'plain' ] ) );
 			echo '</nav>';
