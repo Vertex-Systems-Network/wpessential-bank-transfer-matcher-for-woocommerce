@@ -27,11 +27,18 @@ final class OrdersPage {
 		global $wpdb;
 		$from = isset( $_GET['wbm_from'] ) && is_string( $_GET['wbm_from'] ) ? wp_unslash( $_GET['wbm_from'] ) : '';
 		$to = isset( $_GET['wbm_to'] ) && is_string( $_GET['wbm_to'] ) ? wp_unslash( $_GET['wbm_to'] ) : '';
+		$currencies = get_woocommerce_currencies();
+		$currency_input = isset( $_GET['wbm_currency'] ) && is_string( $_GET['wbm_currency'] ) ? wp_unslash( $_GET['wbm_currency'] ) : '';
+		$currency = strtoupper( trim( $currency_input ) );
+		$valid_currency = '' === $currency || ( 1 === preg_match( '/\A[A-Z]{3}\z/', $currency ) && isset( $currencies[ $currency ] ) );
 		$orders = [];
 		$pages = 1;
 		$error_message = '';
 		$eligible_count = null;
 		try {
+			if ( ! $valid_currency ) {
+				throw new InvalidArgumentException( 'Unsupported order currency.' );
+			}
 			$start = self::date_bound( $from, false );
 			$end = self::date_bound( $to, true );
 			if ( null !== $start && null !== $end && $start > $end ) {
@@ -49,20 +56,25 @@ final class OrdersPage {
 				} elseif ( null !== $end ) {
 					$query['date_created'] = "<=$end";
 				}
+				if ( '' !== $currency ) {
+					$query['currency'] = $currency;
+				}
 				$results = wc_get_orders( $query );
 				if ( ! is_object( $results ) || ! isset( $results->orders, $results->max_num_pages ) ) {
 					throw new RuntimeException( 'WooCommerce order query is unavailable.' );
 				}
 				$orders = $results->orders;
 				$pages = (int) $results->max_num_pages;
-				if ( 'eligible' === $status && ! isset( $query['date_created'] ) ) {
+				if ( 'eligible' === $status && ! isset( $query['date_created'] ) && '' === $currency ) {
 					$eligible_count = (int) $results->total;
 				}
 			} else {
-				$orders = self::lookup( $search, $statuses, new ReferenceRepository( $wpdb ), $start, $end );
+				$orders = self::lookup( $search, $statuses, new ReferenceRepository( $wpdb ), $start, $end, $currency );
 			}
 		} catch ( InvalidArgumentException $error ) {
-			$error_message = __( 'Enter a valid creation date range. The start date must come before or on the end date.', 'wpessential-bank-transfer-matcher' );
+			$error_message = $valid_currency
+				? __( 'Enter a valid creation date range. The start date must come before or on the end date.', 'wpessential-bank-transfer-matcher' )
+				: __( 'Select a supported order currency.', 'wpessential-bank-transfer-matcher' );
 		} catch ( RuntimeException $error ) {
 			$error_message = __( 'Order lookup is temporarily unavailable. Please try again.', 'wpessential-bank-transfer-matcher' );
 		}
@@ -87,19 +99,25 @@ final class OrdersPage {
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $value ), selected( $status, $value, false ), esc_html( $label ) );
 		}
 		echo '</select> ';
+		echo '<label for="wbm-currency">' . esc_html__( 'Order currency', 'wpessential-bank-transfer-matcher' ) . '</label> ';
+		echo '<select id="wbm-currency" name="wbm_currency"><option value="">' . esc_html__( 'All currencies', 'wpessential-bank-transfer-matcher' ) . '</option>';
+		foreach ( $currencies as $code => $label ) {
+			printf( '<option value="%s"%s>%s</option>', esc_attr( $code ), selected( $currency, $code, false ), esc_html( $code . ' — ' . $label ) );
+		}
+		echo '</select> ';
 		printf( '<label for="wbm-from">%s</label> <input type="date" id="wbm-from" name="wbm_from" value="%s"> ',
 			esc_html__( 'Created from', 'wpessential-bank-transfer-matcher' ), esc_attr( substr( $from, 0, 10 ) ) );
 		printf( '<label for="wbm-to">%s</label> <input type="date" id="wbm-to" name="wbm_to" value="%s"> ',
 			esc_html__( 'Created through', 'wpessential-bank-transfer-matcher' ), esc_attr( substr( $to, 0, 10 ) ) );
 		echo '<button type="submit" class="button">' . esc_html__( 'Filter', 'wpessential-bank-transfer-matcher' ) . '</button>';
-		if ( '' !== $search || 'eligible' !== $status || '' !== $from || '' !== $to ) {
+		if ( '' !== $search || 'eligible' !== $status || '' !== $from || '' !== $to || '' !== $currency ) {
 			printf( ' <a href="%s">%s</a>', esc_url( add_query_arg( 'page', 'wpessential-bank-transfer-matcher', admin_url( 'admin.php' ) ) ), esc_html__( 'Clear filters', 'wpessential-bank-transfer-matcher' ) );
 		}
 		echo '</form>';
 		if ( '' !== $error_message ) {
 			printf( '<p role="alert">%s</p>', esc_html( $error_message ) );
 		} elseif ( ! $orders ) {
-			printf( '<p role="status">%s</p>', '' === $search && '' === $from && '' === $to
+			printf( '<p role="status">%s</p>', '' === $search && '' === $from && '' === $to && '' === $currency
 				? esc_html__( 'No bank transfer orders match this status.', 'wpessential-bank-transfer-matcher' )
 				: esc_html__( 'No bank transfer orders match these filters.', 'wpessential-bank-transfer-matcher' ) );
 		} else {
@@ -115,7 +133,7 @@ final class OrdersPage {
 			echo '</tbody></table></div>';
 		}
 		if ( $pages > 1 ) {
-			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'wbm_from' => $from, 'wbm_to' => $to, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
+			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'wbm_from' => $from, 'wbm_to' => $to, 'wbm_currency' => $currency, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
 			echo '<nav class="wbm-pagination" aria-label="' . esc_attr__( 'Bank transfer order pages', 'wpessential-bank-transfer-matcher' ) . '">';
 			echo wp_kses_post( paginate_links( [ 'base' => $base, 'format' => '', 'current' => $page, 'total' => $pages, 'type' => 'plain' ] ) );
 			echo '</nav>';
@@ -141,7 +159,7 @@ final class OrdersPage {
 	 * @param list<string> $statuses
 	 * @return list<WC_Order>
 	 */
-	private static function lookup( string $search, array $statuses, ReferenceRepository $references, ?int $start, ?int $end ): array {
+	private static function lookup( string $search, array $statuses, ReferenceRepository $references, ?int $start, ?int $end, string $currency ): array {
 		if ( strlen( $search ) > 64 ) {
 			return [];
 		}
@@ -155,7 +173,8 @@ final class OrdersPage {
 			}
 		}
 		$order = $order_id ? wc_get_order( $order_id ) : false;
-		if ( ! $order instanceof WC_Order || 'bacs' !== $order->get_payment_method() || ! $order->has_status( $statuses ) ) {
+		if ( ! $order instanceof WC_Order || 'bacs' !== $order->get_payment_method() || ! $order->has_status( $statuses ) ||
+			( '' !== $currency && $currency !== $order->get_currency() ) ) {
 			return [];
 		}
 		if ( null !== $start || null !== $end ) {

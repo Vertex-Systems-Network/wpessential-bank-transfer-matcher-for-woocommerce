@@ -64,8 +64,8 @@ try {
 	if ( null === $reference ) {
 		throw new RuntimeException( 'Could not reserve the order search fixture reference.' );
 	}
-	$find_orders = static function ( string $search, string $status, array $dates = [] ): string {
-		$_GET = [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_search' => $search, 'wbm_status' => $status ] + $dates;
+	$find_orders = static function ( string $search, string $status, array $filters = [] ): string {
+		$_GET = [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_search' => $search, 'wbm_status' => $status ] + $filters;
 		ob_start();
 		try {
 			Plugin::render_page();
@@ -122,6 +122,27 @@ try {
 		}
 	}
 	echo "PASS $mode inclusive order creation dates, partial bounds and invalid date rejection\n";
+
+	foreach ( [
+		[ '', [ 'wbm_currency' => 'USD' ], $usd ],
+		[ '', [ 'wbm_currency' => 'eur', 'wbm_from' => '2026-11-19' ], $eur ],
+		[ '', [ 'wbm_currency' => 'USD', 'wbm_from' => '2026-11-19' ], null ],
+		[ $reference->value, [ 'wbm_currency' => 'USD', 'wbm_to' => '2026-11-18' ], $usd ],
+		[ $reference->value, [ 'wbm_currency' => 'EUR', 'wbm_to' => '2026-11-18' ], null ],
+	] as [ $search, $filters, $expected ] ) {
+		$filtered = $find_orders( $search, 'on-hold', $filters );
+		foreach ( [ $usd, $eur ] as $candidate ) {
+			if ( ( $candidate === $expected ) !== str_contains( $filtered, '>#' . $candidate->get_order_number() . '</a>' ) ) {
+				throw new RuntimeException( 'Currency did not scope the WooCommerce list or exact search.' );
+			}
+		}
+	}
+	$invalid_currency = $find_orders( '', 'eligible', [ 'wbm_currency' => 'USD-EUR' ] );
+	if ( ! str_contains( $invalid_currency, 'Select a supported order currency.' ) ||
+		str_contains( $invalid_currency, 'wbm-table-scroll' ) ) {
+		throw new RuntimeException( 'Unsupported currency fell back to an unfiltered list.' );
+	}
+	echo "PASS $mode currency filter combines with date, status and exact lookup\n";
 
 	$eur->set_payment_method( 'cod' );
 	$eur->save();
