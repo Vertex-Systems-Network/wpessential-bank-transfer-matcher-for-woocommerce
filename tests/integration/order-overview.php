@@ -199,6 +199,40 @@ try {
 		throw new RuntimeException( 'Invalid claim filter showed unfiltered orders.' );
 	}
 	echo "PASS $mode claim-state filter before pagination, combined filters, no claim and live transitions\n";
+	$eur->set_payment_method( 'bacs' );
+	$eur->save();
+	$eur_label = '>#' . $eur->get_order_number() . '</a>';
+	$partial = $find_orders( '', 'on-hold', [
+		'wbm_balance' => 'partial', 'wbm_currency' => 'USD', 'wbm_min_due' => '15.00', 'wbm_max_due' => '15.00',
+	] );
+	$settled = $find_orders( (string) $eur->get_id(), 'on-hold', [
+		'wbm_balance' => 'fully_allocated', 'wbm_currency' => 'EUR', 'wbm_max_due' => '0',
+	] );
+	if ( ! str_contains( $partial, $usd_label ) || str_contains( $partial, $unclaimed_label ) ||
+		! str_contains( $settled, $eur_label ) || ! str_contains( $settled, 'Fully allocated' ) ) {
+		throw new RuntimeException( 'Manual balances, pagination or inclusive amount matching were incorrect.' );
+	}
+	foreach ( [
+		[ 'wbm_min_due' => '15' ],
+		[ 'wbm_currency' => 'USD', 'wbm_min_due' => '15.001' ],
+		[ 'wbm_currency' => 'USD', 'wbm_min_due' => '20', 'wbm_max_due' => '10' ],
+	] as $amounts ) {
+		$invalid = $find_orders( '', 'on-hold', $amounts );
+		if ( ! str_contains( $invalid, 'Choose one currency and enter a valid non-negative outstanding amount range.' ) ||
+			str_contains( $invalid, 'wbm-table-scroll' ) ) {
+			throw new RuntimeException( 'Invalid outstanding range showed unfiltered orders.' );
+		}
+	}
+	$usd->set_total( '21.00' );
+	$usd->save();
+	$exception = $find_orders( $reference->value, 'on-hold', [ 'wbm_balance' => 'exception' ] );
+	$stale_amount = $find_orders( $reference->value, 'on-hold', [ 'wbm_currency' => 'USD', 'wbm_min_due' => '0' ] );
+	if ( ! str_contains( $exception, $usd_label ) || ! str_contains( $exception, 'Balance exception. Review this order.' ) ||
+		str_contains( $stale_amount, $usd_label ) || ! wc_get_order( $usd->get_id() )->has_status( 'on-hold' ) ) {
+		throw new RuntimeException( 'A stale allocation snapshot appeared as a valid balance or changed order status.' );
+	}
+	echo "PASS $mode reconciliation and outstanding filters use exact current balances and flag stale allocations\n";
+
 
 } finally {
 	$_GET = $previous_get;

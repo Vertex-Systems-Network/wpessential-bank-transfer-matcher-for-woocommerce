@@ -4,6 +4,8 @@ namespace WPEssential\BankTransferMatcher\Admin;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
+use LengthException;
+use OverflowException;
 use RuntimeException;
 use WC_Order;
 use WPEssential\BankTransferMatcher\Access\Capabilities;
@@ -43,6 +45,14 @@ final class OrdersPage {
 			ClaimStatus::WITHDRAWN->value => __( 'Withdrawn', 'wpessential-bank-transfer-matcher' ),
 		];
 		$valid_claim_state = isset( $claim_states[ $claim_state ] );
+		$balance_state = isset( $_GET['wbm_balance'] ) && is_string( $_GET['wbm_balance'] ) ? wp_unslash( $_GET['wbm_balance'] ) : '';
+		$minimum_due = isset( $_GET['wbm_min_due'] ) && is_string( $_GET['wbm_min_due'] ) ? trim( wp_unslash( $_GET['wbm_min_due'] ) ) : '';
+		$maximum_due = isset( $_GET['wbm_max_due'] ) && is_string( $_GET['wbm_max_due'] ) ? trim( wp_unslash( $_GET['wbm_max_due'] ) ) : '';
+		$balance_states = self::balance_states();
+		$has_balance_filter = '' !== $balance_state || '' !== $minimum_due || '' !== $maximum_due;
+		$valid_balance_state = '' === $balance_state || isset( $balance_states[ $balance_state ] );
+		$valid_balance_amounts = true;
+		$summary = new OrderSummary( $wpdb );
 		$orders = [];
 		$pages = 1;
 		$error_message = '';
@@ -60,6 +70,15 @@ final class OrdersPage {
 			if ( null !== $start && null !== $end && $start > $end ) {
 				throw new InvalidArgumentException( 'Order date range is reversed.' );
 			}
+			$balance_filter = null;
+			if ( $has_balance_filter ) {
+				if ( ! $valid_balance_state ) {
+					throw new InvalidArgumentException( 'Unsupported order reconciliation state.' );
+				}
+				$valid_balance_amounts = false;
+				$balance_filter = new OrderBalanceFilter( $summary, $balance_state, $currency, $minimum_due, $maximum_due );
+				$valid_balance_amounts = true;
+			}
 			if ( '' === $search ) {
 				$query = [
 					'payment_method' => 'bacs', 'status' => $statuses, 'limit' => 20,
@@ -75,28 +94,50 @@ final class OrdersPage {
 				if ( '' !== $currency ) {
 					$query['currency'] = $currency;
 				}
+				if ( $balance_filter ) {
+					$query['page'] = 1;
+					$query['limit'] = OrderBalanceFilter::MAX_CANDIDATES + 1;
+				}
 				$results = $claim_filter ? $claim_filter->query( $query ) : wc_get_orders( $query );
 				if ( ! is_object( $results ) || ! isset( $results->orders, $results->max_num_pages ) ) {
 					throw new RuntimeException( 'WooCommerce order query is unavailable.' );
 				}
 				$orders = $results->orders;
 				$pages = (int) $results->max_num_pages;
-				if ( 'eligible' === $status && ! isset( $query['date_created'] ) && '' === $currency && null === $claim_filter ) {
+				if ( $balance_filter ) {
+					if ( count( $orders ) > OrderBalanceFilter::MAX_CANDIDATES || (int) $results->total > OrderBalanceFilter::MAX_CANDIDATES ) {
+						throw new LengthException( 'Too many orders for the balance filter.' );
+					}
+					$matching = array_values( array_filter( $orders, $balance_filter->matches(...) ) );
+					$pages = (int) ceil( count( $matching ) / 20 );
+					$orders = array_slice( $matching, ( $page - 1 ) * 20, 20 );
+				} elseif ( 'eligible' === $status && ! isset( $query['date_created'] ) && '' === $currency && null === $claim_filter ) {
 					$eligible_count = (int) $results->total;
 				}
 			} else {
 				$orders = self::lookup( $search, $statuses, new ReferenceRepository( $wpdb ), $start, $end, $currency );
-				if ( $claim_filter && $orders && ! $claim_filter->matches( $orders[0]->get_id() ) ) {
+				if ( $orders && ( ( $claim_filter && ! $claim_filter->matches( $orders[0]->get_id() ) ) ||
+					( $balance_filter && ! $balance_filter->matches( $orders[0] ) ) ) ) {
 					$orders = [];
 				}
 			}
-		} catch ( InvalidArgumentException $error ) {
+		} catch ( InvalidArgumentException|OverflowException $error ) {
+			$orders = [];
+			$pages = 1;
 			$error_message = match ( true ) {
 				! $valid_claim_state => __( 'Select a supported claim status.', 'wpessential-bank-transfer-matcher' ),
 				! $valid_currency => __( 'Select a supported order currency.', 'wpessential-bank-transfer-matcher' ),
+				! $valid_balance_state => __( 'Select a supported reconciliation state.', 'wpessential-bank-transfer-matcher' ),
+				! $valid_balance_amounts => __( 'Choose one currency and enter a valid non-negative outstanding amount range.', 'wpessential-bank-transfer-matcher' ),
 				default => __( 'Enter a valid creation date range. The start date must come before or on the end date.', 'wpessential-bank-transfer-matcher' ),
 			};
+		} catch ( LengthException $error ) {
+			$orders = [];
+			$pages = 1;
+			$error_message = __( 'Too many candidate orders. Narrow the date, claim status, or currency before filtering by balance.', 'wpessential-bank-transfer-matcher' );
 		} catch ( RuntimeException $error ) {
+			$orders = [];
+			$pages = 1;
 			$error_message = __( 'Order lookup is temporarily unavailable. Please try again.', 'wpessential-bank-transfer-matcher' );
 		}
 		echo '<div class="wrap wbm-admin">';
@@ -136,15 +177,25 @@ final class OrdersPage {
 			esc_html__( 'Created from', 'wpessential-bank-transfer-matcher' ), esc_attr( substr( $from, 0, 10 ) ) );
 		printf( '<label for="wbm-to">%s</label> <input type="date" id="wbm-to" name="wbm_to" value="%s"> ',
 			esc_html__( 'Created through', 'wpessential-bank-transfer-matcher' ), esc_attr( substr( $to, 0, 10 ) ) );
+		echo '<label for="wbm-balance">' . esc_html__( 'Reconciliation state', 'wpessential-bank-transfer-matcher' ) . '</label> ';
+		echo '<select id="wbm-balance" name="wbm_balance"><option value="">' . esc_html__( 'All reconciliation states', 'wpessential-bank-transfer-matcher' ) . '</option>';
+		foreach ( $balance_states as $value => $label ) {
+			printf( '<option value="%s"%s>%s</option>', esc_attr( $value ), selected( $balance_state, $value, false ), esc_html( $label ) );
+		}
+		echo '</select> ';
+		printf( '<label for="wbm-min-due">%s</label> <input type="text" inputmode="decimal" id="wbm-min-due" name="wbm_min_due" maxlength="30" value="%s"> ',
+			esc_html__( 'Minimum outstanding', 'wpessential-bank-transfer-matcher' ), esc_attr( substr( $minimum_due, 0, 30 ) ) );
+		printf( '<label for="wbm-max-due">%s</label> <input type="text" inputmode="decimal" id="wbm-max-due" name="wbm_max_due" maxlength="30" value="%s"> ',
+			esc_html__( 'Maximum outstanding', 'wpessential-bank-transfer-matcher' ), esc_attr( substr( $maximum_due, 0, 30 ) ) );
 		echo '<button type="submit" class="button">' . esc_html__( 'Filter', 'wpessential-bank-transfer-matcher' ) . '</button>';
-		if ( '' !== $search || 'eligible' !== $status || '' !== $from || '' !== $to || '' !== $currency || '' !== $claim_state ) {
+		if ( '' !== $search || 'eligible' !== $status || '' !== $from || '' !== $to || '' !== $currency || '' !== $claim_state || $has_balance_filter ) {
 			printf( ' <a href="%s">%s</a>', esc_url( add_query_arg( 'page', 'wpessential-bank-transfer-matcher', admin_url( 'admin.php' ) ) ), esc_html__( 'Clear filters', 'wpessential-bank-transfer-matcher' ) );
 		}
 		echo '</form>';
 		if ( '' !== $error_message ) {
 			printf( '<p role="alert">%s</p>', esc_html( $error_message ) );
 		} elseif ( ! $orders ) {
-			printf( '<p role="status">%s</p>', '' === $search && '' === $from && '' === $to && '' === $currency && '' === $claim_state
+			printf( '<p role="status">%s</p>', '' === $search && '' === $from && '' === $to && '' === $currency && '' === $claim_state && ! $has_balance_filter
 				? esc_html__( 'No bank transfer orders match this status.', 'wpessential-bank-transfer-matcher' )
 				: esc_html__( 'No bank transfer orders match these filters.', 'wpessential-bank-transfer-matcher' ) );
 		} else {
@@ -153,14 +204,13 @@ final class OrdersPage {
 				printf( '<th scope="col">%s</th>', esc_html( $heading ) );
 			}
 			echo '</tr></thead><tbody>';
-			$summary = new OrderSummary( $wpdb );
 			foreach ( $orders as $order ) {
 				self::row( $order, $summary );
 			}
 			echo '</tbody></table></div>';
 		}
 		if ( $pages > 1 ) {
-			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'wbm_from' => $from, 'wbm_to' => $to, 'wbm_currency' => $currency, 'wbm_claim' => $claim_state, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
+			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'wbm_from' => $from, 'wbm_to' => $to, 'wbm_currency' => $currency, 'wbm_claim' => $claim_state, 'wbm_balance' => $balance_state, 'wbm_min_due' => $minimum_due, 'wbm_max_due' => $maximum_due, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
 			echo '<nav class="wbm-pagination" aria-label="' . esc_attr__( 'Bank transfer order pages', 'wpessential-bank-transfer-matcher' ) . '">';
 			echo wp_kses_post( paginate_links( [ 'base' => $base, 'format' => '', 'current' => $page, 'total' => $pages, 'type' => 'plain' ] ) );
 			echo '</nav>';
@@ -213,17 +263,29 @@ final class OrdersPage {
 		return [ $order ];
 	}
 
+	/** @return array<string, string> */
+	private static function balance_states(): array {
+		return [
+			'unallocated' => __( 'Unallocated', 'wpessential-bank-transfer-matcher' ),
+			'partial' => __( 'Partial', 'wpessential-bank-transfer-matcher' ),
+			'fully_allocated' => __( 'Fully allocated', 'wpessential-bank-transfer-matcher' ),
+			'exception' => __( 'Balance exception', 'wpessential-bank-transfer-matcher' ),
+		];
+	}
+
 	private static function row( WC_Order $order, OrderSummary $summary ): void {
 		try {
 			$data = $summary->get( $order );
 		} catch ( \InvalidArgumentException|\OverflowException|RuntimeException $error ) {
-			printf( '<tr><td><a href="%s">#%s</a></td><td colspan="9">%s</td></tr>', esc_url( $order->get_edit_order_url() ), esc_html( $order->get_order_number() ), esc_html__( 'Reconciliation summary unavailable; review this order.', 'wpessential-bank-transfer-matcher' ) );
+			printf( '<tr><td><a href="%s">#%s</a></td><td colspan="9">%s</td></tr>', esc_url( $order->get_edit_order_url() ), esc_html( $order->get_order_number() ), $error instanceof OrderBalanceException || $error instanceof InvalidArgumentException || $error instanceof OverflowException
+				? esc_html__( 'Balance exception. Review this order.', 'wpessential-bank-transfer-matcher' )
+				: esc_html__( 'Reconciliation summary unavailable; review this order.', 'wpessential-bank-transfer-matcher' ) );
 			return;
 		}
 		$money = $data['total'];
 		$customer = trim( $order->get_formatted_billing_full_name() );
 		$customer = '' !== $customer ? $customer : __( 'Guest', 'wpessential-bank-transfer-matcher' );
-		$state = $data['mismatch'] ? __( 'Balance exception', 'wpessential-bank-transfer-matcher' ) : ( 0 === $data['outstanding'] ? __( 'Fully allocated', 'wpessential-bank-transfer-matcher' ) : ( $data['allocated'] > 0 ? __( 'Partial', 'wpessential-bank-transfer-matcher' ) : __( 'Unallocated', 'wpessential-bank-transfer-matcher' ) ) );
+		$state = self::balance_states()[ OrderSummary::state( $data ) ];
 		$reconcile_url = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_view' => 'order', 'order_id' => $order->get_id() ], admin_url( 'admin.php' ) );
 		$reference = '—';
 		if ( null !== $data['reference'] ) {
