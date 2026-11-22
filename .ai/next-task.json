@@ -1,14 +1,1 @@
-{
-  "id": "WBM-P9-T013",
-  "phase": "P9",
-  "title": "audit actual archive contents: Free includes no Pro code; both include optimized Composer autoloaders, runtime deps, notices and licenses; all install cleanly without Composer on host (Section 16A).",
-  "owner": "Release engineering",
-  "paths": "docs/release/; scripts/",
-  "depends_on": [
-    "WBM-P9-T012"
-  ],
-  "verification": "VERIFY-P9-T013",
-  "status": "in_progress",
-  "evidence": "",
-  "next_action": "P9-T013: retarget draft PR #28 onto current P9 phase head after accepted T012, preserving authentic Free/Pro ZIP and actual source. Require exact combined-head CI with independent Foundation ZIP CRC/GLP/Composer autoload no-vendor hashes, real native WooCommerce/MariaDB startup without Composer PATH and synthetic unpaid BACS CRUD. Download and hash actual artifacts and clean install, check final phase CI, enforce 168 requirement rows and 7 managed QIT/unapproved vendor+WordPress.org/trademark gates. Do not release, commit SVN or merge phase #16 into main."
-}
+null

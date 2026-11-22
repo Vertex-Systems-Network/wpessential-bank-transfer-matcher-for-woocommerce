@@ -1,5 +1,11 @@
 # Start here
 
+## P9-T013 verified and merged into P9 development — 2026-11-22
+
+**102/103 canonical tasks complete.** [PR #28](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/28) merged into the P9 phase branch at `772a87d64ade10d921d3a77915d84be0cc910ca5`. [Exact-source CI](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/45056009436) passed the independent ZIP audit and native Composerless smoke test. Independently verified both ZIP hashes and CRCs against the downloaded audit. The native artifact records successful WooCommerce, Free and Pro activation and an unpaid synthetic BACS order round trip.
+
+[Phase PR #16](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/16) remains open. Reconcile the 168 requirement records against concrete source and test evidence, then re-run the P9 phase acceptance gate. Post-release triage remains blocked pending release-candidate acceptance. Managed Woo QIT and publication approvals remain open.
+
 ## P9-T012 exact Free/Pro docs and version locked VERIFIED; P9-T013 original release ZIP/Composer-free native active — 2026-11-21
 
 **101/103 canonical tasks done.** Source `b2afb5f4a2990cc2c85d8042e4cfa579c8ae6c9e`: 6/6 real GitHub Foundation/WordPress Playground/native MariaDB/official WP.org/local Woo QIT checks passed [44853966827](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44853966827), [44853970291](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/44853970291). Downloaded true Free/Pro documentation-lock artifact **14686248852**, original two installed packages **14687145040** and SHA256/changelog inventory **14686258780**; hashes/members/source headers/0.1.0 changelog/WordPress 7.1/Woo 11.3.1/8 real evidence-backed feature IDs all matched. [PR #27](https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/pull/27) merged into P9-only at `114b9c3d66b00612e1668c1963afcf41585147ee`.

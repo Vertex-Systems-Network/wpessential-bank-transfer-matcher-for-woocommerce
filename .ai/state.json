@@ -3,8 +3,8 @@
   "schema_version": 1,
   "current_branch": "development/p9-release-candidate-docs-20261121",
   "last_verified_base_commit": "939b9c6c7ecd1882340af9dcd55fe932d4207251",
-  "last_checkpoint_utc": "2026-11-20",
-  "execution_status": "in_progress",
+  "last_checkpoint_utc": "2026-11-22",
+  "execution_status": "release_candidate_pending",
   "tests": {
     "php_unit": "not_run",
     "php_static": "not_run",
@@ -124,7 +124,8 @@
     "p9_t009_wporg_official": "VERIFIED eac7b606 7/7 checks; actual official scanner 2.2.0 0 errors 45 warnings incl WP trademark, official readme 4 notes/no fatal; ZIP 5 SHA256 and nested parity; real native WP7.1.5 WC11.3.1; owner submission NOT AUTHORIZED; official artifact 14685666331.",
     "p9_t010_local_qit": "VERIFIED source 4af68afe 9/9 GitHub Actions green; actual QIT CLI 1.3.4 local Docker activated Woo+Free+Pro, genuine artifact 14685572948 SHA checked. No partner/managed QIT. All 8 feature catalog IDs evidence-linked; 168 requirement rows remain planned.",
     "p9_t011_visual_native": "VERIFIED source 1957a06a 7/7 exact GitHub checks. Real browser 13 PNGs artifact 14686177486 and audit 14686212394 hashes and visual inspected, 6 LTR/RTL reports; native maker/checker/split race/HPOS/classic real artifact 14685609782; synthetic only. Phase merge 43838ecb.",
-    "p9_t012_docs_lock": "VERIFIED b2afb5f4 6/6 original Actions, actual docs lock artifact 14686248852, independently matched original Free/Pro ZIP 14687145040 and release manifest 14686258780; version 0.1.0 WP7.1/WC11.3.1 eight backed catalog IDs, GPL, no public release."
+    "p9_t012_docs_lock": "VERIFIED b2afb5f4 6/6 original Actions, actual docs lock artifact 14686248852, independently matched original Free/Pro ZIP 14687145040 and release manifest 14686258780; version 0.1.0 WP7.1/WC11.3.1 eight backed catalog IDs, GPL, no public release.",
+    "p9_t013_composerless_release_archives": "Verified source ddeb5ee045fdcd620c05428d8841541e63bb15b9. Actions run 45056009436 passed Foundation/Playground and native WooCommerce/MariaDB; run 45056006080 passed branch-push Foundation and native checks; local QIT 45056009368 and WordPress.org preflight 45056009361 passed. Downloaded native Composerless report 14767810837, original Free/Pro package artifact 14767298623 and independent ZIP audit 14766634152. Matched report source and checkout identities, checked ZIP CRC/member counts and independently matched both package SHA-256 hashes. Native report records the smoke-test log SHA-256 and successful installed WooCommerce/Free/Pro boot and synthetic unpaid BACS order round trip without a Composer executable. PR #28 squash merged into the P9 branch at 772a87d64ade10d921d3a77915d84be0cc910ca5."
   },
   "release_artifacts": {
     "free_zip": "dist/wpessential-bank-transfer-matcher.zip",
@@ -138,8 +139,8 @@
     "free_is_independent"
   ],
   "phase": "P9",
-  "active_task_id": "WBM-P9-T013",
-  "next_action": "P9-T013: retarget draft PR #28 onto current P9 phase head after accepted T012, preserving authentic Free/Pro ZIP and actual source. Require exact combined-head CI with independent Foundation ZIP CRC/GLP/Composer autoload no-vendor hashes, real native WooCommerce/MariaDB startup without Composer PATH and synthetic unpaid BACS CRUD. Download and hash actual artifacts and clean install, check final phase CI, enforce 168 requirement rows and 7 managed QIT/unapproved vendor+WordPress.org/trademark gates. Do not release, commit SVN or merge phase #16 into main.",
+  "active_task_id": null,
+  "next_action": null,
   "completed_tasks": [
     "WBM-P0-T001",
     "WBM-P0-T002",
@@ -241,8 +242,11 @@
     "WBM-P9-T009",
     "WBM-P9-T010",
     "WBM-P9-T011",
-    "WBM-P9-T012"
+    "WBM-P9-T012",
+    "WBM-P9-T013"
   ],
-  "blocked_tasks": [],
-  "last_verified_remote_milestone": "4ebc305311d7ad1b104df9fecca01e5eb41be6cb"
+  "blocked_tasks": [
+    "WBM-P10-T001"
+  ],
+  "last_verified_remote_milestone": "772a87d64ade10d921d3a77915d84be0cc910ca5"
 }

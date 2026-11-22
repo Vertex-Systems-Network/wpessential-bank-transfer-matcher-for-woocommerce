@@ -1358,9 +1358,9 @@
       "WBM-P9-T012"
     ],
     "verification": "VERIFY-P9-T013",
-    "status": "in_progress",
-    "evidence": "",
-    "next_action": "P9-T013: retarget draft PR #28 onto current P9 phase head after accepted T012, preserving authentic Free/Pro ZIP and actual source. Require exact combined-head CI with independent Foundation ZIP CRC/GLP/Composer autoload no-vendor hashes, real native WooCommerce/MariaDB startup without Composer PATH and synthetic unpaid BACS CRUD. Download and hash actual artifacts and clean install, check final phase CI, enforce 168 requirement rows and 7 managed QIT/unapproved vendor+WordPress.org/trademark gates. Do not release, commit SVN or merge phase #16 into main."
+    "status": "done",
+    "evidence": "Verified source ddeb5ee045fdcd620c05428d8841541e63bb15b9. Actions run 45056009436 passed Foundation/Playground and native WooCommerce/MariaDB; run 45056006080 passed branch-push Foundation and native checks; local QIT 45056009368 and WordPress.org preflight 45056009361 passed. Downloaded native Composerless report 14767810837, original Free/Pro package artifact 14767298623 and independent ZIP audit 14766634152. Matched report source and checkout identities, checked ZIP CRC/member counts and independently matched both package SHA-256 hashes. Native report records the smoke-test log SHA-256 and successful installed WooCommerce/Free/Pro boot and synthetic unpaid BACS order round trip without a Composer executable. PR #28 squash merged into the P9 branch at 772a87d64ade10d921d3a77915d84be0cc910ca5.",
+    "next_action": "Reconcile the 168 requirement records against concrete source and test evidence, then re-run the P9 phase acceptance gate. Post-release triage remains blocked pending release-candidate acceptance. Managed Woo QIT and publication approvals remain open."
   },
   {
     "id": "WBM-P10-T001",
@@ -1372,7 +1372,8 @@
       "WBM-P9-T013"
     ],
     "verification": "VERIFY-P10-T001",
-    "status": "planned",
-    "evidence": ""
+    "status": "blocked",
+    "evidence": "",
+    "next_action": "Reconcile the 168 requirement records against concrete source and test evidence, then re-run the P9 phase acceptance gate. Post-release triage remains blocked pending release-candidate acceptance. Managed Woo QIT and publication approvals remain open."
   }
 ]
