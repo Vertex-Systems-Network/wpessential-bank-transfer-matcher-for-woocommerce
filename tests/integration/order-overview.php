@@ -161,6 +161,45 @@ try {
 		throw new RuntimeException( 'Audit timeline is incomplete or leaks private notes.' );
 	}
 	echo "PASS $mode exact per-currency visible balance, claim KPIs and private-safe audit timeline\n";
+	// Fill the first unfiltered page with newer orders to guard against post-pagination filtering.
+	for ( $index = 0; $index < 20; ++$index ) {
+		$unclaimed = wc_create_order( [ 'status' => 'on-hold' ] );
+		if ( ! $unclaimed instanceof WC_Order ) {
+			throw new RuntimeException( 'Could not create an unclaimed fixture order.' );
+		}
+		$orders[] = $unclaimed;
+		$unclaimed->set_payment_method( 'bacs' );
+		$unclaimed->set_currency( 'USD' );
+		$unclaimed->set_total( '10.00' );
+		$unclaimed->set_date_created( ( new DateTimeImmutable( '2026-11-20 12:00:00', wp_timezone() ) )->getTimestamp() );
+		$unclaimed->save();
+	}
+	$usd_label = '>#' . $usd->get_order_number() . '</a>';
+	$unclaimed_label = '>#' . $unclaimed->get_order_number() . '</a>';
+	$under_review = [ 'wbm_claim' => 'under_review', 'wbm_currency' => 'USD', 'wbm_to' => '2026-11-20' ];
+	if ( str_contains( $find_orders( '', 'on-hold' ), $usd_label ) ) {
+		throw new RuntimeException( 'Pagination fixture did not move the reviewed claim beyond page one.' );
+	}
+	$filtered = $find_orders( '', 'on-hold', $under_review );
+	if ( ! str_contains( $filtered, $usd_label ) || str_contains( $filtered, $unclaimed_label ) ) {
+		throw new RuntimeException( 'Claim status did not apply before order pagination.' );
+	}
+	if ( ! str_contains( $find_orders( (string) $unclaimed->get_id(), 'on-hold', [ 'wbm_claim' => 'none' ] ), $unclaimed_label ) ||
+		str_contains( $find_orders( (string) $unclaimed->get_id(), 'on-hold', $under_review ), $unclaimed_label ) ||
+		! str_contains( $find_orders( $reference->value, 'on-hold', $under_review ), $usd_label ) ) {
+		throw new RuntimeException( 'Exact lookup did not respect the claim filter.' );
+	}
+	$reviews->transition( $usd->get_id(), get_current_user_id(), 'rejected', 'Synthetic claim status change', false );
+	if ( str_contains( $find_orders( '', 'on-hold', $under_review ), $usd_label ) ||
+		! str_contains( $find_orders( '', 'on-hold', [ 'wbm_claim' => 'rejected' ] ), $usd_label ) ) {
+		throw new RuntimeException( 'Claim filter remained stale after a claim transition.' );
+	}
+	$invalid_claim = $find_orders( '', 'on-hold', [ 'wbm_claim' => 'invalid' ] );
+	if ( ! str_contains( $invalid_claim, 'Select a supported claim status.' ) || str_contains( $invalid_claim, 'wbm-table-scroll' ) ) {
+		throw new RuntimeException( 'Invalid claim filter showed unfiltered orders.' );
+	}
+	echo "PASS $mode claim-state filter before pagination, combined filters, no claim and live transitions\n";
+
 } finally {
 	$_GET = $previous_get;
 	foreach ( $orders as $order ) {

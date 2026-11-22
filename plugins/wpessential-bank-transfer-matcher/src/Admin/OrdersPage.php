@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use WC_Order;
 use WPEssential\BankTransferMatcher\Access\Capabilities;
+use WPEssential\BankTransferMatcher\Domain\ClaimStatus;
 use WPEssential\BankTransferMatcher\Domain\PaymentReference;
 use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
 
@@ -31,14 +32,29 @@ final class OrdersPage {
 		$currency_input = isset( $_GET['wbm_currency'] ) && is_string( $_GET['wbm_currency'] ) ? wp_unslash( $_GET['wbm_currency'] ) : '';
 		$currency = strtoupper( trim( $currency_input ) );
 		$valid_currency = '' === $currency || ( 1 === preg_match( '/\A[A-Z]{3}\z/', $currency ) && isset( $currencies[ $currency ] ) );
+		$claim_state = isset( $_GET['wbm_claim'] ) && is_string( $_GET['wbm_claim'] ) ? wp_unslash( $_GET['wbm_claim'] ) : '';
+		$claim_states = [
+			'' => __( 'All claim states', 'wpessential-bank-transfer-matcher' ),
+			'none' => __( 'No claim', 'wpessential-bank-transfer-matcher' ),
+			ClaimStatus::SUBMITTED->value => __( 'Submitted', 'wpessential-bank-transfer-matcher' ),
+			ClaimStatus::UNDER_REVIEW->value => __( 'Under review', 'wpessential-bank-transfer-matcher' ),
+			ClaimStatus::VERIFIED->value => __( 'Verified', 'wpessential-bank-transfer-matcher' ),
+			ClaimStatus::REJECTED->value => __( 'Rejected', 'wpessential-bank-transfer-matcher' ),
+			ClaimStatus::WITHDRAWN->value => __( 'Withdrawn', 'wpessential-bank-transfer-matcher' ),
+		];
+		$valid_claim_state = isset( $claim_states[ $claim_state ] );
 		$orders = [];
 		$pages = 1;
 		$error_message = '';
 		$eligible_count = null;
 		try {
+			if ( ! $valid_claim_state ) {
+				throw new InvalidArgumentException( 'Unsupported order claim state.' );
+			}
 			if ( ! $valid_currency ) {
 				throw new InvalidArgumentException( 'Unsupported order currency.' );
 			}
+			$claim_filter = '' === $claim_state ? null : new ClaimOrderFilter( $wpdb, $claim_state );
 			$start = self::date_bound( $from, false );
 			$end = self::date_bound( $to, true );
 			if ( null !== $start && null !== $end && $start > $end ) {
@@ -59,22 +75,27 @@ final class OrdersPage {
 				if ( '' !== $currency ) {
 					$query['currency'] = $currency;
 				}
-				$results = wc_get_orders( $query );
+				$results = $claim_filter ? $claim_filter->query( $query ) : wc_get_orders( $query );
 				if ( ! is_object( $results ) || ! isset( $results->orders, $results->max_num_pages ) ) {
 					throw new RuntimeException( 'WooCommerce order query is unavailable.' );
 				}
 				$orders = $results->orders;
 				$pages = (int) $results->max_num_pages;
-				if ( 'eligible' === $status && ! isset( $query['date_created'] ) && '' === $currency ) {
+				if ( 'eligible' === $status && ! isset( $query['date_created'] ) && '' === $currency && null === $claim_filter ) {
 					$eligible_count = (int) $results->total;
 				}
 			} else {
 				$orders = self::lookup( $search, $statuses, new ReferenceRepository( $wpdb ), $start, $end, $currency );
+				if ( $claim_filter && $orders && ! $claim_filter->matches( $orders[0]->get_id() ) ) {
+					$orders = [];
+				}
 			}
 		} catch ( InvalidArgumentException $error ) {
-			$error_message = $valid_currency
-				? __( 'Enter a valid creation date range. The start date must come before or on the end date.', 'wpessential-bank-transfer-matcher' )
-				: __( 'Select a supported order currency.', 'wpessential-bank-transfer-matcher' );
+			$error_message = match ( true ) {
+				! $valid_claim_state => __( 'Select a supported claim status.', 'wpessential-bank-transfer-matcher' ),
+				! $valid_currency => __( 'Select a supported order currency.', 'wpessential-bank-transfer-matcher' ),
+				default => __( 'Enter a valid creation date range. The start date must come before or on the end date.', 'wpessential-bank-transfer-matcher' ),
+			};
 		} catch ( RuntimeException $error ) {
 			$error_message = __( 'Order lookup is temporarily unavailable. Please try again.', 'wpessential-bank-transfer-matcher' );
 		}
@@ -99,6 +120,12 @@ final class OrdersPage {
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $value ), selected( $status, $value, false ), esc_html( $label ) );
 		}
 		echo '</select> ';
+		echo '<label for="wbm-claim">' . esc_html__( 'Claim status', 'wpessential-bank-transfer-matcher' ) . '</label> ';
+		echo '<select id="wbm-claim" name="wbm_claim">';
+		foreach ( $claim_states as $value => $label ) {
+			printf( '<option value="%s"%s>%s</option>', esc_attr( $value ), selected( $claim_state, $value, false ), esc_html( $label ) );
+		}
+		echo '</select> ';
 		echo '<label for="wbm-currency">' . esc_html__( 'Order currency', 'wpessential-bank-transfer-matcher' ) . '</label> ';
 		echo '<select id="wbm-currency" name="wbm_currency"><option value="">' . esc_html__( 'All currencies', 'wpessential-bank-transfer-matcher' ) . '</option>';
 		foreach ( $currencies as $code => $label ) {
@@ -110,14 +137,14 @@ final class OrdersPage {
 		printf( '<label for="wbm-to">%s</label> <input type="date" id="wbm-to" name="wbm_to" value="%s"> ',
 			esc_html__( 'Created through', 'wpessential-bank-transfer-matcher' ), esc_attr( substr( $to, 0, 10 ) ) );
 		echo '<button type="submit" class="button">' . esc_html__( 'Filter', 'wpessential-bank-transfer-matcher' ) . '</button>';
-		if ( '' !== $search || 'eligible' !== $status || '' !== $from || '' !== $to || '' !== $currency ) {
+		if ( '' !== $search || 'eligible' !== $status || '' !== $from || '' !== $to || '' !== $currency || '' !== $claim_state ) {
 			printf( ' <a href="%s">%s</a>', esc_url( add_query_arg( 'page', 'wpessential-bank-transfer-matcher', admin_url( 'admin.php' ) ) ), esc_html__( 'Clear filters', 'wpessential-bank-transfer-matcher' ) );
 		}
 		echo '</form>';
 		if ( '' !== $error_message ) {
 			printf( '<p role="alert">%s</p>', esc_html( $error_message ) );
 		} elseif ( ! $orders ) {
-			printf( '<p role="status">%s</p>', '' === $search && '' === $from && '' === $to && '' === $currency
+			printf( '<p role="status">%s</p>', '' === $search && '' === $from && '' === $to && '' === $currency && '' === $claim_state
 				? esc_html__( 'No bank transfer orders match this status.', 'wpessential-bank-transfer-matcher' )
 				: esc_html__( 'No bank transfer orders match these filters.', 'wpessential-bank-transfer-matcher' ) );
 		} else {
@@ -133,7 +160,7 @@ final class OrdersPage {
 			echo '</tbody></table></div>';
 		}
 		if ( $pages > 1 ) {
-			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'wbm_from' => $from, 'wbm_to' => $to, 'wbm_currency' => $currency, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
+			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'wbm_from' => $from, 'wbm_to' => $to, 'wbm_currency' => $currency, 'wbm_claim' => $claim_state, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
 			echo '<nav class="wbm-pagination" aria-label="' . esc_attr__( 'Bank transfer order pages', 'wpessential-bank-transfer-matcher' ) . '">';
 			echo wp_kses_post( paginate_links( [ 'base' => $base, 'format' => '', 'current' => $page, 'total' => $pages, 'type' => 'plain' ] ) );
 			echo '</nav>';
