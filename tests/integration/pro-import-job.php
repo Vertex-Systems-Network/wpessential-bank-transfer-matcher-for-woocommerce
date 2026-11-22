@@ -29,8 +29,17 @@ try {
 	if ( $row_total !== (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `$rows` WHERE batch_id = %d", $batch ) ) ) throw new RuntimeException( 'Replay duplicated staged rows.' );
 	$first = $wpdb->get_var( $wpdb->prepare( "SELECT canonical_json FROM `$rows` WHERE batch_id = %d AND source_row = 2", $batch ) );
 	if ( '000001' !== ( json_decode( $first, true )['transaction_id'] ?? '' ) ) throw new RuntimeException( 'Bank transaction ID lost leading zeroes.' );
-	try { $job->start( $source, $account, $profile, $actor->ID ); throw new RuntimeException( 'Exact file reimport was accepted.' ); }
-	catch ( InvalidArgumentException $error ) { if ( 'Exact file reimport was accepted.' === $error->getMessage() ) throw $error; }
+	for ( $attempt = 0; $attempt < 5; ++$attempt ) {
+		try {
+			$job->start( $source, $account, $profile, $actor->ID );
+		} catch ( InvalidArgumentException $expected ) {
+			if ( 'This exact statement file was already imported for the selected account.' !== $expected->getMessage() ) {
+				throw $expected;
+			}
+			continue;
+		}
+		throw new RuntimeException( 'Exact file reimport was accepted.' );
+	}
 	// A changed private source must fail closed before any additional row is written.
 	$second_source = tempnam( sys_get_temp_dir(), 'wbm-job-overlap-' );
 	copy( $source, $second_source ); file_put_contents( $second_source, "\n", FILE_APPEND );

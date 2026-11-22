@@ -166,4 +166,4 @@ FIXTURE-018,FIXTURE-018,Free+Pro,,,,,,tests/integration/pro-cross-process-races.
 FIXTURE-019,FIXTURE-019,Free+Pro,,,,,UNIT-FIXTURE-019,INTEGRATION-FIXTURE-019,,docs/testing/fixture-matrix.md:19,planned,
 FIXTURE-020,FIXTURE-020,Free+Pro,,,,,UNIT-FIXTURE-020,INTEGRATION-FIXTURE-020,,docs/testing/fixture-matrix.md:20,planned,
 FIXTURE-021,FIXTURE-021,Free+Pro,,,,,UNIT-FIXTURE-021,INTEGRATION-FIXTURE-021,,docs/testing/fixture-matrix.md:21,planned,
-FIXTURE-022,FIXTURE-022,Free+Pro,,,,,UNIT-FIXTURE-022,INTEGRATION-FIXTURE-022,,docs/testing/fixture-matrix.md:22,planned,
+FIXTURE-022,FIXTURE-022,Free+Pro,,,,,,,tests/browser/p8-private-http.mjs,docs/testing/fixture-matrix.md:22,verified,https://github.com/Vertex-Systems-Network/wpessential-bank-transfer-matcher-for-woocommerce/actions/runs/45057153784/job/137314804375

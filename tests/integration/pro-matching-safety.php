@@ -27,8 +27,12 @@ if ( ! $policy->evaluate( $eligible )->eligible ) throw new RuntimeException( 'P
 
 $exact = new ExactMatchFacts( 'WBM-1001', 'WBM-1001', 12500, 12500, 'USD', 'USD', 7, 7, 1 );
 if ( 'suggested' !== $matcher->match( $eligible, $policy->evaluate( $eligible ), $exact )->status ) throw new RuntimeException( 'Safe exact fixture was not suggested.' );
-$false_reference = new ExactMatchFacts( 'WBM-1001', 'WBM-9999', 12500, 12500, 'USD', 'USD', 7, 7, 0 );
-if ( 'review_required' !== $matcher->match( $eligible, $policy->evaluate( $eligible ), $false_reference )->status ) throw new RuntimeException( 'Reference mismatch was suggested.' );
+foreach ( [ 'WBM-1002', 'WBM-9999' ] as $wrong_reference ) {
+	$false_reference = new ExactMatchFacts( 'WBM-1001', $wrong_reference, 12500, 12500, 'USD', 'USD', 7, 7, 0 );
+	if ( 'review_required' !== $matcher->match( $eligible, $policy->evaluate( $eligible ), $false_reference )->status ) {
+		throw new RuntimeException( 'Reference mismatch was suggested.' );
+	}
+}
 $false_amount = new ExactMatchFacts( 'WBM-1001', 'WBM-1001', 12499, 12500, 'USD', 'USD', 7, 7, 1 );
 if ( 'review_required' !== $matcher->match( $eligible, $policy->evaluate( $eligible ), $false_amount )->status ) throw new RuntimeException( 'Amount mismatch was suggested.' );
 try {
