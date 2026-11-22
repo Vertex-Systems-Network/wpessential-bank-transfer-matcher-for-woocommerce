@@ -16,11 +16,15 @@ final class ClaimOrderFilter {
 	private readonly bool $has_schema;
 
 	public function __construct( private readonly wpdb $db, private readonly string $state ) {
-		$version = get_option( 'wpessential_wbm_claim_schema' );
-		if ( false !== $version && ! in_array( (string) $version, [ '1', '2' ], true ) ) {
-			throw new RuntimeException( 'Unsupported payment claim schema version.' );
+		// Claim migrations write the schema version directly while holding a database lock.
+		$version = $this->db->get_var( $this->db->prepare(
+			"SELECT option_value FROM {$this->db->options} WHERE option_name = %s",
+			'wpessential_wbm_claim_schema'
+		) );
+		if ( '' !== $this->db->last_error || ( null !== $version && ! in_array( (string) $version, [ '1', '2' ], true ) ) ) {
+			throw new RuntimeException( 'Could not read the payment claim schema version.' );
 		}
-		$this->has_schema = false !== $version;
+		$this->has_schema = null !== $version;
 	}
 
 	/** @return object|array */
