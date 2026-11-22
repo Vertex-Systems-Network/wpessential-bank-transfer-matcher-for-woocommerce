@@ -2,6 +2,7 @@
 
 namespace WPEssential\BankTransferMatcher\Admin;
 
+use DateTimeImmutable;
 use InvalidArgumentException;
 use RuntimeException;
 use WC_Order;
@@ -24,29 +25,46 @@ final class OrdersPage {
 		$search = isset( $_GET['wbm_search'] ) && is_string( $_GET['wbm_search'] ) ? trim( wp_unslash( $_GET['wbm_search'] ) ) : '';
 		$statuses = 'eligible' === $status ? [ 'on-hold', 'pending' ] : [ $status ];
 		global $wpdb;
-		$lookup_failed = false;
+		$from = isset( $_GET['wbm_from'] ) && is_string( $_GET['wbm_from'] ) ? wp_unslash( $_GET['wbm_from'] ) : '';
+		$to = isset( $_GET['wbm_to'] ) && is_string( $_GET['wbm_to'] ) ? wp_unslash( $_GET['wbm_to'] ) : '';
+		$orders = [];
+		$pages = 1;
+		$error_message = '';
 		$eligible_count = null;
-		if ( '' === $search ) {
-			$results = wc_get_orders( [
-				'payment_method' => 'bacs', 'status' => $statuses, 'limit' => 20,
-				'page' => $page, 'paginate' => true, 'orderby' => 'date', 'order' => 'DESC',
-			] );
-			if ( ! is_object( $results ) || ! isset( $results->orders, $results->max_num_pages ) ) {
-				throw new RuntimeException( 'WooCommerce order query is unavailable.' );
+		try {
+			$start = self::date_bound( $from, false );
+			$end = self::date_bound( $to, true );
+			if ( null !== $start && null !== $end && $start > $end ) {
+				throw new InvalidArgumentException( 'Order date range is reversed.' );
 			}
-			$orders = $results->orders;
-			$pages = (int) $results->max_num_pages;
-			if ( 'eligible' === $status ) {
-				$eligible_count = (int) $results->total;
+			if ( '' === $search ) {
+				$query = [
+					'payment_method' => 'bacs', 'status' => $statuses, 'limit' => 20,
+					'page' => $page, 'paginate' => true, 'orderby' => 'date', 'order' => 'DESC',
+				];
+				if ( null !== $start && null !== $end ) {
+					$query['date_created'] = "$start...$end";
+				} elseif ( null !== $start ) {
+					$query['date_created'] = ">=$start";
+				} elseif ( null !== $end ) {
+					$query['date_created'] = "<=$end";
+				}
+				$results = wc_get_orders( $query );
+				if ( ! is_object( $results ) || ! isset( $results->orders, $results->max_num_pages ) ) {
+					throw new RuntimeException( 'WooCommerce order query is unavailable.' );
+				}
+				$orders = $results->orders;
+				$pages = (int) $results->max_num_pages;
+				if ( 'eligible' === $status && ! isset( $query['date_created'] ) ) {
+					$eligible_count = (int) $results->total;
+				}
+			} else {
+				$orders = self::lookup( $search, $statuses, new ReferenceRepository( $wpdb ), $start, $end );
 			}
-		} else {
-			try {
-				$orders = self::lookup( $search, $statuses, new ReferenceRepository( $wpdb ) );
-			} catch ( RuntimeException $error ) {
-				$orders = [];
-				$lookup_failed = true;
-			}
-			$pages = 1;
+		} catch ( InvalidArgumentException $error ) {
+			$error_message = __( 'Enter a valid creation date range. The start date must come before or on the end date.', 'wpessential-bank-transfer-matcher' );
+		} catch ( RuntimeException $error ) {
+			$error_message = __( 'Order lookup is temporarily unavailable. Please try again.', 'wpessential-bank-transfer-matcher' );
 		}
 		echo '<div class="wrap wbm-admin">';
 		Components::heading( __( 'Bank Transfer Matcher', 'wpessential-bank-transfer-matcher' ) );
@@ -68,15 +86,20 @@ final class OrdersPage {
 		foreach ( [ 'eligible' => __( 'Eligible: on hold and pending', 'wpessential-bank-transfer-matcher' ), 'on-hold' => __( 'On hold', 'wpessential-bank-transfer-matcher' ), 'pending' => __( 'Pending payment', 'wpessential-bank-transfer-matcher' ) ] as $value => $label ) {
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $value ), selected( $status, $value, false ), esc_html( $label ) );
 		}
-		echo '</select> <button type="submit" class="button">' . esc_html__( 'Filter', 'wpessential-bank-transfer-matcher' ) . '</button>';
-		if ( '' !== $search || 'eligible' !== $status ) {
+		echo '</select> ';
+		printf( '<label for="wbm-from">%s</label> <input type="date" id="wbm-from" name="wbm_from" value="%s"> ',
+			esc_html__( 'Created from', 'wpessential-bank-transfer-matcher' ), esc_attr( substr( $from, 0, 10 ) ) );
+		printf( '<label for="wbm-to">%s</label> <input type="date" id="wbm-to" name="wbm_to" value="%s"> ',
+			esc_html__( 'Created through', 'wpessential-bank-transfer-matcher' ), esc_attr( substr( $to, 0, 10 ) ) );
+		echo '<button type="submit" class="button">' . esc_html__( 'Filter', 'wpessential-bank-transfer-matcher' ) . '</button>';
+		if ( '' !== $search || 'eligible' !== $status || '' !== $from || '' !== $to ) {
 			printf( ' <a href="%s">%s</a>', esc_url( add_query_arg( 'page', 'wpessential-bank-transfer-matcher', admin_url( 'admin.php' ) ) ), esc_html__( 'Clear filters', 'wpessential-bank-transfer-matcher' ) );
 		}
 		echo '</form>';
-		if ( $lookup_failed ) {
-			printf( '<p role="alert">%s</p>', esc_html__( 'Order lookup is temporarily unavailable. Please try again.', 'wpessential-bank-transfer-matcher' ) );
+		if ( '' !== $error_message ) {
+			printf( '<p role="alert">%s</p>', esc_html( $error_message ) );
 		} elseif ( ! $orders ) {
-			printf( '<p role="status">%s</p>', '' === $search
+			printf( '<p role="status">%s</p>', '' === $search && '' === $from && '' === $to
 				? esc_html__( 'No bank transfer orders match this status.', 'wpessential-bank-transfer-matcher' )
 				: esc_html__( 'No bank transfer orders match these filters.', 'wpessential-bank-transfer-matcher' ) );
 		} else {
@@ -92,7 +115,7 @@ final class OrdersPage {
 			echo '</tbody></table></div>';
 		}
 		if ( $pages > 1 ) {
-			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
+			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'wbm_from' => $from, 'wbm_to' => $to, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
 			echo '<nav class="wbm-pagination" aria-label="' . esc_attr__( 'Bank transfer order pages', 'wpessential-bank-transfer-matcher' ) . '">';
 			echo wp_kses_post( paginate_links( [ 'base' => $base, 'format' => '', 'current' => $page, 'total' => $pages, 'type' => 'plain' ] ) );
 			echo '</nav>';
@@ -100,11 +123,25 @@ final class OrdersPage {
 		echo '</div>';
 	}
 
+	private static function date_bound( string $value, bool $end_of_day ): ?int {
+		if ( '' === $value ) {
+			return null;
+		}
+		if ( 1 !== preg_match( '/\A[1-9][0-9]{3}-[0-9]{2}-[0-9]{2}\z/', $value ) ) {
+			throw new InvalidArgumentException( 'Invalid order date.' );
+		}
+		$date = DateTimeImmutable::createFromFormat( '!Y-m-d', $value, wp_timezone() );
+		if ( false === $date || $date->format( 'Y-m-d' ) !== $value ) {
+			throw new InvalidArgumentException( 'Invalid order date.' );
+		}
+		return ( $end_of_day ? $date->modify( '+1 day' )->setTime( 0, 0 )->getTimestamp() - 1 : $date->getTimestamp() );
+	}
+
 	/**
 	 * @param list<string> $statuses
 	 * @return list<WC_Order>
 	 */
-	private static function lookup( string $search, array $statuses, ReferenceRepository $references ): array {
+	private static function lookup( string $search, array $statuses, ReferenceRepository $references, ?int $start, ?int $end ): array {
 		if ( strlen( $search ) > 64 ) {
 			return [];
 		}
@@ -120,6 +157,12 @@ final class OrdersPage {
 		$order = $order_id ? wc_get_order( $order_id ) : false;
 		if ( ! $order instanceof WC_Order || 'bacs' !== $order->get_payment_method() || ! $order->has_status( $statuses ) ) {
 			return [];
+		}
+		if ( null !== $start || null !== $end ) {
+			$created = $order->get_date_created()?->getTimestamp();
+			if ( null === $created || ( null !== $start && $created < $start ) || ( null !== $end && $created > $end ) ) {
+				return [];
+			}
 		}
 		return [ $order ];
 	}

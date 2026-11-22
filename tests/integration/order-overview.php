@@ -64,8 +64,8 @@ try {
 	if ( null === $reference ) {
 		throw new RuntimeException( 'Could not reserve the order search fixture reference.' );
 	}
-	$find_orders = static function ( string $search, string $status ): string {
-		$_GET = [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_search' => $search, 'wbm_status' => $status ];
+	$find_orders = static function ( string $search, string $status, array $dates = [] ): string {
+		$_GET = [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_search' => $search, 'wbm_status' => $status ] + $dates;
 		ob_start();
 		try {
 			Plugin::render_page();
@@ -94,6 +94,35 @@ try {
 			throw new RuntimeException( 'Unmatched or filtered lookup opened an unrelated order.' );
 		}
 	}
+	$usd->set_date_created( ( new DateTimeImmutable( '2026-11-18 23:59:59', wp_timezone() ) )->getTimestamp() );
+	$usd->save();
+	$eur->set_date_created( ( new DateTimeImmutable( '2026-11-19 00:00:00', wp_timezone() ) )->getTimestamp() );
+	$eur->save();
+	foreach ( [
+		[ '', [ 'wbm_from' => '2026-11-18', 'wbm_to' => '2026-11-18' ], $usd ],
+		[ '', [ 'wbm_to' => '2026-11-18' ], $usd ],
+		[ '', [ 'wbm_from' => '2026-11-19' ], $eur ],
+		[ $reference->value, [ 'wbm_from' => '2026-11-18', 'wbm_to' => '2026-11-18' ], $usd ],
+		[ $reference->value, [ 'wbm_from' => '2026-11-19' ], null ],
+	] as [ $search, $dates, $expected ] ) {
+		$filtered = $find_orders( $search, 'on-hold', $dates );
+		foreach ( [ $usd, $eur ] as $candidate ) {
+			if ( ( $candidate === $expected ) !== str_contains( $filtered, '>#' . $candidate->get_order_number() . '</a>' ) ) {
+				throw new RuntimeException( 'Order creation dates did not scope search or the list.' );
+			}
+		}
+	}
+	foreach ( [
+		[ 'wbm_from' => '2026-02-30' ],
+		[ 'wbm_from' => '2026-11-19', 'wbm_to' => '2026-11-18' ],
+	] as $invalid_dates ) {
+		$invalid = $find_orders( '', 'eligible', $invalid_dates );
+		if ( ! str_contains( $invalid, 'Enter a valid creation date range.' ) || str_contains( $invalid, 'wbm-table-scroll' ) ) {
+			throw new RuntimeException( 'Invalid order dates fell back to the unfiltered list.' );
+		}
+	}
+	echo "PASS $mode inclusive order creation dates, partial bounds and invalid date rejection\n";
+
 	$eur->set_payment_method( 'cod' );
 	$eur->save();
 	if ( ! str_contains( $find_orders( (string) $eur->get_id(), 'eligible' ), 'No bank transfer orders match these filters.' ) ) {
