@@ -23,4 +23,4 @@
 
 ---
 
-All entries are planned. Create only synthetic order and statement records.
+See [the traceability matrix](traceability.csv) for verification status, integration tests and CI evidence. Create only synthetic order and statement records.

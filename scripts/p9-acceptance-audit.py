@@ -86,9 +86,13 @@ def make_report():
         status=row.get("Status") or "unknown"
         require(status in {"planned","in_progress","verified","done","blocked"},
                 "Unsupported requirement acceptance status: " + key)
+        evidence = row.get("Evidence") or None
+        if status in {"verified", "done"}:
+            require(evidence, "Verified requirement lacks evidence: " + key)
         trace.append({"requirement_id":key,"screen_id":ui or None,
                       "status":status,"source":documentation,
-                      "e2e_test_ref":row.get("E2E Test") or None})
+                      "e2e_test_ref":row.get("E2E Test") or None,
+                      "evidence":evidence})
     require(ui_in_requirements == set(SCREEN_IDS), "One or more UI screens lack traceability")
     require(len(tasks)==103, "Task graph count changed; revisit acceptance criteria")
     task_evidence_missing=[t["id"] for t in tasks if t["status"] in {"done","verified"} and not t.get("evidence")]
@@ -110,7 +114,7 @@ def make_report():
         },
         "features":enriched,"screen_ids":screens,"traceability":trace,
         "blockers":[
-            "Reconcile planned feature and 168 planned requirement statuses against real CI/browser/integration proof; do not bulk-promote.",
+            f"Reconcile {len(planned)} unverified requirements against CI, browser and integration evidence.",
             "Verify full feature/screen/action acceptance against actual per-ID tests and current runtime versions.",
             "Official Woo QIT, WordPress.org Plugin Check and marketplace approvals are separate later gates.",
         ],
