@@ -35,11 +35,26 @@ foreach ( [ 'WBM-1002', 'WBM-9999' ] as $wrong_reference ) {
 }
 $false_amount = new ExactMatchFacts( 'WBM-1001', 'WBM-1001', 12499, 12500, 'USD', 'USD', 7, 7, 1 );
 if ( 'review_required' !== $matcher->match( $eligible, $policy->evaluate( $eligible ), $false_amount )->status ) throw new RuntimeException( 'Amount mismatch was suggested.' );
-try {
-	$missing = new ExactMatchFacts( '', 'WBM-1001', 12500, 12500, 'USD', 'USD', 7, 7, 0 );
-	$matcher->match( $eligible, $policy->evaluate( $eligible ), $missing );
-	throw new RuntimeException( 'Missing bank reference was accepted.' );
-} catch ( InvalidArgumentException $expected ) {
+$same_amount_order = $make_order();
+foreach ( [
+	[ $pending, 1001, 'WBM-1001' ],
+	[ $same_amount_order, 1002, 'WBM-1002' ],
+] as [ $candidate, $candidate_id, $reference ] ) {
+	$context = $adapter->context( $candidate_id, 12500, 'USD', 7, false, $candidate );
+	if ( ! $policy->evaluate( $context )->eligible ) {
+		throw new RuntimeException( 'Same-amount BACS candidate did not qualify for matching.' );
+	}
+	try {
+		$missing = new ExactMatchFacts( '', $reference, 12500, 12500, 'USD', 'USD', 7, 7, 0 );
+		$matcher->match( $context, $policy->evaluate( $context ), $missing );
+		throw new RuntimeException( 'Missing bank reference was accepted for a same-amount candidate.' );
+	} catch ( InvalidArgumentException $expected ) {
+	}
+}
+foreach ( [ $pending, $same_amount_order ] as $candidate ) {
+	if ( ! wc_get_order( $candidate->get_id() )->has_status( 'pending' ) ) {
+		throw new RuntimeException( 'Missing-reference fixture changed an unpaid order.' );
+	}
 }
 
 foreach ( [
@@ -55,4 +70,4 @@ foreach ( [
 }
 
 foreach ( $created_orders as $created_order ) $created_order->delete( true );
-echo "PASS false-match, missing-reference, cancelled, refunded, paid, non-BACS and duplicate safety\n";
+echo "PASS false-match, two same-amount orders with missing reference, cancelled, refunded, paid, non-BACS and duplicate safety\n";
