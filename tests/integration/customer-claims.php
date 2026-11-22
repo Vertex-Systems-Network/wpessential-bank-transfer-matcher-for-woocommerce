@@ -1,6 +1,8 @@
 <?php
 
 use WPEssential\BankTransferMatcher\Claims\CustomerClaims;
+use WPEssential\BankTransferMatcher\Domain\EntityId;
+use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || 'wbm_ci' !== DB_NAME ) {
 	throw new RuntimeException( 'Run against the disposable wbm_ci database.' );
@@ -78,6 +80,32 @@ try {
 	$expect( array_replace( $data, [ 'order_key' => 'invalid' ] ), 'wbm_claim_forbidden' );
 	$expect( array_replace( $data, [ 'billing_email' => 'wrong@example.test' ] ), 'wbm_claim_forbidden' );
 	$expect( $data, 'submitted' );
+
+	$victim = $create( 0 );
+	$claimant = $create( 0 );
+	$victim_reference = ( new ReferenceRepository( $wpdb ) )->find( new EntityId( $victim->get_id() ) );
+	if ( null === $victim_reference ) {
+		throw new RuntimeException( 'Victim order has no payment reference.' );
+	}
+	$expect( array_replace( $request( $victim ), [
+		'order_key' => $claimant->get_order_key(),
+		'transfer_reference' => $victim_reference->value,
+	] ), 'wbm_claim_forbidden' );
+	$expect( array_replace( $request( $claimant ), [
+		'transfer_reference' => $victim_reference->value,
+	] ), 'submitted' );
+	$victim_claims = (int) $wpdb->get_var( $wpdb->prepare(
+		"SELECT COUNT(*) FROM `$table` WHERE order_id = %d", $victim->get_id()
+	) );
+	$claimant_status = $wpdb->get_var( $wpdb->prepare(
+		"SELECT status FROM `$table` WHERE order_id = %d", $claimant->get_id()
+	) );
+	if ( 0 !== $victim_claims || 'submitted' !== $claimant_status ||
+		! wc_get_order( $victim->get_id() )->has_status( 'on-hold' ) ||
+		! wc_get_order( $claimant->get_id() )->has_status( 'on-hold' ) ) {
+		throw new RuntimeException( 'A copied payment reference affected another order or approved payment.' );
+	}
+	echo "PASS copied payment reference cannot access another order or verify a claim\n";
 
 	$limited = $create( 0 );
 	$data = array_replace( $request( $limited ), [ 'billing_email' => 'wrong@example.test' ] );
