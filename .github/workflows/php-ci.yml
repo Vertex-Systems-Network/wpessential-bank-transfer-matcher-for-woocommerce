@@ -232,8 +232,10 @@ jobs:
         env:
           WBM_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          bash scripts/p9-t013-no-composer.sh "$RUNNER_TEMP/wbm-wordpress"
-          python3 scripts/p9-t013-final-audit.py --native
+          set -o pipefail
+          log="$RUNNER_TEMP/p9-t013-no-composer.log"
+          bash scripts/p9-t013-no-composer.sh "$RUNNER_TEMP/wbm-wordpress" | tee "$log"
+          python3 scripts/p9-t013-final-audit.py --native-log "$log"
       - name: Upload real Composerless WordPress financial-safety smoke proof
         uses: actions/upload-artifact@v4
         with:

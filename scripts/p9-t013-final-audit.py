@@ -50,15 +50,22 @@ def audit():
        "editions":results,"runtime_no_composer":"SEPARATE real MariaDB CI job"}
     write("p9-t013-final-zip-report.json",d)
     print("PASS original Free/Pro isolated ZIP archive, Composer autoload+classmap, GPL and identical checksum manifest")
-def native():
-    require(os.getenv("GITHUB_ACTIONS")=="true","Composerless native report only in CI")
-    src=(ROOT/"tests/integration/p9-composerless.php").read_text()
-    require("wc_create_order(" in src and "is_paid()" in src and "WBM_P9_NO_COMPOSER" in src,
-            "Missing real unpaid order Composerless integration fixture")
+def native(log_path):
+    require(os.getenv("GITHUB_ACTIONS") == "true", "Composerless native report only in CI")
+    expected = (
+        "PASS actual Woo+Free+Pro composerless boot and synthetic unpaid order round trip",
+        "PASS actual plugin ZIP native runtime without Composer in PATH",
+    )
+    log = log_path.read_bytes()
+    lines = log.decode().splitlines()
+    require(all(lines.count(marker) == 1 for marker in expected)
+            and lines.index(expected[0]) < lines.index(expected[1]),
+            "Missing or invalid completed Composerless native smoke test output")
     d={**common(),"scope":"P9-T013 real composerless native WordPress installation",
+       "native_log_sha256":sha(log),
        "composer_executable_available_to_wp":False,
-       "actual_installed_woo_free_pro_bootstrap":"PASSED in preceding CI shell step",
-       "unpaid_synthetic_wc_crud":"PASSED in preceding CI shell step",
+       "actual_installed_woo_free_pro_bootstrap":"PASSED in native CI smoke test",
+       "unpaid_synthetic_wc_crud":"PASSED in native CI smoke test",
        "zip_audit":"SEPARATE Foundation CI JOB",
        "public_submission":False}
     write("p9-t013-no-composer-report.json",d)
@@ -67,8 +74,8 @@ def main():
     p=argparse.ArgumentParser()
     g=p.add_mutually_exclusive_group(required=True)
     g.add_argument("--archive",action="store_true")
-    g.add_argument("--native",action="store_true")
+    g.add_argument("--native-log", type=Path)
     a=p.parse_args()
     if a.archive:audit()
-    else:native()
+    else:native(a.native_log)
 if __name__=="__main__":main()
