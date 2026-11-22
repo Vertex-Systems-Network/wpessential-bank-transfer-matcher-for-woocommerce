@@ -25,6 +25,9 @@ final class OrdersPage {
 			$status = 'eligible';
 		}
 		$page = isset( $_GET['paged'] ) && is_scalar( $_GET['paged'] ) ? max( 1, min( 10000, absint( $_GET['paged'] ) ) ) : 1;
+		$page_sizes = [ 20, 50, 100 ];
+		$requested_size = isset( $_GET['wbm_per_page'] ) && is_string( $_GET['wbm_per_page'] ) ? wp_unslash( $_GET['wbm_per_page'] ) : '';
+		$per_page = in_array( $requested_size, [ '20', '50', '100' ], true ) ? (int) $requested_size : $page_sizes[0];
 		$search = isset( $_GET['wbm_search'] ) && is_string( $_GET['wbm_search'] ) ? trim( wp_unslash( $_GET['wbm_search'] ) ) : '';
 		$statuses = 'eligible' === $status ? [ 'on-hold', 'pending' ] : [ $status ];
 		global $wpdb;
@@ -81,7 +84,7 @@ final class OrdersPage {
 			}
 			if ( '' === $search ) {
 				$query = [
-					'payment_method' => 'bacs', 'status' => $statuses, 'limit' => 20,
+					'payment_method' => 'bacs', 'status' => $statuses, 'limit' => $per_page,
 					'page' => $page, 'paginate' => true, 'orderby' => 'date', 'order' => 'DESC',
 				];
 				if ( null !== $start && null !== $end ) {
@@ -109,8 +112,8 @@ final class OrdersPage {
 						throw new LengthException( 'Too many orders for the balance filter.' );
 					}
 					$matching = array_values( array_filter( $orders, $balance_filter->matches(...) ) );
-					$pages = (int) ceil( count( $matching ) / 20 );
-					$orders = array_slice( $matching, ( $page - 1 ) * 20, 20 );
+					$pages = (int) ceil( count( $matching ) / $per_page );
+					$orders = array_slice( $matching, ( $page - 1 ) * $per_page, $per_page );
 				} elseif ( 'eligible' === $status && ! isset( $query['date_created'] ) && '' === $currency && null === $claim_filter ) {
 					$eligible_count = (int) $results->total;
 				}
@@ -187,8 +190,14 @@ final class OrdersPage {
 			esc_html__( 'Minimum outstanding', 'wpessential-bank-transfer-matcher' ), esc_attr( substr( $minimum_due, 0, 30 ) ) );
 		printf( '<label for="wbm-max-due">%s</label> <input type="text" inputmode="decimal" id="wbm-max-due" name="wbm_max_due" maxlength="30" value="%s"> ',
 			esc_html__( 'Maximum outstanding', 'wpessential-bank-transfer-matcher' ), esc_attr( substr( $maximum_due, 0, 30 ) ) );
+		echo '<label for="wbm-per-page">' . esc_html__( 'Orders per page', 'wpessential-bank-transfer-matcher' ) . '</label> ';
+		echo '<select id="wbm-per-page" name="wbm_per_page">';
+		foreach ( $page_sizes as $size ) {
+			printf( '<option value="%d"%s>%s</option>', $size, selected( $per_page, $size, false ), esc_html( (string) $size ) );
+		}
+		echo '</select> ';
 		echo '<button type="submit" class="button">' . esc_html__( 'Filter', 'wpessential-bank-transfer-matcher' ) . '</button>';
-		if ( '' !== $search || 'eligible' !== $status || '' !== $from || '' !== $to || '' !== $currency || '' !== $claim_state || $has_balance_filter ) {
+		if ( '' !== $search || 'eligible' !== $status || '' !== $from || '' !== $to || '' !== $currency || '' !== $claim_state || $has_balance_filter || $per_page !== $page_sizes[0] ) {
 			printf( ' <a href="%s">%s</a>', esc_url( add_query_arg( 'page', 'wpessential-bank-transfer-matcher', admin_url( 'admin.php' ) ) ), esc_html__( 'Clear filters', 'wpessential-bank-transfer-matcher' ) );
 		}
 		echo '</form>';
@@ -210,7 +219,7 @@ final class OrdersPage {
 			echo '</tbody></table></div>';
 		}
 		if ( $pages > 1 ) {
-			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'wbm_from' => $from, 'wbm_to' => $to, 'wbm_currency' => $currency, 'wbm_claim' => $claim_state, 'wbm_balance' => $balance_state, 'wbm_min_due' => $minimum_due, 'wbm_max_due' => $maximum_due, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
+			$base = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_status' => $status, 'wbm_from' => $from, 'wbm_to' => $to, 'wbm_currency' => $currency, 'wbm_claim' => $claim_state, 'wbm_balance' => $balance_state, 'wbm_min_due' => $minimum_due, 'wbm_max_due' => $maximum_due, 'wbm_per_page' => $per_page, 'paged' => '%#%' ], admin_url( 'admin.php' ) );
 			echo '<nav class="wbm-pagination" aria-label="' . esc_attr__( 'Bank transfer order pages', 'wpessential-bank-transfer-matcher' ) . '">';
 			echo wp_kses_post( paginate_links( [ 'base' => $base, 'format' => '', 'current' => $page, 'total' => $pages, 'type' => 'plain' ] ) );
 			echo '</nav>';

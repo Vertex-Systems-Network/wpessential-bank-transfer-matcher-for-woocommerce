@@ -162,7 +162,7 @@ try {
 	}
 	echo "PASS $mode exact per-currency visible balance, claim KPIs and private-safe audit timeline\n";
 	// Fill the first unfiltered page with newer orders to guard against post-pagination filtering.
-	for ( $index = 0; $index < 20; ++$index ) {
+	for ( $index = 0; $index < 50; ++$index ) {
 		$unclaimed = wc_create_order( [ 'status' => 'on-hold' ] );
 		if ( ! $unclaimed instanceof WC_Order ) {
 			throw new RuntimeException( 'Could not create an unclaimed fixture order.' );
@@ -199,6 +199,29 @@ try {
 		throw new RuntimeException( 'Invalid claim filter showed unfiltered orders.' );
 	}
 	echo "PASS $mode claim-state filter before pagination, combined filters, no claim and live transitions\n";
+
+	$page_filters = [ 'wbm_currency' => 'USD', 'wbm_from' => '2026-11-18', 'wbm_to' => '2026-11-20' ];
+	$page_50 = $find_orders( '', 'on-hold', $page_filters + [ 'wbm_per_page' => '50' ] );
+	$page_50_next = $find_orders( '', 'on-hold', $page_filters + [ 'wbm_per_page' => '50', 'paged' => '2' ] );
+	$page_100 = $find_orders( '', 'on-hold', $page_filters + [ 'wbm_per_page' => '100' ] );
+	$invalid_size = $find_orders( '', 'on-hold', $page_filters + [ 'wbm_per_page' => '99999' ] );
+	$nav = [];
+	preg_match( '/<nav class="wbm-pagination".*?<\/nav>/s', $page_50, $nav );
+	if ( str_contains( $page_50, $usd_label ) || ! str_contains( $page_50, $unclaimed_label ) ||
+		! str_contains( $page_50_next, $usd_label ) || str_contains( $page_50_next, $unclaimed_label ) ||
+		! str_contains( $page_100, $usd_label ) || str_contains( $invalid_size, $usd_label ) ||
+		! str_contains( $nav[0] ?? '', 'wbm_per_page=50' ) || ! str_contains( $nav[0] ?? '', 'wbm_currency=USD' ) ||
+		! str_contains( $nav[0] ?? '', 'wbm_from=2026-11-18' ) ) {
+		throw new RuntimeException( 'Page-size controls or filter persistence did not match the WooCommerce result set.' );
+	}
+	$balance_page = $find_orders( '', 'on-hold', $page_filters + [
+		'wbm_per_page' => '50', 'paged' => '2', 'wbm_min_due' => '0',
+	] );
+	if ( ! str_contains( $balance_page, $usd_label ) || str_contains( $balance_page, $unclaimed_label ) ) {
+		throw new RuntimeException( 'Balance pagination did not use the selected page size.' );
+	}
+	echo "PASS $mode 20/50/100 BACS page sizes, scoped filters and balance pagination\n";
+
 	$eur->set_payment_method( 'bacs' );
 	$eur->save();
 	$eur_label = '>#' . $eur->get_order_number() . '</a>';
