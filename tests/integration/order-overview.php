@@ -223,11 +223,33 @@ try {
 			throw new RuntimeException( 'Invalid outstanding range showed unfiltered orders.' );
 		}
 	}
+	$balance_reads = 0;
+	$count_balance_reads = static function ( string $sql ) use ( &$balance_reads, $wpdb, $usd ): string {
+		if ( str_contains( $sql, "SELECT amount_minor, expected_minor, currency, exponent FROM `{$wpdb->prefix}wbm_manual_allocations` WHERE order_id = " . $usd->get_id() ) ) {
+			++$balance_reads;
+		}
+		return $sql;
+	};
+	add_filter( 'query', $count_balance_reads );
+	try {
+		$single = $find_orders( (string) $usd->get_id(), 'on-hold', [
+			'wbm_balance' => 'partial', 'wbm_currency' => 'USD', 'wbm_min_due' => '15',
+		] );
+	} finally {
+		remove_filter( 'query', $count_balance_reads );
+	}
+	if ( 1 !== $balance_reads || ! str_contains( $single, $usd_label ) || ! str_contains( $single, '15.00 USD' ) ) {
+		throw new RuntimeException( 'The filter, overview and row did not share the same visible order balance.' );
+	}
+	echo "PASS $mode filter, overview and order row share one balance read\n";
+
 	$usd->set_total( '21.00' );
 	$usd->save();
 	$exception = $find_orders( $reference->value, 'on-hold', [ 'wbm_balance' => 'exception' ] );
 	$stale_amount = $find_orders( $reference->value, 'on-hold', [ 'wbm_currency' => 'USD', 'wbm_min_due' => '0' ] );
 	if ( ! str_contains( $exception, $usd_label ) || ! str_contains( $exception, 'Balance exception. Review this order.' ) ||
+		! str_contains( $exception, 'wbm_view=order' ) ||
+		! str_contains( $exception, 'the page total excludes them' ) ||
 		str_contains( $stale_amount, $usd_label ) || ! wc_get_order( $usd->get_id() )->has_status( 'on-hold' ) ) {
 		throw new RuntimeException( 'A stale allocation snapshot appeared as a valid balance or changed order status.' );
 	}

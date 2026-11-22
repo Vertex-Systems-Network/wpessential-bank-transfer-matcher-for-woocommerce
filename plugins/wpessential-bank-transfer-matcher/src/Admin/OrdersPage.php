@@ -52,7 +52,7 @@ final class OrdersPage {
 		$has_balance_filter = '' !== $balance_state || '' !== $minimum_due || '' !== $maximum_due;
 		$valid_balance_state = '' === $balance_state || isset( $balance_states[ $balance_state ] );
 		$valid_balance_amounts = true;
-		$summary = new OrderSummary( $wpdb );
+		$summary = new OrderSummary( $wpdb, reuse_balances: true );
 		$orders = [];
 		$pages = 1;
 		$error_message = '';
@@ -148,7 +148,7 @@ final class OrdersPage {
 			$eligible_count ??= (int) wc_get_orders( [
 				'payment_method' => 'bacs', 'status' => [ 'on-hold', 'pending' ], 'limit' => 1, 'paginate' => true, 'return' => 'ids',
 			] )->total;
-			( new Overview( $wpdb ) )->render( $eligible_count, $orders );
+			( new Overview( $wpdb ) )->render( $eligible_count, $orders, $summary );
 		} catch ( RuntimeException $error ) {
 			echo '<p role="alert">' . esc_html__( 'Overview data is unavailable; the order list remains available.', 'wpessential-bank-transfer-matcher' ) . '</p>';
 		}
@@ -274,19 +274,22 @@ final class OrdersPage {
 	}
 
 	private static function row( WC_Order $order, OrderSummary $summary ): void {
+		$reconcile_url = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_view' => 'order', 'order_id' => $order->get_id() ], admin_url( 'admin.php' ) );
 		try {
 			$data = $summary->get( $order );
 		} catch ( \InvalidArgumentException|\OverflowException|RuntimeException $error ) {
-			printf( '<tr><td><a href="%s">#%s</a></td><td colspan="9">%s</td></tr>', esc_url( $order->get_edit_order_url() ), esc_html( $order->get_order_number() ), $error instanceof OrderBalanceException || $error instanceof InvalidArgumentException || $error instanceof OverflowException
-				? esc_html__( 'Balance exception. Review this order.', 'wpessential-bank-transfer-matcher' )
-				: esc_html__( 'Reconciliation summary unavailable; review this order.', 'wpessential-bank-transfer-matcher' ) );
+			$message = $error instanceof OrderBalanceException || $error instanceof InvalidArgumentException || $error instanceof OverflowException
+				? __( 'Balance exception. Review this order.', 'wpessential-bank-transfer-matcher' )
+				: __( 'Reconciliation summary unavailable; review this order.', 'wpessential-bank-transfer-matcher' );
+			printf( '<tr><td><a href="%s">#%s</a></td><td colspan="8">%s</td><td><a class="button button-small" href="%s">%s</a></td></tr>',
+				esc_url( $order->get_edit_order_url() ), esc_html( $order->get_order_number() ), esc_html( $message ),
+				esc_url( $reconcile_url ), esc_html__( 'Review', 'wpessential-bank-transfer-matcher' ) );
 			return;
 		}
 		$money = $data['total'];
 		$customer = trim( $order->get_formatted_billing_full_name() );
 		$customer = '' !== $customer ? $customer : __( 'Guest', 'wpessential-bank-transfer-matcher' );
 		$state = self::balance_states()[ OrderSummary::state( $data ) ];
-		$reconcile_url = add_query_arg( [ 'page' => 'wpessential-bank-transfer-matcher', 'wbm_view' => 'order', 'order_id' => $order->get_id() ], admin_url( 'admin.php' ) );
 		$reference = '—';
 		if ( null !== $data['reference'] ) {
 			$reference = sprintf(

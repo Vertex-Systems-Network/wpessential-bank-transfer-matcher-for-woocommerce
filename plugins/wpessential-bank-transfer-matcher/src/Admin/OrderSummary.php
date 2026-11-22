@@ -4,6 +4,7 @@ namespace WPEssential\BankTransferMatcher\Admin;
 
 use RuntimeException;
 use WC_Order;
+use WeakMap;
 use WPEssential\BankTransferMatcher\Domain\EntityId;
 use WPEssential\BankTransferMatcher\Domain\Money;
 use WPEssential\BankTransferMatcher\Orders\ReferenceRepository;
@@ -13,7 +14,12 @@ defined( 'ABSPATH' ) || exit;
 
 /** Read-only order summary. All monetary calculations use integer minor units. */
 final class OrderSummary {
-	public function __construct( private readonly wpdb $db ) {}
+	/** @var WeakMap<WC_Order, array{total: Money, allocated: int, outstanding: int, mismatch: bool}>|null */
+	private readonly ?WeakMap $balances;
+
+	public function __construct( private readonly wpdb $db, bool $reuse_balances = false ) {
+		$this->balances = $reuse_balances ? new WeakMap() : null;
+	}
 
 	/** @return array{reference: ?string, claim_status: ?string, total: Money, allocated: int, outstanding: int, evidence_count: int, mismatch: bool} */
 	public function get( WC_Order $order ): array {
@@ -38,6 +44,18 @@ final class OrderSummary {
 
 	/** @return array{total: Money, allocated: int, outstanding: int, mismatch: bool} */
 	public function balance( WC_Order $order ): array {
+		if ( isset( $this->balances[ $order ] ) ) {
+			return $this->balances[ $order ];
+		}
+		$balance = $this->read_balance( $order );
+		if ( null !== $this->balances ) {
+			$this->balances[ $order ] = $balance;
+		}
+		return $balance;
+	}
+
+	/** @return array{total: Money, allocated: int, outstanding: int, mismatch: bool} */
+	private function read_balance( WC_Order $order ): array {
 		$total = Money::from_decimal( (string) $order->get_total( 'edit' ), $order->get_currency(), wc_get_price_decimals() );
 		if ( $total->minor_units < 0 ) {
 			throw new OrderBalanceException( 'Order total requires review.' );
